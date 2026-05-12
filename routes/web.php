@@ -25,10 +25,10 @@ Route::get('/dashboard', function () {
     };
 })->name('dashboard');
 
-// Public routes
-Route::get('/public/map', function () {
-    return view('public.map');
-})->name('public.map');
+// // Public routes
+// Route::get('/public/map', function () {
+//     return view('public.map');
+// })->name('public.map');
 
 // Admin routes
 Route::prefix('admin')->group(function () {
