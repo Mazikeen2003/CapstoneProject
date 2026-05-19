@@ -1,16 +1,9 @@
 {
   "private": true,
   "type": "module",
-  "engines": {
-    "node": "20.x"
-  },
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
-    "start": "npx serve dist"
-  },
-  "dependencies": {
-    "serve": "^14.2.4"
+    "dev": "vite"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.2",
