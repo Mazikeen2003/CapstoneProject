@@ -1,11 +1,14 @@
 @php
-    $role = session('mock_user.role') ?? 'public';
-    $userName = session('mock_user.email') ?? 'Guest';
-    $userEmail = session('mock_user.email') ?? '';
+    $role = request()->is('public/*') ? 'public' : (session('mock_user.role') ?? 'public');
+    $userName = $role === 'public' ? 'Guest' : (session('mock_user.email') ?? 'Guest');
+    $userEmail = $role === 'public' ? '' : (session('mock_user.email') ?? '');
 @endphp
 
-<aside class="hidden w-80 shrink-0 text-white xl:flex xl:flex-col" style="background-color: #0F172A;">
-    <div class="flex h-full flex-col justify-between">
+<!-- Mobile backdrop overlay -->
+<div id="sidebarBackdrop" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden xl:hidden" style="display: none;"></div>
+
+<aside id="sidebar" class="fixed left-0 top-0 h-screen w-80 shrink-0 text-white transform -translate-x-full transition-transform duration-300 overflow-y-auto xl:static xl:translate-x-0 xl:flex xl:flex-col xl:h-screen z-40" style="background-color: #0F172A;">
+    <div class="flex h-full flex-col justify-between min-h-screen xl:min-h-0">
         <div class="space-y-8 p-6">
             <div class="space-y-4">
                 <div>
@@ -63,9 +66,13 @@
                             <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">D</span>
                             Dashboard
                         </a>
-                        <a href="{{ url('/city/reports') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-800">
-                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">R</span>
-                            Reports
+                        <a href="{{ url('/city/map') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('city/map') ? 'bg-slate-800 text-white' : 'text-slate-300' }}">
+                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">M</span>
+                            Map
+                        </a>
+                        <a href="{{ url('/city/analytics') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('city/analytics') ? 'bg-slate-800 text-white' : 'text-slate-300' }}">
+                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">A</span>
+                            Analytics
                         </a>
                     @elseif($role === 'barangay')
                         <a href="{{ url('/barangay/dashboard') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('barangay/dashboard') ? 'bg-slate-800 text-white' : 'text-slate-300' }}">
@@ -75,6 +82,14 @@
                         <a href="{{ url('/barangay/projects') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-800">
                             <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">P</span>
                             Projects
+                        </a>
+                        <a href="{{ url('/barangay/map') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-800">
+                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">M</span>
+                            Map
+                        </a>
+                        <a href="{{ url('/barangay/analytics') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-800">
+                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">A</span>
+                            Analytics
                         </a>
                     @else
                         <a href="{{ url('/public/map') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('public/map') ? 'bg-slate-800 text-white' : 'text-slate-300' }}">
@@ -90,7 +105,8 @@
             </div>
         </div>
         
-        <!-- Logout Button at Bottom -->
+        <!-- Logout Button at Bottom (Only for authenticated users, not public) -->
+        @if($role !== 'public')
         <div class="border-t border-slate-800 p-6" style="border-color: #162347;">
             <div class="flex items-center gap-3 mb-4">
                 <div class="flex h-12 w-12 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">{{ strtoupper(substr($userName, 0, 2)) }}</div>
@@ -109,5 +125,6 @@
                 </button>
             </form>
         </div>
+        @endif
     </div>
 </aside>

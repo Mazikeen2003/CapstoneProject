@@ -15,12 +15,15 @@
         
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased" style="background-color: #0f1e3d; color: white;">
-        <div class="flex flex-col min-h-screen">
-            @include('components.navbar')
-            <main class="flex-1">
-                @yield('content')
-            </main>
+    <body class="font-sans antialiased" style="background-color: #F7F9FB; color: #0F172A;">
+        <div class="flex flex-col xl:flex-row min-h-screen">
+            @include('components.sidebar')
+            <div class="flex-1 flex flex-col xl:overflow-hidden">
+                @include('components.navbar')
+                <main class="flex-1 p-6 overflow-y-auto">
+                    @yield('content')
+                </main>
+            </div>
         </div>
 
         <!-- Leaflet JS -->

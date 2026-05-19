@@ -25,10 +25,15 @@ Route::get('/dashboard', function () {
     };
 })->name('dashboard');
 
-// // Public routes
-// Route::get('/public/map', function () {
-//     return view('public.map');
-// })->name('public.map');
+// Public routes
+Route::prefix('public')->group(function () {
+    Route::get('/map', function () {
+        return view('public.map');
+    })->name('public.map');
+    Route::get('/analytics', function () {
+        return view('public.analytics');
+    })->name('public.analytics');
+});
 
 // Admin routes
 Route::prefix('admin')->group(function () {
@@ -85,9 +90,12 @@ Route::prefix('city')->group(function () {
     Route::get('/dashboard', function () {
         return view('city-official.dashboard');
     })->name('city.dashboard');
-    Route::get('/reports', function () {
-        return view('city-official.reports.index');
-    })->name('city.reports.index');
+    Route::get('/map', function () {
+        return view('city-official.map.index');
+    })->name('city.map.index');
+    Route::get('/analytics', function () {
+        return view('city-official.analytics.index');
+    })->name('city.analytics.index');
 });
 
 // Barangay Official routes
@@ -98,6 +106,12 @@ Route::prefix('barangay')->group(function () {
     Route::get('/projects', function () {
         return view('barangay-official.projects.index');
     })->name('barangay.projects.index');
+    Route::get('/map', function () {
+        return view('barangay-official.map');
+    })->name('barangay.map');
+    Route::get('/analytics', function () {
+        return view('barangay-official.analytics');
+    })->name('barangay.analytics');
 });
 
 Route::middleware('auth')->group(function () {
@@ -105,8 +119,5 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-Route::get('/map', function () {
-    return view('public.map');
-})->name('public.map');
 
 require __DIR__.'/auth.php';

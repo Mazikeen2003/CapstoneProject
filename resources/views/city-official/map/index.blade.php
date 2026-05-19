@@ -1,4 +1,4 @@
-@extends('layouts.department')
+@extends('layouts.city')
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
@@ -11,7 +11,7 @@
     <!-- Sidebar - Project List (Right) -->
     <div class="w-96 bg-white border-l border-gray-200 overflow-y-auto shadow-sm">
         <div class="p-6 border-b border-gray-200 sticky top-0 bg-white">
-            <h2 class="text-lg font-bold text-black">Department Projects</h2>
+            <h2 class="text-lg font-bold text-black">City Projects</h2>
             <p class="text-sm text-gray-500 mt-1">Cabuyao City Projects</p>
         </div>
 
@@ -246,4 +246,5 @@
     });
 </script>
 @endsection
+
 

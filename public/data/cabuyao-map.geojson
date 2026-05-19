@@ -1,0 +1,287 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "boundary",
+        "name": "Cabuyao City Bounds"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [121.0950, 14.2200],
+          [121.1490, 14.2200],
+          [121.1490, 14.2920],
+          [121.0950, 14.2920],
+          [121.0950, 14.2200]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "default_location",
+        "name": "Cabuyao City Center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1239, 14.2595]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Banay-banay"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1089, 14.2547]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Banadero"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1234, 14.2698]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Bigaa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1345, 14.2789]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Butong"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1123, 14.2456]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Casile"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.0987, 14.2234]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Diezmo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1267, 14.2567]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Gulod"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1189, 14.2678]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Halang"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1456, 14.2890]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Laguerta"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1056, 14.2345]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Lawa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1178, 14.2456]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Lecheria"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1289, 14.2567]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Leismer"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1345, 14.2678]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Mamatid"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1234, 14.2789]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Marinig"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1123, 14.2345]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Niugan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1067, 14.2567]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Pittland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1178, 14.2678]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Pulo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1289, 14.2890]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "barangay",
+        "name": "Sala"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1345, 14.2456]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "project",
+        "name": "Cabuyao City Hall Renovation",
+        "barangay": "Diezmo",
+        "status": "In Progress",
+        "color": "#10b981"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1267, 14.2567]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "project",
+        "name": "Barangay Drainage System Phase 2",
+        "barangay": "Bigaa",
+        "status": "In Progress",
+        "color": "#10b981"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1345, 14.2789]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "project",
+        "name": "Environmental Park Development",
+        "barangay": "Marinig",
+        "status": "Completed",
+        "color": "#10b981"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1123, 14.2345]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "kind": "project",
+        "name": "Sunny Winds Multi-Purpose Hall",
+        "barangay": "Leismer",
+        "status": "On Hold",
+        "color": "#f59e0b"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1345, 14.2678]
+      }
+    }
+  ]
+}

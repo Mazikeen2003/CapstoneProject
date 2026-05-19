@@ -1,4 +1,4 @@
-@extends('layouts.public-map')
+@extends('layouts.department')
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
@@ -25,9 +25,9 @@
         <!-- Project Cards -->
         <div class="divide-y divide-gray-200">
             <!-- Project 1 -->
-            <div class="p-4 hover:bg-gray-50 cursor-pointer transition project-card">
-                <div class="mb-3">
-                    <div class="w-full h-32 bg-gray-200 rounded-lg overflow-hidden">
+            <div class="p-3 md:p-4 hover:bg-gray-50 cursor-pointer transition project-card" data-lat="14.2567" data-lng="121.1267" data-barangay="Diezmo">
+                <div class="mb-2 md:mb-3">
+                    <div class="w-full h-24 md:h-32 bg-gray-200 rounded-lg overflow-hidden">
                         <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop" alt="City Hall" class="w-full h-full object-cover">
                     </div>
                 </div>
@@ -51,7 +51,7 @@
             </div>
 
             <!-- Project 2 -->
-            <div class="p-4 hover:bg-gray-50 cursor-pointer transition project-card">
+            <div class="p-4 hover:bg-gray-50 cursor-pointer transition project-card" data-lat="14.2789" data-lng="121.1345" data-barangay="Bigaa">
                 <div class="mb-3">
                     <div class="w-full h-32 bg-gray-200 rounded-lg overflow-hidden">
                         <img src="https://images.unsplash.com/photo-1581488627687-46e97395999f?w=400&h=300&fit=crop" alt="Drainage" class="w-full h-full object-cover">
@@ -77,7 +77,7 @@
             </div>
 
             <!-- Project 3 -->
-            <div class="p-4 hover:bg-gray-50 cursor-pointer transition project-card">
+            <div class="p-4 hover:bg-gray-50 cursor-pointer transition project-card" data-lat="14.2345" data-lng="121.1123" data-barangay="Marinig">
                 <div class="mb-3">
                     <div class="w-full h-32 bg-gray-200 rounded-lg overflow-hidden">
                         <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop" alt="Park" class="w-full h-full object-cover">
@@ -103,7 +103,7 @@
             </div>
 
             <!-- Project 4 -->
-            <div class="p-4 hover:bg-gray-50 cursor-pointer transition project-card">
+            <div class="p-4 hover:bg-gray-50 cursor-pointer transition project-card" data-lat="14.2678" data-lng="121.1345" data-barangay="Leismer">
                 <div class="mb-3">
                     <div class="w-full h-32 bg-gray-200 rounded-lg overflow-hidden">
                         <img src="https://images.unsplash.com/photo-1517457373614-b7152f800fd1?w=400&h=300&fit=crop" alt="Hall" class="w-full h-full object-cover">
@@ -163,124 +163,141 @@
             }
         });
 
-        fetch('{{ asset('data/cabuyao-map.geojson') }}')
-            .then(function(response) {
-                if (!response.ok) {
-                    throw new Error('Unable to load Cabuyao GeoJSON');
-                }
+        // Initialize map
+        const map = L.map('map').setView([14.2595, 121.1239], 12);
+        
+        // Cabuyao City boundaries
+        const cabuyaoBounds = L.latLngBounds(
+            L.latLng(14.2200, 121.0950),
+            L.latLng(14.2920, 121.1490)
+        );
+        
+        // Set maximum bounds
+        map.setMaxBounds(cabuyaoBounds);
+        
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19,
+            minZoom: 11
+        }).addTo(map);
 
-                return response.json();
-            })
-            .then(function(geojson) {
-                const boundaryFeature = geojson.features.find(function(feature) {
-                    return feature.properties.kind === 'boundary';
-                });
-                const barangays = geojson.features.filter(function(feature) {
-                    return feature.properties.kind === 'barangay';
-                });
-                const projects = geojson.features.filter(function(feature) {
-                    return feature.properties.kind === 'project';
-                });
-                const cabuyaoBounds = L.geoJSON(boundaryFeature).getBounds();
-                const map = L.map('map', {
-                    maxBounds: cabuyaoBounds,
-                    maxBoundsViscosity: 1.0
-                });
-
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: 'Ac OpenStreetMap contributors',
-                    maxZoom: 19,
-                    minZoom: 11
-                }).addTo(map);
-
-                const barangayMarkers = L.featureGroup();
-                const projectMarkers = L.featureGroup();
-
-                barangays.forEach(function(barangay) {
-                    const lng = barangay.geometry.coordinates[0];
-                    const lat = barangay.geometry.coordinates[1];
-                    const marker = L.circleMarker([lat, lng], {
-                        radius: 8,
-                        fillColor: '#e5e7eb',
-                        color: '#6b7280',
-                        weight: 2,
-                        opacity: 0.7,
-                        fillOpacity: 0.6
-                    });
-
-                    marker.bindPopup(`
-                        <div class="text-sm">
-                            <h4 class="font-bold text-black">${barangay.properties.name}</h4>
-                        </div>
-                    `);
-
-                    marker.on('mouseover', function() {
-                        this.setStyle({ fillColor: '#3b82f6', weight: 3, fillOpacity: 0.8 });
-                    });
-                    marker.on('mouseout', function() {
-                        this.setStyle({ fillColor: '#e5e7eb', weight: 2, fillOpacity: 0.6 });
-                    });
-
-                    barangayMarkers.addLayer(marker);
-                });
-
-                projects.forEach(function(project, index) {
-                    const lng = project.geometry.coordinates[0];
-                    const lat = project.geometry.coordinates[1];
-                    const marker = L.circleMarker([lat, lng], {
-                        radius: 14,
-                        fillColor: project.properties.color,
-                        color: '#ffffff',
-                        weight: 3,
-                        opacity: 1,
-                        fillOpacity: 0.9
-                    });
-
-                    marker.bindPopup(`
-                        <div class="p-2 text-sm">
-                            <h4 class="font-bold text-black">${project.properties.name}</h4>
-                            <p class="text-xs text-gray-600 mt-1">Barangay: ${project.properties.barangay}</p>
-                            <p class="text-xs text-gray-600">Status: ${project.properties.status}</p>
-                        </div>
-                    `);
-
-                    marker.on('click', function() {
-                        const cards = document.querySelectorAll('.project-card');
-                        if (cards[index]) {
-                            cards.forEach(c => c.style.backgroundColor = '');
-                            cards[index].style.backgroundColor = '#f3f4f6';
-                            cards[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // Load GeoJSON data
+        fetch('/data/cabuyao-map.geojson')
+            .then(response => response.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    pointToLayer: function(feature, latlng) {
+                        const kind = feature.properties.kind;
+                        
+                        if (kind === 'boundary') {
+                            return null;
                         }
-                    });
-
-                    projectMarkers.addLayer(marker);
-                });
-
-                barangayMarkers.addTo(map);
-                projectMarkers.addTo(map);
-                map.fitBounds(cabuyaoBounds, { padding: [20, 20] });
-                map.setMinZoom(map.getZoom());
-
-                document.querySelectorAll('.project-card').forEach(function(card, index) {
-                    card.addEventListener('click', function() {
-                        const project = projects[index];
-                        const lng = project.geometry.coordinates[0];
-                        const lat = project.geometry.coordinates[1];
-                        map.setView([lat, lng], 14);
-
-                        document.querySelectorAll('.project-card').forEach(c => c.style.backgroundColor = '');
-                        this.style.backgroundColor = '#f3f4f6';
-                    });
-                });
-
-                setTimeout(function() {
-                    map.invalidateSize();
-                }, 100);
-            })
-            .catch(function(error) {
-                console.error(error);
+                        
+                        if (kind === 'barangay') {
+                            return L.circleMarker(latlng, {
+                                radius: 8,
+                                fillColor: '#e5e7eb',
+                                color: '#6b7280',
+                                weight: 2,
+                                opacity: 0.7,
+                                fillOpacity: 0.6
+                            });
+                        }
+                        
+                        return L.circleMarker(latlng, {
+                            radius: 6,
+                            fillColor: '#3b82f6',
+                            color: '#1e40af',
+                            weight: 2,
+                            opacity: 0.8,
+                            fillOpacity: 0.7
+                        });
+                    },
+                    onEachFeature: function(feature, layer) {
+                        const props = feature.properties;
+                        layer.bindPopup(`<strong>${props.name}</strong>`);
+                        
+                        if (feature.geometry.type === 'Point') {
+                            layer.on('mouseover', function() {
+                                this.setStyle({ fillColor: '#3b82f6', weight: 3, fillOpacity: 0.8 });
+                            });
+                            layer.on('mouseout', function() {
+                                const kind = feature.properties.kind;
+                                if (kind === 'barangay') {
+                                    this.setStyle({ fillColor: '#e5e7eb', weight: 2, fillOpacity: 0.6 });
+                                }
+                            });
+                        }
+                    }
+                }).addTo(map);
             });
+
+        // Project markers
+        const projects = [
+            { name: 'Cabuyao City Hall Renovation', lat: 14.2567, lng: 121.1267, barangay: 'Diezmo', color: '#10b981', status: 'In Progress' },
+            { name: 'Barangay Drainage System Phase 2', lat: 14.2789, lng: 121.1345, barangay: 'Bigaa', color: '#10b981', status: 'In Progress' },
+            { name: 'Environmental Park Development', lat: 14.2345, lng: 121.1123, barangay: 'Marinig', color: '#10b981', status: 'Completed' },
+            { name: 'Sunny Winds Multi-Purpose Hall', lat: 14.2678, lng: 121.1345, barangay: 'Leismer', color: '#f59e0b', status: 'On Hold' }
+        ];
+
+        const projectMarkers = L.featureGroup();
+
+        projects.forEach((project, index) => {
+            const marker = L.circleMarker([project.lat, project.lng], {
+                radius: 14,
+                fillColor: project.color,
+                color: '#ffffff',
+                weight: 3,
+                opacity: 1,
+                fillOpacity: 0.9
+            });
+
+            marker.bindPopup(`
+                <div class="p-2 text-sm">
+                    <h4 class="font-bold text-black">${project.name}</h4>
+                    <p class="text-xs text-gray-600 mt-1">Barangay: ${project.barangay}</p>
+                    <p class="text-xs text-gray-600">Status: ${project.status}</p>
+                </div>
+            `);
+
+            marker.on('click', function() {
+                const cards = document.querySelectorAll('.project-card');
+                if (cards[index]) {
+                    cards.forEach(c => c.style.backgroundColor = '');
+                    cards[index].style.backgroundColor = '#f3f4f6';
+                    cards[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            });
+
+            projectMarkers.addLayer(marker);
+        });
+
+        projectMarkers.addTo(map);
+
+        // Card click handlers
+        document.querySelectorAll('.project-card').forEach((card, index) => {
+            card.addEventListener('click', function() {
+                const lat = parseFloat(this.getAttribute('data-lat'));
+                const lng = parseFloat(this.getAttribute('data-lng'));
+                map.setView([lat, lng], 14);
+                
+                document.querySelectorAll('.project-card').forEach(c => c.style.backgroundColor = '');
+                this.style.backgroundColor = '#f3f4f6';
+                
+                // Close sidebar on mobile after selection
+                if (isMobile()) {
+                    setTimeout(() => {
+                        sidebar.style.display = 'none';
+                        toggleBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>';
+                    }, 300);
+                }
+            });
+        });
+
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 100);
     });
 </script>
 @endsection
-
