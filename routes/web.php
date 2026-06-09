@@ -2,25 +2,27 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return session('mock_user.role')
+    return Auth::check()
         ? redirect()->route('dashboard')
         : redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
-    $role = session('mock_user.role');
-
-    if (! $role) {
+    if (! Auth::check()) {
         return redirect()->route('login');
     }
 
-    return match ($role) {
-        'admin' => redirect('/admin/dashboard'),
-        'city' => redirect('/city/dashboard'),
-        'barangay' => redirect('/barangay/dashboard'),
-        'department' => redirect('/department/dashboard'),
+    $user = Auth::user();
+    $roleSlug = $user->role_slug;
+
+    return match ($roleSlug) {
+        'admin' => redirect()->route('admin.dashboard'),
+        'city' => redirect()->route('city.dashboard'),
+        'barangay' => redirect()->route('barangay.dashboard'),
+        'department' => redirect()->route('department.dashboard'),
         default => view('dashboard'),
     };
 })->name('dashboard');
@@ -36,19 +38,22 @@ Route::prefix('public')->group(function () {
 });
 
 // Admin routes
-Route::prefix('admin')->group(function () {
+Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
-    Route::get('/users', function () {
-        return view('admin.users.index');
-    })->name('admin.users.index');
-    Route::get('/users/create', function () {
-        return view('admin.users.create');
-    })->name('admin.users.create');
-    Route::get('/users/{id}/edit', function () {
-        return view('admin.users.edit');
-    })->name('admin.users.edit');
+    
+    Route::resource('users', \App\Http\Controllers\Admin\UserController::class, [
+        'names' => [
+            'index' => 'admin.users.index',
+            'create' => 'admin.users.create',
+            'store' => 'admin.users.store',
+            'edit' => 'admin.users.edit',
+            'update' => 'admin.users.update',
+            'destroy' => 'admin.users.destroy',
+        ]
+    ]);
+    
     Route::get('/audit-logs', function () {
         return view('admin.audit-logs.index');
     })->name('admin.audit-logs.index');
@@ -58,7 +63,7 @@ Route::prefix('admin')->group(function () {
 });
 
 // Department routes
-Route::prefix('department')->group(function () {
+Route::middleware('auth')->prefix('department')->group(function () {
     Route::get('/dashboard', function () {
         return view('department.dashboard');
     })->name('department.dashboard');
@@ -86,7 +91,7 @@ Route::prefix('department')->group(function () {
 });
 
 // City Official routes
-Route::prefix('city')->group(function () {
+Route::middleware('auth')->prefix('city')->group(function () {
     Route::get('/dashboard', function () {
         return view('city-official.dashboard');
     })->name('city.dashboard');
@@ -99,7 +104,7 @@ Route::prefix('city')->group(function () {
 });
 
 // Barangay Official routes
-Route::prefix('barangay')->group(function () {
+Route::middleware('auth')->prefix('barangay')->group(function () {
     Route::get('/dashboard', function () {
         return view('barangay-official.dashboard');
     })->name('barangay.dashboard');

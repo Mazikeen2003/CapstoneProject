@@ -3,9 +3,11 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Auth\Events\Lockout;
+use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -42,14 +44,9 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if ($mockUser = $this->mockCredentialsMatch()) {
-            $this->session()->put('mock_user', $mockUser);
-            RateLimiter::clear($this->throttleKey());
+        $user = User::where('user_email', $this->input('email'))->first();
 
-            return;
-        }
-
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (! $user || ! Hash::check($this->input('password'), $user->password_hash)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -57,42 +54,8 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        Auth::login($user, $this->boolean('remember'));
         RateLimiter::clear($this->throttleKey());
-    }
-
-    protected function mockCredentialsMatch(): ?array
-    {
-        $mockUsers = [
-            'barangay@example.com' => [
-                'password' => 'barangay123',
-                'role' => 'barangay',
-                'name' => 'Barangay Official',
-            ],
-            'city@example.com' => [
-                'password' => 'city123',
-                'role' => 'city',
-                'name' => 'City Official',
-            ],
-            'admin@example.com' => [
-                'password' => 'admin123',
-                'role' => 'admin',
-                'name' => 'Administrator',
-            ],
-            'department@example.com' => [
-                'password' => 'department123',
-                'role' => 'department',
-                'name' => 'Department Staff',
-            ],
-        ];
-
-        $email = $this->input('email');
-        $password = $this->input('password');
-
-        if (isset($mockUsers[$email]) && $mockUsers[$email]['password'] === $password) {
-            return array_merge(['email' => $email], $mockUsers[$email]);
-        }
-
-        return null;
     }
 
     /**

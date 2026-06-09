@@ -226,62 +226,6 @@
         "type": "Point",
         "coordinates": [121.1345, 14.2456]
       }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "kind": "project",
-        "name": "Cabuyao City Hall Renovation",
-        "barangay": "Diezmo",
-        "status": "In Progress",
-        "color": "#10b981"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [121.1267, 14.2567]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "kind": "project",
-        "name": "Barangay Drainage System Phase 2",
-        "barangay": "Bigaa",
-        "status": "In Progress",
-        "color": "#10b981"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [121.1345, 14.2789]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "kind": "project",
-        "name": "Environmental Park Development",
-        "barangay": "Marinig",
-        "status": "Completed",
-        "color": "#10b981"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [121.1123, 14.2345]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "kind": "project",
-        "name": "Sunny Winds Multi-Purpose Hall",
-        "barangay": "Leismer",
-        "status": "On Hold",
-        "color": "#f59e0b"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [121.1345, 14.2678]
-      }
     }
   ]
 }

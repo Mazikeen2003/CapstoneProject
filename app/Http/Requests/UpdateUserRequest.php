@@ -3,26 +3,37 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreUserRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
-    public function authorize()
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
     {
         return true;
     }
 
-    public function rules()
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     */
+    public function rules(): array
     {
+        $userId = $this->route('id');
+
         return [
-            'username' => ['required', 'string', 'max:100', 'unique:users,username'],
-            'user_email' => ['required', 'email', 'max:100', 'unique:users,user_email'],
-            'password_hash' => ['required', 'string', 'min:8', 'confirmed'],
+            'username' => ['required', 'string', 'max:100', Rule::unique('users', 'username')->ignore($userId, 'user_id')],
+            'user_email' => ['required', 'email', 'max:100', Rule::unique('users', 'user_email')->ignore($userId, 'user_id')],
+            'password_hash' => ['nullable', 'string', 'min:8', 'confirmed'],
             'role_id' => ['required', 'exists:roles,role_id'],
             'barangay_id' => ['nullable', 'exists:barangays,barangay_id'],
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'username.required' => 'Username is required.',
@@ -30,7 +41,6 @@ class StoreUserRequest extends FormRequest
             'user_email.required' => 'Email is required.',
             'user_email.email' => 'Please enter a valid email.',
             'user_email.unique' => 'This email is already registered.',
-            'password_hash.required' => 'Password is required.',
             'password_hash.min' => 'Password must be at least 8 characters.',
             'password_hash.confirmed' => 'Password confirmation does not match.',
             'role_id.required' => 'Role is required.',

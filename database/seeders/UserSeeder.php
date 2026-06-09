@@ -12,6 +12,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        // Users are created through the application
+        // No mock data seeded
     }
 }
+

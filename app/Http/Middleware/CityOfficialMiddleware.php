@@ -4,15 +4,18 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CityOfficialMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        $userRole = session('mock_user.role');
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
 
-        if ($userRole !== 'city') {
-            return redirect('/login');
+        if (! Auth::user()->hasRole('city')) {
+            return redirect()->route('dashboard');
         }
 
         return $next($request);

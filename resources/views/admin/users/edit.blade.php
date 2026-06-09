@@ -3,41 +3,98 @@
 @section('content')
 <div class="space-y-6">
     <div>
-        <h1 class="text-3xl font-bold text-white">Edit User</h1>
-        <p style="color: #c9a84c;">Update user details and role</p>
+        <h1 class="text-3xl font-bold text-black">Edit User</h1>
+        <p class="text-sm text-gray-500 mt-1">Update user account information.</p>
     </div>
 
-    <div class="bg-white rounded-lg p-6" style="background-color: #162347; border: 1px solid #c9a84c;">
-        <form>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+        @if ($errors->any())
+            <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+                <p class="text-red-800 font-semibold mb-2">Please fix the following errors:</p>
+                <ul class="list-disc list-inside text-red-700 space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('admin.users.update', $user->user_id) }}" method="POST" class="space-y-6">
+            @csrf
+            @method('PUT')
+
+            <!-- Row 1: Username and Email -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-white">Name</label>
-                    <input type="text" value="Juan Dela Cruz" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="background-color: #0f1e3d; border-color: #c9a84c; color: white;">
+                    <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">Username *</label>
+                    <input type="text" id="username" name="username" value="{{ old('username', $user->username) }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('username') border-red-500 @enderror" placeholder="Enter username" required>
+                    @error('username')
+                        <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
                 </div>
+
                 <div>
-                    <label class="block text-sm font-medium text-white">Email</label>
-                    <input type="email" value="department@cabuyao.gov.ph" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="background-color: #0f1e3d; border-color: #c9a84c; color: white;">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-white">Role</label>
-                    <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="background-color: #0f1e3d; border-color: #c9a84c; color: white;">
-                        <option>Admin</option>
-                        <option selected>Department</option>
-                        <option>City Official</option>
-                        <option>Barangay Official</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-white">Status</label>
-                    <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="background-color: #0f1e3d; border-color: #c9a84c; color: white;">
-                        <option selected>Active</option>
-                        <option>Inactive</option>
-                    </select>
+                    <label for="user_email" class="block text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
+                    <input type="email" id="user_email" name="user_email" value="{{ old('user_email', $user->user_email) }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('user_email') border-red-500 @enderror" placeholder="user@example.com" required>
+                    @error('user_email')
+                        <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
                 </div>
             </div>
-            <div class="mt-6 flex justify-end space-x-3">
-                <a href="{{ url('/admin/users') }}" class="px-4 py-2 rounded" style="color: #c9a84c;">Cancel</a>
-                <button type="submit" class="px-4 py-2 rounded" style="background-color: #c9a84c; color: #0f1e3d;">Update User</button>
+
+            <!-- Row 2: Password and Confirm Password -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="password_hash" class="block text-sm font-semibold text-gray-700 mb-2">Password (Leave blank to keep current)</label>
+                    <input type="password" id="password_hash" name="password_hash" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('password_hash') border-red-500 @enderror" placeholder="Leave blank to keep current password">
+                    @error('password_hash')
+                        <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="password_hash_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">Confirm Password</label>
+                    <input type="password" id="password_hash_confirmation" name="password_hash_confirmation" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Confirm new password if changing">
+                </div>
+            </div>
+
+            <!-- Row 3: Role and Barangay -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="role_id" class="block text-sm font-semibold text-gray-700 mb-2">Role *</label>
+                    <select id="role_id" name="role_id" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('role_id') border-red-500 @enderror" required>
+                        <option value="">-- Select Role --</option>
+                        @foreach ($roles as $role)
+                            <option value="{{ $role->role_id }}" {{ old('role_id', $user->role_id) == $role->role_id ? 'selected' : '' }}>{{ $role->role_name }}</option>
+                        @endforeach
+                    </select>
+                    @error('role_id')
+                        <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="barangay_id" class="block text-sm font-semibold text-gray-700 mb-2">Barangay (Optional)</label>
+                    <select id="barangay_id" name="barangay_id" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">-- Select Barangay --</option>
+                        @foreach ($barangays as $barangay)
+                            <option value="{{ $barangay->barangay_id }}" {{ old('barangay_id', $user->barangay_id) == $barangay->barangay_id ? 'selected' : '' }}>{{ $barangay->barangay_name }}</option>
+                        @endforeach
+                    </select>
+                    @error('barangay_id')
+                        <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-4 pt-4 border-t border-gray-200">
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 font-semibold transition">
+                    Update User
+                </button>
+                <a href="{{ route('admin.users.index') }}" class="bg-gray-300 text-gray-800 px-6 py-2.5 rounded-lg hover:bg-gray-400 font-semibold transition">
+                    Cancel
+                </a>
             </div>
         </form>
     </div>

@@ -1,13 +1,14 @@
 @php
-    $role = request()->is('public/*') ? 'public' : (session('mock_user.role') ?? 'public');
-    $userName = $role === 'public' ? 'Guest' : (session('mock_user.email') ?? 'Guest');
-    $userEmail = $role === 'public' ? '' : (session('mock_user.email') ?? '');
+    $authUser = Auth::user();
+    $role = $authUser ? $authUser->role_slug : 'public';
+    $userName = $authUser ? $authUser->username : 'Guest';
+    $userEmail = $authUser ? $authUser->user_email : '';
 @endphp
 
 <!-- Mobile backdrop overlay -->
 <div id="sidebarBackdrop" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden xl:hidden" style="display: none;"></div>
 
-<aside id="sidebar" class="fixed left-0 top-0 h-screen w-80 shrink-0 text-white transform -translate-x-full transition-transform duration-300 overflow-y-auto xl:static xl:translate-x-0 xl:flex xl:flex-col xl:h-screen z-40" style="background-color: #0F172A;">
+<aside id="sidebar" class="fixed left-0 top-0 h-screen w-80 shrink-0 text-white transform -translate-x-full transition-transform duration-300 overflow-y-auto xl:sticky xl:top-0 xl:self-start xl:translate-x-0 xl:flex xl:flex-col xl:h-screen z-40" style="background-color: #0F172A;">
     <div class="flex h-full flex-col justify-between min-h-screen xl:min-h-0">
         <div class="space-y-8 p-6">
             <div class="space-y-4">

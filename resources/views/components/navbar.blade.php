@@ -1,5 +1,6 @@
 @php
-    $userName = session('mock_user.email') ?? 'Guest';
+    $authUser = Auth::user();
+    $userName = $authUser ? $authUser->username : 'Guest';
 @endphp
 
 <header style="background-color: #F7F9FB; border-color: #E0E7F1;" class="border-b">

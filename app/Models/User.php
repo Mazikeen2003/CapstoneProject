@@ -6,11 +6,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    protected $primaryKey = 'user_id';
 
     /**
      * The attributes that are mass assignable.
@@ -18,9 +21,11 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'username',
+        'password_hash',
+        'user_email',
+        'role_id',
+        'barangay_id'
     ];
 
     /**
@@ -29,7 +34,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password',
+        'password_hash',
         'remember_token',
     ];
 
@@ -42,7 +47,60 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password_hash' => 'hashed',
         ];
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'role_id');
+    }
+
+    public function barangay()
+    {
+        return $this->belongsTo(Barangay::class, 'barangay_id', 'barangay_id');
+    }
+
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
+    }
+
+    public function getEmailForPasswordReset()
+    {
+        return $this->user_email;
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->username;
+    }
+
+    public function getEmailAttribute()
+    {
+        return $this->user_email;
+    }
+
+    public function getRoleSlugAttribute(): string
+    {
+        if (!$this->role) {
+            return 'dashboard';
+        }
+
+        $roleName = $this->role->role_name ?? '';
+        $roleName = strtolower(trim($roleName));
+
+        return match ($roleName) {
+            'admin' => 'admin',
+            'city official' => 'city',
+            'barangay official' => 'barangay',
+            'department' => 'department',
+            default => 'dashboard',
+        };
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return $this->role_slug === $role;
     }
 }

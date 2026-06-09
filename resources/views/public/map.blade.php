@@ -22,110 +22,9 @@
             <p class="text-xs md:text-sm text-gray-500 mt-1">Cabuyao City Projects</p>
         </div>
 
-        <!-- Project Cards -->
         <div class="divide-y divide-gray-200">
-            <!-- Project 1 -->
-            <div class="p-4 hover:bg-gray-50 cursor-pointer transition project-card">
-                <div class="mb-3">
-                    <div class="w-full h-32 bg-gray-200 rounded-lg overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop" alt="City Hall" class="w-full h-full object-cover">
-                    </div>
-                </div>
-                <div>
-                    <h3 class="font-bold text-sm md:text-base text-black">Cabuyao City Hall Renovation</h3>
-                    <div class="flex gap-2 mt-2">
-                        <span class="text-xs px-2 py-1 rounded-full text-white" style="background-color: #10b981;">In Progress</span>
-                        <span class="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-700">79% Done</span>
-                    </div>
-                    <div class="mt-2 md:mt-3 space-y-2">
-                        <div class="flex justify-between text-xs">
-                            <span class="text-gray-600">Budget:</span>
-                            <span class="font-semibold text-black">₱950K / ₱1.2M</span>
-                        </div>
-                        <div class="flex justify-between text-xs">
-                            <span class="text-gray-600">Barangay:</span>
-                            <span class="font-semibold text-black">Diezmo</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project 2 -->
-            <div class="p-4 hover:bg-gray-50 cursor-pointer transition project-card">
-                <div class="mb-3">
-                    <div class="w-full h-32 bg-gray-200 rounded-lg overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1581488627687-46e97395999f?w=400&h=300&fit=crop" alt="Drainage" class="w-full h-full object-cover">
-                    </div>
-                </div>
-                <div>
-                    <h3 class="font-bold text-black">Barangay Drainage System Phase 2</h3>
-                    <div class="flex gap-2 mt-2">
-                        <span class="text-xs px-2 py-1 rounded-full text-white" style="background-color: #10b981;">In Progress</span>
-                        <span class="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-700">88% Done</span>
-                    </div>
-                    <div class="mt-3 space-y-2">
-                        <div class="flex justify-between text-xs">
-                            <span class="text-gray-600">Budget:</span>
-                            <span class="font-semibold text-black">₱700K / ₱800K</span>
-                        </div>
-                        <div class="flex justify-between text-xs">
-                            <span class="text-gray-600">Barangay:</span>
-                            <span class="font-semibold text-black">Bigaa</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project 3 -->
-            <div class="p-4 hover:bg-gray-50 cursor-pointer transition project-card">
-                <div class="mb-3">
-                    <div class="w-full h-32 bg-gray-200 rounded-lg overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop" alt="Park" class="w-full h-full object-cover">
-                    </div>
-                </div>
-                <div>
-                    <h3 class="font-bold text-black">Environmental Park Development</h3>
-                    <div class="flex gap-2 mt-2">
-                        <span class="text-xs px-2 py-1 rounded-full text-white" style="background-color: #10b981;">Completed</span>
-                        <span class="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-700">100% Done</span>
-                    </div>
-                    <div class="mt-3 space-y-2">
-                        <div class="flex justify-between text-xs">
-                            <span class="text-gray-600">Budget:</span>
-                            <span class="font-semibold text-black">₱400K / ₱600K</span>
-                        </div>
-                        <div class="flex justify-between text-xs">
-                            <span class="text-gray-600">Barangay:</span>
-                            <span class="font-semibold text-black">Marinig</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project 4 -->
-            <div class="p-4 hover:bg-gray-50 cursor-pointer transition project-card">
-                <div class="mb-3">
-                    <div class="w-full h-32 bg-gray-200 rounded-lg overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1517457373614-b7152f800fd1?w=400&h=300&fit=crop" alt="Hall" class="w-full h-full object-cover">
-                    </div>
-                </div>
-                <div>
-                    <h3 class="font-bold text-black">Sunny Winds Multi-Purpose Hall</h3>
-                    <div class="flex gap-2 mt-2">
-                        <span class="text-xs px-2 py-1 rounded-full text-white" style="background-color: #f59e0b;">On Hold</span>
-                        <span class="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-700">65% Done</span>
-                    </div>
-                    <div class="mt-3 space-y-2">
-                        <div class="flex justify-between text-xs">
-                            <span class="text-gray-600">Budget:</span>
-                            <span class="font-semibold text-black">₱450K / ₱500K</span>
-                        </div>
-                        <div class="flex justify-between text-xs">
-                            <span class="text-gray-600">Barangay:</span>
-                            <span class="font-semibold text-black">Leismer</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="p-6 text-sm text-gray-500">
+                No projects have been added yet.
             </div>
         </div>
     </div>
@@ -283,4 +182,3 @@
     });
 </script>
 @endsection
-
