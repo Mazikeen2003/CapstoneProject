@@ -3,41 +3,41 @@
 @section('content')
 <div class="space-y-6">
     <div>
-        <h1 class="text-3xl font-bold text-black">City Reports</h1>
-        <p style="color: #c9a84c;">City-level reports and status updates</p>
+        <h1 class="text-3xl font-bold text-black">Reports & Exports</h1>
+        <p style="color: #6B7280;">Generate and download citywide reports in PDF format.</p>
     </div>
 
-    <div class="bg-white rounded-lg p-6" style="background-color: #white; border: 2px solid #B2BEB5;">
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead>
-                    <tr style="border-bottom: 1px solid #0f1e3d;">
-                        <th class="text-left py-3 px-4 font-semibold text-black">Report Title</th>
-                        <th class="text-left py-3 px-4 font-semibold text-black">Period</th>
-                        <th class="text-left py-3 px-4 font-semibold text-black">Status</th>
-                        <th class="text-left py-3 px-4 font-semibold text-black">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="border-bottom: 1px solid #0f1e3d;">
-                        <td class="py-3 px-4 text-black">Quarterly Project Progress</td>
-                        <td class="py-3 px-4" style="color: #black;">Q4 2023</td>
-                        <td class="py-3 px-4"><span class="px-2 py-1 rounded text-xs" style="background-color: #c9a84c; color: #0f1e3d;">Available</span></td>
-                        <td class="py-3 px-4">
-                            <a href="#" style="color: #black;">View</a>
-                        </td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #0f1e3d;">
-                        <td class="py-3 px-4 text-black">Budget Utilization Report</td>
-                        <td class="py-3 px-4" style="color: #black;">Annual 2023</td>
-                        <td class="py-3 px-4"><span class="px-2 py-1 rounded text-xs" style="background-color: #c9a84c; color: #0f1e3d;">Available</span></td>
-                        <td class="py-3 px-4">
-                            <a href="#" style="color: #black;">View</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    @if (session('success'))
+        <div class="bg-green-50 border border-green-300 text-green-700 rounded-md p-3 text-sm">
+            {{ session('success') }}
         </div>
+    @endif
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Projects Report -->
+        <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
+            <h3 class="text-lg font-bold text-black mb-2">📋 Citywide Projects</h3>
+            <p class="text-sm text-gray-500 mb-4">Complete list of all projects across all departments with full details.</p>
+            <a href="{{ route('city.reports.projects-pdf') }}" class="block w-full px-4 py-3 rounded text-center font-medium" style="background-color: #c9a84c; color: #0f1e3d; text-decoration: none;">Download PDF</a>
+        </div>
+
+        <!-- Budget Report -->
+        <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
+            <h3 class="text-lg font-bold text-black mb-2">💰 Budget Analysis</h3>
+            <p class="text-sm text-gray-500 mb-4">Citywide budget breakdown by status and barangay with spending analysis.</p>
+            <a href="{{ route('city.reports.budget-pdf') }}" class="block w-full px-4 py-3 rounded text-center font-medium" style="background-color: #c9a84c; color: #0f1e3d; text-decoration: none;">Download PDF</a>
+        </div>
+    </div>
+
+    <!-- Info -->
+    <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
+        <h3 class="text-lg font-bold text-black mb-4">About These Reports</h3>
+        <ul class="text-sm text-gray-700 space-y-2">
+            <li>✓ Reports show all projects from all departments in the city</li>
+            <li>✓ PDF format is ideal for official distribution and archiving</li>
+            <li>✓ All reports include generation timestamp and your name</li>
+            <li>✓ Formatted for easy printing and sharing</li>
+        </ul>
     </div>
 </div>
 @endsection

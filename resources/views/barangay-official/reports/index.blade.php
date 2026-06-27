@@ -1,0 +1,43 @@
+@extends('layouts.barangay')
+
+@section('content')
+<div class="space-y-6">
+    <div>
+        <h1 class="text-3xl font-bold text-black">Reports & Exports</h1>
+        <p style="color: #6B7280;">Generate and download barangay reports in PDF format.</p>
+    </div>
+
+    @if (session('success'))
+        <div class="bg-green-50 border border-green-300 text-green-700 rounded-md p-3 text-sm">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Projects Report -->
+        <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
+            <h3 class="text-lg font-bold text-black mb-2">📋 Projects Report</h3>
+            <p class="text-sm text-gray-500 mb-4">Complete list of all projects in your barangay with details and budget.</p>
+            <a href="{{ route('barangay.reports.projects-pdf') }}" class="block w-full px-4 py-3 rounded text-center font-medium" style="background-color: #c9a84c; color: #0f1e3d; text-decoration: none;">Download PDF</a>
+        </div>
+
+        <!-- Budget Report -->
+        <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
+            <h3 class="text-lg font-bold text-black mb-2">💰 Budget Analysis</h3>
+            <p class="text-sm text-gray-500 mb-4">Detailed budget breakdown and spending analysis for your barangay.</p>
+            <a href="{{ route('barangay.reports.budget-pdf') }}" class="block w-full px-4 py-3 rounded text-center font-medium" style="background-color: #c9a84c; color: #0f1e3d; text-decoration: none;">Download PDF</a>
+        </div>
+    </div>
+
+    <!-- Info -->
+    <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
+        <h3 class="text-lg font-bold text-black mb-4">About These Reports</h3>
+        <ul class="text-sm text-gray-700 space-y-2">
+            <li>✓ Reports show only projects assigned to your barangay</li>
+            <li>✓ PDF format is suitable for printing and official documentation</li>
+            <li>✓ All reports include your barangay name and generation timestamp</li>
+            <li>✓ Easy to share with local government partners</li>
+        </ul>
+    </div>
+</div>
+@endsection
