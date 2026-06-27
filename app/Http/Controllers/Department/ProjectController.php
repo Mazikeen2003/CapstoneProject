@@ -72,7 +72,7 @@ class ProjectController extends Controller
         // findOrFail already respects the global scope, so a department
         // user can't even fetch another department's project by guessing
         // the ID — it'll 404 before the policy check even runs.
-        $project = Project::with(['barangay', 'updates', 'tasks', 'budgetTransactions'])
+        $project = Project::with(['barangay', 'updates', 'budgetTransactions'])
             ->findOrFail($id);
 
         $this->authorize('view', $project);

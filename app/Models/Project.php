@@ -43,6 +43,15 @@ class Project extends Model
         'deleted_at',
     ];
 
+    protected $casts = [
+        'start_date' => 'datetime',
+        'target_end_date' => 'datetime',
+        'actual_end_date' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     protected static function booted()
     {
         static::addGlobalScope(new RoleScopedScope());
