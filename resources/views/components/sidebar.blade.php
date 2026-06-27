@@ -75,6 +75,10 @@
                             <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">A</span>
                             Analytics
                         </a>
+                        <a href="{{ url('/city/reports') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-800">
+                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">R</span>
+                            Reports
+                        </a>
                     @elseif($role === 'barangay')
                         <a href="{{ url('/barangay/dashboard') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('barangay/dashboard') ? 'bg-slate-800 text-white' : 'text-slate-300' }}">
                             <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">D</span>
@@ -91,6 +95,10 @@
                         <a href="{{ url('/barangay/analytics') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-800">
                             <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">A</span>
                             Analytics
+                        </a>
+                        <a href="{{ url('/barangay/reports') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-800">
+                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">R</span>
+                            Reports
                         </a>
                     @else
                         <a href="{{ url('/public/map') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('public/map') ? 'bg-slate-800 text-white' : 'text-slate-300' }}">
