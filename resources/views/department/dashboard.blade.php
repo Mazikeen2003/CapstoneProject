@@ -34,9 +34,9 @@
     </div>
 
     <!-- Map Section -->
-    <div class="rounded-lg p-6 bg-white" style="border: 1px solid #B2BEB5;">
+    <div class="rounded-lg border border-gray-300 bg-white p-6 shadow-sm">
         <h2 class="text-xl font-bold text-black mb-4">Project Locations</h2>
-        <div id="department-map" class="h-96 rounded-lg overflow-hidden" style="border: 1px solid #B2BEB5;"></div>
+        <div id="department-map" class="h-96 overflow-hidden rounded-lg border border-gray-300"></div>
     </div>
 
     <!-- Recent Projects -->
@@ -67,9 +67,10 @@
             .then(function(geojson) {
                 const boundaryFeature = geojson.features.find(f => f.properties.kind === 'boundary');
                 const cabuyaoBounds = L.geoJSON(boundaryFeature).getBounds();
+                const boundedArea = cabuyaoBounds.pad(0.02);
 
                 const map = L.map('department-map', {
-                    maxBounds: cabuyaoBounds,
+                    maxBounds: boundedArea,
                     maxBoundsViscosity: 1.0
                 });
 
@@ -79,7 +80,8 @@
                     minZoom: 11
                 }).addTo(map);
 
-                map.fitBounds(cabuyaoBounds, { padding: [20, 20] });
+                map.fitBounds(boundedArea, { padding: [24, 24] });
+                map.setMaxBounds(boundedArea);
                 map.setMinZoom(map.getZoom());
 
                 // Fetch and display projects as GeoJSON

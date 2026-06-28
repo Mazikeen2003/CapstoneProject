@@ -40,10 +40,10 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-black">Barangay</label>
-                        <select name="barangay_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
+                        <select id="barangay_id" name="barangay_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
                             <option value="">-- None / Citywide --</option>
                             @foreach ($barangays as $barangay)
-                                <option value="{{ $barangay->barangay_id }}" @selected(old('barangay_id') == $barangay->barangay_id)>
+                                <option value="{{ $barangay->barangay_id }}" data-name="{{ $barangay->barangay_name }}" @selected(old('barangay_id') == $barangay->barangay_id)>
                                     {{ $barangay->barangay_name }}
                                 </option>
                             @endforeach
@@ -111,6 +111,11 @@
         const longitudeInput = document.getElementById('project-longitude');
         const addressDisplay = document.getElementById('project-address');
         const addressInput = document.getElementById('project-address-value');
+        const barangaySelect = document.getElementById('barangay_id');
+        const initialBarangayId = @json(old('barangay_id', ''));
+        const initialLatitude = @json(old('latitude', ''));
+        const initialLongitude = @json(old('longitude', ''));
+        const initialAddress = @json(old('location_description', ''));
 
         fetch('{{ asset('data/cabuyao-map.geojson') }}')
             .then(function(response) {
@@ -120,6 +125,7 @@
             .then(function(geojson) {
                 const boundaryFeature = geojson.features.find(f => f.properties.kind === 'boundary');
                 const defaultFeature = geojson.features.find(f => f.properties.kind === 'default_location');
+                const barangayFeatures = geojson.features.filter(f => f.properties.kind === 'barangay');
                 const cabuyaoBounds = L.geoJSON(boundaryFeature).getBounds();
                 const defaultLocation = L.latLng(
                     defaultFeature.geometry.coordinates[1],
@@ -140,29 +146,77 @@
                 locationMap.setMinZoom(locationMap.getZoom());
 
                 const marker = L.marker(defaultLocation, { draggable: true }).addTo(locationMap);
+                const barangayCoordinates = {};
+                barangayFeatures.forEach(function(feature) {
+                    if (!feature.properties || !feature.properties.name) return;
+                    barangayCoordinates[feature.properties.name] = feature.geometry.coordinates;
+                });
 
-                function setAddress(value) {
+                function setAddress(value, persist = true) {
                     addressDisplay.value = value;
-                    addressInput.value = value;
+                    if (persist) {
+                        addressInput.value = value;
+                    }
                 }
 
                 function updateProjectAddress(latlng) {
-                    setAddress('Finding address...');
+                    setAddress('Finding address...', false);
                     fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latlng.lat}&lon=${latlng.lng}`)
                         .then(r => { if (!r.ok) throw new Error('Address lookup failed'); return r.json(); })
                         .then(data => setAddress(data.display_name || 'Address unavailable for this location'))
                         .catch(() => setAddress('Address unavailable. Location pin has still been saved.'));
                 }
 
-                function setProjectLocation(latlng) {
+                function setProjectLocation(latlng, label = null) {
                     if (!cabuyaoBounds.contains(latlng)) return;
                     marker.setLatLng(latlng);
                     latitudeInput.value = latlng.lat.toFixed(6);
                     longitudeInput.value = latlng.lng.toFixed(6);
-                    updateProjectAddress(latlng);
+
+                    if (label) {
+                        setAddress(label);
+                    } else {
+                        updateProjectAddress(latlng);
+                    }
                 }
 
-                setProjectLocation(defaultLocation);
+                function applyBarangaySelection(barangayId) {
+                    const selectedOption = barangaySelect.options[barangaySelect.selectedIndex];
+                    const selectedName = selectedOption?.dataset.name || selectedOption?.text || '';
+
+                    if (!barangayId) {
+                        setProjectLocation(defaultLocation);
+                        if (initialAddress) {
+                            setAddress(initialAddress);
+                        } else {
+                            addressDisplay.value = 'Use map or choose a barangay';
+                        }
+                        return;
+                    }
+
+                    const coordinates = barangayCoordinates[selectedName];
+                    if (coordinates && coordinates.length >= 2) {
+                        const latlng = L.latLng(coordinates[1], coordinates[0]);
+                        locationMap.setView(latlng, 14);
+                        setProjectLocation(latlng, `${selectedName}, Cabuyao City`);
+                    } else {
+                        setAddress(selectedName || 'Selected barangay');
+                    }
+                }
+
+                barangaySelect?.addEventListener('change', function() {
+                    applyBarangaySelection(this.value);
+                });
+
+                if (initialLatitude && initialLongitude) {
+                    setProjectLocation(L.latLng(parseFloat(initialLatitude), parseFloat(initialLongitude)), initialAddress || null);
+                } else if (initialBarangayId) {
+                    applyBarangaySelection(initialBarangayId);
+                } else {
+                    setProjectLocation(defaultLocation);
+                    setAddress(initialAddress || 'Use map or choose a barangay');
+                }
+
                 locationMap.on('click', e => setProjectLocation(e.latlng));
                 marker.on('dragend', e => setProjectLocation(e.target.getLatLng()));
                 setTimeout(() => locationMap.invalidateSize(), 100);

@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Ensure a sane default for session driver in local environment
+        // This forces file sessions when environment variables are not picked up.
+        if (config('session.driver') !== 'file') {
+            config(['session.driver' => env('SESSION_DRIVER', 'file')]);
+        }
     }
 }

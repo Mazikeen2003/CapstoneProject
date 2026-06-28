@@ -1,9 +1,9 @@
 @extends('layouts.public')
 
 @section('content')
-<div class="space-y-6">
+<div class="bg-white rounded-lg p-6 border border-gray-200 text-black space-y-6">
     <div>
-        <h1 class="text-3xl font-bold" style="color: black;">Public Analytics</h1>
+        <h1 class="text-3xl font-bold">Public Analytics</h1>
         <p class="text-sm text-gray-500 mt-1">Project metrics will appear here after records are added.</p>
     </div>
 
@@ -15,7 +15,7 @@
     </div>
 
     <div class="bg-white rounded-lg p-6 border border-gray-200">
-        <h3 class="text-lg font-bold" style="color: black;">Recent Projects</h3>
+        <h3 class="text-lg font-bold">Recent Projects</h3>
         <p class="text-sm text-gray-500 mt-4">No projects have been added yet.</p>
     </div>
 </div>
