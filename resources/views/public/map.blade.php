@@ -248,7 +248,7 @@
                     barangayMarkers.addLayer(marker);
                 });
 
-                fetch('{{ url('/api/projects/geojson') }}')
+                fetch('{{ url('/api/projects/geojson') }}?public=1')
                     .then(function(response) {
                         if (!response.ok) {
                             throw new Error('Unable to load projects from database');

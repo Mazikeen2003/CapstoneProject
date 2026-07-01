@@ -1,6 +1,8 @@
 @php
     $authUser = Auth::user();
-    $role = $authUser ? $authUser->role_slug : 'public';
+    // Force public sidebar when viewing public routes so public pages remain public
+    $isPublicRoute = request()->routeIs('public.*') || request()->is('public') || request()->is('public/*') || request()->is('ProjectTracker/public/*');
+    $role = $isPublicRoute ? 'public' : ($authUser ? $authUser->role_slug : 'public');
     $userName = $authUser ? $authUser->username : 'Guest';
     $userEmail = $authUser ? $authUser->user_email : '';
 @endphp

@@ -68,9 +68,18 @@ class CacheService
     /**
      * Get GeoJSON data with caching.
      */
-    public static function getGeoJsonData($user = null)
+    public static function getGeoJsonData($user = null, $forcePublic = false)
     {
         $user = $user ?? auth()->user();
+
+        if ($forcePublic) {
+            $cacheKey = 'geojson_projects_all';
+
+            return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($user) {
+                return self::buildGeoJsonData($user, true);
+            });
+        }
+
         $role = $user?->role_slug ?? 'public';
 
         $cacheKey = match ($role) {
@@ -87,9 +96,11 @@ class CacheService
         return self::buildGeoJsonData($user);
     }
 
-    protected static function buildGeoJsonData($user = null)
+    protected static function buildGeoJsonData($user = null, $ignoreRoleScope = false)
     {
-        $projects = Project::with('barangay')
+        $query = $ignoreRoleScope ? Project::withoutRoleScope() : Project::query();
+
+        $projects = $query->with('barangay')
             ->whereNotNull('latitude')
             ->whereNotNull('longitude')
             ->get();

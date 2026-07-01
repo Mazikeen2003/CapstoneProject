@@ -125,8 +125,9 @@
             selectedProjectIndex = null;
             renderProjectList(projectFeatures);
             if (map && boundedArea) {
-                map.flyToBounds(boundedArea, {
+                map.fitBounds(boundedArea, {
                     padding: [24, 24],
+                    animate: true,
                     duration: 0.7,
                     easeLinearity: 0.3
                 });
