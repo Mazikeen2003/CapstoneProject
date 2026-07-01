@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers\CityOfficial;
 
-use App\Http\Controllers\Controller;
+use App\Models\Project;
 
-class MapController extends Controller
+class MapController
 {
     public function index()
     {
-        return view('city-official.map.index');
+        // City sees all projects (no role scope filter)
+        $projects = Project::withoutRoleScope()
+            ->withBasicRelations()
+            ->latest('created_at')
+            ->get();
+
+        return view('city-official.map.index', compact('projects'));
     }
 }

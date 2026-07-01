@@ -1,4 +1,4 @@
-@extends('layouts.city-official')
+@extends('layouts.city')
 
 @section('content')
 <div class="space-y-6">
