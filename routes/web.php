@@ -79,7 +79,6 @@ Route::get('/ProjectTracker/public/analytics', [PublicAnalyticsController::class
 Route::prefix('public')->name('public.')->group(function () {
     Route::get('/map',       [PublicMapController::class,       'index'])->name('map');
     Route::get('/analytics', [PublicAnalyticsController::class, 'index'])->name('analytics');
-    Route::get('/map', [\App\Http\Controllers\Public\MapController::class, 'index'])->name('public.map');
 });
 
 /*

@@ -163,40 +163,8 @@
                             return project.properties.barangay_id === barangayId;
                         });
 
-                        if (!filteredProjects.length) {
-                            emptyState.innerHTML = 'No barangay projects are available.';
-                            return;
-                        }
-
-                        projectList.innerHTML = filteredProjects.map(function(project, index) {
-                            return `
-                                <div class="barangay-project-card cursor-pointer p-4 hover:bg-slate-50 border-b border-gray-100" data-index="${index}">
-                                    <div class="flex items-center justify-between gap-4">
-                                        <div>
-                                            <h3 class="font-semibold text-black">${project.properties.name}</h3>
-                                            <p class="mt-1 text-xs text-gray-600">${project.properties.barangay || 'N/A'}</p>
-                                        </div>
-                                        <div class="text-xs text-slate-500">${project.properties.status || 'Unknown'}</div>
-                                    </div>
-                                    <div class="mt-3 text-xs text-slate-600">
-                                        <div>Budget: ${formatCurrency(project.properties.budget)}</div>
-                                        <div class="mt-1">${project.properties.description ? project.properties.description.slice(0, 80) + '...' : 'No description available.'}</div>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('');
-
-                        emptyState.remove();
-
-                        document.querySelectorAll('.barangay-project-card').forEach(function(card) {
-                            card.addEventListener('click', function() {
-                                const index = parseInt(this.getAttribute('data-index'), 10);
-                                const project = filteredProjects[index];
-                                const coords = project.geometry.coordinates;
-                                map.setView([coords[1], coords[0]], 14);
-                                selectProject(project, index);
-                            });
-                        });
+                        projectFeatures.length = 0;
+                        Object.keys(duplicateCount).forEach(key => delete duplicateCount[key]);
 
                         filteredProjects.forEach(function(project, index) {
                             const coords = project.geometry && project.geometry.coordinates;
@@ -204,66 +172,17 @@
                                 return;
                             }
 
-                            const key = `${coords[1].toFixed(6)}_${coords[0].toFixed(6)}`;
-                            const occurrence = duplicateCount[key] || 0;
-                            duplicateCount[key] = occurrence + 1;
-                            const [markerLat, markerLng] = occurrence === 0 ? [coords[1], coords[0]] : getOffsetLatLng(coords[1], coords[0], occurrence);
-
-                            const marker = L.circleMarker([markerLat, markerLng], {
-                                radius: 12,
-                                fillColor: '#2563eb',
-                                color: '#ffffff',
-                                weight: 2,
-                                opacity: 1,
-                                fillOpacity: 0.9
-                            });
-
-                            marker.bindPopup(`
-                                <div class="p-2 text-sm">
-                                    <h4 class="font-bold text-black">${project.properties.name}</h4>
-                                    <p class="text-xs text-gray-600 mt-1">Status: ${project.properties.status || 'Unknown'}</p>
-                                </div>
-                            `);
-
-                            marker.on('click', function() {
-                                selectProject(project, index);
-                            });
-
-                            projectMarkers.addLayer(marker);
-                        });
-
-                        projectMarkers.addTo(map);
-                    })
-                    .catch(function(error) {
-                        console.error(error);
-                        emptyState.innerHTML = '<div class="p-6 text-sm text-gray-500">Unable to load projects.</div>';
-                    });
-
-                map.fitBounds(cabuyaoBounds, { padding: [20, 20] });
-                map.setMinZoom(map.getZoom());
-                setTimeout(() => map.invalidateSize(), 100);
-            })
-            .catch(console.error);
-    });
-</script>
-@endsection
-
-                        }
-
-                        const filteredProjects = projectData.features.filter(function(project) {
-                            return project.properties.barangay_id === {{ Auth::user()?->barangay_id ?? 'null' }};
-                        });
-
-                        filteredProjects.forEach(function(project, index) {
-                            const coords = project.geometry && project.geometry.coordinates;
-                            if (!coords || coords.length < 2) {
-                                return;
+                            // Ensure coords[1] and coords[0] are numbers
+                            const lat = Number(coords[1]);
+                            const lng = Number(coords[0]);
+                            if (isNaN(lat) || isNaN(lng)) {
+                                return; // skip invalid coordinates
                             }
 
-                            const key = `${coords[1].toFixed(6)}_${coords[0].toFixed(6)}`;
+                            const key = `${lat.toFixed(6)}_${lng.toFixed(6)}`;
                             const occurrence = duplicateCount[key] || 0;
                             duplicateCount[key] = occurrence + 1;
-                            const [markerLat, markerLng] = occurrence === 0 ? [coords[1], coords[0]] : getOffsetLatLng(coords[1], coords[0], occurrence);
+                            const [markerLat, markerLng] = occurrence === 0 ? [lat, lng] : getOffsetLatLng(lat, lng, occurrence);
 
                             const marker = L.circleMarker([markerLat, markerLng], {
                                 radius: 12,
@@ -322,16 +241,16 @@
                         } else {
                             projectList.innerHTML = '<div class="p-6 text-sm text-gray-500">No barangay projects are available.</div>';
                         }
+
+                        projectMarkers.addTo(map);
+                        map.fitBounds(cabuyaoBounds, { padding: [20, 20] });
+                        map.setMinZoom(map.getZoom());
+                        setTimeout(() => map.invalidateSize(), 100);
                     })
                     .catch(function(error) {
                         console.error(error);
                         emptyState.innerHTML = '<div class="p-6 text-sm text-gray-500">Unable to load projects.</div>';
                     });
-
-                projectMarkers.addTo(map);
-                map.fitBounds(cabuyaoBounds, { padding: [20, 20] });
-                map.setMinZoom(map.getZoom());
-                setTimeout(() => map.invalidateSize(), 100);
             })
             .catch(console.error);
     });
