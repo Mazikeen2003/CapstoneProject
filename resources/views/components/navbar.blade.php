@@ -1,6 +1,9 @@
 @php
     $authUser = Auth::user();
     $userName = $authUser ? $authUser->username : 'Guest';
+    // Treat public routes as public so navbar title/subtitle remain appropriate
+    $isPublicRoute = request()->routeIs('public.*') || request()->is('public') || request()->is('public/*') || request()->is('ProjectTracker/public/*');
+    $currentRole = $isPublicRoute ? 'public' : ($authUser?->role_slug ?? 'public');
 @endphp
 
 <header style="background-color: #F7F9FB; border-color: #E0E7F1;" class="border-b overflow-hidden">
@@ -13,14 +16,14 @@
         </button>
 
         @php
-            $panelTitle = match(Auth::user()?->role_slug ?? 'public') {
+            $panelTitle = match($currentRole) {
                 'admin' => 'Admin Overview',
                 'department' => 'Department Dashboard',
                 'city' => 'City Official Dashboard',
                 'barangay' => 'Barangay Dashboard',
                 default => 'Public Portal',
             };
-            $panelSubtitle = match(Auth::user()?->role_slug ?? 'public') {
+            $panelSubtitle = match($currentRole) {
                 'admin' => 'Manage Access and monitor system Activity',
                 'department' => 'Workspace for Cabuyao City Government',
                 'city' => 'Citywide project oversight and analytics',
