@@ -163,40 +163,8 @@
                             return project.properties.barangay_id === barangayId;
                         });
 
-                        if (!filteredProjects.length) {
-                            emptyState.innerHTML = 'No barangay projects are available.';
-                            return;
-                        }
-
-                        projectList.innerHTML = filteredProjects.map(function(project, index) {
-                            return `
-                                <div class="barangay-project-card cursor-pointer p-4 hover:bg-slate-50 border-b border-gray-100" data-index="${index}">
-                                    <div class="flex items-center justify-between gap-4">
-                                        <div>
-                                            <h3 class="font-semibold text-black">${project.properties.name}</h3>
-                                            <p class="mt-1 text-xs text-gray-600">${project.properties.barangay || 'N/A'}</p>
-                                        </div>
-                                        <div class="text-xs text-slate-500">${project.properties.status || 'Unknown'}</div>
-                                    </div>
-                                    <div class="mt-3 text-xs text-slate-600">
-                                        <div>Budget: ${formatCurrency(project.properties.budget)}</div>
-                                        <div class="mt-1">${project.properties.description ? project.properties.description.slice(0, 80) + '...' : 'No description available.'}</div>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('');
-
-                        emptyState.remove();
-
-                        document.querySelectorAll('.barangay-project-card').forEach(function(card) {
-                            card.addEventListener('click', function() {
-                                const index = parseInt(this.getAttribute('data-index'), 10);
-                                const project = filteredProjects[index];
-                                const coords = project.geometry.coordinates;
-                                map.setView([coords[1], coords[0]], 14);
-                                selectProject(project, index);
-                            });
-                        });
+                        projectFeatures.length = 0;
+                        Object.keys(duplicateCount).forEach(key => delete duplicateCount[key]);
 
                         filteredProjects.forEach(function(project, index) {
                             const coords = project.geometry && project.geometry.coordinates;
