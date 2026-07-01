@@ -172,17 +172,10 @@
                                 return;
                             }
 
-                            // Ensure coords[1] and coords[0] are numbers
-                            const lat = Number(coords[1]);
-                            const lng = Number(coords[0]);
-                            if (isNaN(lat) || isNaN(lng)) {
-                                return; // skip invalid coordinates
-                            }
-
-                            const key = `${lat.toFixed(6)}_${lng.toFixed(6)}`;
+                            const key = `${coords[1].toFixed(6)}_${coords[0].toFixed(6)}`;
                             const occurrence = duplicateCount[key] || 0;
                             duplicateCount[key] = occurrence + 1;
-                            const [markerLat, markerLng] = occurrence === 0 ? [lat, lng] : getOffsetLatLng(lat, lng, occurrence);
+                            const [markerLat, markerLng] = occurrence === 0 ? [coords[1], coords[0]] : getOffsetLatLng(coords[1], coords[0], occurrence);
 
                             const marker = L.circleMarker([markerLat, markerLng], {
                                 radius: 12,
@@ -205,52 +198,18 @@
                             });
 
                             projectMarkers.addLayer(marker);
-                            projectFeatures.push({ feature: project, marker: marker, index: index });
                         });
 
-                        if (projectFeatures.length) {
-                            emptyState.remove();
-                            projectList.innerHTML = projectFeatures.map(function(item) {
-                                const props = item.feature.properties;
-                                return `
-                                    <div class="barangay-project-card cursor-pointer p-4 hover:bg-slate-50 border-b border-gray-100" data-index="${item.index}">
-                                        <div class="flex items-center justify-between gap-4">
-                                            <div>
-                                                <h3 class="font-semibold text-black">${props.name}</h3>
-                                                <p class="mt-1 text-xs text-gray-600">${props.barangay || 'N/A'}</p>
-                                            </div>
-                                            <div class="text-xs text-slate-500">${props.status || 'Unknown'}</div>
-                                        </div>
-                                        <div class="mt-3 text-xs text-slate-600">
-                                            <div>Budget: ${formatCurrency(props.budget)}</div>
-                                            <div class="mt-1">${props.description ? props.description.slice(0, 80) + '...' : 'No description available.'}</div>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('');
-
-                            document.querySelectorAll('.barangay-project-card').forEach(function(card) {
-                                card.addEventListener('click', function() {
-                                    const index = parseInt(this.getAttribute('data-index'), 10);
-                                    const project = projectFeatures[index].feature;
-                                    const coords = project.geometry.coordinates;
-                                    map.setView([coords[1], coords[0]], 14);
-                                    selectProject(project, index);
-                                });
-                            });
-                        } else {
-                            projectList.innerHTML = '<div class="p-6 text-sm text-gray-500">No barangay projects are available.</div>';
-                        }
-
                         projectMarkers.addTo(map);
-                        map.fitBounds(cabuyaoBounds, { padding: [20, 20] });
-                        map.setMinZoom(map.getZoom());
-                        setTimeout(() => map.invalidateSize(), 100);
                     })
                     .catch(function(error) {
                         console.error(error);
                         emptyState.innerHTML = '<div class="p-6 text-sm text-gray-500">Unable to load projects.</div>';
                     });
+
+                map.fitBounds(cabuyaoBounds, { padding: [20, 20] });
+                map.setMinZoom(map.getZoom());
+                setTimeout(() => map.invalidateSize(), 100);
             })
             .catch(console.error);
     });
