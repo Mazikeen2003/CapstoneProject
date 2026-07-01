@@ -3,23 +3,43 @@
     $userName = $authUser ? $authUser->username : 'Guest';
 @endphp
 
-<header style="background-color: #F7F9FB; border-color: #E0E7F1;" class="border-b">
-    <div class="mx-auto flex max-w-7xl items-center justify-between gap-2 sm:gap-4 px-3 sm:px-4 py-3 sm:py-4 sm:px-6 lg:px-8">
+<header style="background-color: #F7F9FB; border-color: #E0E7F1;" class="border-b overflow-hidden">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-2 sm:gap-4 px-3 py-1.5 sm:px-4 sm:py-2 sm:px-6 lg:px-8">
         <!-- Hamburger Menu (Mobile/Tablet) -->
-        <button id="sidebarToggle" class="xl:hidden flex-shrink-0 inline-flex items-center justify-center rounded-md p-2 transition hover:bg-gray-200" style="color: #0F172A;">
+        <button id="sidebarToggle" class="xl:hidden flex-shrink-0 inline-flex items-center justify-center rounded-md p-1.5 sm:p-2 transition hover:bg-gray-200" style="color: #0F172A;">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
         </button>
 
+        @php
+            $panelTitle = match(Auth::user()?->role_slug ?? 'public') {
+                'admin' => 'Admin Overview',
+                'department' => 'Department Dashboard',
+                'city' => 'City Official Dashboard',
+                'barangay' => 'Barangay Dashboard',
+                default => 'Public Portal',
+            };
+            $panelSubtitle = match(Auth::user()?->role_slug ?? 'public') {
+                'admin' => 'Manage Access and monitor system Activity',
+                'department' => 'Workspace for Cabuyao City Government',
+                'city' => 'Citywide project oversight and analytics',
+                'barangay' => 'Local Project Management Monitoring',
+                default => '',
+            };
+        @endphp
+
         <div class="flex flex-1 items-center gap-2 sm:gap-4 min-w-0">
-            <div class="relative w-full max-w-md hidden sm:block">
-                <label for="search" class="sr-only">Search</label>
-                <input id="search" type="search" placeholder="Search system resources..." class="w-full rounded-full border py-2 sm:py-3 pl-4 pr-12 text-sm text-slate-900 shadow-sm focus:border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" style="background-color: #ffffff; border-color: #D1D5DB; color: #0F172A;" />
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="#6B7280">
-                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zm-6 8a6 6 0 1110.89 3.476l4.817 4.817-1.414 1.414-4.817-4.817A6 6 0 012 12z" clip-rule="evenodd" />
-                    </svg>
+            <div class="hidden sm:block w-full max-w-2xl">
+                <div class="px-3 py-1.5 sm:px-4 sm:py-2">
+                    <div class="text-sm sm:text-base lg:text-lg font-semibold text-slate-900 leading-tight">
+                        {{ $panelTitle }}
+                    </div>
+                    @if(!empty($panelSubtitle))
+                        <div class="mt-0.5 text-xs sm:text-sm lg:text-base text-slate-600 leading-tight">
+                            {{ $panelSubtitle }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -81,6 +81,9 @@
                     <option value="On Hold" @selected($status == 'On Hold')>On Hold</option>
                     <option value="Completed" @selected($status == 'Completed')>Completed</option>
                     <option value="Cancelled" @selected($status == 'Cancelled')>Cancelled</option>
+                    <option value="Bidding - Success" @selected($status == 'Bidding - Success')>Bidding - Success</option>
+                    <option value="Bidding - Failed" @selected($status == 'Bidding - Failed')>Bidding - Failed</option>
+                    <option value="Procurement" @selected($status == 'Procurement')>Procurement</option>
                 </select>
             </div>
 

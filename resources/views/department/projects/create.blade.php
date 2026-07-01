@@ -72,6 +72,9 @@
                                 <option value="On Hold" @selected(old('current_status') == 'On Hold')>On Hold</option>
                                 <option value="Completed" @selected(old('current_status') == 'Completed')>Completed</option>
                                 <option value="Cancelled" @selected(old('current_status') == 'Cancelled')>Cancelled</option>
+                                <option value="Bidding - Success" @selected(old('current_status') == 'Bidding - Success')>Bidding - Success</option>
+                                <option value="Bidding - Failed" @selected(old('current_status') == 'Bidding - Failed')>Bidding - Failed</option>
+                                <option value="Procurement" @selected(old('current_status') == 'Procurement')>Procurement</option>
                             </select>
                         </div>
                     </div>
@@ -98,8 +101,8 @@
                 </div>
             </div>
             <div class="mt-3 flex justify-end space-x-3">
-                <a href="{{ route('department.projects.index') }}" class="px-4 py-2 rounded" style="background-color: #c9a84c;">Cancel</a>
-                <button type="submit" class="px-4 py-2 rounded" style="background-color: #c9a84c; color: #0f1e3d;">Create Project</button>
+                <a href="{{ route('department.projects.index') }}" class="px-4 py-2 rounded" style="background-color: #c1d1d7;">Cancel</a>
+                <button type="submit" class="px-4 py-2 rounded" style="background-color: #162347; color: #f2f3f7;">Create Project</button>
             </div>
         </form>
     </div>

@@ -13,8 +13,8 @@ class ProjectController
      */
     public function geojson()
     {
-        // Use cache service for GeoJSON (cached for 1 hour)
-        $data = CacheService::getGeoJsonData();
+        // Use cache service for GeoJSON (cached for admin/city/public only)
+        $data = CacheService::getGeoJsonData(auth()->user());
 
         return response()->json($data);
     }

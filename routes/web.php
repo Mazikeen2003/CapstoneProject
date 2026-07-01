@@ -37,14 +37,16 @@ RateLimiter::for('login', function (Request $request) {
 
 /*
 |--------------------------------------------------------------------------
-| Root redirect
+| Root route
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    return Auth::check()
-        ? redirect()->route('dashboard')
-        : redirect()->route('login');
+    return view('landing');
 });
+
+Route::get('/landing', function () {
+    return view('landing');
+})->name('landing');
 
 /*
 |--------------------------------------------------------------------------

@@ -36,7 +36,28 @@
                                 <td class="py-3 px-4">
                                     <details>
                                         <summary class="cursor-pointer text-blue-600 text-xs">View changes</summary>
-                                        <pre class="text-xs mt-2 bg-gray-50 p-2 rounded overflow-x-auto">{{ json_encode(['old' => $log->old_values, 'new' => $log->new_values], JSON_PRETTY_PRINT) }}</pre>
+                                        <div class="text-xs mt-2 bg-gray-50 p-2 rounded overflow-x-auto">
+                                            @if(!empty($log->old_values))
+                                                <div class="mb-2">
+                                                    <div class="font-semibold">Old Values</div>
+                                                    <ul class="list-disc list-inside text-xs text-slate-700">
+                                                        @foreach((array) $log->old_values as $key => $value)
+                                                            <li><span class="font-semibold">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span> {{ is_array($value) ? json_encode($value) : $value }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                            @if(!empty($log->new_values))
+                                                <div>
+                                                    <div class="font-semibold">New Values</div>
+                                                    <ul class="list-disc list-inside text-xs text-slate-700">
+                                                        @foreach((array) $log->new_values as $key => $value)
+                                                            <li><span class="font-semibold">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span> {{ is_array($value) ? json_encode($value) : $value }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                        </div>
                                     </details>
                                 </td>
                             </tr>

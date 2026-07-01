@@ -1,22 +1,24 @@
 @extends('layouts.department')
 
 @section('content')
-<div class="space-y-6">
-    <div>
-        <h1 class="text-3xl font-bold text-black">Department Analytics</h1>
-        <p class="text-sm text-gray-500 mt-1">Project analytics will appear here after records are added.</p>
-    </div>
+<div class="space-y-5">
+    <div class="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-col gap-2">
+            <h1 class="text-2xl font-semibold text-slate-900">Department Analytics</h1>
+            <p class="text-sm text-slate-500">Project analytics will appear here after records are added.</p>
+        </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <x-stat-card title="Total Projects" value="0" iconColor="#3b82f6" />
-        <x-stat-card title="Completed" value="0" iconColor="#10b981" />
-        <x-stat-card title="Ongoing" value="0" iconColor="#f59e0b" />
-        <x-stat-card title="Budget Used" value="₱0" iconColor="#ef4444" />
-    </div>
+            <div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <x-stat-card title="Total Projects" value="{{ $stats['total_projects'] }}" iconColor="#3b82f6" />
+            <x-stat-card title="Completed" value="{{ $stats['completed'] }}" iconColor="#10b981" />
+            <x-stat-card title="Ongoing" value="{{ $stats['ongoing'] }}" iconColor="#f59e0b" />
+            <x-stat-card title="Budget Used" value="₱{{ number_format($stats['budget_used'], 2) }}" iconColor="#ef4444" />
+        </div>
 
-    <div class="bg-white rounded-lg p-6 border border-gray-200">
-        <h3 class="text-lg font-bold text-black">Project Breakdown</h3>
-        <p class="text-sm text-gray-500 mt-4">No analytics data is available yet.</p>
+        <div class="mt-6 rounded-[28px] border border-slate-200 bg-slate-50 p-5">
+            <h3 class="text-lg font-semibold text-slate-900">Project Breakdown</h3>
+            <p class="mt-2 text-sm text-slate-500">No analytics data is available yet.</p>
+        </div>
     </div>
 </div>
 @endsection

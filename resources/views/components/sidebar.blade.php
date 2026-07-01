@@ -11,19 +11,14 @@
 <aside id="sidebar" class="fixed left-0 top-0 h-screen w-80 shrink-0 text-white transform -translate-x-full transition-transform duration-300 overflow-y-auto xl:sticky xl:top-0 xl:self-start xl:translate-x-0 xl:flex xl:flex-col xl:h-screen z-40" style="background-color: #0F172A;">
     <div class="flex h-full flex-col justify-between min-h-screen xl:min-h-0">
         <div class="space-y-8 p-6">
-            <div class="space-y-4">
-                <div>
-                    <div class="text-xs font-semibold uppercase tracking-[0.3em]" style="color: #c9a84c;">Project Tracker System</div>
-                    <div class="mt-2 text-2xl font-semibold tracking-tight text-white">
-                        @if($role === 'admin') System Administration
-                        @elseif($role === 'department') Department Dashboard
-                        @elseif($role === 'city') City Official Dashboard
-                        @elseif($role === 'barangay') Barangay Dashboard
-                        @else Public Portal
-                        @endif
+            <div class="space-y-6 text-center">
+                <div class="flex flex-col items-center justify-center gap-5 py-2">
+                    <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System" class="mx-auto h-20 w-auto object-contain" />
+                    <div>
+                        <div class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-300">Project Tracker System</div>
                     </div>
                 </div>
-                <nav class="space-y-1">
+                <nav class="mt-8 space-y-1">
                     @if($role === 'admin')
                         <a href="{{ url('/admin/dashboard') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('admin/dashboard') ? 'bg-slate-800 text-white' : 'text-slate-300' }}">
                             <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">D</span>

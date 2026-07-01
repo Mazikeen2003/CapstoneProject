@@ -61,23 +61,40 @@ class CacheService
 
     public static function invalidateGeoJsonCache()
     {
+        Cache::forget('geojson_projects_all');
         Cache::forget('geojson_projects');
     }
 
     /**
      * Get GeoJSON data with caching.
      */
-    public static function getGeoJsonData()
+    public static function getGeoJsonData($user = null)
     {
-        $cacheKey = 'geojson_projects';
+        $user = $user ?? auth()->user();
+        $role = $user?->role_slug ?? 'public';
 
-        return Cache::remember($cacheKey, self::CACHE_TTL, function () {
-            $projects = Project::with('barangay')
-                ->whereNotNull('latitude')
-                ->whereNotNull('longitude')
-                ->get();
+        $cacheKey = match ($role) {
+            'admin', 'city', 'public' => 'geojson_projects_all',
+            default => null,
+        };
 
-            $features = $projects->map(function ($project) {
+        if ($cacheKey) {
+            return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($user) {
+                return self::buildGeoJsonData($user);
+            });
+        }
+
+        return self::buildGeoJsonData($user);
+    }
+
+    protected static function buildGeoJsonData($user = null)
+    {
+        $projects = Project::with('barangay')
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->get();
+
+        $features = $projects->map(function ($project) {
                 return [
                     'type'       => 'Feature',
                     'geometry'   => [
@@ -92,16 +109,16 @@ class CacheService
                         'barangay'    => $project->barangay?->barangay_name,
                         'budget'      => $project->approved_budget,
                         'description' => $project->location_description,
+                        'barangay_id' => $project->barangay_id,
                         'image'       => $project->project_image ? Storage::url($project->project_image) : null,
                         'url'         => route('department.projects.show', $project->project_id),
                     ],
                 ];
             });
 
-            return [
-                'type'     => 'FeatureCollection',
-                'features' => $features,
-            ];
-        });
+        return [
+            'type'     => 'FeatureCollection',
+            'features' => $features,
+        ];
     }
 }

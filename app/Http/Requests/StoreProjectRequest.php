@@ -27,7 +27,7 @@ class StoreProjectRequest extends FormRequest
             'start_date'           => ['nullable', 'date'],
             'target_end_date'      => ['nullable', 'date', 'after_or_equal:start_date'],
             'actual_end_date'      => ['nullable', 'date'],
-            'current_status'       => ['required', 'string', 'in:Planning,On Going,Completed,On Hold,Cancelled'],
+            'current_status'       => ['required', 'string', 'in:Planning,On Going,Completed,On Hold,Cancelled,Bidding - Success,Bidding - Failed,Procurement'],
             'remarks'              => ['nullable', 'string', 'max:2000'],
         ];
     }
@@ -40,7 +40,7 @@ class StoreProjectRequest extends FormRequest
             'project_name.required'    => 'A project name is required.',
             'project_type.required'    => 'A project type is required.',
             'current_status.required'  => 'A project status is required.',
-            'current_status.in'        => 'Status must be one of: Planning, On Going, Completed, On Hold, Cancelled.',
+            'current_status.in'        => 'Status must be one of: Planning, On Going, Completed, On Hold, Cancelled, Bidding - Success, Bidding - Failed, Procurement.',
             'target_end_date.after_or_equal' => 'Target end date must be on or after the start date.',
             'latitude.between'         => 'Latitude must be between -90 and 90.',
             'longitude.between'        => 'Longitude must be between -180 and 180.',
