@@ -45,7 +45,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="password_hash" class="block text-sm font-semibold text-gray-700 mb-2">Password *</label>
-                    <input type="password" id="password_hash" name="password_hash" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('password_hash') border-red-500 @enderror" placeholder="Minimum 8 characters" required>
+                    <div class="relative">
+                        <input type="password" id="password_hash" name="password_hash" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('password_hash') border-red-500 @enderror" placeholder="Minimum 8 characters" required>
+                        <button type="button" id="togglePasswordCreate" class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700">
+                            Show
+                        </button>
+                    </div>
                     @error('password_hash')
                         <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
                     @enderror
@@ -53,7 +58,12 @@
 
                 <div>
                     <label for="password_hash_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">Confirm Password *</label>
-                    <input type="password" id="password_hash_confirmation" name="password_hash_confirmation" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Re-enter password" required>
+                    <div class="relative">
+                        <input type="password" id="password_hash_confirmation" name="password_hash_confirmation" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Re-enter password" required>
+                        <button type="button" id="togglePasswordConfirmationCreate" class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700">
+                            Show
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -98,4 +108,22 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function bindToggle(buttonId, inputId) {
+            const button = document.getElementById(buttonId);
+            const input = document.getElementById(inputId);
+            if (!button || !input) return;
+            button.addEventListener('click', function() {
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                button.textContent = isPassword ? 'Hide' : 'Show';
+            });
+        }
+
+        bindToggle('togglePasswordCreate', 'password_hash');
+        bindToggle('togglePasswordConfirmationCreate', 'password_hash_confirmation');
+    });
+</script>
 @endsection

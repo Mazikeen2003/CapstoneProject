@@ -22,7 +22,14 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = $this->route('id');
+        // Determine the current user id from route parameters (supports resource routes and manual id param)
+        $routeUser = $this->route('user') ?? $this->route('id');
+        $userId = null;
+        if ($routeUser instanceof \App\Models\User) {
+            $userId = $routeUser->user_id;
+        } elseif (is_numeric($routeUser)) {
+            $userId = (int) $routeUser;
+        }
 
         return [
             'username' => ['required', 'string', 'max:100', Rule::unique('users', 'username')->ignore($userId, 'user_id')],

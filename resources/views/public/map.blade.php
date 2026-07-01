@@ -1,33 +1,61 @@
-@extends('layouts.department')
+@extends('layouts.public-map')
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-<div class="flex gap-0 h-[calc(100vh-80px)] overflow-hidden rounded-lg border border-gray-300 shadow-sm">
-    <div class="flex-1 relative" id="map" style="background-color: #f0f0f0;"></div>
+<div class="flex flex-col md:flex-row gap-0 h-[calc(100vh-140px)] -mx-6 -mb-6 rounded-lg border border-gray-300 shadow-sm">
+    <div class="flex-1 relative order-2 md:order-1 border-r-0 md:border-r md:border-gray-300" id="map" style="background-color: #f0f0f0; min-height: 50vh;"></div>
 
-    <div class="w-[360px] bg-white border-l border-gray-200 overflow-y-auto shadow-sm">
-        <div class="p-6 border-b border-gray-200 sticky top-0 bg-white">
-            <h2 class="text-lg font-bold text-black">Department Projects</h2>
-            <p class="text-sm text-gray-500 mt-1">Cabuyao City Projects</p>
-            <div id="departmentSidebarAction" class="mt-4"></div>
+    <button id="toggleSidebar" class="fixed bottom-6 right-6 md:hidden z-50 bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600 transition" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </button>
+
+    <div id="projectSidebar" class="w-full md:w-[360px] bg-white border-t md:border-t-0 md:border-l border-gray-200 overflow-y-auto shadow-sm order-3 md:order-2 max-h-96 md:max-h-full hidden md:block">
+        <div class="p-4 md:p-6 border-b border-gray-200 sticky top-0 bg-white">
+            <h2 class="text-base md:text-lg font-bold text-black">Projects Map</h2>
+            <p class="text-xs md:text-sm text-gray-500 mt-1">Cabuyao City Projects</p>
+            <div id="projectSidebarAction" class="mt-4"></div>
         </div>
-        <div id="departmentProjectList" class="divide-y divide-gray-200"></div>
+        <div id="projectList" class="divide-y divide-gray-200"></div>
     </div>
 </div>
 
 <script>
+    // Mobile sidebar toggle
     document.addEventListener('DOMContentLoaded', function() {
-        const projectList = document.getElementById('departmentProjectList');
-        const selectedClass = 'bg-slate-50 border border-slate-200';
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('projectSidebar');
+        const projectList = document.getElementById('projectList');
+        const isMobile = () => window.innerWidth < 768;
         let selectedProjectIndex = null;
         let map = null;
         let boundedArea = null;
         let projectFeatures = [];
 
+        function syncSidebar() {
+            if (isMobile()) {
+                toggleBtn.style.display = 'block';
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('block');
+            } else {
+                toggleBtn.style.display = 'none';
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('block');
+            }
+        }
+
         function formatCurrency(value) {
             return `₱${Number(value || 0).toLocaleString()}`;
+        }
+
+        function openSidebar() {
+            if (isMobile()) {
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('block');
+            }
         }
 
         function renderProjectCard(project, index, isSingle = false) {
@@ -38,7 +66,7 @@
 
             if (isSingle) {
                 return `
-                    <div class="department-project-card cursor-pointer overflow-hidden rounded-[24px] border border-slate-200 bg-white text-slate-800 shadow-sm" data-index="${index}">
+                    <div class="project-card cursor-pointer overflow-hidden rounded-[24px] border border-slate-200 bg-white text-slate-800 shadow-sm" data-index="${index}">
                         <div class="p-5 sm:p-6">
                             <div class="mb-4 flex items-start justify-between gap-3">
                                 <div>
@@ -62,7 +90,7 @@
             }
 
             return `
-                <div class="department-project-card cursor-pointer overflow-hidden rounded-3xl bg-white shadow-sm transition hover:shadow-md ${selectedProjectIndex === index ? selectedClass : 'border border-transparent'}" data-index="${index}">
+                <div class="project-card cursor-pointer overflow-hidden rounded-3xl bg-white shadow-sm transition hover:shadow-md ${selectedProjectIndex === index ? 'border border-slate-200 bg-slate-50' : 'border border-transparent'}" data-index="${index}">
                     <div class="overflow-hidden p-2">${imageHtml}</div>
                     <div class="p-4">
                         <h3 class="text-base font-semibold text-slate-900">${props.name}</h3>
@@ -78,12 +106,12 @@
         }
 
         function updateSidebarAction(isSingle) {
-            const actionContainer = document.getElementById('departmentSidebarAction');
+            const actionContainer = document.getElementById('projectSidebarAction');
             actionContainer.innerHTML = '';
         }
 
         function clearSelection() {
-            document.querySelectorAll('.department-project-card').forEach(function(card) {
+            document.querySelectorAll('.project-card').forEach(function(card) {
                 card.classList.remove('border', 'border-slate-200', 'bg-slate-50');
             });
         }
@@ -91,7 +119,7 @@
         function highlightProject(index) {
             selectedProjectIndex = index;
             clearSelection();
-            const card = document.querySelector(`.department-project-card[data-index="${index}"]`);
+            const card = document.querySelector(`.project-card[data-index="${index}"]`);
             if (card) {
                 card.classList.add('border', 'border-slate-200', 'bg-slate-50');
                 card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -101,15 +129,17 @@
         function renderProjectList(projects) {
             const isSingle = projects.length === 1;
             updateSidebarAction(isSingle);
-            projectList.innerHTML = projects.map(function(project, index) {
+            projectList.innerHTML = projects.map(function(project) {
                 return renderProjectCard(project, project.originalIndex, isSingle);
             }).join('');
 
-            const cards = document.querySelectorAll('.department-project-card');
-            cards.forEach(function(card) {
+            document.querySelectorAll('.project-card').forEach(function(card) {
                 card.addEventListener('click', function() {
                     const index = parseInt(this.getAttribute('data-index'), 10);
-                    selectProject(projectFeatures[index], index);
+                    const project = projectFeatures[index];
+                    const coords = project.geometry.coordinates;
+                    map.setView([coords[1], coords[0]], 14);
+                    selectProject(project, index);
                 });
             });
 
@@ -134,6 +164,7 @@
         }
 
         function selectProject(project, index) {
+            openSidebar();
             highlightProject(index);
             renderProjectList([project]);
             if (map && project && project.geometry && project.geometry.coordinates) {
@@ -145,11 +176,32 @@
             }
         }
 
+        toggleBtn.addEventListener('click', function() {
+            const isVisible = !sidebar.classList.contains('hidden');
+            sidebar.classList.toggle('hidden', isVisible);
+            sidebar.classList.toggle('block', !isVisible);
+            toggleBtn.innerHTML = isVisible
+                ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>'
+                : '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>';
+        });
+
+        window.addEventListener('resize', syncSidebar);
+        syncSidebar();
+
         fetch('{{ asset('data/cabuyao-map.geojson') }}')
-            .then(response => response.json())
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Unable to load Cabuyao GeoJSON');
+                }
+                return response.json();
+            })
             .then(function(geojson) {
-                const boundaryFeature = geojson.features.find(feature => feature.properties.kind === 'boundary');
-                const barangays = geojson.features.filter(feature => feature.properties.kind === 'barangay');
+                const boundaryFeature = geojson.features.find(function(feature) {
+                    return feature.properties.kind === 'boundary';
+                });
+                const barangays = geojson.features.filter(function(feature) {
+                    return feature.properties.kind === 'barangay';
+                });
                 const cabuyaoBounds = L.geoJSON(boundaryFeature).getBounds();
                 boundedArea = cabuyaoBounds.pad(0.02);
                 map = L.map('map', {
@@ -163,25 +215,46 @@
                     minZoom: 11
                 }).addTo(map);
 
+                const barangayMarkers = L.featureGroup();
+                projectMarkers = L.featureGroup();
+                projectFeatures = [];
+                window.projectFeatures = projectFeatures;
+
                 barangays.forEach(function(barangay) {
                     const lng = barangay.geometry.coordinates[0];
                     const lat = barangay.geometry.coordinates[1];
-                    L.circleMarker([lat, lng], {
+                    const marker = L.circleMarker([lat, lng], {
                         radius: 8,
                         fillColor: '#e5e7eb',
                         color: '#6b7280',
                         weight: 2,
                         opacity: 0.7,
                         fillOpacity: 0.6
-                    }).bindPopup(`<div class="text-sm"><h4 class="font-bold text-black">${barangay.properties.name}</h4></div>`).addTo(map);
+                    });
+
+                    marker.bindPopup(`
+                        <div class="text-sm">
+                            <h4 class="font-bold text-black">${barangay.properties.name}</h4>
+                        </div>
+                    `);
+
+                    marker.on('mouseover', function() {
+                        this.setStyle({ fillColor: '#3b82f6', weight: 3, fillOpacity: 0.8 });
+                    });
+                    marker.on('mouseout', function() {
+                        this.setStyle({ fillColor: '#e5e7eb', weight: 2, fillOpacity: 0.6 });
+                    });
+
+                    barangayMarkers.addLayer(marker);
                 });
 
-                const projectMarkers = L.featureGroup();
-                projectFeatures = [];
-                window.projectFeatures = projectFeatures;
-
                 fetch('{{ url('/api/projects/geojson') }}')
-                    .then(response => response.json())
+                    .then(function(response) {
+                        if (!response.ok) {
+                            throw new Error('Unable to load projects from database');
+                        }
+                        return response.json();
+                    })
                     .then(function(projectData) {
                         if (!projectData || !projectData.features) {
                             throw new Error('Invalid project data');
@@ -194,15 +267,22 @@
                             }
 
                             const marker = L.circleMarker([coords[1], coords[0]], {
-                                radius: 12,
+                                radius: 14,
                                 fillColor: '#2563eb',
                                 color: '#ffffff',
-                                weight: 2,
+                                weight: 3,
                                 opacity: 1,
                                 fillOpacity: 0.9
                             });
 
-                            marker.bindPopup(`<div class="text-sm"><h4 class="font-bold text-black">${project.properties.name}</h4><p class="text-xs text-gray-600">${project.properties.status || 'Unknown'}</p></div>`);
+                            marker.bindPopup(`
+                                <div class="p-2 text-sm">
+                                    <h4 class="font-bold text-black">${project.properties.name}</h4>
+                                    <p class="text-xs text-gray-600 mt-1">Barangay: ${project.properties.barangay || 'N/A'}</p>
+                                    <p class="text-xs text-gray-600">Status: ${project.properties.status || 'Unknown'}</p>
+                                </div>
+                            `);
+
                             marker.on('click', function(e) {
                                 L.DomEvent.stopPropagation(e);
                                 map.flyTo([coords[1], coords[0]], 16, {
@@ -216,13 +296,13 @@
                             projectFeatures.push(Object.assign({ originalIndex: index }, project));
                         });
 
-                        function restoreListOnMapClick() {
+                        map.on('click', function() {
                             if (selectedProjectIndex !== null) {
                                 showAllProjects();
                             }
-                        }
+                        });
 
-                        map.on('click', restoreListOnMapClick);
+                        barangayMarkers.addTo(map);
                         projectMarkers.addTo(map);
                         renderProjectList(projectFeatures);
                     })
@@ -234,9 +314,14 @@
                 map.fitBounds(boundedArea, { padding: [24, 24] });
                 map.setMaxBounds(boundedArea);
                 map.setMinZoom(map.getZoom());
-                setTimeout(() => map.invalidateSize(), 100);
+
+                setTimeout(function() {
+                    map.invalidateSize();
+                }, 100);
             })
-            .catch(console.error);
+            .catch(function(error) {
+                console.error(error);
+            });
     });
 </script>
 @endsection

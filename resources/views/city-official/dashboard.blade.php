@@ -5,11 +5,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
 <div class="space-y-6">
-    <div>
-        <h1 class="text-3xl font-bold text-black">City Official Dashboard</h1>
-        <p style="color: #6B7280;">Citywide project oversight and analytics</p>
-    </div>
-
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="rounded-lg p-6 bg-white" style="border: 1px solid #B2BEB5;">

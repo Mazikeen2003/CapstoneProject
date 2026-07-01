@@ -113,4 +113,31 @@ class User extends Authenticatable
             default => 'public',
         };
     }
+
+    public function hasRole($role): bool
+    {
+        if ($role instanceof Role) {
+            return $this->hasRole($role->role_id);
+        }
+
+        if (is_numeric($role)) {
+            return (int) $this->role_id === (int) $role;
+        }
+
+        $normalizedRole = $this->normalizeRoleValue($role);
+        $expectedRole = match ($normalizedRole) {
+            'admin' => 'admin',
+            'cityofficial', 'city' => 'city',
+            'barangayofficial', 'barangay' => 'barangay',
+            'department' => 'department',
+            default => $normalizedRole,
+        };
+
+        return $this->normalizeRoleValue($this->role_slug) === $expectedRole;
+    }
+
+    protected function normalizeRoleValue($value): string
+    {
+        return strtolower((string) preg_replace('/[^a-z0-9]+/', '', $value));
+    }
 }

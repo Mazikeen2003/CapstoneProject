@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
     protected $primaryKey = 'role_id';
-    protected $table = 'roles';
+     protected $table = 'roles';
 
     public $timestamps = false;
 

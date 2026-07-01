@@ -9,6 +9,7 @@ use App\Models\Barangay;
 use App\Models\BudgetTransaction;
 use App\Models\Project;
 use App\Services\AuditLogService;
+use App\Services\CacheService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -48,6 +49,7 @@ class ProjectController extends Controller
 
         $project = Project::create($data);
 
+        CacheService::invalidateGeoJsonCache();
         AuditLogService::logCreate($project);
 
         if (! empty($data['approved_budget']) && $data['approved_budget'] > 0) {
@@ -112,6 +114,7 @@ class ProjectController extends Controller
 
         $project->update($data);
 
+        CacheService::invalidateGeoJsonCache();
         AuditLogService::logUpdate($project, $original);
 
         foreach (['approved_budget', 'actual_budget'] as $field) {
@@ -147,6 +150,8 @@ class ProjectController extends Controller
         AuditLogService::logDelete($project);
 
         $project->delete();
+
+        CacheService::invalidateGeoJsonCache();
 
         return redirect()
             ->route('department.projects.index')

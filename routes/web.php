@@ -37,14 +37,16 @@ RateLimiter::for('login', function (Request $request) {
 
 /*
 |--------------------------------------------------------------------------
-| Root redirect
+| Root route
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    return Auth::check()
-        ? redirect()->route('dashboard')
-        : redirect()->route('login');
+    return view('landing');
 });
+
+Route::get('/landing', function () {
+    return view('landing');
+})->name('landing');
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +72,10 @@ Route::get('/dashboard', function () {
 | Public routes (no auth required)
 |--------------------------------------------------------------------------
 */
+Route::get('/api/projects/geojson', [\App\Http\Controllers\Api\ProjectController::class, 'geojson'])->name('api.projects.geojson');
+Route::get('/ProjectTracker/public/map', [PublicMapController::class, 'index'])->name('public.map.alt');
+Route::get('/ProjectTracker/public/analytics', [PublicAnalyticsController::class, 'index'])->name('public.analytics.alt');
+
 Route::prefix('public')->name('public.')->group(function () {
     Route::get('/map',       [PublicMapController::class,       'index'])->name('map');
     Route::get('/analytics', [PublicAnalyticsController::class, 'index'])->name('analytics');
@@ -186,7 +192,3 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/api/projects/geojson', [\App\Http\Controllers\Api\ProjectController::class, 'geojson'])->name('api.projects.geojson');
-});

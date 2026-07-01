@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\CityOfficial;
 
+use App\Http\Controllers\Controller;
 use App\Services\ReportService;
 use Barryvdh\DomPDF\Facade\Pdf;
 
