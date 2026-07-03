@@ -19,7 +19,7 @@ class MapController
             ->withLocation()
             ->get();
 
-        return view('public.map.index', compact('projects'));
+        return view('public.map', compact('projects'));
     }
 
     /**

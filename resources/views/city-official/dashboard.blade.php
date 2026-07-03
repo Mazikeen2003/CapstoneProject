@@ -92,7 +92,7 @@
 
                                 return L.circleMarker(latlng, {
                                     radius: 8,
-                                    fillColor: statusColor[feature.properties.status] || '#gray-400',
+                                    fillColor: statusColor[feature.properties.status] || '#9CA3AF',
                                     color: '#000',
                                     weight: 2,
                                     opacity: 0.8,

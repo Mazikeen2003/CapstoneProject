@@ -177,6 +177,16 @@
                     }).bindPopup(`<div class="text-sm"><h4 class="font-bold text-black">${barangay.properties.name}</h4></div>`).addTo(map);
                 });
 
+                function getMarkerColor(status) {
+                    switch (status) {
+                        case 'Completed': return '#10b981';
+                        case 'On Going': return '#3b82f6';
+                        case 'On Hold': return '#ef4444';
+                        case 'Planning': return '#fbbf24';
+                        default: return '#6b7280';
+                    }
+                }
+
                 const projectMarkers = L.featureGroup();
                 projectFeatures = [];
                 window.projectFeatures = projectFeatures;
@@ -196,7 +206,7 @@
 
                             const marker = L.circleMarker([coords[1], coords[0]], {
                                 radius: 12,
-                                fillColor: '#2563eb',
+                                fillColor: getMarkerColor(project.properties.status),
                                 color: '#ffffff',
                                 weight: 2,
                                 opacity: 1,

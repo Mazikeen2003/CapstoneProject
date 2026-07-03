@@ -3,11 +3,18 @@
 namespace App\Http\Controllers\CityOfficial;
 
 use App\Http\Controllers\Controller;
+use App\Models\Project;
 
 class MapController extends Controller
 {
     public function index()
     {
-        return view('city-official.map.index');
+        $projects = Project::withoutRoleScope()
+            ->withBasicRelations()
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->get();
+
+        return view('city-official.map.index', compact('projects'));
     }
 }
