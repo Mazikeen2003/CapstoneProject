@@ -5,7 +5,7 @@ namespace App\Http\Controllers\CityOfficial;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 
-class MapController extends Controller
+class MapController
 {
     public function index()
     {

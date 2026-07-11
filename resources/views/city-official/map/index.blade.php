@@ -254,6 +254,9 @@
                 updateSidebarAction(false);
             })
             .catch(console.error);
+
+        const cabuyaoBounds = [[14.2, 121.0], [14.5, 121.1]];
+        map.fitBounds(cabuyaoBounds);
     });
 </script>
 @endsection
