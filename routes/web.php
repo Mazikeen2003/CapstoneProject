@@ -102,8 +102,11 @@ Route::middleware(['auth', 'admin'])
             'destroy' => 'users.destroy',
         ]);
 
+        Route::get('/audit-logs/export', [AdminAuditLogController::class, 'exportPdf'])->name('audit-logs.export');
         Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])->name('audit-logs.index');
         Route::get('/reports',    [AdminReportController::class,   'index'])->name('reports.index');
+        Route::post('/reports/generate', [AdminReportController::class, 'generate'])->name('reports.generate');
+        Route::get('/reports/{report}/download', [AdminReportController::class, 'download'])->name('reports.download');
     });
 
 /*
