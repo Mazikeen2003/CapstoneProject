@@ -80,7 +80,7 @@
 
         <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
             <h2 class="text-xl font-semibold text-slate-900">Peak usage</h2>
-            <p class="mt-2 text-sm text-slate-500">Hourly activity volume from audit logs.</p>
+            <p class="mt-2 text-sm text-slate-500">Realtime hourly activity for the last 24 hours.</p>
             <div class="mt-5 space-y-2 text-sm text-slate-700">
                 @foreach($peakUsage as $hourStat)
                     <div class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">

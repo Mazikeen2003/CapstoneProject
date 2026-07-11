@@ -30,8 +30,16 @@
                             <input type="text" name="project_code" value="{{ old('project_code') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-black">Project Type</label>
-                            <input type="text" name="project_type" value="{{ old('project_type') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
+                            <label class="block text-sm font-medium text-black">Project Type *</label>
+                            <select name="project_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" required>
+                                <option value="">-- Select Project Type --</option>
+                                <option value="Bridges" @selected(old('project_type') == 'Bridges')>Bridges</option>
+                                <option value="Buildings and Facilities" @selected(old('project_type') == 'Buildings and Facilities')>Buildings and Facilities</option>
+                                <option value="Flood Control and Drainage" @selected(old('project_type') == 'Flood Control and Drainage')>Flood Control and Drainage</option>
+                                <option value="Roads" @selected(old('project_type') == 'Roads')>Roads</option>
+                                <option value="Septage and Sewerage Plants" @selected(old('project_type') == 'Septage and Sewerage Plants')>Septage and Sewerage Plants</option>
+                                <option value="Water Provision and Storage" @selected(old('project_type') == 'Water Provision and Storage')>Water Provision and Storage</option>
+                            </select>
                         </div>
                     </div>
                     <div>
@@ -65,17 +73,12 @@
                             <input type="number" step="0.01" name="approved_budget" value="{{ old('approved_budget') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-black">Status</label>
-                            <select name="current_status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
-                                <option value="Planning" @selected(old('current_status') == 'Planning')>Planning</option>
-                                <option value="On Going" @selected(old('current_status') == 'On Going')>On Going</option>
-                                <option value="On Hold" @selected(old('current_status') == 'On Hold')>On Hold</option>
-                                <option value="Completed" @selected(old('current_status') == 'Completed')>Completed</option>
-                                <option value="Cancelled" @selected(old('current_status') == 'Cancelled')>Cancelled</option>
-                                <option value="Bidding - Success" @selected(old('current_status') == 'Bidding - Success')>Bidding - Success</option>
-                                <option value="Bidding - Failed" @selected(old('current_status') == 'Bidding - Failed')>Bidding - Failed</option>
-                                <option value="Procurement" @selected(old('current_status') == 'Procurement')>Procurement</option>
-                            </select>
+                            <label class="block text-sm font-medium text-black">Status *</label>
+                            <input type="hidden" name="current_status" value="Planning">
+                            <div class="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2" style="border: 1px solid #B2BEB5; background-color: #f9fafb; color: black; border-radius: 0.375rem;">
+                                Planning
+                            </div>
+                            <p class="text-xs text-gray-600 mt-1">All new projects start in Planning status. Other statuses can be changed when editing the project.</p>
                         </div>
                     </div>
                     <div>

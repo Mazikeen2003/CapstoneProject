@@ -58,8 +58,27 @@
             }
         }
 
+        function calculateProgress(project) {
+            if (!project.properties.start_date || !project.properties.target_end_date) {
+                return 0;
+            }
+            
+            const startDate = new Date(project.properties.start_date);
+            const endDate = new Date(project.properties.target_end_date);
+            const today = new Date();
+            
+            const totalDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
+            const daysElapsed = (today - startDate) / (1000 * 60 * 60 * 24);
+            
+            return totalDays > 0 ? Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100)) : 0;
+        }
+
         function renderProjectCard(project, index, isSingle = false) {
             const props = project.properties;
+            const progress = calculateProgress(project);
+            const startDate = props.start_date ? new Date(props.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
+            const targetDate = props.target_end_date ? new Date(props.target_end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
+            
             const imageHtml = props.image
                 ? `<img src="${props.image}" alt="${props.name}" class="h-40 w-full rounded-2xl object-cover bg-slate-100">`
                 : '<div class="h-40 w-full rounded-2xl bg-gray-100 flex items-center justify-center text-xs text-gray-500">No image</div>';
@@ -80,6 +99,20 @@
                                 <div class="grid gap-3 text-sm text-slate-600">
                                     <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Barangay</span><span class="text-right font-semibold text-slate-900">${props.barangay || 'Not specified'}</span></div>
                                     <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Budget</span><span class="font-semibold text-slate-900">${formatCurrency(props.budget)}</span></div>
+                                    <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Progress</span><span class="font-semibold text-slate-900">${progress.toFixed(1)}%</span></div>
+                                </div>
+                                <div class="mt-3 pt-3 border-t border-slate-300">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-xs font-semibold text-slate-600">Timeline</span>
+                                        <span class="text-xs font-bold text-slate-700">${progress.toFixed(1)}%</span>
+                                    </div>
+                                    <div class="h-2 bg-gray-300 rounded-full overflow-hidden">
+                                        <div class="h-full transition-all duration-300" style="width: ${progress}%; background-color: #3b82f6;"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                        <span>Start: ${startDate}</span>
+                                        <span>Target: ${targetDate}</span>
+                                    </div>
                                 </div>
                                 <p class="mt-4 text-sm leading-6 text-slate-600">${props.description || 'No description available.'}</p>
                             </div>
@@ -98,6 +131,7 @@
                         <div class="mt-3 grid gap-2 text-xs text-slate-600">
                             <div><span class="font-semibold">Status:</span> ${props.status || 'Unknown'}</div>
                             <div><span class="font-semibold">Budget:</span> ${formatCurrency(props.budget)}</div>
+                            <div><span class="font-semibold">Progress:</span> ${progress.toFixed(1)}%</div>
                         </div>
                         <p class="mt-3 text-sm text-slate-600 leading-relaxed">${props.description || 'No description available.'}</p>
                     </div>

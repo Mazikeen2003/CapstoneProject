@@ -107,6 +107,10 @@ Route::middleware(['auth', 'admin'])
         Route::get('/reports',    [AdminReportController::class,   'index'])->name('reports.index');
         Route::post('/reports/generate', [AdminReportController::class, 'generate'])->name('reports.generate');
         Route::get('/reports/{report}/download', [AdminReportController::class, 'download'])->name('reports.download');
+
+        Route::get('/project-permissions', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'index'])->name('project-permissions.index');
+        Route::post('/project-permissions/{id}/approve', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'approve'])->name('project-permissions.approve');
+        Route::post('/project-permissions/{id}/reject', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'reject'])->name('project-permissions.reject');
     });
 
 /*
@@ -120,6 +124,8 @@ Route::middleware(['auth', 'department'])
     ->group(function () {
 
         Route::get('/dashboard', [DepartmentDashboard::class, 'index'])->name('dashboard');
+
+        Route::post('/projects/{id}/request-edit-permission', [DepartmentProjectController::class, 'requestEditPermission'])->name('projects.request-edit-permission');
 
         Route::resource('projects', DepartmentProjectController::class)->names([
             'index'   => 'projects.index',

@@ -46,7 +46,8 @@ class ReportController extends Controller
             ->limit(5)
             ->get();
 
-        $peakUsage = AuditLog::selectRaw('HOUR(created_at) as hour, count(*) as total')
+        $peakUsage = AuditLog::where('created_at', '>=', now()->subDay())
+            ->selectRaw('HOUR(created_at) as hour, count(*) as total')
             ->groupBy('hour')
             ->orderByDesc('total')
             ->get();

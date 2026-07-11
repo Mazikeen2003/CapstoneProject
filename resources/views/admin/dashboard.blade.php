@@ -35,21 +35,28 @@
         </div>
         <div class="p-6">
             @if(!empty($recentActivity) && $recentActivity->count())
-                <ul class="space-y-4">
+                <ul class="space-y-3">
                     @foreach($recentActivity as $activity)
-                        <li class="flex items-start gap-4">
-                            <div class="flex-1">
-                                <div class="flex items-center justify-between">
-                                    <div class="text-sm font-medium text-gray-900">{{ optional($activity->user)->username ?? optional($activity->user)->user_email ?? 'System' }}</div>
-                                    <div class="text-xs text-gray-400">{{ optional($activity->created_at)->diffForHumans() }}</div>
+                        <li class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 shadow-sm transition hover:border-blue-200 hover:bg-white">
+                            <div class="flex items-start gap-3">
+                                <div class="mt-0.5 flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
                                 </div>
-                                <div class="text-sm text-gray-600 mt-1">{{ $activity->action }}</div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex flex-wrap items-center justify-between gap-2">
+                                        <div class="text-sm font-semibold text-slate-900">{{ optional($activity->user)->username ?? optional($activity->user)->user_email ?? 'System' }}</div>
+                                        <div class="text-xs font-medium text-slate-500">{{ optional($activity->created_at)->diffForHumans() }}</div>
+                                    </div>
+                                    <div class="mt-2 text-sm leading-6 text-slate-600">{{ $activity->action }}</div>
+                                </div>
                             </div>
                         </li>
                     @endforeach
                 </ul>
             @else
-                <div class="text-sm text-gray-500">No recent activity.</div>
+                <div class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">No recent activity.</div>
             @endif
         </div>
     </div>

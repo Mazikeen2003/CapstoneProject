@@ -1,6 +1,34 @@
 @extends('layouts.department')
 
 @section('content')
+@php
+    $currentRole = auth()->user()?->role_slug ?? 'public';
+@endphp
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentRole = window.__currentRole || @json($currentRole);
+        const pendingNotification = {{ Js::from(session('pending_notification') ?? null) }};
+        const roleKeys = ['admin', 'department', 'city', 'barangay', 'public'];
+
+        if (pendingNotification) {
+            try {
+                roleKeys.forEach((role) => {
+                    const storageKey = 'projectTrackerNotifications:' + role;
+                    const existing = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+                    if (!existing.some(item => item.id === pendingNotification.id)) {
+                        existing.unshift(pendingNotification);
+                        localStorage.setItem(storageKey, JSON.stringify(existing));
+                    }
+                });
+
+                window.dispatchEvent(new Event('notifications:updated'));
+            } catch (error) {
+                console.warn('Unable to store notification', error);
+            }
+        }
+    });
+</script>
 <div class="space-y-6">
     <div>
         <h1 class="text-3xl font-bold" style="color: black;">{{ $project->project_name }}</h1>

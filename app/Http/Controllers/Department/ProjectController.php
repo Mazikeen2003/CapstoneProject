@@ -6,11 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Barangay;
+use App\Models\AuditLog;
 use App\Models\BudgetTransaction;
+use App\Models\EditPermissionRequest;
 use App\Models\Project;
 use App\Services\AuditLogService;
 use App\Services\CacheService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
@@ -52,6 +56,15 @@ class ProjectController extends Controller
         CacheService::invalidateGeoJsonCache();
         AuditLogService::logCreate($project);
 
+        $notificationPayload = [
+            'id' => 'project-created-' . $project->project_id . '-' . time(),
+            'title' => 'New Project Added',
+            'message' => ($project->project_name ?: 'A new project') . ' has been added to the system.',
+            'time' => 'Just now',
+            'type' => 'project_created',
+            'project_id' => $project->project_id,
+        ];
+
         if (! empty($data['approved_budget']) && $data['approved_budget'] > 0) {
             BudgetTransaction::create([
                 'project_id'       => $project->project_id,
@@ -66,7 +79,8 @@ class ProjectController extends Controller
 
         return redirect()
             ->route('department.projects.show', $project->project_id)
-            ->with('success', 'Project created successfully.');
+            ->with('success', 'Project created successfully.')
+            ->with('pending_notification', $notificationPayload);
     }
 
     public function show($id)
@@ -90,7 +104,14 @@ class ProjectController extends Controller
 
         $barangays = Barangay::orderBy('barangay_name')->get();
 
-        return view('department.projects.edit', compact('project', 'barangays'));
+        $latestPermissionRequest = EditPermissionRequest::where('project_id', $project->project_id)
+            ->where('requested_by', Auth::id())
+            ->latest('created_at')
+            ->first();
+
+        $canEditCriticalFields = $latestPermissionRequest?->status === 'approved';
+
+        return view('department.projects.edit', compact('project', 'barangays', 'canEditCriticalFields'));
     }
 
     public function update(UpdateProjectRequest $request, $id)
@@ -104,6 +125,22 @@ class ProjectController extends Controller
         $data = $request->validated();
         $data['updated_by'] = Auth::id();
 
+        $lockedFields = ['start_date', 'target_end_date', 'approved_budget', 'actual_budget'];
+        $latestPermissionRequest = EditPermissionRequest::where('project_id', $project->project_id)
+            ->where('requested_by', Auth::id())
+            ->latest('created_at')
+            ->first();
+
+        if ($latestPermissionRequest && $latestPermissionRequest->status === 'pending') {
+            foreach ($lockedFields as $field) {
+                if (array_key_exists($field, $data) && $data[$field] !== ($original[$field] ?? null)) {
+                    return back()->withErrors([
+                        $field => 'This field is still locked pending admin approval.',
+                    ])->withInput();
+                }
+            }
+        }
+
         if ($request->hasFile('project_image')) {
             if ($project->project_image) {
                 Storage::disk('public')->delete($project->project_image);
@@ -113,6 +150,12 @@ class ProjectController extends Controller
         }
 
         $project->update($data);
+
+        if ($latestPermissionRequest && $latestPermissionRequest->status === 'approved') {
+            $latestPermissionRequest->status = 'used';
+            $latestPermissionRequest->used_at = now();
+            $latestPermissionRequest->save();
+        }
 
         CacheService::invalidateGeoJsonCache();
         AuditLogService::logUpdate($project, $original);
@@ -156,5 +199,41 @@ class ProjectController extends Controller
         return redirect()
             ->route('department.projects.index')
             ->with('success', 'Project deleted.');
+    }
+
+    public function requestEditPermission(Request $request, $id)
+    {
+        $project = Project::findOrFail($id);
+        $this->authorize('update', $project);
+
+        $fieldsRequested = $request->input('fields_requested', ['start_date', 'target_end_date', 'approved_budget', 'actual_budget']);
+        $reason = $request->input('reason');
+
+        $permissionRequest = EditPermissionRequest::create([
+            'project_id' => $project->project_id,
+            'requested_by' => Auth::id(),
+            'fields_requested' => $fieldsRequested,
+            'reason' => $reason,
+            'status' => 'pending',
+        ]);
+
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'permission_requested',
+            'table_name' => 'edit_permission_requests',
+            'record_id' => $permissionRequest->request_id,
+            'old_values' => null,
+            'new_values' => [
+                'project_id' => $project->project_id,
+                'fields_requested' => $fieldsRequested,
+                'reason' => $reason,
+            ],
+            'ip_address' => $request->ip(),
+            'created_at' => now(),
+        ]);
+
+        return redirect()->route('department.projects.edit', $project->project_id)
+            ->with('permission_requested', true)
+            ->with('success', 'Permission request submitted successfully.');
     }
 }
