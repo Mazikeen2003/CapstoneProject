@@ -7,7 +7,13 @@
 <div class="flex gap-0 h-[calc(100vh-80px)] overflow-hidden rounded-lg border border-gray-300 shadow-sm">
     <div class="flex-1 relative" id="map" style="background-color: #f0f0f0;"></div>
 
-    <div class="w-[360px] bg-white border-l border-gray-200 overflow-y-auto shadow-sm">
+    <button id="toggleProjectSidebar" class="fixed bottom-4 right-4 md:hidden z-[10001] bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600 transition hidden" aria-label="Toggle projects sidebar">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </button>
+
+    <div id="projectSidebar" class="fixed inset-0 z-[10000] w-full bg-white border-t md:relative md:inset-auto md:w-[360px] md:border-t-0 md:border-l border-gray-200 overflow-y-auto shadow-sm order-3 md:order-2 md:max-h-full hidden md:block">
         <div class="p-6 border-b border-gray-200 sticky top-0 bg-white">
             <h2 class="text-lg font-bold text-black">Department Projects</h2>
             <p class="text-sm text-gray-500 mt-1">Cabuyao City Projects</p>
@@ -20,11 +26,42 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const projectList = document.getElementById('departmentProjectList');
+        const projectSidebarToggle = document.getElementById('toggleProjectSidebar');
+        const projectSidebar = document.getElementById('projectSidebar');
         const selectedClass = 'bg-slate-50 border border-slate-200';
         let selectedProjectIndex = null;
         let map = null;
         let boundedArea = null;
         let projectFeatures = [];
+
+        function isMobile() {
+            return window.innerWidth < 768;
+        }
+
+        function syncProjectSidebar() {
+            if (isMobile()) {
+                projectSidebarToggle.style.display = 'block';
+                projectSidebar.classList.add('hidden');
+                projectSidebar.classList.remove('block');
+            } else {
+                projectSidebarToggle.style.display = 'none';
+                projectSidebar.classList.remove('hidden');
+                projectSidebar.classList.add('block');
+            }
+        }
+
+        function toggleProjectSidebar() {
+            const isVisible = !projectSidebar.classList.contains('hidden');
+            projectSidebar.classList.toggle('hidden', isVisible);
+            projectSidebar.classList.toggle('block', !isVisible);
+            projectSidebarToggle.innerHTML = isVisible
+                ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>'
+                : '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>';
+        }
+
+        projectSidebarToggle.addEventListener('click', toggleProjectSidebar);
+        window.addEventListener('resize', syncProjectSidebar);
+        syncProjectSidebar();
 
         function formatCurrency(value) {
             return `₱${Number(value || 0).toLocaleString()}`;

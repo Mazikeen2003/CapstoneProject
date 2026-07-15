@@ -4,16 +4,16 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-<div class="flex flex-col md:flex-row gap-0 h-[calc(100vh-140px)] -mx-6 -mb-6 rounded-lg border border-gray-300 shadow-sm">
-    <div class="flex-1 relative order-2 md:order-1 border-r-0 md:border-r md:border-gray-300" id="map" style="background-color: #f0f0f0; min-height: 50vh;"></div>
+<div class="flex flex-col md:flex-row gap-0 min-h-screen md:h-[calc(100vh-140px)] -mx-6 -mb-6 rounded-lg border border-gray-300 shadow-sm">
+    <div class="flex-1 relative order-2 md:order-1 border-r-0 md:border-r md:border-gray-300 min-h-[55vh]" id="map" style="background-color: #f0f0f0;"></div>
 
-    <button id="toggleSidebar" class="fixed bottom-6 right-6 md:hidden z-50 bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600 transition" style="display: none;">
+    <button id="toggleSidebar" class="fixed bottom-4 right-4 md:hidden z-[10001] bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600 transition" style="display: none;">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
     </button>
 
-    <div id="projectSidebar" class="w-full md:w-[360px] bg-white border-t md:border-t-0 md:border-l border-gray-200 overflow-y-auto shadow-sm order-3 md:order-2 max-h-96 md:max-h-full hidden md:block">
+    <div id="projectSidebar" class="fixed inset-0 z-[10000] w-full bg-white border-t md:relative md:inset-auto md:w-[360px] md:border-t-0 md:border-l border-gray-200 overflow-y-auto max-h-screen shadow-sm order-3 md:order-2 md:max-h-full hidden md:block">
         <div class="p-4 md:p-6 border-b border-gray-200 sticky top-0 bg-white">
             <h2 class="text-base md:text-lg font-bold text-black">Projects Map</h2>
             <p class="text-xs md:text-sm text-gray-500 mt-1">Cabuyao City Projects</p>
