@@ -16,11 +16,14 @@ class User extends Authenticatable
     public $timestamps = true;
 
     protected $fillable = [
+        'first_name',
+        'last_name',
         'username',
         'user_email',
         'password_hash',
         'role_id',
         'barangay_id',
+        'permissions',
         'email_verified_at',
         'remember_token',
     ];
@@ -32,6 +35,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'permissions' => 'array',
     ];
 
     // Relationships
@@ -102,7 +106,12 @@ class User extends Authenticatable
         return $this->user_email;
     }
 
-    // Computed property
+    // Computed properties
+    public function getFullNameAttribute(): string
+    {
+        return trim("{$this->first_name} {$this->last_name}");
+    }
+
     public function getRoleSlugAttribute()
     {
         return match ($this->role_id) {
@@ -139,5 +148,35 @@ class User extends Authenticatable
     protected function normalizeRoleValue($value): string
     {
         return strtolower((string) preg_replace('/[^a-z0-9]+/', '', $value));
+    }
+
+    /**
+     * Check if this user has a specific granular permission.
+     * Only applies to Department role — all other roles get full access by default.
+     * Defaults to true (full access) if the permission key is not explicitly set to false.
+     */
+    public function isPrimaryAdmin(): bool
+    {
+        if ($this->role_slug !== 'admin') {
+            return false;
+        }
+
+        $firstAdminId = static::query()
+            ->where('role_id', 1)
+            ->orderBy('user_id')
+            ->value('user_id');
+
+        return (int) $this->user_id === (int) $firstAdminId;
+    }
+
+    public function hasPermission(string $key): bool
+    {
+        if ($this->isPrimaryAdmin() || ! in_array($this->role_slug, ['admin', 'department'], true)) {
+            return true;
+        }
+
+        $permissions = $this->permissions ?? [];
+
+        return $permissions[$key] ?? true;
     }
 }

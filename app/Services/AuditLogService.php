@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request as RequestFacade;
 
 class AuditLogService
 {
@@ -59,7 +58,7 @@ class AuditLogService
             'record_id'  => $model->getKey(),
             'old_values' => $old,
             'new_values' => $new,
-            'ip_address' => RequestFacade::ip(),
+            'full_name'  => Auth::user()?->full_name ?: Auth::user()?->username,
             'created_at' => now(),
         ]);
     }

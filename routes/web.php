@@ -93,7 +93,7 @@ Route::middleware(['auth', 'admin'])
 
         Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
 
-        Route::resource('users', AdminUserController::class)->names([
+        Route::resource('users', AdminUserController::class)->middleware('admin.permission:can_manage_users')->names([
             'index'   => 'users.index',
             'create'  => 'users.create',
             'store'   => 'users.store',
@@ -102,15 +102,15 @@ Route::middleware(['auth', 'admin'])
             'destroy' => 'users.destroy',
         ]);
 
-        Route::get('/audit-logs/export', [AdminAuditLogController::class, 'exportPdf'])->name('audit-logs.export');
-        Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])->name('audit-logs.index');
-        Route::get('/reports',    [AdminReportController::class,   'index'])->name('reports.index');
-        Route::post('/reports/generate', [AdminReportController::class, 'generate'])->name('reports.generate');
-        Route::get('/reports/{report}/download', [AdminReportController::class, 'download'])->name('reports.download');
+        Route::get('/audit-logs/export', [AdminAuditLogController::class, 'exportPdf'])->middleware('admin.permission:can_manage_audit_logs')->name('audit-logs.export');
+        Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])->middleware('admin.permission:can_manage_audit_logs')->name('audit-logs.index');
+        Route::get('/reports', [AdminReportController::class, 'index'])->middleware('admin.permission:can_view_reports')->name('reports.index');
+        Route::post('/reports/generate', [AdminReportController::class, 'generate'])->middleware('admin.permission:can_view_reports')->name('reports.generate');
+        Route::get('/reports/{report}/download', [AdminReportController::class, 'download'])->middleware('admin.permission:can_view_reports')->name('reports.download');
 
-        Route::get('/project-permissions', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'index'])->name('project-permissions.index');
-        Route::post('/project-permissions/{id}/approve', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'approve'])->name('project-permissions.approve');
-        Route::post('/project-permissions/{id}/reject', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'reject'])->name('project-permissions.reject');
+        Route::get('/project-permissions', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'index'])->middleware('admin.permission:can_manage_project_permissions')->name('project-permissions.index');
+        Route::post('/project-permissions/{id}/approve', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'approve'])->middleware('admin.permission:can_manage_project_permissions')->name('project-permissions.approve');
+        Route::post('/project-permissions/{id}/reject', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'reject'])->middleware('admin.permission:can_manage_project_permissions')->name('project-permissions.reject');
     });
 
 /*

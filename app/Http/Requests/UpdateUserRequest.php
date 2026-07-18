@@ -32,11 +32,22 @@ class UpdateUserRequest extends FormRequest
         }
 
         return [
+            'first_name' => ['required', 'string', 'max:100'],
+            'last_name' => ['required', 'string', 'max:100'],
             'username' => ['required', 'string', 'max:100', Rule::unique('users', 'username')->ignore($userId, 'user_id')],
             'user_email' => ['required', 'email', 'max:100', Rule::unique('users', 'user_email')->ignore($userId, 'user_id')],
             'password_hash' => ['nullable', 'string', 'min:8', 'confirmed'],
             'role_id' => ['required', 'exists:roles,role_id'],
             'barangay_id' => ['nullable', 'exists:barangays,barangay_id'],
+            'permissions' => ['nullable', 'array'],
+            'permissions.can_create_project' => ['nullable', 'boolean'],
+            'permissions.can_edit_project' => ['nullable', 'boolean'],
+            'permissions.can_delete_project' => ['nullable', 'boolean'],
+            'permissions.can_generate_reports' => ['nullable', 'boolean'],
+            'permissions.can_manage_users' => ['nullable', 'boolean'],
+            'permissions.can_manage_project_permissions' => ['nullable', 'boolean'],
+            'permissions.can_view_reports' => ['nullable', 'boolean'],
+            'permissions.can_manage_audit_logs' => ['nullable', 'boolean'],
         ];
     }
 

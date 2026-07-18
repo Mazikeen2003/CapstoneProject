@@ -34,10 +34,10 @@
             <tr>
                 <th>Date</th>
                 <th>User</th>
+                <th>Full Name</th>
                 <th>Action</th>
                 <th>Table</th>
                 <th>Record ID</th>
-                <th>IP</th>
                 <th>Details</th>
             </tr>
         </thead>
@@ -46,10 +46,10 @@
                 <tr>
                     <td>{{ $log->created_at?->format('M d, Y h:i A') }}</td>
                     <td>{{ $log->user->username ?? 'Unknown' }}</td>
+                    <td>{{ $log->full_name ?: ($log->user->full_name ?? 'Unknown') }}</td>
                     <td>{{ ucfirst($log->action) }}</td>
                     <td>{{ $log->table_name }}</td>
                     <td>{{ $log->record_id }}</td>
-                    <td>{{ $log->ip_address }}</td>
                     <td class="details">
                         @php
                             $keyFields = [

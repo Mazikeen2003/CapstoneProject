@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Department;
 
-use App\Http\Controllers\Controller; // Add this
+use App\Http\Controllers\Controller;
 use App\Services\ReportService;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests; // Add this trait
-use Illuminate\Support\Facades\Auth; // Add if you need Auth in the future
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
 
-class ReportController extends Controller // Extend Controller
+class ReportController extends Controller
 {
-    use AuthorizesRequests; // Add this trait
+    use AuthorizesRequests;
 
     public function index()
     {
@@ -20,6 +20,7 @@ class ReportController extends Controller // Extend Controller
     public function projectsPdf()
     {
         $this->authorize('viewAny', \App\Models\Project::class);
+        $this->authorize('generateReports', \App\Models\Project::class);
 
         $data = ReportService::generateProjectReport();
 
@@ -31,6 +32,7 @@ class ReportController extends Controller // Extend Controller
     public function budgetPdf()
     {
         $this->authorize('viewAny', \App\Models\Project::class);
+        $this->authorize('generateReports', \App\Models\Project::class);
 
         $data = ReportService::generateBudgetReport();
 

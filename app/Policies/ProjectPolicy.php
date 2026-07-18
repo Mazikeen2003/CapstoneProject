@@ -14,8 +14,6 @@ class ProjectPolicy
      */
     public function viewAny(User $user): bool
     {
-        // Anyone with a recognized role can see *some* project list;
-        // actual row filtering happens via the global scope on the model.
         return in_array($user->role_slug, ['admin', 'city', 'department', 'barangay']);
     }
 
@@ -31,14 +29,18 @@ class ProjectPolicy
 
     public function create(User $user): bool
     {
-        return in_array($user->role_slug, ['admin', 'department']);
+        if (! in_array($user->role_slug, ['admin', 'department'])) {
+            return false;
+        }
+
+        return $user->hasPermission('can_create_project');
     }
 
     public function update(User $user, Project $project): bool
     {
         return match ($user->role_slug) {
             'admin'      => true,
-            'department' => $project->created_by === $user->user_id,
+            'department' => $project->created_by === $user->user_id && $user->hasPermission('can_edit_project'),
             default      => false,
         };
     }
@@ -47,8 +49,17 @@ class ProjectPolicy
     {
         return match ($user->role_slug) {
             'admin'      => true,
-            'department' => $project->created_by === $user->user_id,
+            'department' => $project->created_by === $user->user_id && $user->hasPermission('can_delete_project'),
             default      => false,
         };
+    }
+
+    public function generateReports(User $user): bool
+    {
+        if (! in_array($user->role_slug, ['admin', 'city', 'department', 'barangay'])) {
+            return false;
+        }
+
+        return $user->hasPermission('can_generate_reports');
     }
 }

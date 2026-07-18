@@ -39,7 +39,7 @@ class ProjectPermissionController extends Controller
             'record_id' => $permissionRequest->request_id,
             'old_values' => ['status' => 'pending'],
             'new_values' => ['status' => 'approved', 'reviewed_by' => Auth::id()],
-            'ip_address' => $request->ip(),
+            'full_name' => Auth::user()?->full_name ?: Auth::user()?->username,
             'created_at' => now(),
         ]);
 
@@ -62,7 +62,7 @@ class ProjectPermissionController extends Controller
             'record_id' => $permissionRequest->request_id,
             'old_values' => ['status' => 'pending'],
             'new_values' => ['status' => 'rejected', 'reviewed_by' => Auth::id()],
-            'ip_address' => $request->ip(),
+            'full_name' => Auth::user()?->full_name ?: Auth::user()?->username,
             'created_at' => now(),
         ]);
 

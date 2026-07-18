@@ -228,7 +228,7 @@ class ProjectController extends Controller
                 'fields_requested' => $fieldsRequested,
                 'reason' => $reason,
             ],
-            'ip_address' => $request->ip(),
+            'full_name' => Auth::user()?->full_name ?: Auth::user()?->username,
             'created_at' => now(),
         ]);
 
