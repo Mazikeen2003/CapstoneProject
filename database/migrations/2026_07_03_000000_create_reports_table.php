@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('report_type');
             $table->string('title');
-            $table->integer('generated_by_user_id')->nullable();
+            $table->unsignedBigInteger('generated_by_user_id')->nullable();
             $table->string('generated_by_username')->nullable();
             $table->string('status')->default('pending');
             $table->string('pdf_path')->nullable();
