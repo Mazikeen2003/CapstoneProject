@@ -14,17 +14,30 @@ class StoreUserRequest extends FormRequest
     public function rules()
     {
         return [
+            'first_name' => ['required', 'string', 'max:100'],
+            'last_name' => ['required', 'string', 'max:100'],
             'username' => ['required', 'string', 'max:100', 'unique:users,username'],
             'user_email' => ['required', 'email', 'max:100', 'unique:users,user_email'],
             'password_hash' => ['required', 'string', 'min:8', 'confirmed'],
             'role_id' => ['required', 'exists:roles,role_id'],
             'barangay_id' => ['nullable', 'exists:barangays,barangay_id'],
+            'permissions' => ['nullable', 'array'],
+            'permissions.can_create_project' => ['nullable', 'boolean'],
+            'permissions.can_edit_project' => ['nullable', 'boolean'],
+            'permissions.can_delete_project' => ['nullable', 'boolean'],
+            'permissions.can_generate_reports' => ['nullable', 'boolean'],
+            'permissions.can_manage_users' => ['nullable', 'boolean'],
+            'permissions.can_manage_project_permissions' => ['nullable', 'boolean'],
+            'permissions.can_view_reports' => ['nullable', 'boolean'],
+            'permissions.can_manage_audit_logs' => ['nullable', 'boolean'],
         ];
     }
 
     public function messages()
     {
         return [
+            'first_name.required' => 'First name is required.',
+            'last_name.required' => 'Last name is required.',
             'username.required' => 'Username is required.',
             'username.unique' => 'This username is already taken.',
             'user_email.required' => 'Email is required.',

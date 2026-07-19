@@ -8,7 +8,7 @@ class UserPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->role_slug === 'admin';
+        return $user->role_slug === 'admin' && $user->hasPermission('can_manage_users');
     }
 
     public function view(User $user, User $target): bool
@@ -18,7 +18,7 @@ class UserPolicy
 
     public function create(User $user): bool
     {
-        return $user->role_slug === 'admin';
+        return $user->role_slug === 'admin' && $user->hasPermission('can_manage_users');
     }
 
     public function update(User $user, User $target): bool

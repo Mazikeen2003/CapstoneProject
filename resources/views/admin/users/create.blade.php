@@ -22,6 +22,25 @@
         <form action="{{ route('admin.users.store') }}" method="POST" class="space-y-6">
             @csrf
 
+            <!-- Row 0: First Name and Last Name -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="first_name" class="block text-sm font-semibold text-gray-700 mb-2">First Name *</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ old('first_name') }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('first_name') border-red-500 @enderror" placeholder="Enter first name" required>
+                    @error('first_name')
+                        <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="last_name" class="block text-sm font-semibold text-gray-700 mb-2">Last Name *</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ old('last_name') }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('last_name') border-red-500 @enderror" placeholder="Enter last name" required>
+                    @error('last_name')
+                        <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
             <!-- Row 1: Username and Email -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -51,7 +70,7 @@
                             Show
                         </button>
                     </div>
-                    
+
                     <!-- Password Strength Indicator -->
                     <div class="mt-3 space-y-2">
                         <div class="flex items-center justify-between">
@@ -64,7 +83,7 @@
                         </div>
                         <p class="text-xs text-gray-500">At least 8 characters with mixed case, numbers, and symbols recommended</p>
                     </div>
-                    
+
                     @error('password_hash')
                         <span class="text-red-600 text-sm mt-2 block">{{ $message }}</span>
                     @enderror
@@ -78,7 +97,7 @@
                             Show
                         </button>
                     </div>
-                    
+
                     <!-- Password Match Indicator -->
                     <div id="passwordMatchContainer" class="mt-3 px-3 py-2 rounded-lg bg-gray-100 border-2 border-gray-300 transition-all" style="display: none;">
                         <div class="flex items-center gap-2">
@@ -118,6 +137,53 @@
                     @error('barangay_id')
                         <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
                     @enderror
+                </div>
+            </div>
+
+            <!-- Row 4: Department Permissions (only shown when Department role selected) -->
+            <div id="departmentPermissionsSection" class="border border-gray-200 rounded-lg p-5 bg-gray-50" style="display: none;">
+                <h3 class="text-sm font-semibold text-gray-700 mb-1">Department Permissions</h3>
+                <p class="text-xs text-gray-500 mb-4">Choose which actions this Department user is allowed to perform. All are enabled by default (full access).</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_create_project]" value="1" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Create Project
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_edit_project]" value="1" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Edit Project
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_delete_project]" value="1" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Delete Project
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_generate_reports]" value="1" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Generate/Export Reports
+                    </label>
+                </div>
+            </div>
+
+            <div id="adminPermissionsSection" class="border border-gray-200 rounded-lg p-5 bg-gray-50" style="display: none;">
+                <h3 class="text-sm font-semibold text-gray-700 mb-1">Admin Permissions</h3>
+                <p class="text-xs text-gray-500 mb-4">Choose the areas this additional Admin can access. The original Admin account always has full access.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_manage_users]" value="1" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        User Access Management
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_manage_project_permissions]" value="1" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Project Edit Permissions
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_view_reports]" value="1" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Reports
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_manage_audit_logs]" value="1" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Audit Logs
+                    </label>
                 </div>
             </div>
 
@@ -174,7 +240,7 @@
         passwordInput.addEventListener('input', function() {
             const strength = calculatePasswordStrength(this.value);
             let color, text, width;
-            
+
             switch(strength) {
                 case 0: color = '#d1d5db'; text = 'Very Weak'; width = '0%'; break;
                 case 1: color = '#ef4444'; text = 'Weak'; width = '20%'; break;
@@ -183,7 +249,7 @@
                 case 4: color = '#84cc16'; text = 'Strong'; width = '80%'; break;
                 default: color = '#22c55e'; text = 'Very Strong'; width = '100%';
             }
-            
+
             strengthBar.style.backgroundColor = color;
             strengthBar.style.width = width;
             strengthText.textContent = text;
@@ -238,7 +304,7 @@
         function updateBarangaySelectState() {
             const selectedOption = roleSelect.options[roleSelect.selectedIndex];
             const selectedRoleText = selectedOption.text.toLowerCase();
-            
+
             // Enable barangay dropdown only if "barangay" role is selected
             if (selectedRoleText.includes('barangay')) {
                 barangaySelect.disabled = false;
@@ -254,8 +320,28 @@
 
         roleSelect.addEventListener('change', updateBarangaySelectState);
 
+        // Department permissions section show/hide logic
+        const departmentPermissionsSection = document.getElementById('departmentPermissionsSection');
+        const adminPermissionsSection = document.getElementById('adminPermissionsSection');
+
+        function updateDepartmentPermissionsVisibility() {
+            const selectedOption = roleSelect.options[roleSelect.selectedIndex];
+            const selectedRoleText = selectedOption.text.toLowerCase();
+
+            if (selectedRoleText.includes('department')) {
+                departmentPermissionsSection.style.display = 'block';
+            } else {
+                departmentPermissionsSection.style.display = 'none';
+            }
+
+            adminPermissionsSection.style.display = selectedRoleText.includes('admin') ? 'block' : 'none';
+        }
+
+        roleSelect.addEventListener('change', updateDepartmentPermissionsVisibility);
+
         // Initialize on page load
         updateBarangaySelectState();
+        updateDepartmentPermissionsVisibility();
     });
 </script>
 @endsection

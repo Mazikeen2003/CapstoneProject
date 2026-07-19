@@ -23,6 +23,25 @@
             @csrf
             @method('PUT')
 
+            <!-- Row 0: First Name and Last Name -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="first_name" class="block text-sm font-semibold text-gray-700 mb-2">First Name *</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ old('first_name', $user->first_name) }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('first_name') border-red-500 @enderror" placeholder="Enter first name" required>
+                    @error('first_name')
+                        <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="last_name" class="block text-sm font-semibold text-gray-700 mb-2">Last Name *</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ old('last_name', $user->last_name) }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('last_name') border-red-500 @enderror" placeholder="Enter last name" required>
+                    @error('last_name')
+                        <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
             <!-- Row 1: Username and Email -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -97,6 +116,56 @@
                 </div>
             </div>
 
+            <!-- Row 4: Department Permissions (only shown when Department role selected) -->
+            @php
+                $userPermissions = old('permissions', $user->permissions ?? []);
+            @endphp
+            <div id="departmentPermissionsSection" class="border border-gray-200 rounded-lg p-5 bg-gray-50" style="display: none;">
+                <h3 class="text-sm font-semibold text-gray-700 mb-1">Department Permissions</h3>
+                <p class="text-xs text-gray-500 mb-4">Choose which actions this Department user is allowed to perform. All are enabled by default (full access) unless unchecked.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_create_project]" value="1" {{ ($userPermissions['can_create_project'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Create Project
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_edit_project]" value="1" {{ ($userPermissions['can_edit_project'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Edit Project
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_delete_project]" value="1" {{ ($userPermissions['can_delete_project'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Delete Project
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_generate_reports]" value="1" {{ ($userPermissions['can_generate_reports'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Generate/Export Reports
+                    </label>
+                </div>
+            </div>
+
+            <div id="adminPermissionsSection" class="border border-gray-200 rounded-lg p-5 bg-gray-50" style="display: none;">
+                <h3 class="text-sm font-semibold text-gray-700 mb-1">Admin Permissions</h3>
+                <p class="text-xs text-gray-500 mb-4">Choose the areas this additional Admin can access. The original Admin account always has full access.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_manage_users]" value="1" {{ ($userPermissions['can_manage_users'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        User Access Management
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_manage_project_permissions]" value="1" {{ ($userPermissions['can_manage_project_permissions'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Project Edit Permissions
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_view_reports]" value="1" {{ ($userPermissions['can_view_reports'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Reports
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_manage_audit_logs]" value="1" {{ ($userPermissions['can_manage_audit_logs'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Audit Logs
+                    </label>
+                </div>
+            </div>
+
             <!-- Action Buttons -->
             <div class="flex gap-4 pt-4 border-t border-gray-200">
                 <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 font-semibold transition">
@@ -125,6 +194,29 @@
 
         bindToggle('togglePasswordEdit', 'password_hash');
         bindToggle('togglePasswordConfirmationEdit', 'password_hash_confirmation');
+
+        // Department permissions section show/hide logic
+        const roleSelect = document.getElementById('role_id');
+        const departmentPermissionsSection = document.getElementById('departmentPermissionsSection');
+        const adminPermissionsSection = document.getElementById('adminPermissionsSection');
+
+        function updateDepartmentPermissionsVisibility() {
+            const selectedOption = roleSelect.options[roleSelect.selectedIndex];
+            const selectedRoleText = selectedOption.text.toLowerCase();
+
+            if (selectedRoleText.includes('department')) {
+                departmentPermissionsSection.style.display = 'block';
+            } else {
+                departmentPermissionsSection.style.display = 'none';
+            }
+
+            adminPermissionsSection.style.display = selectedRoleText.includes('admin') ? 'block' : 'none';
+        }
+
+        roleSelect.addEventListener('change', updateDepartmentPermissionsVisibility);
+
+        // Initialize on page load
+        updateDepartmentPermissionsVisibility();
     });
 </script>
 @endsection
