@@ -82,6 +82,10 @@ class Project extends Model
     {
         return $this->hasMany(BudgetTransaction::class, 'project_id', 'project_id');
     }
+     public function forms()
+    {
+        return $this->hasMany(ProjectForm::class, 'project_id', 'project_id');
+    }
 
     // Query Scopes
     public function scopeWithRelations($query)

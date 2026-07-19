@@ -91,6 +91,53 @@
         @endif
     </div>
 
+    <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-lg font-bold text-black">Government Forms</h3>
+        </div>
+        <p class="text-xs text-gray-500 mb-4">Fill out official documentation forms for this project (Form 1–11).</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            @php
+                $formList = [
+                    'form_1' => 'Form 1 — Initial Project Report',
+                    'form_2' => 'Form 2 — Physical and Financial Accomplishment Report',
+                    'form_3' => 'Form 3 — Project Exception Report',
+                    'form_4' => 'Form 4 — Project Results',
+                    'form_5' => 'Form 5 — Summary of Financial and Physical Accomplishments',
+                    'form_6' => 'Form 6 — Status of Projects with Implementation Problems',
+                    'form_7' => 'Form 7 — Project Inspection Report',
+                    'form_8' => 'Form 8 — Problem Solving Sessions/Facilitation Meeting',
+                    'form_9' => 'Form 9 — Training/Workshop Conducted/Facilitated/Attended by the PMC',
+                    'form_10' => 'Form 10 — RPMC and RDC Resolutions Related to RPMES',
+                    'form_11' => 'Form 11 — Key Lessons Learned from Issues Resolved and Best Practices',
+                ];
+            @endphp
+
+            @foreach ($formList as $type => $label)
+                @php
+                    $existingForm = $project->forms->firstWhere('form_type', $type);
+                    $isAvailable = in_array($type, ['form_1', 'form_2', 'form_3', 'form_4', 'form_5', 'form_6', 'form_7', 'form_8', 'form_9', 'form_10', 'form_11'], true);
+                @endphp
+                <div class="flex items-center justify-between p-3 rounded border" style="border-color: #B2BEB5;">
+                    <div>
+                        <p class="text-sm font-medium text-black">{{ $label }}</p>
+                        <p class="text-xs {{ $existingForm ? 'text-green-600' : 'text-gray-400' }}">
+                            {{ $existingForm ? 'Filled out — last updated ' . $existingForm->updated_at->format('M d, Y') : ($isAvailable ? 'Not filled out yet' : 'Coming soon') }}
+                        </p>
+                    </div>
+                    @if ($isAvailable)
+                        <a href="{{ route('department.projects.forms.edit', [$project->project_id, $type]) }}" class="px-3 py-1.5 text-xs font-semibold rounded" style="background-color: #c9a84c; color: #0f1e3d;">
+                            {{ $existingForm ? 'View / Edit' : 'Fill Out' }}
+                        </a>
+                    @else
+                        <span class="px-3 py-1.5 text-xs font-semibold rounded bg-gray-100 text-gray-400 cursor-not-allowed">Unavailable</span>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    </div>
+
     <div class="flex justify-end space-x-3">
         <a href="{{ route('department.projects.edit', $project->project_id) }}" class="px-4 py-2 rounded" style="background-color: #c9a84c; color: #0f1e3d;">Edit Project</a>
         <a href="{{ route('department.projects.index') }}" class="px-4 py-2 rounded" style="background-color: #e5e7eb;">Back to List</a>

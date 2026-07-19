@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>City Transparency Portal | Cabuyao</title>
+    @include('layouts.favicon')
 
     {{-- Fonts --}}
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Public+Sans:wght@400;600;700&display=swap">
@@ -29,7 +30,7 @@
 
     {{-- ============ TOP NAV ============ --}}
     <header class="sticky top-0 z-50 glass-nav w-full border-b border-slate-200/50">
-        <nav class="flex items-center py-4 w-full mx-auto gap-24 px-12 justify-between">
+        <nav class="relative flex items-center py-4 w-full mx-auto px-12 justify-between">
             <div class="flex items-center gap-4">
                 <div class="bg-slate-900 p-2 rounded-lg">
                     <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">account_balance</span>
@@ -40,10 +41,10 @@
                 </div>
             </div>
 
-            <div class="hidden md:flex items-center text-xs uppercase tracking-widest gap-6" style="font-family:'Public Sans',sans-serif;">
+            <div class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center text-xs uppercase tracking-widest gap-6" style="font-family:'Public Sans',sans-serif;">
                 <a href="{{ url('/') }}" class="text-emerald-700 font-bold border-b-2 border-emerald-600 py-2 transition-all">Home</a>
                 <a href="{{ route('public.map') }}" class="text-slate-500 hover:text-emerald-700 transition-colors py-2 font-semibold">Public Map</a>
-                <a href="{{ url('/city/analytics') }}" class="text-slate-500 hover:text-emerald-700 transition-colors py-2 font-semibold">Analytics</a>
+                <a href="{{ route('public.analytics') }}" class="text-slate-500 hover:text-emerald-700 transition-colors py-2 font-semibold">Analytics</a>
             </div>
 
             <a href="{{ route('login') }}"
@@ -91,7 +92,7 @@
                             <span class="material-symbols-outlined">map</span>
                             View Public Map
                         </a>
-                        <a href="{{ url('/city/analytics') }}"
+                        <a href="{{ route('public.analytics') }}"
                             class="px-8 py-4 bg-transparent border-2 border-white/40 text-white font-bold rounded-md hover:bg-white/10 transition-all flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined">analytics</span>
                             View Analytics
