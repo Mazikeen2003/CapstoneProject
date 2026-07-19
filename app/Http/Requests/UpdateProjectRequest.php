@@ -3,56 +3,45 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
-class UpdateUserRequest extends FormRequest
+class UpdateProjectRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return Auth::check() && Auth::user()->hasRole('department');
     }
 
     public function rules(): array
     {
-        $routeUser = $this->route('user') ?? $this->route('id');
-        $userId = null;
-        if ($routeUser instanceof \App\Models\User) {
-            $userId = $routeUser->user_id;
-        } elseif (is_numeric($routeUser)) {
-            $userId = (int) $routeUser;
-        }
+        $project = $this->route('project') ?? $this->route('id');
+        $projectId = is_object($project) ? $project->project_id : $project;
 
         return [
-            'first_name' => ['required', 'string', 'max:100'],
-            'last_name' => ['required', 'string', 'max:100'],
-            'username' => ['required', 'string', 'max:100', Rule::unique('users', 'username')->ignore($userId, 'user_id')],
-            'user_email' => ['required', 'email', 'max:100', Rule::unique('users', 'user_email')->ignore($userId, 'user_id')],
-            'password_hash' => ['nullable', 'string', 'min:8', 'confirmed'],
-            'role_id' => ['required', 'exists:roles,role_id'],
-            'barangay_id' => ['nullable', 'exists:barangays,barangay_id'],
-            'permissions' => ['nullable', 'array'],
-            'permissions.can_create_project' => ['nullable', 'boolean'],
-            'permissions.can_edit_project' => ['nullable', 'boolean'],
-            'permissions.can_delete_project' => ['nullable', 'boolean'],
-            'permissions.can_generate_reports' => ['nullable', 'boolean'],
+            'project_code'         => ['required', 'string', 'max:100', Rule::unique('projects', 'project_code')->ignore($projectId, 'project_id')],
+            'project_name'         => ['required', 'string', 'max:300'],
+            'project_type'         => ['required', 'string', 'max:100'],
+            'barangay_id'          => ['nullable', 'exists:barangays,barangay_id'],
+            'location_description' => ['nullable', 'string', 'max:1000'],
+            'latitude'             => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude'            => ['nullable', 'numeric', 'between:-180,180'],
+            'approved_budget'      => ['nullable', 'numeric', 'min:0', 'max:999999999999.99'],
+            'actual_budget'        => ['nullable', 'numeric', 'min:0', 'max:999999999999.99'],
+            'start_date'           => ['nullable', 'date'],
+            'target_end_date'      => ['nullable', 'date', 'after_or_equal:start_date'],
+            'actual_end_date'      => ['nullable', 'date'],
+            'current_status'       => ['required', 'string', 'in:Planning,On Going,Completed,On Hold,Cancelled,Bidding - Success,Bidding - Failed,Procurement'],
+            'remarks'              => ['nullable', 'string', 'max:2000'],
+            'project_image'        => ['nullable', 'image', 'max:5120'],
         ];
     }
 
-    public function messages(): array
+    protected function prepareForValidation(): void
     {
-        return [
-            'first_name.required' => 'First name is required.',
-            'last_name.required' => 'Last name is required.',
-            'username.required' => 'Username is required.',
-            'username.unique' => 'This username is already taken.',
-            'user_email.required' => 'Email is required.',
-            'user_email.email' => 'Please enter a valid email.',
-            'user_email.unique' => 'This email is already registered.',
-            'password_hash.min' => 'Password must be at least 8 characters.',
-            'password_hash.confirmed' => 'Password confirmation does not match.',
-            'role_id.required' => 'Role is required.',
-            'role_id.exists' => 'Selected role does not exist.',
-            'barangay_id.exists' => 'Selected barangay does not exist.',
-        ];
+        $this->merge([
+            'project_code' => trim($this->project_code ?? ''),
+            'project_name' => trim($this->project_name ?? ''),
+        ]);
     }
 }
