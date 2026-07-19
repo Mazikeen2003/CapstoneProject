@@ -10,6 +10,7 @@ use App\Http\Controllers\Department\ProjectController as DepartmentProjectContro
 use App\Http\Controllers\Department\MapController as DepartmentMapController;
 use App\Http\Controllers\Department\AnalyticsController as DepartmentAnalyticsController;
 use App\Http\Controllers\Department\ReportExportController as DepartmentReportController;
+use App\Http\Controllers\Department\ProjectFormController as DepartmentProjectFormController;
 use App\Http\Controllers\CityOfficial\DashboardController as CityDashboard;
 use App\Http\Controllers\CityOfficial\MapController as CityMapController;
 use App\Http\Controllers\CityOfficial\AnalyticsController as CityAnalyticsController;
@@ -136,6 +137,9 @@ Route::middleware(['auth', 'department'])
             'update'  => 'projects.update',
             'destroy' => 'projects.destroy',
         ]);
+
+        Route::get('/projects/{project}/forms/{type}', [DepartmentProjectFormController::class, 'edit'])->name('projects.forms.edit');
+        Route::put('/projects/{project}/forms/{type}', [DepartmentProjectFormController::class, 'update'])->name('projects.forms.update');
 
         Route::get('/map',       [DepartmentMapController::class,      'index'])->name('map.index');
         Route::get('/analytics', [DepartmentAnalyticsController::class, 'index'])->name('analytics.index');
