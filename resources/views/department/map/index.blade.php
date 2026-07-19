@@ -4,8 +4,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-<div class="flex gap-0 h-[calc(100vh-80px)] overflow-hidden rounded-lg border border-gray-300 shadow-sm">
-    <div class="flex-1 relative" id="map" style="background-color: #f0f0f0;"></div>
+<div class="flex flex-col md:flex-row gap-0 h-[calc(100svh-80px)] min-h-[65svh] overflow-hidden rounded-lg border border-gray-300 shadow-sm">
+    <div class="flex-1 min-w-0 w-full relative" id="map" style="background-color: #f0f0f0;"></div>
 
     <button id="toggleProjectSidebar" class="fixed bottom-4 right-4 md:hidden z-[10001] bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600 transition hidden" aria-label="Toggle projects sidebar">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -13,7 +13,7 @@
         </svg>
     </button>
 
-    <div id="projectSidebar" class="fixed inset-0 z-[10000] w-full bg-white border-t md:relative md:inset-auto md:w-[360px] md:border-t-0 md:border-l border-gray-200 overflow-y-auto shadow-sm order-3 md:order-2 md:max-h-full hidden md:block">
+    <div id="projectSidebar" class="fixed inset-0 z-[10000] w-full bg-white border-t md:relative md:inset-auto md:w-[360px] md:border-t-0 md:border-l border-gray-200 overflow-y-auto max-h-[100svh] shadow-sm order-3 md:order-2 md:max-h-full hidden md:block" role="dialog" aria-label="Department project list">
         <div class="p-6 border-b border-gray-200 sticky top-0 bg-white">
             <h2 class="text-lg font-bold text-black">Department Projects</h2>
             <p class="text-sm text-gray-500 mt-1">Cabuyao City Projects</p>
@@ -47,6 +47,10 @@
                 projectSidebarToggle.style.display = 'none';
                 projectSidebar.classList.remove('hidden');
                 projectSidebar.classList.add('block');
+            }
+
+            if (map) {
+                requestAnimationFrame(() => map.invalidateSize());
             }
         }
 
@@ -221,7 +225,6 @@
             .then(response => response.json())
             .then(function(geojson) {
                 const boundaryFeature = geojson.features.find(feature => feature.properties.kind === 'boundary');
-                const barangays = geojson.features.filter(feature => feature.properties.kind === 'barangay');
                 const cabuyaoBounds = L.geoJSON(boundaryFeature).getBounds();
                 boundedArea = cabuyaoBounds.pad(0.02);
                 map = L.map('map', {
@@ -235,27 +238,8 @@
                     minZoom: 11
                 }).addTo(map);
 
-                barangays.forEach(function(barangay) {
-                    const lng = barangay.geometry.coordinates[0];
-                    const lat = barangay.geometry.coordinates[1];
-                    L.circleMarker([lat, lng], {
-                        radius: 8,
-                        fillColor: '#e5e7eb',
-                        color: '#6b7280',
-                        weight: 2,
-                        opacity: 0.7,
-                        fillOpacity: 0.6
-                    }).bindPopup(`<div class="text-sm"><h4 class="font-bold text-black">${barangay.properties.name}</h4></div>`).addTo(map);
-                });
-
                 function getMarkerColor(status) {
-                    switch (status) {
-                        case 'Completed': return '#10b981';
-                        case 'On Going': return '#3b82f6';
-                        case 'On Hold': return '#ef4444';
-                        case 'Planning': return '#fbbf24';
-                        default: return '#6b7280';
-                    }
+                    return ({ 'Completed': '#10b981', 'On Going': '#3b82f6', 'On Hold': '#ef4444', 'Planning': '#fbbf24' })[status] || '#64748b';
                 }
 
                 const projectMarkers = L.featureGroup();

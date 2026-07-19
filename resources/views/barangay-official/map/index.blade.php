@@ -4,8 +4,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-<div class="flex gap-0 h-[calc(100vh-80px)] overflow-hidden rounded-lg border border-gray-300 shadow-sm">
-    <div class="flex-1 relative" id="map" style="background-color: #f0f0f0;"></div>
+<div class="flex flex-col md:flex-row gap-0 h-[calc(100svh-80px)] min-h-[65svh] overflow-hidden rounded-lg border border-gray-300 shadow-sm">
+    <div class="flex-1 min-w-0 w-full relative" id="map" style="background-color: #f0f0f0;"></div>
 
     <button id="toggleProjectSidebar" class="fixed bottom-4 right-4 md:hidden z-[10001] bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600 transition hidden" aria-label="Toggle projects sidebar">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -13,7 +13,7 @@
         </svg>
     </button>
 
-    <div id="projectSidebar" class="fixed inset-0 z-[10000] w-full bg-white border-t md:relative md:inset-auto md:w-[360px] md:border-t-0 md:border-l border-gray-200 overflow-y-auto shadow-sm order-3 md:order-2 md:max-h-full hidden md:block">
+    <div id="projectSidebar" class="fixed inset-0 z-[10000] w-full bg-white border-t md:relative md:inset-auto md:w-[360px] md:border-t-0 md:border-l border-gray-200 overflow-y-auto max-h-[100svh] shadow-sm order-3 md:order-2 md:max-h-full hidden md:block" role="dialog" aria-label="Barangay project list">
         <div class="p-6 border-b border-gray-200 sticky top-0 bg-white">
             <h2 class="text-lg font-bold text-black">Barangay Projects</h2>
             <p class="text-sm text-gray-500 mt-1">Cabuyao City Projects</p>
@@ -47,6 +47,10 @@
                 projectSidebarToggle.style.display = 'none';
                 projectSidebar.classList.remove('hidden');
                 projectSidebar.classList.add('block');
+            }
+
+            if (map) {
+                requestAnimationFrame(() => map.invalidateSize());
             }
         }
 

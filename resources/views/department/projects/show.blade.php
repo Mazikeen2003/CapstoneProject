@@ -119,19 +119,19 @@
                     $existingForm = $project->forms->firstWhere('form_type', $type);
                     $isAvailable = in_array($type, ['form_1', 'form_2', 'form_3', 'form_4', 'form_5', 'form_6', 'form_7', 'form_8', 'form_9', 'form_10', 'form_11'], true);
                 @endphp
-                <div class="flex items-center justify-between p-3 rounded border" style="border-color: #B2BEB5;">
-                    <div>
-                        <p class="text-sm font-medium text-black">{{ $label }}</p>
+                <div class="flex items-start gap-3 p-3 rounded border" style="border-color: #B2BEB5;">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm font-medium text-black break-words">{{ $label }}</p>
                         <p class="text-xs {{ $existingForm ? 'text-green-600' : 'text-gray-400' }}">
                             {{ $existingForm ? 'Filled out — last updated ' . $existingForm->updated_at->format('M d, Y') : ($isAvailable ? 'Not filled out yet' : 'Coming soon') }}
                         </p>
                     </div>
                     @if ($isAvailable)
-                        <a href="{{ route('department.projects.forms.edit', [$project->project_id, $type]) }}" class="px-3 py-1.5 text-xs font-semibold rounded" style="background-color: #c9a84c; color: #0f1e3d;">
+                        <a href="{{ route('department.projects.forms.edit', [$project->project_id, $type]) }}" class="shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded" style="background-color: #c9a84c; color: #0f1e3d;">
                             {{ $existingForm ? 'View / Edit' : 'Fill Out' }}
                         </a>
                     @else
-                        <span class="px-3 py-1.5 text-xs font-semibold rounded bg-gray-100 text-gray-400 cursor-not-allowed">Unavailable</span>
+                        <span class="shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded bg-gray-100 text-gray-400 cursor-not-allowed">Unavailable</span>
                     @endif
                 </div>
             @endforeach
