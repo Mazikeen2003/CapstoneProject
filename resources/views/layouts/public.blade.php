@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-        <title>{{ config('app.name', 'Laravel') }} | Public</title>
+        <title>{{ config('app.name', 'Cabuyao Project Tracker') }} | Public</title>
         @include('layouts.favicon')
 
         <link rel="preconnect" href="https://fonts.bunny.net" />
