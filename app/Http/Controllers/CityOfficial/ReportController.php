@@ -34,4 +34,15 @@ class ReportController extends Controller
 
         return $pdf->download('citywide_budget_' . now()->format('Y-m-d') . '.pdf');
     }
+
+    public function sglgPdf()
+    {
+        $this->authorize('viewAny', \App\Models\Project::class);
+
+        $data = ReportService::generateSglgComplianceReport();
+
+        $pdf = Pdf::loadView('reports.sglg-pdf', $data);
+
+        return $pdf->download('citywide_sglg_compliance_' . now()->format('Y-m-d') . '.pdf');
+    }
 }

@@ -209,4 +209,70 @@ class ReportService
             'technical_metrics' => $technicalMetrics,
         ];
     }
+
+    public static function generateSglgComplianceReport(): array
+    {
+        $user = Auth::user();
+
+        $projects = Project::with(['barangay', 'forms', 'updates'])->get();
+
+        $totalProjects = $projects->count();
+
+        $projectsWithDocumentation = $projects->filter(fn($p) => $p->forms->isNotEmpty())->count();
+        $documentationRate = $totalProjects > 0
+            ? round(($projectsWithDocumentation / $totalProjects) * 100, 1)
+            : 0;
+
+        $projectsRecentlyUpdated = $projects->filter(function ($p) {
+            $latestUpdate = $p->updates->sortByDesc('update_date')->first();
+            return $latestUpdate && $latestUpdate->update_date >= now()->subDays(90);
+        })->count();
+        $upToDateRate = $totalProjects > 0
+            ? round(($projectsRecentlyUpdated / $totalProjects) * 100, 1)
+            : 0;
+
+        $projectsPublished = $projects->whereIn('current_status', ['On Going', 'Completed'])->count();
+        $transparencyRate = $totalProjects > 0
+            ? round(($projectsPublished / $totalProjects) * 100, 1)
+            : 0;
+
+        $totalApprovedBudget = $projects->sum('approved_budget');
+        $totalActualBudget = $projects->sum('actual_budget');
+        $budgetUtilizationRate = $totalApprovedBudget > 0
+            ? round(($totalActualBudget / $totalApprovedBudget) * 100, 1)
+            : 0;
+
+        $completedProjects = $projects->where('current_status', 'Completed')->count();
+        $completionRate = $totalProjects > 0
+            ? round(($completedProjects / $totalProjects) * 100, 1)
+            : 0;
+
+        $byBarangay = $projects->groupBy(fn($p) => $p->barangay?->barangay_name ?? 'Citywide')
+            ->map(function ($group) {
+                $count = $group->count();
+                $documented = $group->filter(fn($p) => $p->forms->isNotEmpty())->count();
+                return [
+                    'count' => $count,
+                    'documentation_rate' => $count > 0 ? round(($documented / $count) * 100, 1) : 0,
+                ];
+            });
+
+        return [
+            'title' => 'SGLG Compliance Report',
+            'generated_by' => $user->username,
+            'generated_date' => now()->format('M d, Y H:i A'),
+            'summary' => [
+                'total_projects' => $totalProjects,
+                'documentation_rate' => $documentationRate,
+                'projects_with_documentation' => $projectsWithDocumentation,
+                'up_to_date_rate' => $upToDateRate,
+                'projects_recently_updated' => $projectsRecentlyUpdated,
+                'transparency_rate' => $transparencyRate,
+                'projects_published' => $projectsPublished,
+                'budget_utilization_rate' => $budgetUtilizationRate,
+                'completion_rate' => $completionRate,
+            ],
+            'by_barangay' => $byBarangay,
+        ];
+    }
 }
