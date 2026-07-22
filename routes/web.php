@@ -139,6 +139,7 @@ Route::middleware(['auth', 'department'])
         ]);
 
         Route::get('/projects/{project}/forms/{type}', [DepartmentProjectFormController::class, 'edit'])->name('projects.forms.edit');
+        Route::get('/projects/{project}/forms/{type}/pdf', [DepartmentProjectFormController::class, 'pdf'])->name('projects.forms.pdf');
         Route::put('/projects/{project}/forms/{type}', [DepartmentProjectFormController::class, 'update'])->name('projects.forms.update');
 
         Route::get('/map',       [DepartmentMapController::class,      'index'])->name('map.index');

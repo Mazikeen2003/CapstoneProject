@@ -4,12 +4,20 @@ namespace App\Http\Controllers\Department;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use Illuminate\Http\Request;
 
 class AnalyticsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $projects = Project::withBasicRelations()->get();
+        $availableYears = collect(range(now()->year, 2000));
+        $statusYear = $request->query('status_year');
+        $budgetYear = $request->query('budget_year');
+        $statusYear = preg_match('/^\\d{4}$/', (string) $statusYear) ? $statusYear : null;
+        $budgetYear = preg_match('/^\\d{4}$/', (string) $budgetYear) ? $budgetYear : null;
+        $statusProjects = $statusYear ? $projects->filter(fn ($project) => $project->start_date?->year === (int) $statusYear) : $projects;
+        $budgetProjects = $budgetYear ? $projects->filter(fn ($project) => $project->start_date?->year === (int) $budgetYear) : $projects;
 
         $stats = [
             'total_projects'  => $projects->count(),
@@ -21,7 +29,7 @@ class AnalyticsController extends Controller
             'total_spent'     => $projects->sum('actual_budget') ?? 0,
         ];
 
-        $byStatus = $projects->groupBy('current_status')->map(fn($group) => [
+        $byStatus = $statusProjects->groupBy('current_status')->map(fn($group) => [
             'count'  => $group->count(),
             'budget' => $group->sum('approved_budget'),
             'spent'  => $group->sum('actual_budget'),
@@ -35,6 +43,8 @@ class AnalyticsController extends Controller
             ->sortByDesc('count')
             ->take(10);
 
-        return view('department.analytics.index', compact('stats', 'byStatus', 'byBarangay'));
+        $budgetStats = ['total_budget' => $budgetProjects->sum('approved_budget') ?? 0, 'total_spent' => $budgetProjects->sum('actual_budget') ?? 0];
+
+        return view('department.analytics.index', compact('stats', 'byStatus', 'byBarangay', 'availableYears', 'statusYear', 'budgetYear', 'budgetStats'));
     }
 }

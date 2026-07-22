@@ -15,7 +15,7 @@
             <div class="md:col-span-2"><label class="block text-sm font-medium text-black">Observed Results</label><textarea name="observed_results" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">{{ old('observed_results', $data['observed_results'] ?? '') }}</textarea></div>
         </div></div>
         @include('department.projects.forms.signatories', ['project' => $project, 'data' => $data])
-        <div class="flex justify-end space-x-3"><a href="{{ route('department.projects.show', $project->project_id) }}" class="px-4 py-2 rounded" style="background-color: #e5e7eb;">Cancel</a><button type="submit" class="px-4 py-2 rounded" style="background-color: #162347; color: #f2f3f7;">Save Form</button></div>
+        <div class="flex justify-end space-x-3"><a href="{{ route('department.projects.show', $project->project_id) }}" class="px-4 py-2 rounded" style="background-color: #e5e7eb;">Cancel</a>@if ($form)<a href="{{ route('department.projects.forms.pdf', [$project->project_id, 'form_4']) }}" class="px-4 py-2 rounded" style="background-color: #c9a84c; color: #0f1e3d;">Download PDF</a>@else<span title="Save the form first before generating a PDF" class="px-4 py-2 rounded cursor-not-allowed" style="background-color: #e5e7eb; color: #9ca3af;">Download PDF</span>@endif<button type="submit" class="px-4 py-2 rounded" style="background-color: #162347; color: #f2f3f7;">Save Form</button></div>
     </form>
 </div>
 @endsection

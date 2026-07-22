@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\ProjectForm;
 use App\Services\AuditLogService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,7 +31,34 @@ class ProjectFormController extends Controller
             'project' => $project,
             'form' => $form,
             'months' => $this->months,
+            'sections' => $this->sectionsFor($type),
+            'number' => (int) str_replace('form_', '', $type),
+            'title' => $this->formTitle($type),
+            'formType' => $type,
         ]);
+    }
+
+    public function pdf(Project $project, string $type)
+    {
+        $this->authorize('view', $project);
+
+        abort_unless(in_array($type, ['form_1', 'form_2', 'form_3', 'form_4', 'form_5', 'form_6', 'form_7', 'form_8', 'form_9', 'form_10', 'form_11'], true), 404);
+
+        $form = ProjectForm::where('project_id', $project->project_id)
+            ->where('form_type', $type)
+            ->firstOrFail();
+
+        $data = [
+            'project' => $project,
+            'form' => $form,
+            'form_title' => $this->formTitle($type),
+            'field_labels' => $this->fieldLabelsFor($type),
+            'form_number' => str_replace('form_', '', $type),
+        ];
+
+        return Pdf::loadView('reports.project-form-pdf', $data)->download(
+            'project_' . $project->project_code . '_form_' . $data['form_number'] . '_' . now()->format('Y-m-d') . '.pdf'
+        );
     }
 
     public function update(Request $request, Project $project, string $type)
@@ -242,6 +270,73 @@ class ProjectFormController extends Controller
             'form_9' => 'Training/Workshop Conducted/Facilitated/Attended by the PMC',
             'form_10' => 'RPMC and RDC Resolutions Related to Implementation of the RPMES',
             'form_11' => 'Key Lessons Learned from Issues Resolved and Best Practices',
+        };
+    }
+
+    private function fieldLabelsFor(string $type): array
+    {
+        $signatories = [
+            'submitted_by' => 'Submitted By', 'submitted_designation' => 'Submitted Designation/Office', 'submitted_date' => 'Submitted Date',
+            'approved_by' => 'Approved By', 'approved_designation' => 'Approved Designation/Office', 'approved_date' => 'Approved Date',
+        ];
+
+        if (in_array($type, ['form_5', 'form_6', 'form_7', 'form_8', 'form_9', 'form_10', 'form_11'], true)) {
+            $labels = [];
+            foreach ($this->sectionsFor($type) as $section) {
+                foreach ($section['fields'] as $field => $definition) {
+                    $labels[$field] = $definition['label'] ?? $field;
+                }
+            }
+
+            return array_merge($labels, $signatories);
+        }
+
+        $labels = match ($type) {
+            'form_1' => [
+                'implementing_agency' => '1. Implementing Agency', 'component_details' => '3. Component Details', 'fund_source' => '4. Fund Source', 'funding_agency' => '5. Funding Agency', 'mode_of_implementation' => '6. Mode of Implementation', 'total_project_cost' => '7. Total Program/Project Cost (PHP)', 'sector' => '8. Sector', 'remarks' => '12. Remarks', 'target_employment_male' => '13. Target Employment Generated - Male', 'target_employment_female' => '13. Target Employment Generated - Female', 'output_indicator_1' => 'Output Indicator 1', 'output_indicator_2' => 'Output Indicator 2', 'output_indicator_3' => 'Output Indicator 3', 'output_indicator_4' => 'Output Indicator 4', 'output_indicator_5' => 'Output Indicator 5',
+            ],
+            'form_2' => [
+                'implementing_agency' => 'Implementing Agency', 'start_date' => 'Implementation Start Date', 'end_date' => 'Implementation End Date', 'fund_source' => 'Fund Source', 'funding_agency' => 'Funding Agency', 'total_project_cost' => 'Total Project Cost (PHP)', 'appropriations' => 'Appropriations', 'allotment' => 'Allotment', 'obligations' => 'Obligations', 'disbursements' => 'Disbursements', 'target_owpa_to_date' => 'Target OWPA to Date', 'actual_owpa_to_date' => 'Actual OWPA to Date', 'slippage' => 'Slippage', 'output_indicator_1' => 'Output Indicator 1', 'output_indicator_2' => 'Output Indicator 2', 'output_indicator_3' => 'Output Indicator 3', 'output_indicator_4' => 'Output Indicator 4', 'output_indicator_5' => 'Output Indicator 5', 'end_of_project_target' => 'End of Project Target', 'target_to_date' => 'Target to Date', 'actual_to_date' => 'Actual to Date', 'employment_generated_male' => 'Employment Generated - Male', 'employment_generated_female' => 'Employment Generated - Female', 'remarks' => 'Remarks',
+            ],
+            'form_3' => [
+                'implementing_agency' => 'Implementing Agency/NGOs/Concerned Citizens', 'implementing_agency_type' => 'Implementing Agency Type', 'sector' => 'Sector', 'findings' => 'Findings', 'typology' => 'Typology', 'issue_status' => 'Issue Status', 'reasons' => 'Reasons', 'actions_taken' => 'Actions Taken', 'actions_to_be_taken' => 'Actions to be Taken',
+            ],
+            'form_4' => [
+                'implementing_agency' => 'Implementing Agency', 'program_objectives' => 'Program Objectives', 'results_outcome_target' => 'Results/Outcome Target', 'observed_results' => 'Observed Results',
+            ],
+        };
+
+        return array_merge($labels, $signatories);
+    }
+
+    private function sectionsFor(string $type): array
+    {
+        $fundSources = ['ODA Loan', 'ODA Grant', 'ODA Loan and Grant', 'LFP', 'PPP', 'NTA', 'Local Development Fund'];
+
+        return match ($type) {
+            'form_5' => [
+                ['title' => 'Project and Financial Information', 'fields' => ['project_title' => ['type' => 'project', 'label' => 'Program/Project Title'], 'fund_source' => ['type' => 'select', 'label' => 'Fund Source', 'options' => $fundSources], 'funding_agency' => ['label' => 'Funding Agency'], 'total_project_cost' => ['label' => 'Total Program/Project Cost (PHP)'], 'appropriations' => ['label' => 'Appropriations (PHP)'], 'allotment' => ['label' => 'Allotment (PHP)'], 'obligations' => ['label' => 'Obligations (PHP)'], 'disbursements' => ['label' => 'Disbursements (PHP)'], 'funding_support' => ['label' => 'Funding Support (%)'], 'fund_utilization' => ['label' => 'Fund Utilization (%)']]],
+                ['title' => 'Physical Accomplishment', 'fields' => ['target_owpa_to_date' => ['label' => 'Target OWPA to Date (%)'], 'actual_owpa_to_date' => ['label' => 'Actual OWPA to Date (%)'], 'slippage' => ['label' => 'Slippage'], 'employment_generated_male' => ['type' => 'number', 'label' => 'Employment Generated - Male'], 'employment_generated_female' => ['type' => 'number', 'label' => 'Employment Generated - Female'], 'remarks' => ['type' => 'textarea', 'label' => 'Remarks', 'wide' => true]]],
+            ],
+            'form_6' => [
+                ['title' => 'Project Status', 'fields' => ['project_title' => ['type' => 'project', 'label' => 'Program/Project Title'], 'location' => ['type' => 'location', 'label' => 'Location (Barangay, City/Municipality, Province)'], 'implementing_agency' => ['type' => 'select', 'label' => 'Implementing Agency', 'options' => ['LGU']], 'fund_utilization' => ['label' => 'Fund Utilization (%)']]],
+                ['title' => 'Physical Accomplishment and Issues', 'fields' => ['target_owpa_to_date' => ['label' => 'Target OWPA to Date (%)'], 'actual_owpa_to_date' => ['label' => 'Actual OWPA to Date (%)'], 'slippage' => ['label' => 'Slippage'], 'issue_details' => ['type' => 'textarea', 'label' => 'Issue Details'], 'issue_typology' => ['type' => 'textarea', 'label' => 'Issue Typology'], 'issue_status' => ['label' => 'Issue Status'], 'source_of_information' => ['type' => 'textarea', 'label' => 'Source of Information'], 'actions_taken' => ['type' => 'textarea', 'label' => 'Actions Taken'], 'actions_to_be_taken' => ['type' => 'textarea', 'label' => 'Actions to be Taken'], 'for_npmc_action' => ['type' => 'select', 'label' => 'For NPMC Action', 'options' => ['Yes', 'No']], 'requested_actions_from_npmc' => ['type' => 'textarea', 'label' => 'Requested Actions from the NPMC', 'wide' => true]]],
+            ],
+            'form_7' => [
+                ['title' => 'Project Inspection Details', 'fields' => ['project_title' => ['type' => 'project', 'label' => 'Program/Project Title'], 'total_project_cost' => ['label' => 'Total Program/Project Cost (PHP)'], 'location' => ['type' => 'location', 'label' => 'Location (Barangay, City/Municipality, Province)'], 'implementing_agency' => ['type' => 'select', 'label' => 'Implementing Agency', 'options' => ['LGU']], 'inspection_date' => ['type' => 'date', 'label' => 'Date of Project Inspection'], 'site_details' => ['type' => 'textarea', 'label' => 'Details on Site(s) Inspected', 'wide' => true]]],
+                ['title' => 'Findings and Actions', 'fields' => ['findings' => ['type' => 'textarea', 'label' => 'Findings'], 'issues' => ['type' => 'textarea', 'label' => 'Issues'], 'actions_taken' => ['type' => 'textarea', 'label' => 'Actions Taken'], 'actions_to_be_taken' => ['type' => 'textarea', 'label' => 'Actions to be Taken']]],
+            ],
+            'form_8' => [[ 'title' => 'Meeting Details', 'fields' => ['project_title' => ['type' => 'project', 'label' => 'Program/Project Title'], 'issue_details' => ['type' => 'textarea', 'label' => 'Issue Details'], 'issue_typology' => ['type' => 'textarea', 'label' => 'Issue Typology'], 'location' => ['type' => 'location', 'label' => 'Location (Barangay, City/Municipality, Province)'], 'implementing_agency' => ['type' => 'select', 'label' => 'Implementing Agency', 'options' => ['LGU']], 'meeting_date' => ['type' => 'date', 'label' => 'Date of Meeting'], 'concerned_agencies' => ['type' => 'textarea', 'label' => 'Concerned Agencies'], 'agreements_reached' => ['type' => 'textarea', 'label' => 'Agreements Reached']]]],
+            'form_9' => [
+                ['title' => 'Training/Workshop Details', 'fields' => ['training_title' => ['label' => 'Title of Training/Workshop'], 'training_objective' => ['type' => 'textarea', 'label' => 'Objective of the Training/Workshop'], 'training_date' => ['type' => 'date', 'label' => 'Date'], 'participation_type' => ['label' => 'Conducted/Facilitated/Attended'], 'lead_office' => ['label' => 'Lead Office/Unit'], 'participating_offices' => ['type' => 'textarea', 'label' => 'Participating Offices/Agencies/Organizations', 'wide' => true]]],
+                ['title' => 'Participants and Results', 'fields' => ['participants_male' => ['type' => 'number', 'label' => 'Total Participants - Male'], 'participants_female' => ['type' => 'number', 'label' => 'Total Participants - Female'], 'participants_total' => ['type' => 'number', 'label' => 'Total Participants', 'readonly' => true], 'results_feedback' => ['type' => 'textarea', 'label' => 'Results and Feedback', 'wide' => true]]],
+            ],
+            'form_10' => [[ 'title' => 'Resolution Details', 'fields' => ['resolution_number' => ['type' => 'number', 'label' => 'Resolution Number'], 'resolution_title' => ['label' => 'Resolution Title'], 'date_approved' => ['type' => 'date', 'label' => 'Date Approved'], 'resolution' => ['type' => 'textarea', 'label' => 'Resolution', 'wide' => true], 'resolution_link' => ['label' => 'Link to the Resolution', 'wide' => true]]]],
+            'form_11' => [
+                ['title' => 'Project Information', 'fields' => ['project_title' => ['type' => 'project', 'label' => 'Program/Project Title'], 'location' => ['type' => 'location', 'label' => 'Location (Barangay, City/Municipality, Province)'], 'implementing_agency' => ['type' => 'select', 'label' => 'Implementing Agency', 'options' => ['LGU']]]],
+                ['title' => 'Problem/Issue and Lessons Learned', 'fields' => ['problem_nature' => ['type' => 'textarea', 'label' => 'Problem/Issue - Nature'], 'problem_details' => ['type' => 'textarea', 'label' => 'Problem/Issue - Details'], 'strategies_actions_taken' => ['type' => 'textarea', 'label' => 'Strategies/Actions Taken to Resolve the Problem/Issue', 'wide' => true], 'responsible_entities_assistance' => ['type' => 'textarea', 'label' => 'Responsible Entity/Key Actors and their Specific Assistance', 'wide' => true], 'lessons_learned_best_practices' => ['type' => 'textarea', 'label' => 'Lessons Learned and Good Practices that Could Be Shared to the NPMC/Other PMCs', 'wide' => true]]],
+            ],
+            default => [],
         };
     }
 }
