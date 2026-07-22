@@ -147,6 +147,7 @@ Route::middleware(['auth', 'department'])
         Route::get('/reports', [\App\Http\Controllers\Department\ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/projects/pdf', [\App\Http\Controllers\Department\ReportController::class, 'projectsPdf'])->name('reports.projects-pdf');
         Route::get('/reports/budget/pdf', [\App\Http\Controllers\Department\ReportController::class, 'budgetPdf'])->name('reports.budget-pdf');
+        Route::get('/reports/sglg/pdf', [\App\Http\Controllers\Department\ReportController::class, 'sglgPdf'])->name('reports.sglg-pdf');
 
     });
 
@@ -167,6 +168,7 @@ Route::middleware(['auth', 'city'])
         Route::get('/reports', [\App\Http\Controllers\CityOfficial\ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/projects/pdf', [\App\Http\Controllers\CityOfficial\ReportController::class, 'projectsPdf'])->name('reports.projects-pdf');
         Route::get('/reports/budget/pdf', [\App\Http\Controllers\CityOfficial\ReportController::class, 'budgetPdf'])->name('reports.budget-pdf');
+        Route::get('/reports/sglg/pdf', [\App\Http\Controllers\CityOfficial\ReportController::class, 'sglgPdf'])->name('reports.sglg-pdf');
     });
 
 /*

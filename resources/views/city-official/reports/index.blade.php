@@ -13,7 +13,7 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Projects Report -->
         <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
             <h3 class="text-lg font-bold text-black mb-2">📋 Citywide Projects</h3>
@@ -26,6 +26,13 @@
             <h3 class="text-lg font-bold text-black mb-2">💰 Budget Analysis</h3>
             <p class="text-sm text-gray-500 mb-4">Citywide budget breakdown by status and barangay with spending analysis.</p>
             <a href="{{ route('city.reports.budget-pdf') }}" class="block w-full px-4 py-3 rounded text-center font-medium" style="background-color: #c9a84c; color: #0f1e3d; text-decoration: none;">Download PDF</a>
+        </div>
+
+        <!-- SGLG Compliance Report -->
+        <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
+            <h3 class="text-lg font-bold text-black mb-2">🏅 SGLG Compliance</h3>
+            <p class="text-sm text-gray-500 mb-4">Documentation, transparency, and monitoring compliance summary for DILG SGLG assessment.</p>
+            <a href="{{ route('city.reports.sglg-pdf') }}" class="block w-full px-4 py-3 rounded text-center font-medium" style="background-color: #c9a84c; color: #0f1e3d; text-decoration: none;">Download PDF</a>
         </div>
     </div>
 
