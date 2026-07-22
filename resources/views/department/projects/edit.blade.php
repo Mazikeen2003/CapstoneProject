@@ -71,6 +71,12 @@
             @csrf
             @method('PUT')
 
+            @php
+                $standardTypes = ['Bridges', 'Buildings and Facilities', 'Flood Control and Drainage', 'Roads', 'Septage and Sewerage Plants', 'Water Provision and Storage'];
+                $currentType = old('project_type', $project->project_type);
+                $isOtherType = $currentType && !in_array($currentType, $standardTypes);
+            @endphp
+
             {{-- Basic Information --}}
             <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                 <div>
@@ -79,15 +85,21 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-black">Project Type *</label>
-                    <select name="project_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" required>
+                    <select id="project_type_select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" required>
                         <option value="">-- Select Project Type --</option>
-                        <option value="Bridges" @selected(old('project_type', $project->project_type) == 'Bridges')>Bridges</option>
-                        <option value="Buildings and Facilities" @selected(old('project_type', $project->project_type) == 'Buildings and Facilities')>Buildings and Facilities</option>
-                        <option value="Flood Control and Drainage" @selected(old('project_type', $project->project_type) == 'Flood Control and Drainage')>Flood Control and Drainage</option>
-                        <option value="Roads" @selected(old('project_type', $project->project_type) == 'Roads')>Roads</option>
-                        <option value="Septage and Sewerage Plants" @selected(old('project_type', $project->project_type) == 'Septage and Sewerage Plants')>Septage and Sewerage Plants</option>
-                        <option value="Water Provision and Storage" @selected(old('project_type', $project->project_type) == 'Water Provision and Storage')>Water Provision and Storage</option>
+                        <option value="Bridges" @selected($currentType == 'Bridges')>Bridges</option>
+                        <option value="Buildings and Facilities" @selected($currentType == 'Buildings and Facilities')>Buildings and Facilities</option>
+                        <option value="Flood Control and Drainage" @selected($currentType == 'Flood Control and Drainage')>Flood Control and Drainage</option>
+                        <option value="Roads" @selected($currentType == 'Roads')>Roads</option>
+                        <option value="Septage and Sewerage Plants" @selected($currentType == 'Septage and Sewerage Plants')>Septage and Sewerage Plants</option>
+                        <option value="Water Provision and Storage" @selected($currentType == 'Water Provision and Storage')>Water Provision and Storage</option>
+                        <option value="Others" @selected($isOtherType)>Others</option>
                     </select>
+                    <input type="hidden" id="project_type" name="project_type" value="{{ $currentType }}">
+                    <div id="project_type_other_wrapper" class="mt-2" style="{{ $isOtherType ? '' : 'display: none;' }}">
+                        <label class="block text-xs font-medium text-gray-600">Please specify</label>
+                        <input type="text" id="project_type_other" value="{{ $isOtherType ? $currentType : '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" placeholder="Enter project type">
+                    </div>
                 </div>
             </div>
 
@@ -239,6 +251,29 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Project type "Others" toggle logic
+    const projectTypeSelect = document.getElementById('project_type_select');
+    const projectTypeHidden = document.getElementById('project_type');
+    const projectTypeOtherWrapper = document.getElementById('project_type_other_wrapper');
+    const projectTypeOtherInput = document.getElementById('project_type_other');
+
+    function syncProjectType() {
+        if (projectTypeSelect.value === 'Others') {
+            projectTypeOtherWrapper.style.display = 'block';
+            projectTypeHidden.value = projectTypeOtherInput.value;
+        } else {
+            projectTypeOtherWrapper.style.display = 'none';
+            projectTypeHidden.value = projectTypeSelect.value;
+        }
+    }
+
+    projectTypeSelect.addEventListener('change', syncProjectType);
+    projectTypeOtherInput.addEventListener('input', function() {
+        projectTypeHidden.value = projectTypeOtherInput.value;
+    });
+
+    syncProjectType();
+
     // Initialize map (locked mode - display only)
     const map = L.map('project-location-map').setView([{{ $project->latitude ?? 14.8497 }}, {{ $project->longitude ?? 121.0074 }}], 14);
     

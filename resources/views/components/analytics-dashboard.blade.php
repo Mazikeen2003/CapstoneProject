@@ -2,17 +2,14 @@
     $statusOrder = ['Planning', 'On Going', 'On Hold', 'Completed'];
     $statusColors = ['#fbbf24', '#3b82f6', '#ef4444', '#10b981'];
     $statusCounts = collect($statusOrder)->map(fn ($status) => $byStatus[$status]['count'] ?? 0)->values();
-    $remainingBudget = max(($stats['total_budget'] ?? 0) - ($stats['total_spent'] ?? 0), 0);
+    $remainingBudget = max(($budgetStats['total_budget'] ?? 0) - ($budgetStats['total_spent'] ?? 0), 0);
     $barangayLabels = isset($byBarangay) ? $byBarangay->take(10)->keys()->values() : collect();
     $barangayValues = isset($byBarangay) ? $byBarangay->take(10)->map(fn ($item) => $item['budget'] ?? 0)->values() : collect();
     $barangayProjectCounts = isset($byBarangay) ? $byBarangay->take(10)->map(fn ($item) => $item['count'] ?? 0)->values() : collect();
 @endphp
 
 <div class="space-y-6">
-    <div>
-        <h1 class="text-3xl font-bold text-black">{{ $heading }}</h1>
-        <p class="mt-1 text-sm text-slate-500">Visual overview of project progress and funding.</p>
-    </div>
+    <div><h1 class="text-3xl font-bold text-black">{{ $heading }}</h1><p class="mt-1 text-sm text-slate-500">Visual overview of project progress and funding.</p></div>
 
     <div class="grid grid-cols-2 gap-4 lg:grid-cols-5">
         @foreach ([
@@ -31,11 +28,11 @@
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <section class="rounded-lg bg-white p-5" style="border: 1px solid #B2BEB5;">
-            <h2 class="mb-4 text-lg font-bold text-black">Project Status Distribution</h2>
+            <div class="mb-4 flex items-end justify-between gap-3"><h2 class="text-lg font-bold text-black">Project Status Distribution</h2><form method="GET" class="flex items-end gap-2"><input type="hidden" name="budget_year" value="{{ $budgetYear }}"><select aria-label="Filter project status by year" name="status_year" class="h-8 rounded-md border-gray-300 text-xs" style="border-color: #B2BEB5;"><option value="">All years</option>@foreach ($availableYears as $year)<option value="{{ $year }}" @selected((string) $statusYear === (string) $year)>{{ $year }}</option>@endforeach</select><button type="submit" class="inline-flex h-8 items-center rounded px-2 text-xs font-semibold" style="background-color: #162347; color: #f2f3f7;">Filter</button></form></div>
             <div class="h-80"><canvas id="statusChart"></canvas></div>
         </section>
         <section class="rounded-lg bg-white p-5" style="border: 1px solid #B2BEB5;">
-            <h2 class="mb-4 text-lg font-bold text-black">Budget Comparison</h2>
+            <div class="mb-4 flex items-end justify-between gap-3"><h2 class="text-lg font-bold text-black">Budget Comparison</h2><form method="GET" class="flex items-end gap-2"><input type="hidden" name="status_year" value="{{ $statusYear }}"><select aria-label="Filter budget comparison by year" name="budget_year" class="h-8 rounded-md border-gray-300 text-xs" style="border-color: #B2BEB5;"><option value="">All years</option>@foreach ($availableYears as $year)<option value="{{ $year }}" @selected((string) $budgetYear === (string) $year)>{{ $year }}</option>@endforeach</select><button type="submit" class="inline-flex h-8 items-center rounded px-2 text-xs font-semibold" style="background-color: #162347; color: #f2f3f7;">Filter</button></form></div>
             <div class="h-80"><canvas id="budgetChart"></canvas></div>
         </section>
     </div>
@@ -70,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     new Chart(document.getElementById('budgetChart'), {
         type: 'bar',
-        data: { labels: ['Allocated', 'Spent', 'Remaining'], datasets: [{ data: @json([$stats['total_budget'], $stats['total_spent'], $remainingBudget]), backgroundColor: ['#162347', '#c9a84c', '#10b981'], hoverBackgroundColor: ['#243a70', '#dfbe63', '#34c995'], borderRadius: 8, hoverBorderRadius: 12 }] },
+        data: { labels: ['Allocated', 'Spent', 'Remaining'], datasets: [{ data: @json([$budgetStats['total_budget'], $budgetStats['total_spent'], $remainingBudget]), backgroundColor: ['#162347', '#c9a84c', '#10b981'], hoverBackgroundColor: ['#243a70', '#dfbe63', '#34c995'], borderRadius: 8, hoverBorderRadius: 12 }] },
         options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, scales: { y: { beginAtZero: true, ticks: { callback: value => peso(value) } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)}` } } } }
     });
 

@@ -22,6 +22,11 @@
     <div class="bg-white rounded-lg p-3" style="background-color: #white; border: 2px solid #B2BEB5;">
         <form method="POST" action="{{ route('department.projects.store') }}" enctype="multipart/form-data">
             @csrf
+            @php
+                $standardTypes = ['Bridges', 'Buildings and Facilities', 'Flood Control and Drainage', 'Roads', 'Septage and Sewerage Plants', 'Water Provision and Storage'];
+                $oldType = old('project_type');
+                $isOtherType = $oldType && !in_array($oldType, $standardTypes);
+            @endphp
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.9fr)]">
                 <div class="space-y-3">
                     <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -31,15 +36,21 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-black">Project Type *</label>
-                            <select name="project_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" required>
+                            <select id="project_type_select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" required>
                                 <option value="">-- Select Project Type --</option>
-                                <option value="Bridges" @selected(old('project_type') == 'Bridges')>Bridges</option>
-                                <option value="Buildings and Facilities" @selected(old('project_type') == 'Buildings and Facilities')>Buildings and Facilities</option>
-                                <option value="Flood Control and Drainage" @selected(old('project_type') == 'Flood Control and Drainage')>Flood Control and Drainage</option>
-                                <option value="Roads" @selected(old('project_type') == 'Roads')>Roads</option>
-                                <option value="Septage and Sewerage Plants" @selected(old('project_type') == 'Septage and Sewerage Plants')>Septage and Sewerage Plants</option>
-                                <option value="Water Provision and Storage" @selected(old('project_type') == 'Water Provision and Storage')>Water Provision and Storage</option>
+                                <option value="Bridges" @selected($oldType == 'Bridges')>Bridges</option>
+                                <option value="Buildings and Facilities" @selected($oldType == 'Buildings and Facilities')>Buildings and Facilities</option>
+                                <option value="Flood Control and Drainage" @selected($oldType == 'Flood Control and Drainage')>Flood Control and Drainage</option>
+                                <option value="Roads" @selected($oldType == 'Roads')>Roads</option>
+                                <option value="Septage and Sewerage Plants" @selected($oldType == 'Septage and Sewerage Plants')>Septage and Sewerage Plants</option>
+                                <option value="Water Provision and Storage" @selected($oldType == 'Water Provision and Storage')>Water Provision and Storage</option>
+                                <option value="Others" @selected($isOtherType)>Others</option>
                             </select>
+                            <input type="hidden" id="project_type" name="project_type" value="{{ $oldType }}">
+                            <div id="project_type_other_wrapper" class="mt-2" style="{{ $isOtherType ? '' : 'display: none;' }}">
+                                <label class="block text-xs font-medium text-gray-600">Please specify</label>
+                                <input type="text" id="project_type_other" value="{{ $isOtherType ? $oldType : '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" placeholder="Enter project type">
+                            </div>
                         </div>
                     </div>
                     <div>
@@ -113,6 +124,30 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Project type "Others" toggle logic
+        const projectTypeSelect = document.getElementById('project_type_select');
+        const projectTypeHidden = document.getElementById('project_type');
+        const projectTypeOtherWrapper = document.getElementById('project_type_other_wrapper');
+        const projectTypeOtherInput = document.getElementById('project_type_other');
+
+        function syncProjectType() {
+            if (projectTypeSelect.value === 'Others') {
+                projectTypeOtherWrapper.style.display = 'block';
+                projectTypeHidden.value = projectTypeOtherInput.value;
+            } else {
+                projectTypeOtherWrapper.style.display = 'none';
+                projectTypeHidden.value = projectTypeSelect.value;
+            }
+        }
+
+        projectTypeSelect.addEventListener('change', syncProjectType);
+        projectTypeOtherInput.addEventListener('input', function() {
+            projectTypeHidden.value = projectTypeOtherInput.value;
+        });
+
+        // Initialize on page load (handles old() repopulation after validation errors)
+        syncProjectType();
+
         const latitudeInput = document.getElementById('project-latitude');
         const longitudeInput = document.getElementById('project-longitude');
         const addressDisplay = document.getElementById('project-address');

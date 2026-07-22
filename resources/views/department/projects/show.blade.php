@@ -127,9 +127,7 @@
                         </p>
                     </div>
                     @if ($isAvailable)
-                        <a href="{{ route('department.projects.forms.edit', [$project->project_id, $type]) }}" class="shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded" style="background-color: #c9a84c; color: #0f1e3d;">
-                            {{ $existingForm ? 'View / Edit' : 'Fill Out' }}
-                        </a>
+                        <div class="flex shrink-0 gap-2"><a href="{{ route('department.projects.forms.edit', [$project->project_id, $type]) }}" class="whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded" style="background-color: #c9a84c; color: #0f1e3d;">{{ $existingForm ? 'View / Edit' : 'Fill Out' }}</a>@if ($existingForm)<a href="{{ route('department.projects.forms.pdf', [$project->project_id, $type]) }}" title="Download PDF" class="px-2 py-1.5 text-xs font-semibold rounded" style="background-color: #162347; color: #f2f3f7;">PDF</a>@endif</div>
                     @else
                         <span class="shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded bg-gray-100 text-gray-400 cursor-not-allowed">Unavailable</span>
                     @endif
