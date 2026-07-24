@@ -8,30 +8,27 @@ use Illuminate\Support\Facades\DB;
 
 class BarangaySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $barangays = [
-            'Banay-banay',
-            'Banadero',
+            'Baclaran',
+            'Banaybanay',
+            'Banlic',
+            'Barangay Dos',
+            'Barangay Tres',
+            'Barangay Uno',
             'Bigaa',
             'Butong',
             'Casile',
             'Diezmo',
             'Gulod',
-            'Halang',
-            'Laguerta',
-            'Lawa',
-            'Lecheria',
-            'Leismer',
             'Mamatid',
             'Marinig',
             'Niugan',
             'Pittland',
             'Pulo',
             'Sala',
+            'San Isidro',
         ];
 
         foreach ($barangays as $name) {
@@ -44,4 +41,3 @@ class BarangaySeeder extends Seeder
         }
     }
 }
-
