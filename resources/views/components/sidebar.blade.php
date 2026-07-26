@@ -167,9 +167,9 @@
                     <div class="text-xs" style="color: #c9a84c;">{{ $userEmail }}</div>
                 </div>
             </div>
-            <form method="POST" action="{{ route('logout') }}">
+            <form id="logoutForm" method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition font-semibold text-sm">
+                <button type="button" id="logoutTriggerBtn" class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition font-semibold text-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                     </svg>
@@ -180,3 +180,80 @@
         @endif
     </div>
 </aside>
+
+@if($role !== 'public')
+<!-- Logout Confirmation Modal -->
+<div id="logoutConfirmModal" class="fixed inset-0 z-[10000] hidden items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-200">
+    <div id="logoutConfirmDialog" class="w-full max-w-sm rounded-2xl bg-white p-7 shadow-2xl mx-4 scale-95 opacity-0 transition-all duration-200">
+        <div class="flex flex-col items-center text-center">
+            <div class="flex h-16 w-16 items-center justify-center rounded-full mb-4" style="background-color: #fee2e2;">
+                <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-black mb-1">Log out of your account?</h3>
+            <p class="text-sm text-gray-500 mb-6">You'll need to sign in again to access the Project Tracker System.</p>
+        </div>
+        <div class="flex gap-3">
+            <button type="button" id="logoutCancelBtn" class="flex-1 px-4 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm transition-colors">
+                Cancel
+            </button>
+            <button type="button" id="logoutConfirmBtn" class="flex-1 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-sm transition-colors shadow-sm shadow-red-200">
+                Yes, Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const triggerBtn = document.getElementById('logoutTriggerBtn');
+        const cancelBtn = document.getElementById('logoutCancelBtn');
+        const confirmBtn = document.getElementById('logoutConfirmBtn');
+        const modal = document.getElementById('logoutConfirmModal');
+        const dialog = document.getElementById('logoutConfirmDialog');
+        const form = document.getElementById('logoutForm');
+
+        if (!triggerBtn || !modal) return;
+
+        function openModal() {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // Force reflow so the transition plays
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                dialog.classList.remove('opacity-0', 'scale-95');
+                dialog.classList.add('opacity-100', 'scale-100');
+            });
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            dialog.classList.remove('opacity-100', 'scale-100');
+            dialog.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 200);
+        }
+
+        triggerBtn.addEventListener('click', openModal);
+        cancelBtn.addEventListener('click', closeModal);
+        confirmBtn.addEventListener('click', function() {
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = 'Logging out...';
+            form.submit();
+        });
+
+        // Close modal when clicking outside the dialog
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) closeModal();
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+        });
+    });
+</script>
+@endif
