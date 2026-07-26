@@ -1,4 +1,4 @@
-@extends('layouts.barangay')
+@extends('layouts.department')
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
@@ -13,19 +13,19 @@
         </svg>
     </button>
 
-    <div id="projectSidebar" class="fixed inset-0 z-[10000] w-full bg-white border-t md:relative md:inset-auto md:w-[360px] md:border-t-0 md:border-l border-gray-200 overflow-y-auto max-h-[100svh] shadow-sm order-3 md:order-2 md:max-h-full hidden md:block" role="dialog" aria-label="Barangay project list">
+    <div id="projectSidebar" class="fixed inset-0 z-[10000] w-full bg-white border-t md:relative md:inset-auto md:w-[360px] md:border-t-0 md:border-l border-gray-200 overflow-y-auto max-h-[100svh] shadow-sm order-3 md:order-2 md:max-h-full hidden md:block" role="dialog" aria-label="Department project list">
         <div class="p-6 border-b border-gray-200 sticky top-0 bg-white">
-            <h2 class="text-lg font-bold text-black">Barangay Projects</h2>
+            <h2 class="text-lg font-bold text-black">Department Projects</h2>
             <p class="text-sm text-gray-500 mt-1">Cabuyao City Projects</p>
-            <div id="barangaySidebarAction" class="mt-4"></div>
+            <div id="departmentSidebarAction" class="mt-4"></div>
         </div>
-        <div id="barangayProjectList" class="divide-y divide-gray-200"></div>
+        <div id="departmentProjectList" class="divide-y divide-gray-200"></div>
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const projectList = document.getElementById('barangayProjectList');
+        const projectList = document.getElementById('departmentProjectList');
         const projectSidebarToggle = document.getElementById('toggleProjectSidebar');
         const projectSidebar = document.getElementById('projectSidebar');
         const selectedClass = 'bg-slate-50 border border-slate-200';
@@ -33,6 +33,11 @@
         let map = null;
         let boundedArea = null;
         let projectFeatures = [];
+        let barangayLayer = null;
+        let selectedBarangayLayer = null;
+        let selectedBarangayName = null;
+        const markersByBarangay = {}; // barangay name -> array of Leaflet markers
+        let allMarkers = null; // featureGroup holding every marker
 
         function isMobile() {
             return window.innerWidth < 768;
@@ -67,6 +72,15 @@
         window.addEventListener('resize', syncProjectSidebar);
         syncProjectSidebar();
 
+        function barangayColor(name) {
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const hue = Math.abs(hash) % 360;
+            return `hsl(${hue}, 65%, 55%)`;
+        }
+
         function formatCurrency(value) {
             return `₱${Number(value || 0).toLocaleString()}`;
         }
@@ -75,14 +89,14 @@
             if (!project.properties.start_date || !project.properties.target_end_date) {
                 return 0;
             }
-            
+
             const startDate = new Date(project.properties.start_date);
             const endDate = new Date(project.properties.target_end_date);
             const today = new Date();
-            
+
             const totalDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
             const daysElapsed = (today - startDate) / (1000 * 60 * 60 * 24);
-            
+
             return totalDays > 0 ? Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100)) : 0;
         }
 
@@ -91,7 +105,7 @@
             const progress = calculateProgress(project);
             const startDate = props.start_date ? new Date(props.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
             const targetDate = props.target_end_date ? new Date(props.target_end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
-            
+
             const imageHtml = props.image
                 ? `<img src="${props.image}" alt="${props.name}" class="h-40 w-full rounded-2xl object-cover bg-slate-100">`
                 : '<div class="h-40 w-full rounded-2xl bg-gray-100 flex items-center justify-center text-xs text-gray-500">No image</div>';
@@ -152,9 +166,22 @@
             `;
         }
 
-        function updateSidebarAction(isSingle) {
-            const actionContainer = document.getElementById('barangaySidebarAction');
-            actionContainer.innerHTML = '';
+        function updateSidebarAction() {
+            const actionContainer = document.getElementById('departmentSidebarAction');
+
+            if (selectedBarangayName) {
+                actionContainer.innerHTML = `
+                    <button type="button" id="backToAllBarangays" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Back to all barangays
+                    </button>
+                `;
+                document.getElementById('backToAllBarangays').addEventListener('click', resetToAllBarangays);
+            } else {
+                actionContainer.innerHTML = '';
+            }
         }
 
         function clearSelection() {
@@ -175,8 +202,14 @@
 
         function renderProjectList(projects) {
             const isSingle = projects.length === 1;
-            updateSidebarAction(isSingle);
-            projectList.innerHTML = projects.map(function(project, index) {
+            updateSidebarAction();
+
+            if (projects.length === 0) {
+                projectList.innerHTML = `<div class="p-6 text-sm text-gray-500">No public projects recorded in ${selectedBarangayName} yet.</div>`;
+                return;
+            }
+
+            projectList.innerHTML = projects.map(function(project) {
                 return renderProjectCard(project, project.originalIndex, isSingle);
             }).join('');
 
@@ -198,14 +231,12 @@
 
         function showAllProjects() {
             selectedProjectIndex = null;
-            renderProjectList(projectFeatures);
-            if (map && boundedArea) {
-                map.fitBounds(boundedArea, {
-                    padding: [24, 24],
-                    animate: true,
-                    duration: 0.7,
-                    easeLinearity: 0.3
-                });
+            const activeList = selectedBarangayName
+                ? projectFeatures.filter(p => p.properties.barangay === selectedBarangayName)
+                : projectFeatures;
+            renderProjectList(activeList);
+            if (map && boundedArea && !selectedBarangayName) {
+                map.fitBounds(boundedArea, { padding: [24, 24], animate: true, duration: 0.7, easeLinearity: 0.3 });
             }
         }
 
@@ -214,19 +245,54 @@
             renderProjectList([project]);
             if (map && project && project.geometry && project.geometry.coordinates) {
                 const coords = project.geometry.coordinates;
-                map.flyTo([coords[1], coords[0]], 15, {
-                    duration: 0.7,
-                    easeLinearity: 0.35
-                });
+                map.flyTo([coords[1], coords[0]], 15, { duration: 0.7, easeLinearity: 0.35 });
             }
+        }
+
+        function resetToAllBarangays() {
+            if (selectedBarangayLayer) {
+                barangayLayer.resetStyle(selectedBarangayLayer);
+                selectedBarangayLayer = null;
+            }
+            selectedBarangayName = null;
+
+            if (allMarkers) {
+                map.addLayer(allMarkers);
+            }
+
+            selectedProjectIndex = null;
+            renderProjectList(projectFeatures);
+
+            if (map && boundedArea) {
+                map.fitBounds(boundedArea, { padding: [24, 24] });
+            }
+        }
+
+        function selectBarangayOnMap(layer, name) {
+            if (selectedBarangayLayer) {
+                barangayLayer.resetStyle(selectedBarangayLayer);
+            }
+            selectedBarangayLayer = layer;
+            layer.setStyle({ fillOpacity: 0.75, weight: 3, color: '#162347' });
+            selectedBarangayName = name;
+            selectedProjectIndex = null;
+
+            map.fitBounds(layer.getBounds(), { padding: [40, 40] });
+
+            // Show only markers belonging to this barangay
+            if (allMarkers) {
+                map.removeLayer(allMarkers);
+            }
+            (markersByBarangay[name] || []).forEach(marker => marker.addTo(map));
+
+            const filtered = projectFeatures.filter(p => p.properties.barangay === name);
+            renderProjectList(filtered);
         }
 
         fetch('{{ asset('data/cabuyao-map.geojson') }}')
             .then(response => response.json())
             .then(function(geojson) {
-                const boundaryFeature = geojson.features.find(feature => feature.properties.kind === 'boundary');
-                const barangays = geojson.features.filter(feature => feature.properties.kind === 'barangay');
-                const cabuyaoBounds = L.geoJSON(boundaryFeature).getBounds();
+                const cabuyaoBounds = L.geoJSON(geojson).getBounds();
                 boundedArea = cabuyaoBounds.pad(0.02);
                 map = L.map('map', {
                     maxBounds: boundedArea,
@@ -239,30 +305,34 @@
                     minZoom: 11
                 }).addTo(map);
 
-                barangays.forEach(function(barangay) {
-                    const lng = barangay.geometry.coordinates[0];
-                    const lat = barangay.geometry.coordinates[1];
-                    L.circleMarker([lat, lng], {
-                        radius: 8,
-                        fillColor: '#e5e7eb',
-                        color: '#6b7280',
-                        weight: 2,
-                        opacity: 0.7,
-                        fillOpacity: 0.6
-                    }).bindPopup(`<div class="text-sm"><h4 class="font-bold text-black">${barangay.properties.name}</h4></div>`).addTo(map);
-                });
+                // Draw barangay shapes
+                barangayLayer = L.geoJSON(geojson, {
+                    style: (feature) => ({
+                        fillColor: barangayColor(feature.properties.name),
+                        fillOpacity: 0.35,
+                        color: '#ffffff',
+                        weight: 1.5,
+                    }),
+                    onEachFeature: (feature, layer) => {
+                        const name = feature.properties.name;
+                        layer.bindTooltip(name, { sticky: true, className: 'barangay-tooltip' });
+                        layer.on({
+                            mouseover: (e) => {
+                                if (layer !== selectedBarangayLayer) e.target.setStyle({ fillOpacity: 0.6, weight: 2.5 });
+                            },
+                            mouseout: (e) => {
+                                if (layer !== selectedBarangayLayer) barangayLayer.resetStyle(e.target);
+                            },
+                            click: () => selectBarangayOnMap(layer, name),
+                        });
+                    },
+                }).addTo(map);
 
                 function getMarkerColor(status) {
-                    switch (status) {
-                        case 'Completed': return '#10b981';
-                        case 'On Going': return '#3b82f6';
-                        case 'On Hold': return '#ef4444';
-                        case 'Planning': return '#fbbf24';
-                        default: return '#6b7280';
-                    }
+                    return ({ 'Completed': '#10b981', 'On Going': '#3b82f6', 'On Hold': '#ef4444', 'Planning': '#fbbf24' })[status] || '#64748b';
                 }
 
-                const projectMarkers = L.featureGroup();
+                allMarkers = L.featureGroup();
                 projectFeatures = [];
                 window.projectFeatures = projectFeatures;
 
@@ -291,25 +361,28 @@
                             marker.bindPopup(`<div class="text-sm"><h4 class="font-bold text-black">${project.properties.name}</h4><p class="text-xs text-gray-600">${project.properties.status || 'Unknown'}</p></div>`);
                             marker.on('click', function(e) {
                                 L.DomEvent.stopPropagation(e);
-                                map.flyTo([coords[1], coords[0]], 16, {
-                                    duration: 0.7,
-                                    easeLinearity: 0.35
-                                });
+                                map.flyTo([coords[1], coords[0]], 16, { duration: 0.7, easeLinearity: 0.35 });
                                 selectProject(project, index);
                             });
 
-                            projectMarkers.addLayer(marker);
+                            allMarkers.addLayer(marker);
                             projectFeatures.push(Object.assign({ originalIndex: index }, project));
+
+                            const barangayName = project.properties.barangay;
+                            if (barangayName) {
+                                if (!markersByBarangay[barangayName]) markersByBarangay[barangayName] = [];
+                                markersByBarangay[barangayName].push(marker);
+                            }
                         });
 
                         function restoreListOnMapClick() {
-                            if (selectedProjectIndex !== null) {
+                            if (selectedProjectIndex !== null && !selectedBarangayName) {
                                 showAllProjects();
                             }
                         }
 
                         map.on('click', restoreListOnMapClick);
-                        projectMarkers.addTo(map);
+                        allMarkers.addTo(map);
                         renderProjectList(projectFeatures);
                     })
                     .catch(function(error) {
