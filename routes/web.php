@@ -82,6 +82,12 @@ Route::prefix('public')->name('public.')->group(function () {
     Route::get('/analytics', [PublicAnalyticsController::class, 'index'])->name('analytics');
 });
 
+Route::prefix('api/public')->name('api.public.')->group(function () {
+    Route::get('/projects/geojson', [PublicMapController::class, 'geojson'])->name('projects.geojson'); // NEW
+    Route::get('/barangays/geojson', [PublicMapController::class, 'barangaysGeojson'])->name('barangays.geojson');
+    Route::get('/barangays/{barangay}/projects/geojson', [PublicMapController::class, 'projectsForBarangay'])->name('barangays.projects.geojson');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Admin routes

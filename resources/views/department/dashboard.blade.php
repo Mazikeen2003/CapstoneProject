@@ -60,8 +60,7 @@
         fetch('{{ asset('data/cabuyao-map.geojson') }}')
             .then(response => response.json())
             .then(function(geojson) {
-                const boundaryFeature = geojson.features.find(f => f.properties.kind === 'boundary');
-                const cabuyaoBounds = L.geoJSON(boundaryFeature).getBounds();
+                const cabuyaoBounds = L.geoJSON(geojson).getBounds();
                 const boundedArea = cabuyaoBounds.pad(0.02);
 
                 const map = L.map('department-map', {
