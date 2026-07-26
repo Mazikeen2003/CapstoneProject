@@ -129,14 +129,10 @@
                 return response.json();
             })
             .then(function(geojson) {
-                const boundaryFeature = geojson.features.find(f => f.properties.kind === 'boundary');
-                const defaultFeature = geojson.features.find(f => f.properties.kind === 'default_location');
-                const barangayFeatures = geojson.features.filter(f => f.properties.kind === 'barangay');
-                const cabuyaoBounds = L.geoJSON(boundaryFeature).getBounds();
-                const defaultLocation = L.latLng(
-                    defaultFeature.geometry.coordinates[1],
-                    defaultFeature.geometry.coordinates[0]
-                );
+                const cabuyaoLayer = L.geoJSON(geojson);
+                const cabuyaoBounds = cabuyaoLayer.getBounds();
+                const defaultLocation = cabuyaoBounds.getCenter();
+
                 const locationMap = L.map('project-location-map', {
                     maxBounds: cabuyaoBounds,
                     maxBoundsViscosity: 1.0
@@ -148,14 +144,25 @@
                     minZoom: 11
                 }).addTo(locationMap);
 
+                // Faint barangay outlines for visual reference while picking a spot
+                L.geoJSON(geojson, {
+                    style: { color: '#162347', weight: 1, fillOpacity: 0.05 }
+                }).addTo(locationMap);
+
                 locationMap.fitBounds(cabuyaoBounds, { padding: [16, 16] });
                 locationMap.setMinZoom(locationMap.getZoom());
 
                 const marker = L.marker(defaultLocation, { draggable: true }).addTo(locationMap);
-                const barangayCoordinates = {};
-                barangayFeatures.forEach(function(feature) {
+
+                // Build a lookup: barangay name -> { bounds, center } from the polygons
+                const barangayLookup = {};
+                geojson.features.forEach(function(feature) {
                     if (!feature.properties || !feature.properties.name) return;
-                    barangayCoordinates[feature.properties.name] = feature.geometry.coordinates;
+                    const layer = L.geoJSON(feature);
+                    barangayLookup[feature.properties.name] = {
+                        bounds: layer.getBounds(),
+                        center: layer.getBounds().getCenter(),
+                    };
                 });
 
                 function setAddress(value, persist = true) {
@@ -200,11 +207,10 @@
                         return;
                     }
 
-                    const coordinates = barangayCoordinates[selectedName];
-                    if (coordinates && coordinates.length >= 2) {
-                        const latlng = L.latLng(coordinates[1], coordinates[0]);
-                        locationMap.setView(latlng, 14);
-                        setProjectLocation(latlng, `${selectedName}, Cabuyao City`);
+                    const match = barangayLookup[selectedName];
+                    if (match) {
+                        locationMap.fitBounds(match.bounds, { padding: [24, 24] });
+                        setProjectLocation(match.center, `${selectedName}, Cabuyao City`);
                     } else {
                         setAddress(selectedName || 'Selected barangay');
                     }
