@@ -60,18 +60,34 @@
         fetch('{{ asset('data/cabuyao-map.geojson') }}')
             .then(response => response.json())
             .then(function(geojson) {
-                const boundaryFeature = geojson.features.find(f => f.properties.kind === 'boundary');
-                const cabuyaoBounds = L.geoJSON(boundaryFeature).getBounds();
+                const boundaryFeature = geojson.features?.find(f => f.properties?.kind === 'boundary');
+                const boundaryGeoJson = boundaryFeature ? boundaryFeature : (geojson.features?.length ? geojson : null);
+
+                if (!boundaryGeoJson) {
+                    console.error('GeoJSON boundary is missing or malformed:', geojson);
+                    return;
+                }
+
+                const cabuyaoBounds = L.geoJSON(boundaryGeoJson).getBounds();
 
                 const map = L.map('barangay-map', {
                     maxBounds: cabuyaoBounds,
                     maxBoundsViscosity: 1.0
                 });
 
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                const baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: 'OpenStreetMap contributors',
                     maxZoom: 19,
                     minZoom: 11
+                }).addTo(map);
+
+                L.geoJSON(boundaryGeoJson, {
+                    style: {
+                        color: '#3b82f6',
+                        weight: 2,
+                        opacity: 0.6,
+                        fillOpacity: 0.1
+                    }
                 }).addTo(map);
 
                 map.fitBounds(cabuyaoBounds, { padding: [20, 20] });
@@ -92,7 +108,7 @@
 
                                 return L.circleMarker(latlng, {
                                     radius: 8,
-                                    fillColor: statusColor[feature.properties.status] || '#gray-400',
+                                    fillColor: statusColor[feature.properties.status] || '#9CA3AF',
                                     color: '#000',
                                     weight: 2,
                                     opacity: 0.8,
