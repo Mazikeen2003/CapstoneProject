@@ -183,7 +183,7 @@
 
 @if($role !== 'public')
 <!-- Logout Confirmation Modal -->
-<div id="logoutConfirmModal" class="fixed inset-0 z-[10000] hidden items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-200">
+<div id="logoutConfirmModal" class="fixed inset-0 z-[20000] hidden items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-200">
     <div id="logoutConfirmDialog" class="w-full max-w-sm rounded-2xl bg-white p-7 shadow-2xl mx-4 scale-95 opacity-0 transition-all duration-200">
         <div class="flex flex-col items-center text-center">
             <div class="flex h-16 w-16 items-center justify-center rounded-full mb-4" style="background-color: #fee2e2;">
