@@ -87,5 +87,79 @@
     // Fit to Cabuyao bounds
     const cabuyaoBounds = [[14.2, 121.0], [14.5, 121.1]];
     map.fitBounds(cabuyaoBounds);
+
+    // --- New barangay polygon handling ---
+    let selectedLayer = null;
+
+    function barangayColor(name) {
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) {
+            hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const hue = Math.abs(hash) % 360;
+        return `hsl(${hue}, 65%, 55%)`;
+    }
+
+    function resetToBarangayView() {
+        if (projectLayer) {
+            map.removeLayer(projectLayer);
+            projectLayer = null;
+        }
+        if (selectedLayer) {
+            barangayLayer.resetStyle(selectedLayer);
+            selectedLayer = null;
+        }
+        renderSidebarPrompt();
+        if (barangayLayer) {
+            map.fitBounds(barangayLayer.getBounds(), { padding: [24, 24] });
+        }
+    }
+
+    function selectBarangayPolygon(layer, feature) {
+        if (selectedLayer) {
+            barangayLayer.resetStyle(selectedLayer);
+        }
+        selectedLayer = layer;
+        layer.setStyle({ fillOpacity: 0.85, weight: 3, color: '#162347' });
+
+        map.fitBounds(layer.getBounds(), { padding: [40, 40] });
+        selectBarangay(feature.properties.barangay_id, feature.properties.name);
+    }
+
+    function renderBarangayMarkers(featureCollection) {
+        barangayLayer = L.geoJSON(featureCollection, {
+            style: (feature) => ({
+                fillColor: barangayColor(feature.properties.name),
+                fillOpacity: 0.55,
+                color: '#ffffff',
+                weight: 1.5,
+            }),
+            onEachFeature: (feature, layer) => {
+                layer.bindTooltip(feature.properties.name, { sticky: true, className: 'barangay-tooltip' });
+                layer.bindPopup(`
+                    <div class="text-sm">
+                        <h4 class="font-bold">${feature.properties.name}</h4>
+                        <p class="text-xs text-gray-600">${feature.properties.project_count} public project(s)</p>
+                    </div>
+                `);
+                layer.on({
+                    mouseover: (e) => {
+                        if (layer !== selectedLayer) e.target.setStyle({ fillOpacity: 0.8, weight: 2.5 });
+                    },
+                    mouseout: (e) => {
+                        if (layer !== selectedLayer) barangayLayer.resetStyle(e.target);
+                    },
+                    click: () => selectBarangayPolygon(layer, feature),
+                });
+            },
+        }).addTo(map);
+    }
+
+    // Update sidebar prompt text
+    function renderSidebarPrompt() {
+        // Example stub:
+        // document.getElementById('sidebar-prompt').textContent = 
+        // "Click a barangay shape on the map to view its public projects.";
+    }
 </script>
 @endsection
