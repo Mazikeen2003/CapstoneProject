@@ -60,18 +60,34 @@
         fetch('{{ asset('data/cabuyao-map.geojson') }}')
             .then(response => response.json())
             .then(function(geojson) {
-                const boundaryFeature = geojson.features.find(f => f.properties.kind === 'boundary');
-                const cabuyaoBounds = L.geoJSON(boundaryFeature).getBounds();
+                const boundaryFeature = geojson.features?.find(f => f.properties?.kind === 'boundary');
+                const geoJsonBoundary = boundaryFeature ? boundaryFeature : (geojson.features?.length ? geojson : null);
+
+                if (!geoJsonBoundary) {
+                    console.error('GeoJSON boundary is missing or malformed:', geojson);
+                    return;
+                }
+
+                const cabuyaoBounds = L.geoJSON(geoJsonBoundary).getBounds();
 
                 const map = L.map('city-map', {
                     maxBounds: cabuyaoBounds,
                     maxBoundsViscosity: 1.0
                 });
 
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                const baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: 'OpenStreetMap contributors',
                     maxZoom: 19,
                     minZoom: 11
+                }).addTo(map);
+
+                L.geoJSON(geoJsonBoundary, {
+                    style: {
+                        color: '#3b82f6',
+                        weight: 2,
+                        opacity: 0.6,
+                        fillOpacity: 0.1
+                    }
                 }).addTo(map);
 
                 map.fitBounds(cabuyaoBounds, { padding: [20, 20] });
