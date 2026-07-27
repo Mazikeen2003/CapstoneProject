@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\BackupController as AdminBackupController;
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\Department\DashboardController as DepartmentDashboard;
@@ -118,6 +119,11 @@ Route::middleware(['auth', 'admin'])
         Route::get('/project-permissions', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'index'])->middleware('admin.permission:can_manage_project_permissions')->name('project-permissions.index');
         Route::post('/project-permissions/{id}/approve', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'approve'])->middleware('admin.permission:can_manage_project_permissions')->name('project-permissions.approve');
         Route::post('/project-permissions/{id}/reject', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'reject'])->middleware('admin.permission:can_manage_project_permissions')->name('project-permissions.reject');
+
+        Route::get('/backups', [AdminBackupController::class, 'index'])->middleware('admin.permission:can_manage_backups')->name('backups.index');
+        Route::post('/backups/manual', [AdminBackupController::class, 'manual'])->middleware('admin.permission:can_manage_backups')->name('backups.manual');
+        Route::get('/backups/{backup}/download', [AdminBackupController::class, 'download'])->middleware('admin.permission:can_manage_backups')->name('backups.download');
+        Route::delete('/backups/{backup}', [AdminBackupController::class, 'destroy'])->middleware('admin.permission:can_manage_backups')->name('backups.destroy');
     });
 
 /*

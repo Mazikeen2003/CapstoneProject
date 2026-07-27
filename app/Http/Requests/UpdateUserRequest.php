@@ -48,6 +48,7 @@ class UpdateUserRequest extends FormRequest
             'permissions.can_manage_project_permissions' => ['nullable', 'boolean'],
             'permissions.can_view_reports' => ['nullable', 'boolean'],
             'permissions.can_manage_audit_logs' => ['nullable', 'boolean'],
+            'permissions.can_manage_backups' => ['nullable', 'boolean'],
         ];
     }
 
