@@ -15,7 +15,7 @@ class PortalVisitService
             }
 
             PortalVisit::create([
-                'page_type' => $pageType,
+                'page' => $pageType,
                 'ip_address' => request()->ip(),
                 'visited_at' => now(),
             ]);

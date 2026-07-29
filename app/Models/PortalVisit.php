@@ -10,7 +10,7 @@ class PortalVisit extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'page_type',
+        'page',
         'ip_address',
         'visited_at',
     ];
@@ -31,6 +31,6 @@ class PortalVisit extends Model
 
     public function scopeForPage($query, $pageType)
     {
-        return $query->where('page_type', $pageType);
+        return $query->where('page', $pageType);
     }
 }
