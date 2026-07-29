@@ -78,6 +78,7 @@
 
     <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
         <h3 class="text-lg font-bold text-black mb-3">Progress Updates</h3>
+
         @if ($project->updates->isEmpty())
             <p class="text-sm text-gray-500">No updates logged yet.</p>
         @else

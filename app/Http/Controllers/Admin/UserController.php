@@ -8,6 +8,8 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Barangay;
+use App\Services\AuditLogService;
+use App\Services\BackupService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -38,7 +40,10 @@ public function store(StoreUserRequest $request): RedirectResponse
     $data['password_hash'] = Hash::make($data['password_hash']);
     $data['permissions'] = $this->normalizePermissions($request);
 
-    User::create($data);
+    $user = User::create($data);
+
+    AuditLogService::logCreate($user);
+    BackupService::createBackup('user_create', $request->user()->user_id);
 
     return redirect()->route('admin.users.index')
         ->with('success', 'User created successfully.');
@@ -69,7 +74,11 @@ public function store(StoreUserRequest $request): RedirectResponse
 
             $data['permissions'] = $this->normalizePermissions($request);
 
+            $original = $user->getOriginal();
             $user->update($data);
+
+            AuditLogService::logUpdate($user, $original);
+            BackupService::createBackup('user_update', $request->user()->user_id);
 
             return redirect()->route('admin.users.index')
                 ->with('success', 'User updated successfully.');
@@ -86,6 +95,9 @@ public function store(StoreUserRequest $request): RedirectResponse
         if ($user->isPrimaryAdmin()) {
             abort(403, 'The original Admin account cannot be deleted.');
         }
+
+        AuditLogService::logDelete($user);
+        BackupService::createBackup('user_delete', request()->user()->user_id);
 
         $user->delete();
 
@@ -104,6 +116,7 @@ public function store(StoreUserRequest $request): RedirectResponse
         'can_manage_project_permissions',
         'can_view_reports',
         'can_manage_audit_logs',
+        'can_manage_backups',
     ];
     $submitted = $request->input('permissions', []);
 

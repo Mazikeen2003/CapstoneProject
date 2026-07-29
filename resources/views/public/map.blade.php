@@ -412,7 +412,7 @@
                     projectFeatures = [];
                     window.projectFeatures = projectFeatures;
 
-                    fetch('{{ url('/api/projects/geojson') }}')
+                    fetch('{{ route('api.public.projects.geojson') }}')
                         .then(response => response.json())
                         .then(function(projectData) {
                             if (!projectData || !projectData.features) {

@@ -11,6 +11,7 @@ use App\Models\BudgetTransaction;
 use App\Models\EditPermissionRequest;
 use App\Models\Project;
 use App\Services\AuditLogService;
+use App\Services\BackupService;
 use App\Services\CacheService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -55,6 +56,7 @@ class ProjectController extends Controller
 
         CacheService::invalidateGeoJsonCache();
         AuditLogService::logCreate($project);
+        BackupService::createBackup('project_create', Auth::id());
 
         $notificationPayload = [
             'id' => 'project-created-' . $project->project_id . '-' . time(),
@@ -98,7 +100,7 @@ class ProjectController extends Controller
 
     public function edit($id)
     {
-        $project = Project::findOrFail($id);
+        $project = Project::with(['barangay', 'latestUpdate'])->findOrFail($id);
 
         $this->authorize('update', $project);
 
@@ -159,6 +161,7 @@ class ProjectController extends Controller
 
         CacheService::invalidateGeoJsonCache();
         AuditLogService::logUpdate($project, $original);
+        BackupService::createBackup('project_update', Auth::id());
 
         foreach (['approved_budget', 'actual_budget'] as $field) {
             if (array_key_exists($field, $data) && (float) ($original[$field] ?? 0) !== (float) $data[$field]) {
@@ -191,6 +194,7 @@ class ProjectController extends Controller
         $this->authorize('delete', $project);
 
         AuditLogService::logDelete($project);
+        BackupService::createBackup('project_delete', Auth::id());
 
         $project->delete();
 

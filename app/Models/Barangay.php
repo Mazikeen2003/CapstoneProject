@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Scopes\RoleScopedScope;
 
 class Barangay extends Model
 {
@@ -40,13 +41,12 @@ class Barangay extends Model
     }
 
     /**
-     * Scope to include a count of public projects for this barangay.
-     * Public projects are those with status 'Completed' or 'On Going'.
+     * Scope to include a count of all projects for this barangay on the public map.
      */
     public function scopeWithPublicProjectCount($query)
     {
         return $query->withCount(['projects as public_project_count' => function ($q) {
-            $q->whereIn('current_status', ['Completed', 'On Going']);
+            $q->withoutGlobalScope(RoleScopedScope::class);
         }]);
     }
 }

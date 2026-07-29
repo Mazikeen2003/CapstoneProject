@@ -46,6 +46,14 @@
                             </span>
                             Reports
                         </a>
+                        @if(auth()->user()->hasPermission('can_manage_backups'))
+                            <a href="{{ url('/admin/backups') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('admin/backups') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Database Backups">
+                                <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Backups">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-1-5h2v2h-2zm0-10h2v8h-2z"/></svg>
+                                </span>
+                                Backups
+                            </a>
+                        @endif
                         <a href="{{ url('/admin/audit-logs') }}" class="flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('admin/audit-logs') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Audit Logs">
                             <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Audit Logs">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
@@ -183,7 +191,7 @@
 
 @if($role !== 'public')
 <!-- Logout Confirmation Modal -->
-<div id="logoutConfirmModal" class="fixed inset-0 z-[10000] hidden items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-200">
+<div id="logoutConfirmModal" class="fixed inset-0 z-[20000] hidden items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-200">
     <div id="logoutConfirmDialog" class="w-full max-w-sm rounded-2xl bg-white p-7 shadow-2xl mx-4 scale-95 opacity-0 transition-all duration-200">
         <div class="flex flex-col items-center text-center">
             <div class="flex h-16 w-16 items-center justify-center rounded-full mb-4" style="background-color: #fee2e2;">

@@ -21,19 +21,24 @@
             
             $totalDays = $startDate->diffInDays($endDate);
             $daysElapsed = $startDate->diffInDays($today);
-            $progress = ($totalDays > 0) ? min(100, max(0, ($daysElapsed / $totalDays) * 100)) : 0;
+            $timelineProgress = ($totalDays > 0) ? min(100, max(0, ($daysElapsed / $totalDays) * 100)) : 0;
+            $reportedProgress = $project->latestUpdate?->progress_percentage;
+            $progress = $reportedProgress !== null ? $reportedProgress : $timelineProgress;
+            $progressLabel = $reportedProgress !== null ? 'Reported Progress' : 'Timeline Progress';
         @endphp
         
         <div class="mb-3">
             <div class="flex justify-between mb-2">
-                <span class="text-sm font-semibold text-gray-700">Timeline Progress</span>
+                <span class="text-sm font-semibold text-gray-700">{{ $progressLabel }}</span>
                 <span class="text-sm font-bold" style="color: #c9a84c;">{{ number_format($progress, 1) }}%</span>
             </div>
-            <div class="h-4 bg-gray-300 rounded-full overflow-hidden">
+            <div class="relative h-4 bg-gray-300 rounded-full overflow-hidden">
                 <div class="h-full transition-all duration-300" style="width: {{ $progress }}%; background-color: #c9a84c;"></div>
+                <div class="absolute inset-0 flex items-center justify-center text-[10px] font-semibold text-white">
+                    {{ number_format($progress, 1) }}%
+                </div>
             </div>
         </div>
-        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
             <div class="p-3 bg-gray-50 rounded" style="border: 1px solid #B2BEB5;">
                 <p class="text-xs text-gray-600">Start Date</p>
@@ -48,7 +53,6 @@
                 <p class="text-sm font-semibold" style="color: #c9a84c;">{{ max(0, $endDate->diffInDays($today)) }} days</p>
             </div>
         </div>
-    </div>
 
     @if ($errors->any())
         <div class="bg-red-50 border border-red-300 text-red-700 rounded-md p-3 text-sm">

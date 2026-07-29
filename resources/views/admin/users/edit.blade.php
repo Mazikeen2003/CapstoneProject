@@ -163,6 +163,10 @@
                         <input type="checkbox" name="permissions[can_manage_audit_logs]" value="1" {{ ($userPermissions['can_manage_audit_logs'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                         Audit Logs
                     </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" name="permissions[can_manage_backups]" value="1" {{ ($userPermissions['can_manage_backups'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Database Backups
+                    </label>
                 </div>
             </div>
 

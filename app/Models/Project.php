@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\ProjectUpdate;
 use App\Models\Scopes\RoleScopedScope;
 
 class Project extends Model
@@ -76,6 +77,11 @@ class Project extends Model
     public function updates()
     {
         return $this->hasMany(ProjectUpdate::class, 'project_id', 'project_id');
+    }
+
+    public function latestUpdate()
+    {
+        return $this->hasOne(ProjectUpdate::class, 'project_id', 'project_id')->latest('update_date');
     }
 
     public function budgetTransactions()

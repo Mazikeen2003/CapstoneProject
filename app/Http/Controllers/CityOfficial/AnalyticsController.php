@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\CityOfficial;
 
+use App\Models\PortalVisit;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
@@ -46,6 +47,48 @@ class AnalyticsController
 
         $budgetStats = ['total_budget' => $budgetProjects->sum('approved_budget') ?? 0, 'total_spent' => $budgetProjects->sum('actual_budget') ?? 0];
 
-        return view('city-official.analytics.index', compact('stats', 'byStatus', 'byBarangay', 'availableYears', 'statusYear', 'budgetYear', 'budgetStats'));
+        $portalVisits = PortalVisit::query()->orderBy('visited_at');
+        $portalVisitStats = [
+            'total_visits' => (clone $portalVisits)->count(),
+            'visits_today' => (clone $portalVisits)->today()->count(),
+            'visits_this_week' => (clone $portalVisits)->whereBetween('visited_at', [now()->startOfWeek(), now()->endOfWeek()])->count(),
+            'visits_this_month' => (clone $portalVisits)->whereBetween('visited_at', [now()->startOfMonth(), now()->endOfMonth()])->count(),
+            'estimated_unique_visitors' => (clone $portalVisits)->last30Days()->distinct('ip_address')->count('ip_address'),
+        ];
+
+        $dailyVisits = collect();
+        $startDate = now()->subDays(29)->startOfDay();
+        for ($i = 0; $i < 30; $i++) {
+            $date = $startDate->copy()->addDays($i);
+            $dayKey = $date->toDateString();
+            $dayVisits = PortalVisit::query()
+                ->whereDate('visited_at', $dayKey)
+                ->get()
+                ->groupBy('page_type');
+
+            $dailyVisits->push([
+                'date' => $date->format('M d'),
+                'map' => $dayVisits->get('map', collect())->count(),
+                'analytics' => $dayVisits->get('analytics', collect())->count(),
+            ]);
+        }
+
+        $pageBreakdown = [
+            'map' => PortalVisit::query()->forPage('map')->count(),
+            'analytics' => PortalVisit::query()->forPage('analytics')->count(),
+        ];
+
+        return view('city-official.analytics.index', compact(
+            'stats',
+            'byStatus',
+            'byBarangay',
+            'availableYears',
+            'statusYear',
+            'budgetYear',
+            'budgetStats',
+            'portalVisitStats',
+            'dailyVisits',
+            'pageBreakdown'
+        ));
     }
 }
