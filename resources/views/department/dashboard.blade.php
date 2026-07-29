@@ -60,11 +60,18 @@
         fetch('{{ asset('data/cabuyao-map.geojson') }}')
             .then(response => response.json())
             .then(function(geojson) {
-                const cabuyaoBounds = L.geoJSON(geojson).getBounds();
-                const boundedArea = cabuyaoBounds.pad(0.02);
+                const boundaryFeature = geojson.features?.find(f => f.properties?.kind === 'boundary');
+                const geoJsonBoundary = boundaryFeature ? boundaryFeature : (geojson.features?.length ? geojson : null);
+
+                if (!geoJsonBoundary) {
+                    console.error('GeoJSON boundary is missing or malformed:', geojson);
+                    return;
+                }
+
+                const cabuyaoBounds = L.geoJSON(geoJsonBoundary).getBounds();
 
                 const map = L.map('department-map', {
-                    maxBounds: boundedArea,
+                    maxBounds: cabuyaoBounds,
                     maxBoundsViscosity: 1.0
                 });
 
@@ -74,11 +81,18 @@
                     minZoom: 11
                 }).addTo(map);
 
-                map.fitBounds(boundedArea, { padding: [24, 24] });
-                map.setMaxBounds(boundedArea);
+                L.geoJSON(geoJsonBoundary, {
+                    style: {
+                        color: '#3b82f6',
+                        weight: 2,
+                        opacity: 0.6,
+                        fillOpacity: 0.1
+                    }
+                }).addTo(map);
+
+                map.fitBounds(cabuyaoBounds, { padding: [20, 20] });
                 map.setMinZoom(map.getZoom());
 
-                // Fetch and display projects as GeoJSON
                 fetch('{{ route("api.projects.geojson") }}')
                     .then(r => r.json())
                     .then(function(data) {
@@ -94,7 +108,7 @@
 
                                 return L.circleMarker(latlng, {
                                     radius: 8,
-                                    fillColor: statusColor[feature.properties.status] || '#gray-400',
+                                    fillColor: statusColor[feature.properties.status] || '#9CA3AF',
                                     color: '#000',
                                     weight: 2,
                                     opacity: 0.8,
