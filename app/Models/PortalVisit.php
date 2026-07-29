@@ -39,7 +39,7 @@ class PortalVisit extends Model
             unset($attributes['page_type']);
         }
 
-        return parent::create($attributes);
+        return static::query()->create($attributes);
     }
 
     public static function resolvePageColumn(): string
