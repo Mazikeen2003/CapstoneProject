@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Services\PortalVisitService;
 use Illuminate\Http\Request;
 
 class AnalyticsController extends Controller
 {
     public function index(Request $request)
     {
+        PortalVisitService::logVisit('analytics');
+
         $projects = Project::withoutRoleScope()
             ->withBasicRelations()
             ->get();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Models\Barangay;
 use App\Models\Project;
 use App\Models\Scopes\RoleScopedScope;
+use App\Services\PortalVisitService;
 
 class MapController
 {
@@ -14,6 +15,8 @@ class MapController
      */
     public function index()
     {
+        PortalVisitService::logVisit('map');
+
         // Show every project on the public map, regardless of status.
         $projects = Project::withoutRoleScope()
             ->withBasicRelations()
