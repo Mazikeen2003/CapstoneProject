@@ -64,7 +64,7 @@ class AnalyticsController
             $dayVisits = PortalVisit::query()
                 ->whereDate('visited_at', $dayKey)
                 ->get()
-                ->groupBy('page_type');
+                ->groupBy('page');
 
             $dailyVisits->push([
                 'date' => $date->format('M d'),
