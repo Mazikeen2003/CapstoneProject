@@ -101,30 +101,27 @@
                 </div>
             </div>
 
-            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 animate-bounce cursor-pointer">
-                <span class="material-symbols-outlined text-3xl">keyboard_double_arrow_down</span>
-            </div>
         </section>
 
         {{-- ============ LIVE STATS (overlapping hero) ============ --}}
-        <section class="py-12 px-12 -mt-32 relative z-20 bg-transparent flex justify-center">
-            <div class="max-w-7xl mx-auto w-full">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="bg-white p-8 rounded-xl shadow-[0_20px_25px_-8px_rgba(0,0,0,0.15)] border border-slate-200/50 flex flex-col items-center justify-center text-center">
-                        <span class="text-4xl font-extrabold mb-2 text-emerald-700" id="totalProjects" style="font-family:'Manrope',sans-serif;">0</span>
-                        <span class="text-xs font-bold uppercase tracking-widest text-slate-500" style="font-family:'Public Sans',sans-serif;">Total Projects</span>
+        <section class="relative z-20 -mt-16 flex justify-center bg-transparent px-4 py-6 sm:-mt-24 sm:px-6 sm:py-8 lg:-mt-32 lg:px-8 lg:py-10">
+            <div class="mx-auto w-full max-w-7xl">
+                <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 lg:gap-6">
+                    <div class="flex flex-col items-center justify-center rounded-xl border border-slate-200/60 bg-white p-4 text-center shadow-[0_20px_25px_-8px_rgba(0,0,0,0.15)] sm:p-6 md:p-8">
+                        <span class="mb-2 text-2xl font-extrabold text-emerald-700 sm:text-3xl md:text-4xl" id="totalProjects" style="font-family:'Manrope',sans-serif;">0</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 sm:text-xs" style="font-family:'Public Sans',sans-serif;">Total Projects</span>
                     </div>
-                    <div class="bg-white p-8 rounded-xl shadow-[0_20px_25px_-8px_rgba(0,0,0,0.15)] border border-slate-200/50 flex flex-col items-center justify-center text-center">
-                        <span class="text-4xl font-extrabold mb-2 text-emerald-700" id="completedProjects" style="font-family:'Manrope',sans-serif;">0</span>
-                        <span class="text-xs font-bold uppercase tracking-widest text-slate-500" style="font-family:'Public Sans',sans-serif;">Completed</span>
+                    <div class="flex flex-col items-center justify-center rounded-xl border border-slate-200/60 bg-white p-4 text-center shadow-[0_20px_25px_-8px_rgba(0,0,0,0.15)] sm:p-6 md:p-8">
+                        <span class="mb-2 text-2xl font-extrabold text-emerald-700 sm:text-3xl md:text-4xl" id="completedProjects" style="font-family:'Manrope',sans-serif;">0</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 sm:text-xs" style="font-family:'Public Sans',sans-serif;">Completed</span>
                     </div>
-                    <div class="bg-white p-8 rounded-xl shadow-[0_20px_25px_-8px_rgba(0,0,0,0.15)] border border-slate-200/50 flex flex-col items-center justify-center text-center">
-                        <span class="text-4xl font-extrabold mb-2 text-emerald-700" id="ongoingProjects" style="font-family:'Manrope',sans-serif;">0</span>
-                        <span class="text-xs font-bold uppercase tracking-widest text-slate-500" style="font-family:'Public Sans',sans-serif;">Ongoing</span>
+                    <div class="flex flex-col items-center justify-center rounded-xl border border-slate-200/60 bg-white p-4 text-center shadow-[0_20px_25px_-8px_rgba(0,0,0,0.15)] sm:p-6 md:p-8">
+                        <span class="mb-2 text-2xl font-extrabold text-emerald-700 sm:text-3xl md:text-4xl" id="ongoingProjects" style="font-family:'Manrope',sans-serif;">0</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 sm:text-xs" style="font-family:'Public Sans',sans-serif;">Ongoing</span>
                     </div>
-                    <div class="bg-white p-8 rounded-xl shadow-[0_20px_25px_-8px_rgba(0,0,0,0.15)] border border-slate-200/50 flex flex-col items-center justify-center text-center">
-                        <span class="text-4xl font-extrabold mb-2 text-emerald-700" id="totalBudget" style="font-family:'Manrope',sans-serif;">₱0</span>
-                        <span class="text-xs font-bold uppercase tracking-widest text-slate-500" style="font-family:'Public Sans',sans-serif;">Budget Allocated</span>
+                    <div class="flex flex-col items-center justify-center rounded-xl border border-slate-200/60 bg-white p-4 text-center shadow-[0_20px_25px_-8px_rgba(0,0,0,0.15)] sm:p-6 md:p-8">
+                        <span class="mb-2 text-2xl font-extrabold text-emerald-700 sm:text-3xl md:text-4xl" id="totalBudget" style="font-family:'Manrope',sans-serif;">₱0</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 sm:text-xs" style="font-family:'Public Sans',sans-serif;">Budget Allocated</span>
                     </div>
                 </div>
             </div>
