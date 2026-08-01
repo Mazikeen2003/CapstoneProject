@@ -8,10 +8,10 @@
     $barangayProjectCounts = isset($byBarangay) ? $byBarangay->take(10)->map(fn ($item) => $item['count'] ?? 0)->values() : collect();
 @endphp
 
-<div class="space-y-6">
-    <div><h1 class="text-3xl font-bold text-black">{{ $heading }}</h1><p class="mt-1 text-sm text-slate-500">Visual overview of project progress and funding.</p></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div><h1 class="text-3xl font-bold text-slate-900">{{ $heading }}</h1><p class="mt-1 text-sm text-slate-500">Visual overview of project progress and funding.</p></div>
 
-    <div class="grid grid-cols-2 gap-4 lg:grid-cols-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
         @foreach ([
             ['Total Projects', $stats['total_projects'], '#0f172a'],
             ['Completed', $stats['completed'], '#10b981'],
@@ -19,28 +19,52 @@
             ['On Hold', $stats['on_hold'], '#ef4444'],
             ['Total Budget', '₱' . number_format($stats['total_budget'], 0), '#0f172a'],
         ] as [$label, $value, $color])
-            <div class="rounded-lg bg-white p-4" style="border: 1px solid #B2BEB5;">
-                <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $label }}</p>
+            <div class="rounded-3xl bg-white p-4 border border-slate-200 shadow-sm">
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $label }}</p>
                 <p class="mt-2 text-2xl font-bold" style="color: {{ $color }};">{{ $value }}</p>
             </div>
         @endforeach
     </div>
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <section class="rounded-lg bg-white p-5" style="border: 1px solid #B2BEB5;">
-            <div class="mb-4 flex items-end justify-between gap-3"><h2 class="text-lg font-bold text-black">Project Status Distribution</h2><form method="GET" class="flex items-end gap-2"><input type="hidden" name="budget_year" value="{{ $budgetYear }}"><select aria-label="Filter project status by year" name="status_year" class="h-8 rounded-md border-gray-300 text-xs" style="border-color: #B2BEB5;"><option value="">All years</option>@foreach ($availableYears as $year)<option value="{{ $year }}" @selected((string) $statusYear === (string) $year)>{{ $year }}</option>@endforeach</select><button type="submit" class="inline-flex h-8 items-center rounded px-2 text-xs font-semibold" style="background-color: #162347; color: #f2f3f7;">Filter</button></form></div>
-            <div class="h-80"><canvas id="statusChart"></canvas></div>
+        <section class="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm">
+            <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <h2 class="text-lg font-bold text-slate-900">Project Status Distribution</h2>
+                <form method="GET" class="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-3 w-full sm:w-auto">
+                    <input type="hidden" name="budget_year" value="{{ $budgetYear }}">
+                    <select aria-label="Filter project status by year" name="status_year" class="min-w-[11rem] flex-1 h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700">
+                        <option value="">All years</option>
+                        @foreach ($availableYears as $year)
+                            <option value="{{ $year }}" @selected((string) $statusYear === (string) $year)>{{ $year }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="inline-flex h-10 min-w-[7rem] items-center justify-center rounded-full bg-slate-900 px-4 text-sm font-semibold text-white">Filter</button>
+                </form>
+            </div>
+            <div class="h-[320px] sm:h-80"><canvas id="statusChart"></canvas></div>
         </section>
-        <section class="rounded-lg bg-white p-5" style="border: 1px solid #B2BEB5;">
-            <div class="mb-4 flex items-end justify-between gap-3"><h2 class="text-lg font-bold text-black">Budget Comparison</h2><form method="GET" class="flex items-end gap-2"><input type="hidden" name="status_year" value="{{ $statusYear }}"><select aria-label="Filter budget comparison by year" name="budget_year" class="h-8 rounded-md border-gray-300 text-xs" style="border-color: #B2BEB5;"><option value="">All years</option>@foreach ($availableYears as $year)<option value="{{ $year }}" @selected((string) $budgetYear === (string) $year)>{{ $year }}</option>@endforeach</select><button type="submit" class="inline-flex h-8 items-center rounded px-2 text-xs font-semibold" style="background-color: #162347; color: #f2f3f7;">Filter</button></form></div>
-            <div class="h-80"><canvas id="budgetChart"></canvas></div>
+        <section class="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm">
+            <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <h2 class="text-lg font-bold text-slate-900">Budget Comparison</h2>
+                <form method="GET" class="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-3 w-full sm:w-auto">
+                    <input type="hidden" name="status_year" value="{{ $statusYear }}">
+                    <select aria-label="Filter budget comparison by year" name="budget_year" class="min-w-[11rem] flex-1 h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700">
+                        <option value="">All years</option>
+                        @foreach ($availableYears as $year)
+                            <option value="{{ $year }}" @selected((string) $budgetYear === (string) $year)>{{ $year }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="inline-flex h-10 min-w-[7rem] items-center justify-center rounded-full bg-slate-900 px-4 text-sm font-semibold text-white">Filter</button>
+                </form>
+            </div>
+            <div class="h-[320px] sm:h-80"><canvas id="budgetChart"></canvas></div>
         </section>
     </div>
 
     @if (isset($byBarangay))
-        <section class="rounded-lg bg-white p-5" style="border: 1px solid #B2BEB5;">
-            <h2 class="mb-4 text-lg font-bold text-black">Barangay Budget Share</h2>
-            <div class="h-96"><canvas id="barangayChart"></canvas></div>
+        <section class="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm">
+            <h2 class="mb-4 text-lg font-bold text-slate-900">Barangay Budget Share</h2>
+            <div class="h-[340px] sm:h-96"><canvas id="barangayChart"></canvas></div>
         </section>
     @endif
 
