@@ -100,17 +100,26 @@ class CacheService
     {
         $query = $ignoreRoleScope ? Project::withoutRoleScope() : Project::query();
 
-        $projects = $query->with('barangay')
-            ->whereNotNull('latitude')
-            ->whereNotNull('longitude')
-            ->get();
+        $projects = $query->with('barangay')->get();
 
         $features = $projects->map(function ($project) {
+                $latitude = $project->latitude;
+                $longitude = $project->longitude;
+
+                if (empty($latitude) || empty($longitude)) {
+                    $latitude = $project->barangay?->latitude;
+                    $longitude = $project->barangay?->longitude;
+                }
+
+                if (empty($latitude) || empty($longitude)) {
+                    return null;
+                }
+
                 return [
                     'type'       => 'Feature',
                     'geometry'   => [
                         'type'        => 'Point',
-                        'coordinates' => [$project->longitude, $project->latitude],
+                        'coordinates' => [$longitude, $latitude],
                     ],
                     'properties' => [
                         'id'                => $project->project_id,
@@ -127,7 +136,9 @@ class CacheService
                         'url'               => route('department.projects.show', $project->project_id),
                     ],
                 ];
-            });
+            })
+            ->filter()
+            ->values();
 
         return [
             'type'     => 'FeatureCollection',
