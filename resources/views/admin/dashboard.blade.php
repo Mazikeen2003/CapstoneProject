@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="space-y-6">
+<div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <p class="text-sm text-gray-500 font-medium">Users</p>

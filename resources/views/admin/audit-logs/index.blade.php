@@ -53,7 +53,49 @@
         @if ($logs->isEmpty())
             <p class="text-sm text-gray-500">No audit log entries found.</p>
         @else
-            <div class="overflow-x-auto mt-4">
+            <div class="space-y-4 md:hidden mt-4">
+                @foreach ($logs as $log)
+                    <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-sm font-semibold text-slate-900">{{ $log->created_at?->format('M d, Y h:i A') }}</p>
+                                <p class="text-xs text-slate-500">{{ $log->user->username ?? 'Unknown' }}</p>
+                            </div>
+                            <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ ucfirst($log->action) }}</span>
+                        </div>
+                        <div class="mt-3 text-sm text-slate-600 space-y-2">
+                            <p><span class="font-semibold text-slate-700">Table:</span> {{ $log->table_name }}</p>
+                            <p><span class="font-semibold text-slate-700">Record ID:</span> {{ $log->record_id }}</p>
+                        </div>
+                        <details class="mt-3 bg-slate-50 rounded-2xl p-3 text-xs text-slate-700">
+                            <summary class="cursor-pointer font-semibold">View changes</summary>
+                            <div class="mt-2 space-y-2">
+                                @if(!empty($log->old_values))
+                                    <div>
+                                        <div class="font-semibold">Old Values</div>
+                                        <ul class="list-disc list-inside">
+                                            @foreach((array) $log->old_values as $key => $value)
+                                                <li><span class="font-semibold">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span> {{ is_array($value) ? json_encode($value) : $value }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+                                @if(!empty($log->new_values))
+                                    <div>
+                                        <div class="font-semibold">New Values</div>
+                                        <ul class="list-disc list-inside">
+                                            @foreach((array) $log->new_values as $key => $value)
+                                                <li><span class="font-semibold">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span> {{ is_array($value) ? json_encode($value) : $value }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+                            </div>
+                        </details>
+                    </div>
+                @endforeach
+            </div>
+            <div class="hidden md:block overflow-x-auto mt-4">
                 <table class="w-full text-sm">
                     <thead>
                         <tr style="border-bottom: 1px solid #B2BEB5;">
