@@ -21,6 +21,23 @@
             backdrop-filter: blur(16px);
             background-color: rgba(248, 249, 255, 0.8);
         }
+
+        #map {
+            min-height: 55vh;
+        }
+
+        @media (min-width: 640px) {
+            #map {
+                min-height: 62vh;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #map {
+                min-height: calc(100svh - 92px);
+            }
+        }
+
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
@@ -52,23 +69,26 @@
                 Login
             </a>
         </nav>
+        <div class="md:hidden border-t border-slate-200 bg-white">
+            <div class="flex flex-wrap items-center justify-center gap-3 px-4 py-3 text-xs uppercase tracking-widest text-slate-600">
+                <a href="{{ url('/') }}" class="hover:text-emerald-700 transition-colors">Home</a>
+                <a href="{{ route('public.map') }}" class="text-emerald-700 font-semibold">Public Map</a>
+                <a href="{{ route('public.analytics') }}" class="hover:text-emerald-700 transition-colors">Analytics</a>
+            </div>
+        </div>
     </header>
 
     {{-- ============ MAP CONTENT ============ --}}
-    <main>
-        <div class="flex flex-col md:flex-row gap-0 h-[calc(100svh-80px)] min-h-[65svh] overflow-hidden rounded-lg border border-gray-300 shadow-sm">
-            <div class="flex-1 min-w-0 w-full relative" id="map" style="background-color: #f0f0f0;"></div>
+    <main class="px-4 py-5 md:px-6 md:py-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row gap-4 overflow-hidden rounded-3xl border border-gray-300 shadow-sm">
+            <div class="flex-1 min-w-0 w-full h-[55vh] sm:h-[62vh] md:h-[70vh] lg:h-[72vh] relative" id="map" style="background-color: #f0f0f0;"></div>
 
-            <button id="toggleProjectSidebar" class="fixed bottom-4 right-4 md:hidden z-[10001] bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600 transition hidden" aria-label="Toggle projects sidebar">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-
-            <div id="projectSidebar" class="fixed inset-0 z-[10000] w-full bg-white border-t md:relative md:inset-auto md:w-[360px] md:border-t-0 md:border-l border-gray-200 overflow-y-auto max-h-[100svh] shadow-sm order-3 md:order-2 md:max-h-full hidden md:block" role="dialog" aria-label="Department project list">
-                <div class="p-6 border-b border-gray-200 sticky top-0 bg-white">
-                    <h2 class="text-lg font-bold text-black">Department Projects</h2>
-                    <p class="text-sm text-gray-500 mt-1">Cabuyao City Projects</p>
+            <div id="projectSidebar" class="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden order-3 md:order-2">
+                <div class="p-6 border-b border-gray-200 bg-white">
+                    <div>
+                        <h2 class="text-lg font-bold text-black">Projects Overview</h2>
+                        <p class="text-sm text-gray-500 mt-1">Tap a barangay on the map or browse all projects.</p>
+                    </div>
                     <div id="departmentSidebarAction" class="mt-4"></div>
                 </div>
                 <div id="departmentProjectList" class="divide-y divide-gray-200"></div>
@@ -102,8 +122,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const projectList = document.getElementById('departmentProjectList');
-            const projectSidebarToggle = document.getElementById('toggleProjectSidebar');
-            const projectSidebar = document.getElementById('projectSidebar');
             const selectedClass = 'bg-slate-50 border border-slate-200';
             let selectedProjectIndex = null;
             let map = null;
@@ -114,39 +132,6 @@
             let selectedBarangayName = null;
             const markersByBarangay = {}; // barangay name -> array of Leaflet markers
             let allMarkers = null; // featureGroup holding every marker
-
-            function isMobile() {
-                return window.innerWidth < 768;
-            }
-
-            function syncProjectSidebar() {
-                if (isMobile()) {
-                    projectSidebarToggle.style.display = 'block';
-                    projectSidebar.classList.add('hidden');
-                    projectSidebar.classList.remove('block');
-                } else {
-                    projectSidebarToggle.style.display = 'none';
-                    projectSidebar.classList.remove('hidden');
-                    projectSidebar.classList.add('block');
-                }
-
-                if (map) {
-                    requestAnimationFrame(() => map.invalidateSize());
-                }
-            }
-
-            function toggleProjectSidebar() {
-                const isVisible = !projectSidebar.classList.contains('hidden');
-                projectSidebar.classList.toggle('hidden', isVisible);
-                projectSidebar.classList.toggle('block', !isVisible);
-                projectSidebarToggle.innerHTML = isVisible
-                    ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>'
-                    : '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>';
-            }
-
-            projectSidebarToggle.addEventListener('click', toggleProjectSidebar);
-            window.addEventListener('resize', syncProjectSidebar);
-            syncProjectSidebar();
 
             function barangayColor(name) {
                 let hash = 0;
@@ -470,6 +455,12 @@
                     map.setMaxBounds(boundedArea);
                     map.setMinZoom(map.getZoom());
                     setTimeout(() => map.invalidateSize(), 100);
+
+                    window.addEventListener('resize', function() {
+                        if (map) {
+                            setTimeout(() => map.invalidateSize(), 100);
+                        }
+                    });
                 })
                 .catch(console.error);
         });
