@@ -4,50 +4,58 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-<div class="space-y-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="rounded-lg p-6 bg-white" style="border: 1px solid #B2BEB5;">
-            <p class="text-xs text-gray-500 uppercase">Total Projects</p>
-            <p class="text-3xl font-bold text-black mt-2">{{ $stats['total_projects'] }}</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="rounded-3xl p-5 bg-white border border-slate-200 shadow-sm">
+            <p class="text-xs text-slate-500 uppercase tracking-[0.18em]">Total Projects</p>
+            <p class="text-3xl font-bold text-slate-900 mt-3">{{ $stats['total_projects'] }}</p>
         </div>
 
-        <div class="rounded-lg p-6 bg-white" style="border: 1px solid #B2BEB5;">
-            <p class="text-xs text-gray-500 uppercase">Ongoing Projects</p>
-            <p class="text-3xl font-bold text-black mt-2">{{ $stats['ongoing'] }}</p>
+        <div class="rounded-3xl p-5 bg-white border border-slate-200 shadow-sm">
+            <p class="text-xs text-slate-500 uppercase tracking-[0.18em]">Ongoing Projects</p>
+            <p class="text-3xl font-bold text-slate-900 mt-3">{{ $stats['ongoing'] }}</p>
         </div>
 
-        <div class="rounded-lg p-6 bg-white" style="border: 1px solid #B2BEB5;">
-            <p class="text-xs text-gray-500 uppercase">Completed Projects</p>
-            <p class="text-3xl font-bold text-black mt-2">{{ $stats['completed'] }}</p>
+        <div class="rounded-3xl p-5 bg-white border border-slate-200 shadow-sm">
+            <p class="text-xs text-slate-500 uppercase tracking-[0.18em]">Completed Projects</p>
+            <p class="text-3xl font-bold text-slate-900 mt-3">{{ $stats['completed'] }}</p>
         </div>
 
-        <div class="rounded-lg p-6 bg-white" style="border: 1px solid #B2BEB5;">
-            <p class="text-xs text-gray-500 uppercase">Budget Allocated</p>
-            <p class="text-3xl font-bold text-black mt-2">₱{{ number_format($stats['budget_allocated'] ?? 0, 0) }}</p>
+        <div class="rounded-3xl p-5 bg-white border border-slate-200 shadow-sm">
+            <p class="text-xs text-slate-500 uppercase tracking-[0.18em]">Budget Allocated</p>
+            <p class="text-3xl font-bold text-slate-900 mt-3">₱{{ number_format($stats['budget_allocated'] ?? 0, 0) }}</p>
         </div>
     </div>
 
     <!-- Map Section -->
-    <div class="rounded-lg border border-gray-300 bg-white p-6 shadow-sm">
-        <h2 class="text-xl font-bold text-black mb-4">Project Locations</h2>
-        <div id="department-map" class="h-96 overflow-hidden rounded-lg border border-gray-300"></div>
+    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-900 mb-4">Project Locations</h2>
+        <div id="department-map" class="h-[42vh] sm:h-[48vh] md:h-[56vh] overflow-hidden rounded-3xl border border-slate-200"></div>
     </div>
 
     <!-- Recent Projects -->
-    <div class="rounded-lg p-6 bg-white" style="border: 1px solid #B2BEB5;">
-        <h2 class="text-xl font-bold text-black mb-4">Recent Projects</h2>
+    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900">Recent Projects</h2>
+                <p class="text-sm text-slate-500">Latest department project activity.</p>
+            </div>
+        </div>
+
         @if ($recentProjects->isEmpty())
-            <p class="text-sm text-gray-500">No projects yet.</p>
+            <p class="mt-4 text-sm text-slate-500">No projects yet.</p>
         @else
-            <div class="space-y-2">
+            <div class="mt-4 grid gap-4">
                 @foreach ($recentProjects as $project)
-                    <div class="flex justify-between items-center pb-3 border-b border-gray-200">
-                        <div>
-                            <p class="font-medium text-black">{{ $project->project_name }}</p>
-                            <p class="text-xs text-gray-500">{{ $project->current_status }}</p>
+                    <div class="rounded-3xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <p class="text-base font-semibold text-slate-900">{{ $project->project_name }}</p>
+                                <p class="mt-1 text-sm text-slate-600">{{ $project->current_status }}</p>
+                            </div>
+                            <a href="{{ route('department.projects.show', $project->project_id) }}" class="inline-flex rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100">View</a>
                         </div>
-                        <a href="{{ route('department.projects.show', $project->project_id) }}" class="text-blue-600 text-sm">View</a>
                     </div>
                 @endforeach
             </div>
