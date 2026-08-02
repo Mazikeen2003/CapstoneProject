@@ -24,17 +24,20 @@
 
         #map {
             min-height: 55vh;
+            height: 55vh;
         }
 
         @media (min-width: 640px) {
             #map {
                 min-height: 62vh;
+                height: 62vh;
             }
         }
 
         @media (min-width: 1024px) {
             #map {
-                min-height: calc(100svh - 92px);
+                min-height: calc(100vh - 18rem);
+                height: calc(100vh - 18rem);
             }
         }
 
@@ -81,9 +84,9 @@
     {{-- ============ MAP CONTENT ============ --}}
     <main class="px-4 py-5 md:px-6 md:py-6 lg:px-8">
         <div class="flex flex-col lg:flex-row gap-4 overflow-hidden rounded-3xl border border-gray-300 shadow-sm">
-            <div class="flex-1 min-w-0 w-full h-[55vh] sm:h-[62vh] md:h-[70vh] lg:h-[72vh] relative" id="map" style="background-color: #f0f0f0;"></div>
+            <div class="flex-1 min-w-0 w-full relative" id="map" style="background-color: #f0f0f0;"></div>
 
-            <div id="projectSidebar" class="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden order-3 md:order-2">
+            <div id="projectSidebar" class="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden order-3 md:order-2 flex flex-col" style="max-height: calc(100vh - 18rem);">
                 <div class="p-6 border-b border-gray-200 bg-white">
                     <div>
                         <h2 class="text-lg font-bold text-black">Projects Overview</h2>
@@ -91,7 +94,7 @@
                     </div>
                     <div id="departmentSidebarAction" class="mt-4"></div>
                 </div>
-                <div id="departmentProjectList" class="divide-y divide-gray-200"></div>
+                <div id="departmentProjectList" class="divide-y divide-gray-200 overflow-y-auto min-h-0 flex-1"></div>
             </div>
         </div>
     </main>

@@ -11,17 +11,17 @@
             <p class="mt-1 text-sm text-slate-500">Tap a barangay to view its projects and explore the city map.</p>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-[1.5fr_0.95fr] gap-4">
-            <div class="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm">
-                <div class="min-w-0 w-full h-[55vh] sm:h-[60vh] md:h-[68vh] lg:h-[72vh] relative" id="map" style="background-color: #f0f0f0;"></div>
+            <div class="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm" style="height: calc(100vh - 13.5rem);">
+                <div class="min-w-0 w-full h-full relative" id="map" style="background-color: #f0f0f0;"></div>
             </div>
 
-            <div id="projectSidebar" class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div id="projectSidebar" class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden flex flex-col" style="max-height: calc(100vh - 13.5rem);">
                 <div class="p-6 border-b border-gray-200 bg-white">
                     <h2 class="text-lg font-bold text-slate-900">Department Projects</h2>
                     <p class="text-sm text-slate-500 mt-1">Cabuyao City Projects</p>
                     <div id="departmentSidebarAction" class="mt-4"></div>
                 </div>
-                <div id="departmentProjectList" class="divide-y divide-gray-200 max-h-[80vh] overflow-y-auto"></div>
+                <div id="departmentProjectList" class="divide-y divide-gray-200 overflow-y-auto min-h-0 flex-1"></div>
             </div>
         </div>
 </div>
