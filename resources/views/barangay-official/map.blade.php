@@ -5,32 +5,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
 <div class="space-y-6">
-    <div class="grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-6">
-        <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <div class="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                    <h2 class="text-xl font-bold text-black">Barangay Map</h2>
-                    <p class="text-sm text-gray-500 mt-1">Project locations for your barangay, displayed across Cabuyao City.</p>
-                </div>
+    <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <h2 class="text-xl font-bold text-black">Barangay Map</h2>
+                <p class="text-sm text-gray-500 mt-1">Project locations for your barangay, displayed across Cabuyao City.</p>
             </div>
-            <div class="mt-5 h-[680px] overflow-hidden rounded-xl border-2 border-blue-500" id="map"></div>
+        </div>
+        <div class="mt-5 h-[320px] sm:h-[420px] lg:h-[560px] xl:h-[680px] overflow-hidden rounded-xl border-2 border-blue-500" id="map"></div>
+    </div>
+
+    <div class="space-y-6">
+        <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <h2 class="text-xl font-bold text-black">Barangay Projects</h2>
+            <p class="text-sm text-gray-500 mt-1">Tap a marker or project card to open project details.</p>
+            <div id="barangayProjectList" class="mt-5 space-y-4"></div>
+            <div id="emptyState" class="mt-5 rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-6 text-sm text-gray-500">
+                Loading barangay projects...
+            </div>
         </div>
 
-        <div class="space-y-6">
-            <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                <h2 class="text-xl font-bold text-black">Barangay Projects</h2>
-                <p class="text-sm text-gray-500 mt-1">Tap a marker or project card to open project details.</p>
-                <div id="barangayProjectList" class="mt-5 space-y-4"></div>
-                <div id="emptyState" class="mt-5 rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-6 text-sm text-gray-500">
-                    Loading barangay projects...
-                </div>
-            </div>
-
-            <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                <h2 class="text-xl font-bold text-black">Selected Project</h2>
-                <p class="text-sm text-gray-500 mt-1">Details appear here when a project is selected.</p>
-                <div id="selectedProjectDetails" class="mt-5 space-y-4"></div>
-            </div>
+        <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <h2 class="text-xl font-bold text-black">Selected Project</h2>
+            <p class="text-sm text-gray-500 mt-1">Details appear here when a project is selected.</p>
+            <div id="selectedProjectDetails" class="mt-5 space-y-4"></div>
         </div>
     </div>
 </div>
@@ -206,13 +204,8 @@
                     `;
                 }
 
-                function updateSidebarAction(isSingle) {
-                    sidebarAction.innerHTML = '';
-                }
-
                 function renderProjectList(projects) {
                     const isSingle = projects.length === 1;
-                    updateSidebarAction(isSingle);
                     projectList.innerHTML = '';
 
                     if (!projects.length) {
@@ -372,6 +365,9 @@
                     });
 
                 setTimeout(() => map.invalidateSize(), 100);
+                window.addEventListener('resize', function() {
+                    map.invalidateSize();
+                });
             })
             .catch(console.error);
     });

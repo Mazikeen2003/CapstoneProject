@@ -1,13 +1,14 @@
-@extends('layouts.city')
+﻿@extends('layouts.city')
 
 @section('content')
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
     @include('components.analytics-dashboard', ['heading' => 'Citywide Analytics'])
 
-    <div class="mt-8 rounded-lg bg-white p-6 shadow-sm" style="border: 1px solid #B2BEB5;">
-        <div class="mb-6 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-                <h2 class="text-xl font-bold" style="color: #0f1e3d;">Portal Usage Analytics</h2>
-                <p class="text-sm text-slate-500">Tracks anonymous visits to the public transparency portal.</p>
+                <h2 class="text-xl font-bold text-slate-900">Portal Usage Analytics</h2>
+                <p class="text-sm text-slate-500 mt-1">Tracks anonymous visits to the public transparency portal.</p>
             </div>
             <p class="text-xs text-slate-500">Visits by logged-in staff are not counted.</p>
         </div>
@@ -20,7 +21,7 @@
                 ['Visits This Month', $portalVisitStats['visits_this_month'] ?? 0, '#c9a84c'],
                 ['Est. Unique Visitors', $portalVisitStats['estimated_unique_visitors'] ?? 0, '#0f1e3d'],
             ] as [$label, $value, $color])
-                <div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                <div class="rounded-3xl border border-slate-200 bg-slate-50 p-4">
                     <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{{ $label }}</p>
                     <p class="mt-2 text-2xl font-bold" style="color: {{ $color }};">{{ $value }}</p>
                 </div>
@@ -28,92 +29,83 @@
         </div>
 
         <div class="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-3">
-            <section class="rounded-lg border border-slate-200 bg-slate-50 p-4 xl:col-span-2">
-                <h3 class="mb-3 text-lg font-semibold" style="color: #0f1e3d;">Daily Visits (Last 30 Days)</h3>
-                <div class="h-80">
-                    <canvas id="portalVisitTrendChart"></canvas>
-                </div>
+            <section class="rounded-3xl border border-slate-200 bg-slate-50 p-4 xl:col-span-2">
+                <h3 class="mb-3 text-lg font-semibold text-slate-900">Daily Visits (Last 30 Days)</h3>
+                <div class="h-80 sm:h-[28rem]"><canvas id="portalVisitTrendChart"></canvas></div>
             </section>
-            <section class="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                <h3 class="mb-3 text-lg font-semibold" style="color: #0f1e3d;">Page Breakdown</h3>
-                <div class="h-64">
-                    <canvas id="portalVisitBreakdownChart"></canvas>
-                </div>
+            <section class="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                <h3 class="mb-3 text-lg font-semibold text-slate-900">Page Breakdown</h3>
+                <div class="h-64 sm:h-72"><canvas id="portalVisitBreakdownChart"></canvas></div>
             </section>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const dailyLabels = @json(collect($dailyVisits)->pluck('date'));
-            const mapSeries = @json(collect($dailyVisits)->pluck('map'));
-            const analyticsSeries = @json(collect($dailyVisits)->pluck('analytics'));
-            const pageBreakdownLabels = ['Map', 'Analytics'];
-            const pageBreakdownValues = [@json($pageBreakdown['map'] ?? 0), @json($pageBreakdown['analytics'] ?? 0)];
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dailyLabels = @json(collect($dailyVisits)->pluck('date'));
+        const mapSeries = @json(collect($dailyVisits)->pluck('map'));
+        const analyticsSeries = @json(collect($dailyVisits)->pluck('analytics'));
+        const pageBreakdownLabels = ['Map', 'Analytics'];
+        const pageBreakdownValues = [@json($pageBreakdown['map'] ?? 0), @json($pageBreakdown['analytics'] ?? 0)];
 
-            const commonOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                animation: { duration: 1200, easing: 'easeOutQuart' },
-                plugins: {
-                    legend: { position: 'bottom' }
-                }
-            };
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 1200, easing: 'easeOutQuart' },
+            plugins: { legend: { position: 'bottom' } }
+        };
 
-            new Chart(document.getElementById('portalVisitTrendChart'), {
-                type: 'line',
-                data: {
-                    labels: dailyLabels,
-                    datasets: [
-                        {
-                            label: 'Map Visits',
-                            data: mapSeries,
-                            borderColor: '#0f1e3d',
-                            backgroundColor: 'rgba(15, 30, 61, 0.12)',
-                            fill: false,
-                            tension: 0.35,
-                            pointBackgroundColor: '#0f1e3d',
-                            pointBorderColor: '#0f1e3d'
-                        },
-                        {
-                            label: 'Analytics Visits',
-                            data: analyticsSeries,
-                            borderColor: '#c9a84c',
-                            backgroundColor: 'rgba(201, 168, 76, 0.18)',
-                            fill: false,
-                            tension: 0.35,
-                            pointBackgroundColor: '#c9a84c',
-                            pointBorderColor: '#c9a84c'
-                        }
-                    ]
-                },
-                options: {
-                    ...commonOptions,
-                    scales: {
-                        y: { beginAtZero: true, ticks: { precision: 0 } }
+        new Chart(document.getElementById('portalVisitTrendChart'), {
+            type: 'line',
+            data: {
+                labels: dailyLabels,
+                datasets: [
+                    {
+                        label: 'Map Visits',
+                        data: mapSeries,
+                        borderColor: '#0f1e3d',
+                        backgroundColor: 'rgba(15, 30, 61, 0.12)',
+                        fill: false,
+                        tension: 0.35,
+                        pointBackgroundColor: '#0f1e3d',
+                        pointBorderColor: '#0f1e3d'
+                    },
+                    {
+                        label: 'Analytics Visits',
+                        data: analyticsSeries,
+                        borderColor: '#c9a84c',
+                        backgroundColor: 'rgba(201, 168, 76, 0.18)',
+                        fill: false,
+                        tension: 0.35,
+                        pointBackgroundColor: '#c9a84c',
+                        pointBorderColor: '#c9a84c'
                     }
-                }
-            });
-
-            new Chart(document.getElementById('portalVisitBreakdownChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: pageBreakdownLabels,
-                    datasets: [{
-                        data: pageBreakdownValues,
-                        backgroundColor: ['#0f1e3d', '#c9a84c'],
-                        borderColor: ['#ffffff', '#ffffff'],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    ...commonOptions,
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
-                }
-            });
+                ]
+            },
+            options: {
+                ...commonOptions,
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+            }
         });
-    </script>
+
+        new Chart(document.getElementById('portalVisitBreakdownChart'), {
+            type: 'doughnut',
+            data: {
+                labels: pageBreakdownLabels,
+                datasets: [{
+                    data: pageBreakdownValues,
+                    backgroundColor: ['#0f1e3d', '#c9a84c'],
+                    borderColor: ['#ffffff', '#ffffff'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    });
+</script>
 @endsection

@@ -1,49 +1,43 @@
-@extends('layouts.city')
+﻿@extends('layouts.city')
 
 @section('content')
-<div class="space-y-6">
-    <div>
-        <h1 class="text-3xl font-bold text-black">Reports & Exports</h1>
-        <p style="color: #6B7280;">Generate and download citywide reports in PDF format.</p>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div class="space-y-2">
+        <h1 class="text-3xl font-bold text-slate-900">Reports & Exports</h1>
+        <p class="text-sm text-slate-500">Generate and download citywide reports in PDF format.</p>
     </div>
 
     @if (session('success'))
-        <div class="bg-green-50 border border-green-300 text-green-700 rounded-md p-3 text-sm">
-            {{ session('success') }}
-        </div>
+        <div class="rounded-3xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">{{ session('success') }}</div>
     @endif
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Projects Report -->
-        <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
-            <h3 class="text-lg font-bold text-black mb-2">📋 Citywide Projects</h3>
-            <p class="text-sm text-gray-500 mb-4">Complete list of all projects across all departments with full details.</p>
-            <a href="{{ route('city.reports.projects-pdf') }}" class="block w-full px-4 py-3 rounded text-center font-medium" style="background-color: #c9a84c; color: #0f1e3d; text-decoration: none;">Download PDF</a>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 class="text-lg font-bold text-slate-900 mb-2">📋 Citywide Projects</h3>
+            <p class="text-sm text-slate-500 mb-4">Complete list of all projects across all departments with full details.</p>
+            <a href="{{ route('city.reports.projects-pdf') }}" class="inline-flex w-full items-center justify-center rounded-full bg-amber-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-300">Download PDF</a>
         </div>
 
-        <!-- Budget Report -->
-        <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
-            <h3 class="text-lg font-bold text-black mb-2">💰 Budget Analysis</h3>
-            <p class="text-sm text-gray-500 mb-4">Citywide budget breakdown by status and barangay with spending analysis.</p>
-            <a href="{{ route('city.reports.budget-pdf') }}" class="block w-full px-4 py-3 rounded text-center font-medium" style="background-color: #c9a84c; color: #0f1e3d; text-decoration: none;">Download PDF</a>
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 class="text-lg font-bold text-slate-900 mb-2">💰 Budget Analysis</h3>
+            <p class="text-sm text-slate-500 mb-4">Citywide budget breakdown by status and barangay with spending analysis.</p>
+            <a href="{{ route('city.reports.budget-pdf') }}" class="inline-flex w-full items-center justify-center rounded-full bg-amber-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-300">Download PDF</a>
         </div>
 
-        <!-- SGLG Compliance Report -->
-        <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
-            <h3 class="text-lg font-bold text-black mb-2">🏅 SGLG Compliance</h3>
-            <p class="text-sm text-gray-500 mb-4">Documentation, transparency, and monitoring compliance summary for DILG SGLG assessment.</p>
-            <a href="{{ route('city.reports.sglg-pdf') }}" class="block w-full px-4 py-3 rounded text-center font-medium" style="background-color: #c9a84c; color: #0f1e3d; text-decoration: none;">Download PDF</a>
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 class="text-lg font-bold text-slate-900 mb-2">🏅 SGLG Compliance</h3>
+            <p class="text-sm text-slate-500 mb-4">Documentation, transparency, and monitoring compliance summary for DILG SGLG assessment.</p>
+            <a href="{{ route('city.reports.sglg-pdf') }}" class="inline-flex w-full items-center justify-center rounded-full bg-amber-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-300">Download PDF</a>
         </div>
     </div>
 
-    <!-- Info -->
-    <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
-        <h3 class="text-lg font-bold text-black mb-4">About These Reports</h3>
-        <ul class="text-sm text-gray-700 space-y-2">
-            <li>✓ Reports show all projects from all departments in the city</li>
-            <li>✓ PDF format is ideal for official distribution and archiving</li>
-            <li>✓ All reports include generation timestamp and your name</li>
-            <li>✓ Formatted for easy printing and sharing</li>
+    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h3 class="text-lg font-bold text-slate-900 mb-4">About These Reports</h3>
+        <ul class="space-y-2 text-sm text-slate-700">
+            <li>✓ Reports show all projects from all departments in the city.</li>
+            <li>✓ PDF format is ideal for official distribution and archiving.</li>
+            <li>✓ All reports include generation timestamp and your name.</li>
+            <li>✓ Formatted for easy printing and sharing.</li>
         </ul>
     </div>
 </div>

@@ -29,25 +29,27 @@
     </div>
 
     <!-- Map Section -->
-    <div class="rounded-lg p-6 bg-white" style="border: 1px solid #B2BEB5;">
+    <div class="rounded-lg p-6 bg-white overflow-hidden" style="border: 1px solid #B2BEB5;">
         <h2 class="text-xl font-bold text-black mb-4">{{ $barangayName }} Project Locations</h2>
-        <div id="barangay-map" class="h-96 rounded-lg overflow-hidden" style="border: 1px solid #B2BEB5;"></div>
+        <div id="barangay-map" class="h-[320px] sm:h-[420px] md:h-[520px] lg:h-[620px] rounded-lg overflow-hidden" style="border: 1px solid #B2BEB5;"></div>
     </div>
 
     <!-- Recent Projects -->
-    <div class="rounded-lg p-6 bg-white" style="border: 1px solid #B2BEB5;">
+    <div class="rounded-lg p-6 bg-white overflow-hidden" style="border: 1px solid #B2BEB5;">
         <h2 class="text-xl font-bold text-black mb-4">Recent Projects</h2>
         @if ($recentProjects->isEmpty())
-            <p class="text-sm text-gray-500">No projects in this barangay yet.</p>
+            <div class="rounded-3xl border border-dashed border-gray-300 bg-slate-50 p-6 text-sm text-gray-500 text-center">No projects in this barangay yet.</div>
         @else
-            <div class="space-y-2">
+            <div class="space-y-4">
                 @foreach ($recentProjects as $project)
-                    <div class="flex justify-between items-center pb-3 border-b border-gray-200">
-                        <div>
-                            <p class="font-medium text-black">{{ $project->project_name }}</p>
-                            <p class="text-xs text-gray-500">{{ $project->current_status }}</p>
+                    <div class="rounded-3xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <p class="font-semibold text-black">{{ $project->project_name }}</p>
+                                <p class="text-sm text-slate-600 mt-1">{{ $project->current_status }}</p>
+                            </div>
+                            <a href="{{ route('barangay.projects.show', $project->project_id) }}" class="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-blue-600 transition hover:bg-slate-100">View</a>
                         </div>
-                        <a href="{{ route('barangay.projects.show', $project->project_id) }}" class="text-blue-600 text-sm">View</a>
                     </div>
                 @endforeach
             </div>

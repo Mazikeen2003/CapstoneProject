@@ -1,33 +1,51 @@
-@extends('layouts.department')
+﻿@extends('layouts.department')
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-<div class="flex flex-col md:flex-row gap-0 h-[calc(100svh-80px)] min-h-[65svh] overflow-hidden rounded-lg border border-gray-300 shadow-sm">
-    <div class="flex-1 min-w-0 w-full relative" id="map" style="background-color: #f0f0f0;"></div>
-
-    <button id="toggleProjectSidebar" class="fixed bottom-4 right-4 md:hidden z-[10001] bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600 transition hidden" aria-label="Toggle projects sidebar">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-    </button>
-
-    <div id="projectSidebar" class="fixed inset-0 z-[10000] w-full bg-white border-t md:relative md:inset-auto md:w-[360px] md:border-t-0 md:border-l border-gray-200 overflow-y-auto max-h-[100svh] shadow-sm order-3 md:order-2 md:max-h-full hidden md:block" role="dialog" aria-label="Department project list">
-        <div class="p-6 border-b border-gray-200 sticky top-0 bg-white">
-            <h2 class="text-lg font-bold text-black">Department Projects</h2>
-            <p class="text-sm text-gray-500 mt-1">Cabuyao City Projects</p>
-            <div id="departmentSidebarAction" class="mt-4"></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="space-y-6">
+        <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div class="flex flex-col gap-3">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Barangay Map</h2>
+                    <p class="text-sm text-gray-500 mt-1">Project locations for your barangay, displayed across Cabuyao City.</p>
+                </div>
+                <div class="overflow-hidden rounded-3xl border border-slate-200 bg-slate-50">
+                    <div id="map" class="h-[320px] sm:h-[420px] lg:h-[560px] xl:h-[680px] bg-slate-100"></div>
+                </div>
+            </div>
         </div>
-        <div id="departmentProjectList" class="divide-y divide-gray-200"></div>
+
+        <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div class="flex flex-col gap-3">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Barangay Projects</h2>
+                    <p class="text-sm text-gray-500 mt-1">Tap a map marker or project card to view details below.</p>
+                </div>
+                <div id="departmentSidebarAction" class="mt-3"></div>
+                <div id="departmentProjectList" class="mt-5 grid gap-4"></div>
+                <div id="emptyState" class="mt-5 rounded-3xl border border-dashed border-gray-200 bg-slate-50 p-6 text-sm text-gray-500">Loading barangay projects...</div>
+            </div>
+        </div>
+
+        <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900">Selected Project</h2>
+                <p class="text-sm text-gray-500 mt-1">Details appear here when a project is selected.</p>
+            </div>
+            <div id="selectedProjectDetails" class="mt-5"></div>
+        </div>
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const projectList = document.getElementById('departmentProjectList');
-        const projectSidebarToggle = document.getElementById('toggleProjectSidebar');
-        const projectSidebar = document.getElementById('projectSidebar');
+        const departmentSidebarAction = document.getElementById('departmentSidebarAction');
+        const selectedProjectDetails = document.getElementById('selectedProjectDetails');
+        const emptyState = document.getElementById('emptyState');
         const selectedClass = 'bg-slate-50 border border-slate-200';
         let selectedProjectIndex = null;
         let map = null;
@@ -36,50 +54,8 @@
         let barangayLayer = null;
         let selectedBarangayLayer = null;
         let selectedBarangayName = null;
-        const markersByBarangay = {}; // barangay name -> array of Leaflet markers
-        let allMarkers = null; // featureGroup holding every marker
-
-        function isMobile() {
-            return window.innerWidth < 768;
-        }
-
-        function syncProjectSidebar() {
-            if (isMobile()) {
-                projectSidebarToggle.style.display = 'block';
-                projectSidebar.classList.add('hidden');
-                projectSidebar.classList.remove('block');
-            } else {
-                projectSidebarToggle.style.display = 'none';
-                projectSidebar.classList.remove('hidden');
-                projectSidebar.classList.add('block');
-            }
-
-            if (map) {
-                requestAnimationFrame(() => map.invalidateSize());
-            }
-        }
-
-        function toggleProjectSidebar() {
-            const isVisible = !projectSidebar.classList.contains('hidden');
-            projectSidebar.classList.toggle('hidden', isVisible);
-            projectSidebar.classList.toggle('block', !isVisible);
-            projectSidebarToggle.innerHTML = isVisible
-                ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>'
-                : '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>';
-        }
-
-        projectSidebarToggle.addEventListener('click', toggleProjectSidebar);
-        window.addEventListener('resize', syncProjectSidebar);
-        syncProjectSidebar();
-
-        function barangayColor(name) {
-            let hash = 0;
-            for (let i = 0; i < name.length; i++) {
-                hash = name.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            const hue = Math.abs(hash) % 360;
-            return `hsl(${hue}, 65%, 55%)`;
-        }
+        const markersByBarangay = {};
+        let allMarkers = null;
 
         function formatCurrency(value) {
             return `₱${Number(value || 0).toLocaleString()}`;
@@ -93,11 +69,18 @@
             const startDate = new Date(project.properties.start_date);
             const endDate = new Date(project.properties.target_end_date);
             const today = new Date();
-
             const totalDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
             const daysElapsed = (today - startDate) / (1000 * 60 * 60 * 24);
-
             return totalDays > 0 ? Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100)) : 0;
+        }
+
+        function barangayColor(name) {
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const hue = Math.abs(hash) % 360;
+            return `hsl(${hue}, 65%, 55%)`;
         }
 
         function renderProjectCard(project, index, isSingle = false) {
@@ -105,7 +88,6 @@
             const progress = calculateProgress(project);
             const startDate = props.start_date ? new Date(props.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
             const targetDate = props.target_end_date ? new Date(props.target_end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
-
             const imageHtml = props.image
                 ? `<img src="${props.image}" alt="${props.name}" class="h-40 w-full rounded-2xl object-cover bg-slate-100">`
                 : '<div class="h-40 w-full rounded-2xl bg-gray-100 flex items-center justify-center text-xs text-gray-500">No image</div>';
@@ -167,10 +149,9 @@
         }
 
         function updateSidebarAction() {
-            const actionContainer = document.getElementById('departmentSidebarAction');
-
+            if (!departmentSidebarAction) return;
             if (selectedBarangayName) {
-                actionContainer.innerHTML = `
+                departmentSidebarAction.innerHTML = `
                     <button type="button" id="backToAllBarangays" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -180,7 +161,7 @@
                 `;
                 document.getElementById('backToAllBarangays').addEventListener('click', resetToAllBarangays);
             } else {
-                actionContainer.innerHTML = '';
+                departmentSidebarAction.innerHTML = '';
             }
         }
 
@@ -200,12 +181,61 @@
             }
         }
 
+        function renderSelectedProjectDetails(project) {
+            if (!selectedProjectDetails) return;
+            if (!project) {
+                selectedProjectDetails.innerHTML = `<div class="rounded-3xl border border-dashed border-gray-200 bg-slate-50 p-6 text-sm text-slate-600">Select a project card or marker to view details here.</div>`;
+                return;
+            }
+
+            const props = project.properties;
+            const progress = calculateProgress(project);
+            const startDate = props.start_date ? new Date(props.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
+            const targetDate = props.target_end_date ? new Date(props.target_end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
+
+            selectedProjectDetails.innerHTML = `
+                <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="grid gap-4 lg:grid-cols-2">
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-900">${props.name}</h3>
+                            <p class="mt-2 text-sm text-slate-600">${props.description || 'No description provided.'}</p>
+                        </div>
+                        <div class="space-y-3 text-sm text-slate-700">
+                            <div class="flex items-center justify-between gap-2 rounded-2xl bg-slate-50 px-4 py-3">
+                                <span class="font-semibold">Status</span>
+                                <span>${props.status || 'Unknown'}</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2 rounded-2xl bg-slate-50 px-4 py-3">
+                                <span class="font-semibold">Barangay</span>
+                                <span>${props.barangay || 'N/A'}</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2 rounded-2xl bg-slate-50 px-4 py-3">
+                                <span class="font-semibold">Budget</span>
+                                <span>${formatCurrency(props.budget)}</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2 rounded-2xl bg-slate-50 px-4 py-3">
+                                <span class="font-semibold">Timeline</span>
+                                <span>${startDate} → ${targetDate}</span>
+                            </div>
+                            <div>
+                                <span class="font-semibold">Progress</span>
+                                <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                                    <div class="h-full bg-blue-500" style="width: ${progress}%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         function renderProjectList(projects) {
             const isSingle = projects.length === 1;
             updateSidebarAction();
 
-            if (projects.length === 0) {
-                projectList.innerHTML = `<div class="p-6 text-sm text-gray-500">No public projects recorded in ${selectedBarangayName} yet.</div>`;
+            if (!projects.length) {
+                projectList.innerHTML = `<div class="rounded-3xl border border-dashed border-gray-200 bg-slate-50 p-6 text-sm text-gray-500">No public projects recorded in ${selectedBarangayName || 'this barangay'} yet.</div>`;
+                renderSelectedProjectDetails(null);
                 return;
             }
 
@@ -213,8 +243,7 @@
                 return renderProjectCard(project, project.originalIndex, isSingle);
             }).join('');
 
-            const cards = document.querySelectorAll('.department-project-card');
-            cards.forEach(function(card) {
+            document.querySelectorAll('.department-project-card').forEach(function(card) {
                 card.addEventListener('click', function() {
                     const index = parseInt(this.getAttribute('data-index'), 10);
                     selectProject(projectFeatures[index], index);
@@ -238,11 +267,13 @@
             if (map && boundedArea && !selectedBarangayName) {
                 map.fitBounds(boundedArea, { padding: [24, 24], animate: true, duration: 0.7, easeLinearity: 0.3 });
             }
+            renderSelectedProjectDetails(null);
         }
 
         function selectProject(project, index) {
             highlightProject(index);
             renderProjectList([project]);
+            renderSelectedProjectDetails(project);
             if (map && project && project.geometry && project.geometry.coordinates) {
                 const coords = project.geometry.coordinates;
                 map.flyTo([coords[1], coords[0]], 15, { duration: 0.7, easeLinearity: 0.35 });
@@ -279,7 +310,6 @@
 
             map.fitBounds(layer.getBounds(), { padding: [40, 40] });
 
-            // Show only markers belonging to this barangay
             if (allMarkers) {
                 map.removeLayer(allMarkers);
             }
@@ -287,6 +317,20 @@
 
             const filtered = projectFeatures.filter(p => p.properties.barangay === name);
             renderProjectList(filtered);
+            renderSelectedProjectDetails(null);
+        }
+
+        function setEmptyState(message) {
+            if (emptyState) {
+                emptyState.textContent = message;
+                emptyState.classList.remove('hidden');
+            }
+        }
+
+        function hideEmptyState() {
+            if (emptyState) {
+                emptyState.classList.add('hidden');
+            }
         }
 
         fetch('{{ asset('data/cabuyao-map.geojson') }}')
@@ -305,7 +349,6 @@
                     minZoom: 11
                 }).addTo(map);
 
-                // Draw barangay shapes
                 barangayLayer = L.geoJSON(geojson, {
                     style: (feature) => ({
                         fillColor: barangayColor(feature.properties.name),
@@ -375,19 +418,20 @@
                             }
                         });
 
-                        function restoreListOnMapClick() {
+                        map.on('click', function() {
                             if (selectedProjectIndex !== null && !selectedBarangayName) {
                                 showAllProjects();
                             }
-                        }
-
-                        map.on('click', restoreListOnMapClick);
+                        });
                         allMarkers.addTo(map);
+                        hideEmptyState();
                         renderProjectList(projectFeatures);
+                        renderSelectedProjectDetails(null);
                     })
                     .catch(function(error) {
                         console.error(error);
-                        projectList.innerHTML = '<div class="p-6 text-sm text-gray-500">Unable to load projects.</div>';
+                        projectList.innerHTML = '<div class="rounded-3xl border border-dashed border-gray-200 bg-slate-50 p-6 text-sm text-gray-500">Unable to load projects.</div>';
+                        setEmptyState('Unable to load barangay projects.');
                     });
 
                 map.fitBounds(boundedArea, { padding: [24, 24] });
@@ -395,7 +439,11 @@
                 map.setMinZoom(map.getZoom());
                 setTimeout(() => map.invalidateSize(), 100);
             })
-            .catch(console.error);
+            .catch(function(error) {
+                console.error(error);
+                projectList.innerHTML = '<div class="rounded-3xl border border-dashed border-gray-200 bg-slate-50 p-6 text-sm text-gray-500">Unable to load map data.</div>';
+                setEmptyState('Unable to load the map.');
+            });
     });
 </script>
 @endsection

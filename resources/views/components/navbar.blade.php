@@ -32,13 +32,13 @@
         </button>
 
         <div class="flex flex-1 items-center gap-2 sm:gap-4 min-w-0">
-            <div class="hidden sm:block w-full max-w-2xl">
-                <div class="px-3 py-1.5 sm:px-4 sm:py-2">
-                    <div class="text-sm sm:text-base lg:text-lg font-semibold text-slate-900 leading-tight">
+            <div class="w-full max-w-2xl">
+                <div class="px-2 py-1 sm:px-4 sm:py-2">
+                    <div class="text-sm font-semibold text-slate-900 sm:text-base lg:text-lg leading-tight">
                         {{ $panelTitle }}
                     </div>
                     @if(!empty($panelSubtitle))
-                        <div class="mt-0.5 text-xs sm:text-sm lg:text-base text-slate-600 leading-tight">
+                        <div class="mt-0.5 hidden sm:block text-xs text-slate-600 lg:text-base leading-tight">
                             {{ $panelSubtitle }}
                         </div>
                     @endif
@@ -48,15 +48,15 @@
 
         <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0 overflow-visible">
             <div class="relative overflow-visible">
-                <button id="notificationBtn" class="rounded-2xl p-2 sm:p-3 transition hover:opacity-80 relative" style="background-color: #F0F4F8; color: #0F172A;" title="Notifications" aria-label="Open notifications">
+                <button id="notificationBtn" class="rounded-2xl p-2 sm:p-2.5 transition hover:opacity-80 relative" style="background-color: #F0F4F8; color: #0F172A;" title="Notifications" aria-label="Open notifications">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                     </svg>
-                    <span id="notificationBadge" class="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold leading-none text-white bg-red-600 rounded-full" style="display: none; min-width: 20px; height: 20px;">0</span>
+                    <span id="notificationBadge" class="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-bold leading-none text-white bg-red-600 rounded-full" style="display: none; min-width: 18px; height: 18px;">0</span>
                 </button>
                 
                 <!-- Notification Dropdown Panel -->
-                <div id="notificationPanel" class="fixed z-[9999] w-[min(22rem,calc(100vw-2rem))] rounded-lg border border-gray-200 bg-white shadow-2xl" style="display: none; max-height: min(24rem, 70vh); overflow-y: auto;">
+                <div id="notificationPanel" class="fixed z-[9999] w-[min(18rem,calc(100vw-2rem))] rounded-lg border border-gray-200 bg-white shadow-2xl" style="display: none; max-height: min(24rem, 70vh); overflow-y: auto;">
                     <div class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-3">
                         <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
                         <button id="clearNotificationsBtn" type="button" class="text-xs font-medium text-blue-600 hover:text-blue-800">Clear</button>

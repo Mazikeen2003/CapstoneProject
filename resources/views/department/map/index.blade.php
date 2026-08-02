@@ -4,30 +4,31 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-<div class="flex flex-col md:flex-row gap-0 h-[calc(100svh-80px)] min-h-[65svh] overflow-hidden rounded-lg border border-gray-300 shadow-sm">
-    <div class="flex-1 min-w-0 w-full relative" id="map" style="background-color: #f0f0f0;"></div>
-
-    <button id="toggleProjectSidebar" class="fixed bottom-4 right-4 md:hidden z-[10001] bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600 transition hidden" aria-label="Toggle projects sidebar">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-    </button>
-
-    <div id="projectSidebar" class="fixed inset-0 z-[10000] w-full bg-white border-t md:relative md:inset-auto md:w-[360px] md:border-t-0 md:border-l border-gray-200 overflow-y-auto max-h-[100svh] shadow-sm order-3 md:order-2 md:max-h-full hidden md:block" role="dialog" aria-label="Department project list">
-        <div class="p-6 border-b border-gray-200 sticky top-0 bg-white">
-            <h2 class="text-lg font-bold text-black">Department Projects</h2>
-            <p class="text-sm text-gray-500 mt-1">Cabuyao City Projects</p>
-            <div id="departmentSidebarAction" class="mt-4"></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="space-y-4">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900">Department Map</h1>
+            <p class="mt-1 text-sm text-slate-500">Tap a barangay to view its projects and explore the city map.</p>
         </div>
-        <div id="departmentProjectList" class="divide-y divide-gray-200"></div>
-    </div>
+        <div class="grid grid-cols-1 lg:grid-cols-[1.5fr_0.95fr] gap-4">
+            <div class="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm">
+                <div class="min-w-0 w-full h-[55vh] sm:h-[60vh] md:h-[68vh] lg:h-[72vh] relative" id="map" style="background-color: #f0f0f0;"></div>
+            </div>
+
+            <div id="projectSidebar" class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-gray-200 bg-white">
+                    <h2 class="text-lg font-bold text-slate-900">Department Projects</h2>
+                    <p class="text-sm text-slate-500 mt-1">Cabuyao City Projects</p>
+                    <div id="departmentSidebarAction" class="mt-4"></div>
+                </div>
+                <div id="departmentProjectList" class="divide-y divide-gray-200 max-h-[80vh] overflow-y-auto"></div>
+            </div>
+        </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const projectList = document.getElementById('departmentProjectList');
-        const projectSidebarToggle = document.getElementById('toggleProjectSidebar');
-        const projectSidebar = document.getElementById('projectSidebar');
         const selectedClass = 'bg-slate-50 border border-slate-200';
         let selectedProjectIndex = null;
         let map = null;
@@ -43,34 +44,9 @@
             return window.innerWidth < 768;
         }
 
-        function syncProjectSidebar() {
-            if (isMobile()) {
-                projectSidebarToggle.style.display = 'block';
-                projectSidebar.classList.add('hidden');
-                projectSidebar.classList.remove('block');
-            } else {
-                projectSidebarToggle.style.display = 'none';
-                projectSidebar.classList.remove('hidden');
-                projectSidebar.classList.add('block');
-            }
-
-            if (map) {
-                requestAnimationFrame(() => map.invalidateSize());
-            }
+        if (map) {
+            requestAnimationFrame(() => map.invalidateSize());
         }
-
-        function toggleProjectSidebar() {
-            const isVisible = !projectSidebar.classList.contains('hidden');
-            projectSidebar.classList.toggle('hidden', isVisible);
-            projectSidebar.classList.toggle('block', !isVisible);
-            projectSidebarToggle.innerHTML = isVisible
-                ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>'
-                : '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>';
-        }
-
-        projectSidebarToggle.addEventListener('click', toggleProjectSidebar);
-        window.addEventListener('resize', syncProjectSidebar);
-        syncProjectSidebar();
 
         function barangayColor(name) {
             let hash = 0;
@@ -394,6 +370,12 @@
                 map.setMaxBounds(boundedArea);
                 map.setMinZoom(map.getZoom());
                 setTimeout(() => map.invalidateSize(), 100);
+
+                window.addEventListener('resize', function() {
+                    if (map) {
+                        setTimeout(() => map.invalidateSize(), 100);
+                    }
+                });
             })
             .catch(console.error);
     });

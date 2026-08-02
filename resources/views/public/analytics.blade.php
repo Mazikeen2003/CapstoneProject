@@ -47,6 +47,15 @@
                 Login
             </a>
         </nav>
+        <div class="md:hidden border-t border-slate-200 bg-white">
+            <div class="flex flex-wrap items-center justify-center gap-3 px-4 py-3 text-xs uppercase tracking-widest text-slate-600">
+                <a href="{{ url('/') }}" class="hover:text-emerald-700 transition-colors">Home</a>
+                <a href="{{ route('public.map') }}" class="hover:text-emerald-700 transition-colors">Public Map</a>
+                <a href="{{ route('public.analytics') }}" class="text-emerald-700 font-semibold">Analytics</a>
+            </div>
+        </div>
+    </header>
+        </nav>
     </header>
 
     @php
