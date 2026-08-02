@@ -6,36 +6,23 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
     <div class="space-y-6">
-        <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-            <div class="flex flex-col gap-3">
-                <div>
+        <div class="grid gap-6 lg:grid-cols-[1.45fr_0.95fr]">
+            <div class="rounded-3xl border border-gray-200 bg-white p-4 shadow-sm" style="height: calc(100vh - 13.5rem);">
+                <div class="mb-4">
                     <h2 class="text-xl font-bold text-slate-900">Barangay Map</h2>
                     <p class="text-sm text-gray-500 mt-1">Project locations for your barangay, displayed across Cabuyao City.</p>
                 </div>
-                <div class="overflow-hidden rounded-3xl border border-slate-200 bg-slate-50">
-                    <div id="map" class="h-[320px] sm:h-[420px] lg:h-[560px] xl:h-[680px] bg-slate-100"></div>
-                </div>
+                <div id="map" class="h-full rounded-3xl border border-slate-200 bg-slate-100"></div>
             </div>
-        </div>
 
-        <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-            <div class="flex flex-col gap-3">
-                <div>
+            <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm overflow-hidden flex flex-col" style="max-height: calc(100vh - 13.5rem);">
+                <div class="mb-5">
                     <h2 class="text-xl font-bold text-slate-900">Barangay Projects</h2>
                     <p class="text-sm text-gray-500 mt-1">Tap a map marker or project card to view details below.</p>
                 </div>
-                <div id="departmentSidebarAction" class="mt-3"></div>
-                <div id="departmentProjectList" class="mt-5 grid gap-4"></div>
-                <div id="emptyState" class="mt-5 rounded-3xl border border-dashed border-gray-200 bg-slate-50 p-6 text-sm text-gray-500">Loading barangay projects...</div>
+                <div id="departmentSidebarAction" class="mb-5"></div>
+                <div id="departmentProjectList" class="space-y-4 overflow-y-auto min-h-0 flex-1"></div>
             </div>
-        </div>
-
-        <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-            <div>
-                <h2 class="text-xl font-bold text-slate-900">Selected Project</h2>
-                <p class="text-sm text-gray-500 mt-1">Details appear here when a project is selected.</p>
-            </div>
-            <div id="selectedProjectDetails" class="mt-5"></div>
         </div>
     </div>
 </div>
@@ -44,7 +31,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         const projectList = document.getElementById('departmentProjectList');
         const departmentSidebarAction = document.getElementById('departmentSidebarAction');
-        const selectedProjectDetails = document.getElementById('selectedProjectDetails');
         const emptyState = document.getElementById('emptyState');
         const selectedClass = 'bg-slate-50 border border-slate-200';
         let selectedProjectIndex = null;
@@ -83,7 +69,7 @@
             return `hsl(${hue}, 65%, 55%)`;
         }
 
-        function renderProjectCard(project, index, isSingle = false) {
+        function renderProjectCard(project, index) {
             const props = project.properties;
             const progress = calculateProgress(project);
             const startDate = props.start_date ? new Date(props.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
@@ -91,45 +77,6 @@
             const imageHtml = props.image
                 ? `<img src="${props.image}" alt="${props.name}" class="h-40 w-full rounded-2xl object-cover bg-slate-100">`
                 : '<div class="h-40 w-full rounded-2xl bg-gray-100 flex items-center justify-center text-xs text-gray-500">No image</div>';
-
-            if (isSingle) {
-                return `
-                    <div class="department-project-card cursor-pointer overflow-hidden rounded-[24px] border border-slate-200 bg-white text-slate-800 shadow-sm" data-index="${index}">
-                        <div class="p-5 sm:p-6">
-                            <div class="mb-4 flex items-start justify-between gap-3">
-                                <div>
-                                    <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">Selected project</p>
-                                    <h3 class="mt-2 text-xl font-semibold text-slate-900">${props.name}</h3>
-                                </div>
-                                <span class="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-700">${props.status || 'Unknown'}</span>
-                            </div>
-                            <div class="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-2">${imageHtml}</div>
-                            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
-                                <div class="grid gap-3 text-sm text-slate-600">
-                                    <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Barangay</span><span class="text-right font-semibold text-slate-900">${props.barangay || 'Not specified'}</span></div>
-                                    <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Budget</span><span class="font-semibold text-slate-900">${formatCurrency(props.budget)}</span></div>
-                                    <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Progress</span><span class="font-semibold text-slate-900">${progress.toFixed(1)}%</span></div>
-                                </div>
-                                <div class="mt-3 pt-3 border-t border-slate-300">
-                                    <div class="flex justify-between items-center mb-1">
-                                        <span class="text-xs font-semibold text-slate-600">Timeline</span>
-                                        <span class="text-xs font-bold text-slate-700">${progress.toFixed(1)}%</span>
-                                    </div>
-                                    <div class="h-2 bg-gray-300 rounded-full overflow-hidden">
-                                        <div class="h-full transition-all duration-300" style="width: ${progress}%; background-color: #3b82f6;"></div>
-                                    </div>
-                                    <div class="flex justify-between text-xs text-slate-500 mt-1">
-                                        <span>Start: ${startDate}</span>
-                                        <span>Target: ${targetDate}</span>
-                                    </div>
-                                </div>
-                                <p class="mt-4 text-sm leading-6 text-slate-600">${props.description || 'No description available.'}</p>
-                            </div>
-                            <button type="button" id="showAllProjects" class="mt-5 inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View all projects</button>
-                        </div>
-                    </div>
-                `;
-            }
 
             return `
                 <div class="department-project-card cursor-pointer overflow-hidden rounded-3xl bg-white shadow-sm transition hover:shadow-md ${selectedProjectIndex === index ? selectedClass : 'border border-transparent'}" data-index="${index}">
@@ -181,66 +128,16 @@
             }
         }
 
-        function renderSelectedProjectDetails(project) {
-            if (!selectedProjectDetails) return;
-            if (!project) {
-                selectedProjectDetails.innerHTML = `<div class="rounded-3xl border border-dashed border-gray-200 bg-slate-50 p-6 text-sm text-slate-600">Select a project card or marker to view details here.</div>`;
-                return;
-            }
-
-            const props = project.properties;
-            const progress = calculateProgress(project);
-            const startDate = props.start_date ? new Date(props.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
-            const targetDate = props.target_end_date ? new Date(props.target_end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
-
-            selectedProjectDetails.innerHTML = `
-                <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <div class="grid gap-4 lg:grid-cols-2">
-                        <div>
-                            <h3 class="text-lg font-semibold text-slate-900">${props.name}</h3>
-                            <p class="mt-2 text-sm text-slate-600">${props.description || 'No description provided.'}</p>
-                        </div>
-                        <div class="space-y-3 text-sm text-slate-700">
-                            <div class="flex items-center justify-between gap-2 rounded-2xl bg-slate-50 px-4 py-3">
-                                <span class="font-semibold">Status</span>
-                                <span>${props.status || 'Unknown'}</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2 rounded-2xl bg-slate-50 px-4 py-3">
-                                <span class="font-semibold">Barangay</span>
-                                <span>${props.barangay || 'N/A'}</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2 rounded-2xl bg-slate-50 px-4 py-3">
-                                <span class="font-semibold">Budget</span>
-                                <span>${formatCurrency(props.budget)}</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2 rounded-2xl bg-slate-50 px-4 py-3">
-                                <span class="font-semibold">Timeline</span>
-                                <span>${startDate} → ${targetDate}</span>
-                            </div>
-                            <div>
-                                <span class="font-semibold">Progress</span>
-                                <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-200">
-                                    <div class="h-full bg-blue-500" style="width: ${progress}%;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
         function renderProjectList(projects) {
-            const isSingle = projects.length === 1;
             updateSidebarAction();
 
             if (!projects.length) {
                 projectList.innerHTML = `<div class="rounded-3xl border border-dashed border-gray-200 bg-slate-50 p-6 text-sm text-gray-500">No public projects recorded in ${selectedBarangayName || 'this barangay'} yet.</div>`;
-                renderSelectedProjectDetails(null);
                 return;
             }
 
             projectList.innerHTML = projects.map(function(project) {
-                return renderProjectCard(project, project.originalIndex, isSingle);
+                return renderProjectCard(project, project.originalIndex);
             }).join('');
 
             document.querySelectorAll('.department-project-card').forEach(function(card) {
@@ -249,31 +146,10 @@
                     selectProject(projectFeatures[index], index);
                 });
             });
-
-            const showAllBtn = document.getElementById('showAllProjects');
-            if (showAllBtn) {
-                showAllBtn.addEventListener('click', function() {
-                    showAllProjects();
-                });
-            }
-        }
-
-        function showAllProjects() {
-            selectedProjectIndex = null;
-            const activeList = selectedBarangayName
-                ? projectFeatures.filter(p => p.properties.barangay === selectedBarangayName)
-                : projectFeatures;
-            renderProjectList(activeList);
-            if (map && boundedArea && !selectedBarangayName) {
-                map.fitBounds(boundedArea, { padding: [24, 24], animate: true, duration: 0.7, easeLinearity: 0.3 });
-            }
-            renderSelectedProjectDetails(null);
         }
 
         function selectProject(project, index) {
             highlightProject(index);
-            renderProjectList([project]);
-            renderSelectedProjectDetails(project);
             if (map && project && project.geometry && project.geometry.coordinates) {
                 const coords = project.geometry.coordinates;
                 map.flyTo([coords[1], coords[0]], 15, { duration: 0.7, easeLinearity: 0.35 });
@@ -317,21 +193,8 @@
 
             const filtered = projectFeatures.filter(p => p.properties.barangay === name);
             renderProjectList(filtered);
-            renderSelectedProjectDetails(null);
         }
 
-        function setEmptyState(message) {
-            if (emptyState) {
-                emptyState.textContent = message;
-                emptyState.classList.remove('hidden');
-            }
-        }
-
-        function hideEmptyState() {
-            if (emptyState) {
-                emptyState.classList.add('hidden');
-            }
-        }
 
         fetch('{{ asset('data/cabuyao-map.geojson') }}')
             .then(response => response.json())
@@ -419,19 +282,17 @@
                         });
 
                         map.on('click', function() {
-                            if (selectedProjectIndex !== null && !selectedBarangayName) {
-                                showAllProjects();
+                            if (selectedProjectIndex !== null) {
+                                selectedProjectIndex = null;
+                                clearSelection();
                             }
                         });
                         allMarkers.addTo(map);
-                        hideEmptyState();
                         renderProjectList(projectFeatures);
-                        renderSelectedProjectDetails(null);
                     })
                     .catch(function(error) {
                         console.error(error);
                         projectList.innerHTML = '<div class="rounded-3xl border border-dashed border-gray-200 bg-slate-50 p-6 text-sm text-gray-500">Unable to load projects.</div>';
-                        setEmptyState('Unable to load barangay projects.');
                     });
 
                 map.fitBounds(boundedArea, { padding: [24, 24] });
@@ -442,7 +303,6 @@
             .catch(function(error) {
                 console.error(error);
                 projectList.innerHTML = '<div class="rounded-3xl border border-dashed border-gray-200 bg-slate-50 p-6 text-sm text-gray-500">Unable to load map data.</div>';
-                setEmptyState('Unable to load the map.');
             });
     });
 </script>
