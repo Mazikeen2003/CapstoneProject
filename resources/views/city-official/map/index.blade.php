@@ -11,23 +11,23 @@
     </div>
 
     <div class="grid gap-6 lg:grid-cols-[1.45fr_0.95fr]">
-        <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" style="height: calc(100vh - 13.5rem);">
             <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h2 class="text-xl font-semibold text-slate-900">Interactive Map</h2>
                     <p class="text-sm text-slate-500">Tap markers to review project information.</p>
                 </div>
             </div>
-            <div id="map" class="h-[58vh] sm:h-[64vh] lg:h-[72vh] rounded-3xl border border-slate-200 bg-slate-100"></div>
+            <div id="map" class="h-full rounded-3xl border border-slate-200 bg-slate-100"></div>
         </div>
 
-        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm overflow-hidden">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm overflow-hidden flex flex-col" style="max-height: calc(100vh - 13.5rem);">
             <div class="mb-5">
                 <h2 class="text-xl font-semibold text-slate-900">Project List</h2>
                 <p class="text-sm text-slate-500 mt-1">Select a project card to fly to its map marker.</p>
             </div>
             <div id="departmentSidebarAction" class="mb-5"></div>
-            <div id="departmentProjectList" class="space-y-4 overflow-hidden"></div>
+            <div id="departmentProjectList" class="space-y-4 overflow-y-auto min-h-0 flex-1"></div>
         </div>
     </div>
 </div>
