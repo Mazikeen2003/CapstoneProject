@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OtpMail;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -41,10 +43,18 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
-        Auth::login($user, $request->boolean('remember'));
-        $request->session()->regenerate();
+        $code = (string) random_int(100000, 999999);
+        $user->forceFill([
+            'otp_code' => $code,
+            'otp_expires_at' => now()->addMinutes(10),
+        ])->save();
 
-        return redirect()->route("{$user->role_slug}.dashboard");
+        Mail::to($user->user_email)->send(new OtpMail($code, $user->first_name ?: $user->username));
+
+        $request->session()->put('pending_otp_user_id', $user->user_id);
+        $request->session()->put('pending_otp_remember', $request->boolean('remember'));
+
+        return redirect()->route('otp.verify.form');
     }
 
     /**

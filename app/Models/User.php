@@ -26,6 +26,8 @@ class User extends Authenticatable
         'permissions',
         'email_verified_at',
         'remember_token',
+        'otp_code',
+        'otp_expires_at',
     ];
 
     protected $hidden = [
@@ -35,6 +37,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'otp_expires_at' => 'datetime',
         'permissions' => 'array',
     ];
 
