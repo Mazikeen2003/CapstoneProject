@@ -15,6 +15,7 @@ use App\Http\Controllers\Department\ProjectFormController as DepartmentProjectFo
 use App\Http\Controllers\CityOfficial\DashboardController as CityDashboard;
 use App\Http\Controllers\CityOfficial\MapController as CityMapController;
 use App\Http\Controllers\CityOfficial\AnalyticsController as CityAnalyticsController;
+use App\Http\Controllers\CityOfficial\ProjectController as CityProjectController;
 use App\Http\Controllers\CityOfficial\ReportController as CityReportController;
 use App\Http\Controllers\BarangayOfficial\DashboardController as BarangayDashboard;
 use App\Http\Controllers\BarangayOfficial\ProjectController as BarangayProjectController;
@@ -175,6 +176,8 @@ Route::middleware(['auth', 'city'])
     ->group(function () {
 
         Route::get('/dashboard', [CityDashboard::class,          'index'])->name('dashboard');
+        Route::get('/projects',  [CityProjectController::class,  'index'])->name('projects.index');
+        Route::get('/projects/{project}', [CityProjectController::class, 'show'])->name('projects.show');
         Route::get('/map',       [CityMapController::class,       'index'])->name('map.index');
         Route::get('/analytics', [CityAnalyticsController::class, 'index'])->name('analytics.index');
         Route::get('/reports',   [CityReportController::class,    'index'])->name('reports.index');

@@ -4,30 +4,25 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-    <div class="space-y-2">
-        <h1 class="text-3xl font-bold text-slate-900">City Map</h1>
-        <p class="text-sm text-slate-500">Browse city projects by location with interactive markers and project details.</p>
-    </div>
-
-    <div class="grid gap-6 lg:grid-cols-[1.45fr_0.95fr]">
-        <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" style="height: calc(100vh - 13.5rem);">
-            <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <h2 class="text-xl font-semibold text-slate-900">Interactive Map</h2>
-                    <p class="text-sm text-slate-500">Tap markers to review project information.</p>
-                </div>
-            </div>
-            <div id="map" class="h-full rounded-3xl border border-slate-200 bg-slate-100"></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="space-y-4">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900">City Map</h1>
+            <p class="text-sm text-slate-500">Browse city projects by location with interactive markers and project details.</p>
         </div>
-
-        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm overflow-hidden flex flex-col" style="max-height: calc(100vh - 13.5rem);">
-            <div class="mb-5">
-                <h2 class="text-xl font-semibold text-slate-900">Project List</h2>
-                <p class="text-sm text-slate-500 mt-1">Select a project card to fly to its map marker.</p>
+        <div class="grid gap-6 lg:grid-cols-[1.45fr_0.95fr]">
+            <div class="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm" style="height: calc(100vh - 13.5rem);">
+                <div id="map" class="min-w-0 w-full h-full relative" style="background-color: #f0f0f0;"></div>
             </div>
-            <div id="departmentSidebarAction" class="mb-5"></div>
-            <div id="departmentProjectList" class="space-y-4 overflow-y-auto min-h-0 flex-1"></div>
+
+            <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm overflow-hidden flex flex-col" style="max-height: calc(100vh - 13.5rem);">
+                <div class="mb-5">
+                    <h2 class="text-xl font-semibold text-slate-900">Project List</h2>
+                    <p class="text-sm text-slate-500 mt-1">Select a project card to fly to its map marker.</p>
+                </div>
+                <div id="departmentSidebarAction" class="mb-5"></div>
+                <div id="departmentProjectList" class="space-y-4 overflow-y-auto min-h-0 flex-1"></div>
+            </div>
         </div>
     </div>
 </div>

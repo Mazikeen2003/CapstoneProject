@@ -98,6 +98,12 @@
                             </span>
                             Dashboard
                         </a>
+                        <a href="{{ url('/city/projects') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('city/projects*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="City Projects">
+                            <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Projects">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11 7h2v2h-2zm0 4h2v2h-2zm-4-4h2v2H7zm0 4h2v2H7zM7 3h10c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2zm12-2v18H3V1h18z"/></svg>
+                            </span>
+                            Projects
+                        </a>
                         <a href="{{ url('/city/map') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('city/map') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="City Map">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Map">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>

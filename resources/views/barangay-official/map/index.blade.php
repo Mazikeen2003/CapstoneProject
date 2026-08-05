@@ -5,20 +5,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    <div class="space-y-6">
+    <div class="space-y-4">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900">Barangay Map</h1>
+            <p class="mt-1 text-sm text-slate-500">Tap a map marker or project card to view your barangay projects.</p>
+        </div>
         <div class="grid gap-6 lg:grid-cols-[1.45fr_0.95fr]">
-            <div class="rounded-3xl border border-gray-200 bg-white p-4 shadow-sm" style="height: calc(100vh - 13.5rem);">
-                <div class="mb-4">
-                    <h2 class="text-xl font-bold text-slate-900">Barangay Map</h2>
-                    <p class="text-sm text-gray-500 mt-1">Project locations for your barangay, displayed across Cabuyao City.</p>
-                </div>
-                <div id="map" class="h-full rounded-3xl border border-slate-200 bg-slate-100"></div>
+            <div class="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm" style="height: calc(100vh - 13.5rem);">
+                <div id="map" class="min-w-0 w-full h-full relative" style="background-color: #f0f0f0;"></div>
             </div>
 
-            <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm overflow-hidden flex flex-col" style="max-height: calc(100vh - 13.5rem);">
+            <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm overflow-hidden flex flex-col" style="max-height: calc(100vh - 13.5rem);">
                 <div class="mb-5">
                     <h2 class="text-xl font-bold text-slate-900">Barangay Projects</h2>
-                    <p class="text-sm text-gray-500 mt-1">Tap a map marker or project card to view details below.</p>
+                    <p class="text-sm text-slate-500 mt-1">Tap a map marker or project card to view details below.</p>
                 </div>
                 <div id="departmentSidebarAction" class="mb-5"></div>
                 <div id="departmentProjectList" class="space-y-4 overflow-y-auto min-h-0 flex-1"></div>
