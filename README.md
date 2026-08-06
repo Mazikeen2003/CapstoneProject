@@ -1,119 +1,113 @@
-# Specific Research Objectives
+# ProjectTracker
 
-### A. Centralized Database Module
+![Laravel](https://img.shields.io/badge/Laravel-EF2D5E?style=for-the-badge&logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Alpine.js](https://img.shields.io/badge/Alpine.js-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=white)
+![Composer](https://img.shields.io/badge/Composer-8892BF?style=for-the-badge&logo=composer&logoColor=white)
 
-Develop a **Centralized Database Module** that serves as the single source of truth for all project data, eliminating departmental silos through standardized formats, secure Laravel-based access controls, and task-level tracking with employee assignment per project.
+A modern Laravel-based project management portal designed for local government operations. ProjectTracker brings together planning, monitoring, reporting, and public transparency in one streamlined system.
 
-**Specific Functionalities**
+## ✨ Overview
 
-1. **Department Personnel**
-   - Create, read, update, and delete project records.
-   - Validate and standardize project data entry.
-   - Log all user actions for audit purposes.
+ProjectTracker is built to support efficient collaboration across departments, city officials, and barangay units. It helps organizations manage projects more effectively while maintaining accountability, visibility, and easy access to reports.
 
-2. **City Officials**
-   - View consolidated project data across all departments for oversight and decision-making.
+## 🚀 Key Features
 
-3. **Barangay Officials**
-   - View project data limited to their assigned barangay.
+- Role-based dashboards for Admin, City Official, Barangay Official, and Department users
+- Project creation, review, updates, and edit-permission workflows
+- Interactive map views with GeoJSON export for public and authenticated users
+- Analytics and budget reporting for performance tracking and compliance
+- PDF report generation for projects, budgets, and SGLG summaries
+- Audit log access and backup management for secure operations
+- Public-facing map and analytics endpoints for transparency
 
-4. **Citizens**
-   - Access project information only through the public map portal with a simplified data subset.
+## 👥 User Roles
 
-5. **System Administrators**
-   - Perform database maintenance.
-   - Manage backup and recovery.
-   - Optimize database performance.
-   - Ensure data integrity.
+- **Admin**: Manage users, configure permissions, review audit logs, run backups, and generate system reports
+- **City Official**: Review citywide projects, view analytics, and export PDF reports
+- **Barangay Official**: Manage local projects, update barangay project data, and monitor barangay analytics
+- **Department**: Create and edit departmental projects, request edit permissions, and generate supporting forms
+- **Public**: Access public map and analytics pages without authentication
 
----
+## 🛠️ Tech Stack
 
-### B. Real-Time Dashboard Module
+- **PHP 8.2**
+- **Laravel 12**
+- **Tailwind CSS**
+- **Vite**
+- **Alpine.js**
+- **Axios**
+- **DOMPDF**
+- **Composer**
+- **NPM**
 
-Develop a **Real-Time Dashboard Module** with real-time project status visualization, department-wide visibility, standardized reporting formats, and role-based access controls.
+## 📦 Installation
 
-**Specific Functionalities**
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd CapstoneProject
+   ```
+2. Install PHP dependencies:
+   ```bash
+   composer install
+   ```
+3. Install frontend dependencies:
+   ```bash
+   npm install
+   ```
+4. Copy the environment file and generate an application key:
+   ```bash
+   copy .env.example .env
+   php artisan key:generate
+   ```
+5. Configure your database connection in `.env`.
+6. Run migrations:
+   ```bash
+   php artisan migrate
+   ```
 
-1. **Department Personnel**
-   - View a comprehensive dashboard of all ongoing projects.
-   - Monitor KPIs, project progress percentages, and real-time project status.
-   - Receive instant notifications.
+## 💻 Local Development
 
-2. **City Officials**
-   - View high-level KPIs, including total, ongoing, completed, and delayed projects across all barangays.
-   - Access summary charts for informed decision-making.
+- Start the application server:
+  ```bash
+  php artisan serve
+  ```
+- Start the frontend build watcher:
+  ```bash
+  npm run dev
+  ```
 
-3. **Barangay Officials**
-   - View a barangay-specific dashboard displaying local project statuses, progress, and performance metrics.
+## 🏗️ Production Build
 
-4. **Citizens**
-   - View simplified project status indicators through the public map portal.
+```bash
+npm run build
+```
 
-5. **System Administrators**
-   - Monitor system performance.
-   - Track user activity.
-   - Monitor data synchronization.
+## ✅ Testing
 
----
+Run the test suite with:
 
-### C. Descriptive Analytics Module
+```bash
+php artisan test
+```
 
-Develop a **Descriptive Analytics Module** incorporating data summarization techniques for project status reporting, budget utilization analysis, completion rate calculation, trend visualization, and budget variance tracking by comparing proposed versus actual project expenditures.
+## 📁 Project Structure
 
-**Specific Functionalities**
+- `app/Http/Controllers` — application controllers and route handling
+- `app/Models` — Eloquent models for projects, users, reports, and more
+- `resources/views` — Blade templates and frontend pages
+- `routes/web.php` — primary web route definitions and role-based routing
+- `database/migrations` — schema migrations for database setup
+- `resources/css` and `resources/js` — Tailwind and Vite frontend assets
 
-1. **Department Personnel**
-   - View project status distribution.
-   - Analyze budget utilization by barangay.
-   - Monitor completion rates by project type.
-   - Generate trend reports.
-   - Export reports in PDF format.
-   - Apply filters to analytics data.
+## 📝 Notes
 
-2. **City Officials**
-   - View city-wide budget summaries.
-   - Analyze project distribution across barangays.
-   - Generate trend analyses for presentations and compliance reporting.
+- Update `.env` with your local database credentials before running migrations.
+- Public map and analytics pages are available under `/public/map` and `/public/analytics`.
 
-3. **Barangay Officials**
-   - View charts showing project status and budget utilization within their barangay.
+## 📄 License
 
-4. **Citizens**
-   - View basic project information and descriptive analytics through the public map portal.
-
-5. **System Administrators**
-   - Monitor system usage.
-   - Review user activity logs.
-   - Track data quality metrics.
-
----
-
-### D. Public Transparency Module
-
-Develop a **Public Transparency Module** that enables interactive geospatial mapping of project locations, status color-coding, barangay-level views, mobile-responsive design, public map portal access, comprehensive audit trails, and data provenance documentation.
-
-**Specific Functionalities**
-
-1. **Department Personnel**
-   - Ensure the accuracy and timeliness of publicly available project data.
-   - Generate SGLG compliance reports.
-
-2. **City Officials**
-   - Review the accuracy of public project information.
-   - Generate SGLG documentation.
-   - Monitor public portal usage analytics.
-
-3. **Barangay Officials**
-   - Verify the accurate representation of projects within their barangay on the public portal.
-
-4. **Citizens**
-   - Access the public map portal without logging in.
-   - Search projects by barangay.
-   - View color-coded project markers.
-   - Access basic project information and descriptive analytics.
-
-5. **System Administrators**
-   - Manage portal settings.
-   - Configure interactive maps.
-   - Generate audit trail reports.
-   - Manage SGLG compliance tools.
+This project is released under the **MIT License**.
