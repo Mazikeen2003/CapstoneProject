@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -48,8 +49,7 @@ class ProjectController extends Controller
         $data['created_by'] = Auth::id();
 
         if ($request->hasFile('project_image')) {
-            $data['project_image'] = $request->file('project_image')
-                ->store('project_images', 'public');
+            $data['project_image'] = $this->storeProjectImage($request->file('project_image'));
         }
 
         $project = Project::create($data);
@@ -102,7 +102,13 @@ class ProjectController extends Controller
     {
         $project = Project::with(['barangay', 'latestUpdate'])->findOrFail($id);
 
-        $this->authorize('update', $project);
+        if (Auth::user()?->cannot('update', $project)) {
+            if (Auth::user()?->hasRole('department') && $project->created_by !== Auth::id()) {
+                abort(403, 'You can view this project, but you can only edit projects you created.');
+            }
+
+            abort(403, 'This action is unauthorized.');
+        }
 
         $barangays = Barangay::orderBy('barangay_name')->get();
 
@@ -120,7 +126,13 @@ class ProjectController extends Controller
     {
         $project = Project::findOrFail($id);
 
-        $this->authorize('update', $project);
+        if (Auth::user()?->cannot('update', $project)) {
+            if (Auth::user()?->hasRole('department') && $project->created_by !== Auth::id()) {
+                abort(403, 'You can view this project, but you can only edit projects you created.');
+            }
+
+            abort(403, 'This action is unauthorized.');
+        }
 
         $original = $project->getOriginal();
 
@@ -147,8 +159,7 @@ class ProjectController extends Controller
             if ($project->project_image) {
                 Storage::disk('public')->delete($project->project_image);
             }
-            $data['project_image'] = $request->file('project_image')
-                ->store('project_images', 'public');
+            $data['project_image'] = $this->storeProjectImage($request->file('project_image'));
         }
 
         $project->update($data);
@@ -191,7 +202,13 @@ class ProjectController extends Controller
     {
         $project = Project::findOrFail($id);
 
-        $this->authorize('delete', $project);
+        if (Auth::user()?->cannot('delete', $project)) {
+            if (Auth::user()?->hasRole('department') && $project->created_by !== Auth::id()) {
+                abort(403, 'You can view this project, but you can only delete projects you created.');
+            }
+
+            abort(403, 'This action is unauthorized.');
+        }
 
         AuditLogService::logDelete($project);
         BackupService::createBackup('project_delete', Auth::id());
@@ -205,10 +222,25 @@ class ProjectController extends Controller
             ->with('success', 'Project deleted.');
     }
 
+    private function storeProjectImage($file): string
+    {
+        $extension = strtolower($file->getClientOriginalExtension() ?: 'jpg');
+        $filename = Str::uuid()->toString() . '.' . $extension;
+
+        return $file->storeAs('project_images', $filename, 'public');
+    }
+
     public function requestEditPermission(Request $request, $id)
     {
         $project = Project::findOrFail($id);
-        $this->authorize('update', $project);
+
+        if (Auth::user()?->cannot('update', $project)) {
+            if (Auth::user()?->hasRole('department') && $project->created_by !== Auth::id()) {
+                abort(403, 'You can view this project, but you can only edit projects you created.');
+            }
+
+            abort(403, 'This action is unauthorized.');
+        }
 
         $fieldsRequested = $request->input('fields_requested', ['start_date', 'target_end_date', 'approved_budget', 'actual_budget']);
         $reason = $request->input('reason');

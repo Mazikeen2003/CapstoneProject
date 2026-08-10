@@ -33,7 +33,7 @@ class UpdateProjectRequest extends FormRequest
             'actual_end_date'      => ['nullable', 'date'],
             'current_status'       => ['required', 'string', 'in:Planning,On Going,Completed,On Hold,Cancelled,Bidding - Success,Bidding - Failed,Procurement'],
             'remarks'              => ['nullable', 'string', 'max:2000'],
-            'project_image'        => ['nullable', 'image', 'max:5120'],
+            'project_image'        => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
         ];
     }
 

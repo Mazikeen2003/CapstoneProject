@@ -21,7 +21,7 @@ class ProjectPolicy
     {
         return match ($user->role_slug) {
             'admin', 'city' => true,
-            'department'    => $project->created_by === $user->user_id,
+            'department'    => true,
             'barangay'      => $project->barangay_id === $user->barangay_id,
             default         => false,
         };

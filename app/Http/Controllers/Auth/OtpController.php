@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -25,6 +27,8 @@ class OtpController extends Controller
 
     public function verify(Request $request): RedirectResponse
     {
+        $this->ensureOtpRateLimited($request);
+
         $request->validate([
             'otp_code' => ['required', 'digits:6'],
         ]);
@@ -49,10 +53,14 @@ class OtpController extends Controller
         }
 
         if ($user->otp_code !== $request->otp_code || now()->greaterThan($user->otp_expires_at)) {
+            RateLimiter::hit($this->otpThrottleKey($request));
+
             throw ValidationException::withMessages([
                 'otp_code' => 'The verification code is invalid or has expired.',
             ]);
         }
+
+        RateLimiter::clear($this->otpThrottleKey($request));
 
         $user->forceFill([
             'otp_code' => null,
@@ -65,6 +73,26 @@ class OtpController extends Controller
         $request->session()->regenerate();
 
         return redirect()->route("{$user->role_slug}.dashboard");
+    }
+
+    protected function ensureOtpRateLimited(Request $request): void
+    {
+        $key = $this->otpThrottleKey($request);
+
+        if (! RateLimiter::tooManyAttempts($key, 5)) {
+            return;
+        }
+
+        $seconds = RateLimiter::availableIn($key);
+
+        throw ValidationException::withMessages([
+            'otp_code' => __('auth.throttle', ['seconds' => $seconds, 'minutes' => (int) ceil($seconds / 60)]),
+        ]);
+    }
+
+    protected function otpThrottleKey(Request $request): string
+    {
+        return Str::lower($request->input('otp_code', '')) . '|' . $request->ip();
     }
 
     public function resend(Request $request): RedirectResponse

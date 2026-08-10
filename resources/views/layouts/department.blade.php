@@ -18,6 +18,18 @@
             <div class="flex-1 flex flex-col xl:overflow-hidden">
                 @include('components.navbar')
                 <main class="flex-1 p-6 overflow-y-auto">
+                    @if (session('error'))
+                        <div class="mb-4 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    @if (session('success'))
+                        <div class="mb-4 rounded-md border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-700">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
                     @yield('content')
                 </main>
             </div>
