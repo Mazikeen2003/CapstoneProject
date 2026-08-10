@@ -24,18 +24,29 @@
                         <x-auth-session-status class="mb-4" :status="session('status')" />
                         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-                        <form method="POST" action="{{ route('otp.verify') }}" class="space-y-6">
+                        <form method="POST" action="{{ route('otp.verify') }}" class="space-y-6" id="otpForm">
                             @csrf
 
                             <div class="space-y-2">
                                 <label class="block text-[0.65rem] font-semibold tracking-[0.22em] text-slate-500 uppercase">
                                     Verification Code
                                 </label>
-                                <div class="rounded-2xl bg-slate-100 px-4 py-3 shadow-inner">
-                                    <input type="text" name="otp_code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required autofocus
-                                        placeholder="123456"
-                                        class="w-full bg-transparent text-center text-lg font-semibold tracking-[0.4em] border-none outline-none focus:ring-0" />
+
+                                <div class="flex items-center justify-between gap-2">
+                                    @for ($i = 0; $i < 6; $i++)
+                                        <input
+                                            type="text"
+                                            inputmode="numeric"
+                                            maxlength="1"
+                                            pattern="[0-9]*"
+                                            aria-label="OTP digit {{ $i + 1 }}"
+                                            class="otp-digit h-12 w-12 rounded-xl border border-slate-200 bg-slate-100 text-center text-xl font-bold text-slate-900 shadow-inner outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-200"
+                                            autocomplete="one-time-code"
+                                        >
+                                    @endfor
                                 </div>
+
+                                <input type="hidden" name="otp_code" id="otp_code" />
                             </div>
 
                             <button type="submit"
@@ -43,6 +54,66 @@
                                 Verify & Log In
                             </button>
                         </form>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const inputs = [...document.querySelectorAll('.otp-digit')];
+                                const combined = document.getElementById('otp_code');
+                                const form = document.getElementById('otpForm');
+
+                                if (!inputs.length || !combined || !form) return;
+
+                                function updateCombined() {
+                                    combined.value = inputs.map(input => input.value).join('');
+                                }
+
+                                inputs.forEach((input, index) => {
+                                    input.addEventListener('input', function (event) {
+                                        const value = event.target.value.replace(/\D/g, '').slice(0, 1);
+                                        event.target.value = value;
+                                        updateCombined();
+
+                                        if (value && index < inputs.length - 1) {
+                                            inputs[index + 1].focus();
+                                        }
+                                    });
+
+                                    input.addEventListener('keydown', function (event) {
+                                        if (event.key === 'Backspace' && !event.target.value && index > 0) {
+                                            inputs[index - 1].focus();
+                                        }
+
+                                        if (event.key === 'ArrowLeft' && index > 0) {
+                                            inputs[index - 1].focus();
+                                        }
+
+                                        if (event.key === 'ArrowRight' && index < inputs.length - 1) {
+                                            inputs[index + 1].focus();
+                                        }
+                                    });
+
+                                    input.addEventListener('paste', function (event) {
+                                        event.preventDefault();
+                                        const pasted = (event.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+                                        if (!pasted) return;
+
+                                        pasted.split('').forEach((char, i) => {
+                                            if (inputs[i]) {
+                                                inputs[i].value = char;
+                                            }
+                                        });
+
+                                        updateCombined();
+                                        const nextIndex = Math.min(pasted.length, inputs.length - 1);
+                                        inputs[nextIndex].focus();
+                                    });
+                                });
+
+                                form.addEventListener('submit', function () {
+                                    updateCombined();
+                                });
+                            });
+                        </script>
 
                         <div class="flex flex-col gap-3 text-center text-sm text-slate-500">
                             <form method="POST" action="{{ route('otp.resend') }}">
