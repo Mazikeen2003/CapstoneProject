@@ -40,6 +40,7 @@ class NewPasswordController extends Controller
         // Here we will attempt to reset the user's password. If it is successful we
         // will update the password on an actual user model and persist it to the
         // database. Otherwise we will parse the error and return the response.
+        // Use custom user_email and save to password_hash to match schema
         $status = Password::reset(
             array_merge(['user_email' => $request->email], $request->only('password', 'password_confirmation', 'token')),
             function (User $user) use ($request) {
