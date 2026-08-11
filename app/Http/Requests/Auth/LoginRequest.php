@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Services\AuditLogService;
 
 class LoginRequest extends FormRequest
 {
@@ -47,6 +48,12 @@ class LoginRequest extends FormRequest
         $user = User::where('user_email', $this->input('email'))->first();
 
         if (! $user || ! Hash::check($this->input('password'), $user->password_hash)) {
+            // Log the failed login attempt for auditing before rejecting.
+            try {
+                AuditLogService::logFailedLogin($this->input('email'), $this->ip());
+            } catch (\Throwable $e) {
+                // ignore
+            }
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
