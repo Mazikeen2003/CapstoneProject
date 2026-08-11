@@ -93,8 +93,14 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-black">Description / Remarks</label>
-                        <textarea name="remarks" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">{{ old('remarks') }}</textarea>
+                        <label class="block text-sm font-medium text-black">👁️ Public Description</label>
+                        <p class="text-xs text-gray-500 mb-2">Shown to the public on the transparency portal. Keep this general and non-sensitive.</p>
+                        <textarea name="public_description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black; background-color: #f8fafc;">{{ old('public_description') }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-black">🔒 Internal Remarks (Private)</label>
+                        <p class="text-xs text-gray-500 mb-2">Encrypted and only visible to authorized staff — not shown publicly.</p>
+                        <textarea name="remarks" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black; background-color: #ffffff;">{{ old('remarks') }}</textarea>
                     </div>
                 </div>
 

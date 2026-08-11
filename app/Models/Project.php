@@ -22,6 +22,7 @@ class Project extends Model
         'project_type',
         'barangay_id',
         'location_description',
+        'public_description',
         'latitude',
         'longitude',
         'approved_budget',

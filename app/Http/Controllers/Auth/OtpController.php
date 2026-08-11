@@ -92,7 +92,31 @@ class OtpController extends Controller
 
     protected function otpThrottleKey(Request $request): string
     {
-        return Str::lower($request->input('otp_code', '')) . '|' . $request->ip();
+        $userId = session('pending_otp_user_id');
+
+        return 'otp-verify:' . ($userId ? $userId : 'unknown') . '|' . $request->ip();
+    }
+
+    protected function resendThrottleKey(Request $request): string
+    {
+        $userId = session('pending_otp_user_id');
+
+        return 'otp-resend:' . ($userId ? $userId : 'unknown') . '|' . $request->ip();
+    }
+
+    protected function ensureResendRateLimited(Request $request): void
+    {
+        $key = $this->resendThrottleKey($request);
+
+        if (! RateLimiter::tooManyAttempts($key, 3)) {
+            return;
+        }
+
+        $seconds = RateLimiter::availableIn($key);
+
+        throw ValidationException::withMessages([
+            'otp_code' => __('auth.throttle', ['seconds' => $seconds, 'minutes' => (int) ceil($seconds / 60)]),
+        ]);
     }
 
     public function resend(Request $request): RedirectResponse
@@ -111,6 +135,8 @@ class OtpController extends Controller
             return redirect()->route('login');
         }
 
+        $this->ensureResendRateLimited($request);
+
         $code = (string) random_int(100000, 999999);
         $user->forceFill([
             'otp_code' => $code,
@@ -118,6 +144,8 @@ class OtpController extends Controller
         ])->save();
 
         Mail::to($user->user_email)->send(new OtpMail($code, $user->first_name ?: $user->username));
+
+        RateLimiter::hit($this->resendThrottleKey($request), 600);
 
         return back()->with('status', 'A new verification code has been sent.');
     }

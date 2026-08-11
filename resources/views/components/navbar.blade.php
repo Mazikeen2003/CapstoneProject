@@ -148,6 +148,48 @@
                     updateNotificationBadge();
                 }
 
+                function formatNotificationTime(value) {
+                    if (!value) {
+                        return 'Unknown time';
+                    }
+
+                    const timestamp = typeof value === 'string' ? Date.parse(value) : Number(value);
+                    if (Number.isNaN(timestamp)) {
+                        return value;
+                    }
+
+                    const diffMs = Date.now() - timestamp;
+                    const diffMinutes = Math.floor(diffMs / 60000);
+                    const diffHours = Math.floor(diffMs / 3600000);
+                    const diffDays = Math.floor(diffMs / 86400000);
+
+                    if (diffMinutes < 1) {
+                        return 'Just now';
+                    }
+                    if (diffMinutes < 60) {
+                        return `${diffMinutes} minute${diffMinutes === 1 ? '' : 's'} ago`;
+                    }
+                    if (diffHours < 24) {
+                        return `${diffHours} hour${diffHours === 1 ? '' : 's'} ago`;
+                    }
+                    return `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
+                }
+
+                function formatExactNotificationTime(value) {
+                    const timestamp = typeof value === 'string' ? Date.parse(value) : Number(value);
+                    if (Number.isNaN(timestamp)) {
+                        return value;
+                    }
+
+                    return new Date(timestamp).toLocaleString([], {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit',
+                    });
+                }
+
                 function renderNotifications() {
                     const notifications = getStoredNotifications();
                     if (notifications.length === 0) {
@@ -155,7 +197,12 @@
                         return;
                     }
 
-                    notificationList.innerHTML = notifications.map(notif => `
+                    notificationList.innerHTML = notifications.map(notif => {
+                        const timestampValue = notif.timestamp || notif.time;
+                        const displayTime = formatNotificationTime(timestampValue);
+                        const exactTime = formatExactNotificationTime(timestampValue);
+
+                        return `
                         <div class="mx-3 my-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-500 hover:shadow-md">
                             <div class="flex items-start gap-3">
                                 <div class="mt-0.5 flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 text-blue-600">
@@ -166,13 +213,14 @@
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center justify-between gap-2">
                                         <p class="text-sm font-semibold text-slate-900">${notif.title}</p>
-                                        <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">${notif.time}</span>
+                                        <span title="${exactTime}" class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">${displayTime}</span>
                                     </div>
                                     <p class="mt-1 text-sm leading-5 text-slate-600">${notif.message}</p>
                                 </div>
                             </div>
                         </div>
-                    `).join('');
+                    `;
+                    }).join('');
                 }
 
                 function positionNotificationPanel() {
