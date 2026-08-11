@@ -54,7 +54,7 @@ class MapController
                     'image'    => $project->project_image
                         ? asset('storage/' . $project->project_image)
                         : null,
-                    'description' => $project->remarks ?: 'No description available.',
+                    'description' => $project->public_description ?: 'No description available.',
                     'start_date'         => $project->start_date?->toDateString(),
                     'target_end_date'    => $project->target_end_date?->toDateString(),
                     'progress_percentage' => $project->latestUpdate?->progress_percentage ?? 0,
@@ -127,7 +127,7 @@ class MapController
                     'image'  => $project->project_image
                         ? asset('storage/' . $project->project_image)
                         : null,
-                    'description' => $project->remarks ?: 'No description available.',
+                    'description' => $project->public_description ?: 'No description available.',
                     'start_date'         => $project->start_date?->toDateString(),
                     'target_end_date'    => $project->target_end_date?->toDateString(),
                     'progress_percentage' => $project->latestUpdate?->progress_percentage ?? 0,

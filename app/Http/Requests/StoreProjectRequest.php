@@ -28,6 +28,7 @@ class StoreProjectRequest extends FormRequest
             'target_end_date'      => ['nullable', 'date', 'after_or_equal:start_date'],
             'actual_end_date'      => ['nullable', 'date'],
             'current_status'       => ['required', 'string', 'in:Planning,On Going,Completed,On Hold,Cancelled,Bidding - Success,Bidding - Failed,Procurement'],
+            'public_description'   => ['nullable', 'string', 'max:1000'],
             'remarks'              => ['nullable', 'string', 'max:2000'],
             'project_image'        => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
         ];

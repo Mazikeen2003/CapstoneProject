@@ -41,12 +41,6 @@
         </div>
     @endif
 
-    @if (session('success'))
-        <div class="bg-green-50 border border-green-300 text-green-700 rounded-md p-3 text-sm">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="bg-white rounded-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-4" style="border: 1px solid #B2BEB5;">
         <div>
             <p class="text-xs text-gray-500">Status</p>
@@ -77,7 +71,11 @@
             <p class="text-black font-medium">{{ $project->location_description ?? '—' }}</p>
         </div>
         <div class="md:col-span-2">
-            <p class="text-xs text-gray-500">Remarks</p>
+            <p class="text-xs text-gray-500">Public Description</p>
+            <p class="text-black font-medium">{{ $project->public_description ?? 'No public description available.' }}</p>
+        </div>
+        <div class="md:col-span-2">
+            <p class="text-xs text-gray-500">Internal Remarks (Private)</p>
             <p class="text-black font-medium">{{ $project->remarks ?? '—' }}</p>
         </div>
     </div>

@@ -62,7 +62,7 @@ class ProjectController extends Controller
             'id' => 'project-created-' . $project->project_id . '-' . time(),
             'title' => 'New Project Added',
             'message' => ($project->project_name ?: 'A new project') . ' has been added to the system.',
-            'time' => 'Just now',
+            'time' => now()->toIso8601String(),
             'type' => 'project_created',
             'project_id' => $project->project_id,
         ];

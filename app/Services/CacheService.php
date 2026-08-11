@@ -128,12 +128,11 @@ class CacheService
                         'status'            => $project->current_status,
                         'barangay'          => $project->barangay?->barangay_name,
                         'budget'            => $project->approved_budget,
-                        'description'       => $project->location_description,
+                        'description'       => $project->public_description ?: 'No description available.',
                         'barangay_id'       => $project->barangay_id,
                         'image'             => $project->project_image ? Storage::url($project->project_image) : null,
                         'start_date'        => $project->start_date?->toDateString(),
                         'target_end_date'   => $project->target_end_date?->toDateString(),
-                        'url'               => route('department.projects.show', $project->project_id),
                     ],
                 ];
             })
