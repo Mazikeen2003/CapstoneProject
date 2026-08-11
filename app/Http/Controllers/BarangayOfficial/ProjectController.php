@@ -9,6 +9,8 @@ class ProjectController extends Controller
 {
     public function index()
     {
+        $this->authorize('viewAny', Project::class);
+
         // Paginate results with eager loading (read-only view)
         $projects = Project::withBasicRelations()
             ->latest('created_at')

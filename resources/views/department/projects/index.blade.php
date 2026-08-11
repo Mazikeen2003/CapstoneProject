@@ -7,12 +7,6 @@
         <p class="mt-1 text-sm text-slate-500">Manage and track department projects.</p>
     </div>
 
-    @if (session('success'))
-        <div class="bg-green-50 border border-green-300 text-green-700 rounded-md p-3 text-sm">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-5">
             <div>

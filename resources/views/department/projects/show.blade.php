@@ -35,6 +35,12 @@
         <p class="text-sm text-gray-500 mt-1">Code: {{ $project->project_code }} &middot; Type: {{ $project->project_type }}</p>
     </div>
 
+    @if (session('error'))
+        <div class="bg-red-50 border border-red-300 text-red-700 rounded-md p-3 text-sm">
+            {{ session('error') }}
+        </div>
+    @endif
+
     @if (session('success'))
         <div class="bg-green-50 border border-green-300 text-green-700 rounded-md p-3 text-sm">
             {{ session('success') }}

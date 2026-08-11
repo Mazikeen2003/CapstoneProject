@@ -26,9 +26,7 @@ class RoleScopedScope implements Scope
         $user = Auth::user();
 
         match ($user->role_slug) {
-            'department' => $builder->whereHas('creator', function ($query) {
-                $query->where('role_id', 3);
-            }),
+            'department' => null, // department users can view projects broadly; policy controls actions
             'barangay'   => $builder->where('barangay_id', $user->barangay_id),
             default      => null, // admin and city see everything, no filter applied
         };

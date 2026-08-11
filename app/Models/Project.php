@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Crypt;
 use App\Models\ProjectUpdate;
 use App\Models\Scopes\RoleScopedScope;
 
@@ -56,6 +57,24 @@ class Project extends Model
     protected static function booted()
     {
         static::addGlobalScope(new RoleScopedScope());
+    }
+
+    public function setRemarksAttribute($value): void
+    {
+        $this->attributes['remarks'] = $value === null || $value === '' ? null : Crypt::encryptString($value);
+    }
+
+    public function getRemarksAttribute($value): string|null
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        try {
+            return Crypt::decryptString($value);
+        } catch (\Throwable $e) {
+            return $value;
+        }
     }
 
     // Relationships with eager loading
