@@ -66,7 +66,6 @@
                     </div>
                 </div>
             </div>
-            
             @if(!$isPublicRoute)
                 <div class="rounded-full px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold truncate" style="color: #0F172A;">
                     <span class="hidden sm:inline">{{ $userName }}</span>

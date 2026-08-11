@@ -62,4 +62,31 @@ class AuditLogService
             'created_at' => now(),
         ]);
     }
+
+    /**
+     * Log a failed authentication attempt.
+     *
+     * This intentionally does not rely on a Model instance because the
+     * attempt may not correspond to any existing user.
+     */
+    public static function logFailedLogin(string $attemptedEmail, ?string $ipAddress = null): void
+    {
+        try {
+            AuditLog::create([
+                'user_id'    => null,
+                'action'     => 'login_failed',
+                'table_name' => 'users',
+                'record_id'  => null,
+                'old_values' => null,
+                'new_values' => [
+                    'attempted_email' => $attemptedEmail,
+                    'ip_address' => $ipAddress,
+                ],
+                'full_name'  => $attemptedEmail,
+                'created_at' => now(),
+            ]);
+        } catch (\Throwable $e) {
+            // Swallow any logging errors so they don't interfere with auth flow.
+        }
+    }
 }

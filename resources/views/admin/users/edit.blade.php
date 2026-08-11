@@ -172,8 +172,9 @@
 
             <!-- Action Buttons -->
             <div class="flex gap-4 pt-4 border-t border-gray-200">
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 font-semibold transition">
-                    Update User
+                <button type="submit" data-loading-text="Updating..." class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 font-semibold transition inline-flex items-center justify-center gap-2">
+                    <span class="loading-spinner hidden h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                    <span class="loading-label">Update User</span>
                 </button>
                 <a href="{{ route('admin.users.index') }}" class="bg-gray-300 text-gray-800 px-6 py-2.5 rounded-lg hover:bg-gray-400 font-semibold transition">
                     Cancel

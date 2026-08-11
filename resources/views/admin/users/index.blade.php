@@ -35,10 +35,10 @@
                 </div>
                 <div class="mt-4 flex flex-wrap gap-2">
                     <a href="{{ route('admin.users.edit', $user->user_id) }}" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50">Edit</a>
-                    <form action="{{ route('admin.users.destroy', $user->user_id) }}" method="POST" class="inline">
+                    <form action="{{ route('admin.users.destroy', $user->user_id) }}" method="POST" class="inline delete-user-form">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-100" onclick="return confirm('Are you sure?')">Delete</button>
+                        <button type="button" class="delete-user-button rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-100" data-username="{{ $user->username }}" data-email="{{ $user->user_email }}">Delete</button>
                     </form>
                 </div>
             </div>
@@ -72,10 +72,10 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-700">
                             <div class="flex items-center gap-4">
                                 <a href="{{ route('admin.users.edit', $user->user_id) }}" class="text-slate-700 hover:text-slate-900 font-semibold">Edit</a>
-                                <form action="{{ route('admin.users.destroy', $user->user_id) }}" method="POST" class="inline">
+                                <form action="{{ route('admin.users.destroy', $user->user_id) }}" method="POST" class="inline delete-user-form">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-rose-600 hover:text-rose-800 font-semibold" onclick="return confirm('Are you sure?')">Delete</button>
+                                    <button type="button" class="delete-user-button text-rose-600 hover:text-rose-800 font-semibold" data-username="{{ $user->username }}" data-email="{{ $user->user_email }}">Delete</button>
                                 </form>
                             </div>
                         </td>
@@ -92,5 +92,93 @@
     <div class="mt-6">
         {{ $users->links() }}
     </div>
+
+    <div id="adminDeleteConfirmModal" class="fixed inset-0 z-[99999] hidden items-center justify-center bg-slate-950/60 p-4" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; width: 100vw !important; min-width: 100vw !important; height: 100vh !important; min-height: 100vh !important;">
+        <div class="w-full max-w-lg rounded-[2rem] bg-white p-6 shadow-2xl ring-1 ring-slate-200">
+            <h2 class="text-xl font-semibold text-slate-900">Confirm User Deletion</h2>
+            <p id="adminDeleteModalDescription" class="mt-4 text-sm text-slate-600">Are you sure you want to delete this user? This action cannot be undone.</p>
+            <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+                <button id="cancelAdminDeleteBtn" type="button" class="rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancel</button>
+                <button id="confirmAdminDeleteBtn" type="button" class="inline-flex items-center justify-center rounded-full bg-red-600 px-5 py-2 text-sm font-semibold text-white hover:bg-red-700">
+                    <span class="delete-button-label">Delete User</span>
+                    <span class="delete-loading-indicator hidden items-center gap-2" role="status">
+                        <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+                        Deleting…
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modal = document.getElementById('adminDeleteConfirmModal');
+        var modalDescription = document.getElementById('adminDeleteModalDescription');
+        var cancelBtn = document.getElementById('cancelAdminDeleteBtn');
+        var confirmBtn = document.getElementById('confirmAdminDeleteBtn');
+        var confirmLabel = confirmBtn.querySelector('.delete-button-label');
+        var loadingIndicator = confirmBtn.querySelector('.delete-loading-indicator');
+        var selectedForm = null;
+
+        if (modal && modal.parentNode !== document.body) {
+            document.body.appendChild(modal);
+        }
+
+        document.querySelectorAll('.delete-user-button').forEach(function (button) {
+            button.addEventListener('click', function () {
+                selectedForm = button.closest('form');
+                var username = button.dataset.username || 'this user';
+                var email = button.dataset.email ? ' (' + button.dataset.email + ')' : '';
+                modalDescription.textContent = 'Delete user "' + username + '"' + email + '? This action cannot be undone.';
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            });
+        });
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            if (confirmBtn) {
+                confirmBtn.disabled = false;
+                confirmBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+                confirmLabel.classList.remove('hidden');
+                loadingIndicator.classList.add('hidden');
+                loadingIndicator.classList.remove('inline-flex');
+                confirmBtn.removeAttribute('aria-busy');
+            }
+            cancelBtn.disabled = false;
+            cancelBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+            selectedForm = null;
+        }
+
+        cancelBtn.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        confirmBtn.addEventListener('click', function () {
+            if (selectedForm) {
+                confirmBtn.disabled = true;
+                confirmBtn.classList.add('opacity-60', 'cursor-not-allowed');
+                confirmBtn.setAttribute('aria-busy', 'true');
+                confirmLabel.classList.add('hidden');
+                loadingIndicator.classList.remove('hidden');
+                loadingIndicator.classList.add('inline-flex');
+                cancelBtn.disabled = true;
+                cancelBtn.classList.add('opacity-60', 'cursor-not-allowed');
+                selectedForm.submit();
+            }
+        });
+    });
+</script>
 @endsection

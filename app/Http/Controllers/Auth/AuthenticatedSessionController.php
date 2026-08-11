@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use App\Services\AuditLogService;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -43,6 +44,12 @@ class AuthenticatedSessionController extends Controller
             ->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password_hash)) {
+            // Record the failed login attempt for auditing purposes.
+            try {
+                AuditLogService::logFailedLogin($credentials['email'] ?? '', $request->ip());
+            } catch (\Throwable $e) {
+                // Do not let logging errors affect authentication flow.
+            }
             RateLimiter::hit($this->loginThrottleKey($request));
 
             throw ValidationException::withMessages([
