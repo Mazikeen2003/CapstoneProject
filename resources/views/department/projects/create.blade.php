@@ -122,7 +122,16 @@
             </div>
             <div class="mt-3 flex justify-end space-x-3">
                 <a href="{{ route('department.projects.index') }}" class="px-4 py-2 rounded" style="background-color: #c1d1d7;">Cancel</a>
-                <button type="submit" class="px-4 py-2 rounded" style="background-color: #162347; color: #f2f3f7;">Create Project</button>
+                <button type="submit" id="createProjectButton" class="px-4 py-2 rounded inline-flex items-center justify-center gap-2" style="background-color: #162347; color: #f2f3f7;">
+                    <span id="createProjectSpinner" class="hidden inline-flex items-center gap-2">
+                        <svg class="h-4 w-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                        Saving...
+                    </span>
+                    <span id="createProjectLabel">Create Project</span>
+                </button>
             </div>
         </form>
     </div>
@@ -130,6 +139,20 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form[action="{{ route('department.projects.store') }}"]');
+        const submitButton = document.getElementById('createProjectButton');
+        const submitSpinner = document.getElementById('createProjectSpinner');
+        const submitLabel = document.getElementById('createProjectLabel');
+
+        if (form && submitButton) {
+            form.addEventListener('submit', function() {
+                submitButton.disabled = true;
+                submitButton.classList.add('opacity-60', 'cursor-not-allowed');
+                submitSpinner.classList.remove('hidden');
+                submitLabel.classList.add('hidden');
+            });
+        }
+
         // Project type "Others" toggle logic
         const projectTypeSelect = document.getElementById('project_type_select');
         const projectTypeHidden = document.getElementById('project_type');
