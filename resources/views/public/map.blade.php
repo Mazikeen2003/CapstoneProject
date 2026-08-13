@@ -45,6 +45,23 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
     </style>
+
+    <style>
+        /* Constrain project details sidebar on wide screens so a single project card
+           doesn't expand to cover most of the viewport. Keep small-screen behavior unchanged. */
+        @media (min-width: 1024px) {
+            #projectSidebar {
+                width: 380px;
+                flex: 0 0 380px;
+            }
+
+            /* Ensure project cards fill the sidebar width but don't force wider layout */
+            #projectSidebar .department-project-card {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body class="bg-white font-sans text-slate-900 antialiased">
 
@@ -207,7 +224,7 @@
                                     </div>
                                     <p class="mt-4 text-sm leading-6 text-slate-600">${props.description || 'No description available.'}</p>
                                 </div>
-                                <button type="button" id="showAllProjects" class="mt-5 inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View all projects</button>
+                                <button type="button" id="showAllProjects" data-barangay="${props.barangay || ''}" class="mt-5 inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View all projects</button>
                             </div>
                         </div>
                     `;
@@ -288,16 +305,40 @@
                 const showAllBtn = document.getElementById('showAllProjects');
                 if (showAllBtn) {
                     showAllBtn.addEventListener('click', function() {
-                        showAllProjects();
+                        const barangay = this.dataset.barangay || null;
+                        showAllProjects(barangay);
                     });
                 }
             }
 
             function showAllProjects() {
                 selectedProjectIndex = null;
+                // If a specific barangay is requested, show only that barangay's projects and focus markers.
+                if (typeof arguments[0] === 'string' && arguments[0]) {
+                    const targetBarangay = arguments[0];
+                    selectedBarangayName = targetBarangay;
+
+                    // Remove global marker group and add only barangay markers to map
+                    if (allMarkers && map) {
+                        try { map.removeLayer(allMarkers); } catch (e) {}
+                    }
+
+                    const markers = markersByBarangay[targetBarangay] || [];
+                    if (markers.length && map) {
+                        const group = L.featureGroup(markers);
+                        group.addTo(map);
+                        try { map.fitBounds(group.getBounds(), { padding: [40, 40] }); } catch (e) {}
+                    }
+
+                    const filtered = projectFeatures.filter(p => p.properties.barangay === targetBarangay);
+                    renderProjectList(filtered);
+                    return;
+                }
+
                 const activeList = selectedBarangayName
                     ? projectFeatures.filter(p => p.properties.barangay === selectedBarangayName)
                     : projectFeatures;
+
                 renderProjectList(activeList);
                 if (map && boundedArea && !selectedBarangayName) {
                     map.fitBounds(boundedArea, { padding: [24, 24], animate: true, duration: 0.7, easeLinearity: 0.3 });
