@@ -24,6 +24,8 @@ class User extends Authenticatable
         'role_id',
         'barangay_id',
         'permissions',
+        'is_disabled',
+        'disabled_at',
         'email_verified_at',
         'remember_token',
         'otp_code',
@@ -37,6 +39,8 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_disabled' => 'boolean',
+        'disabled_at' => 'datetime',
         'otp_expires_at' => 'datetime',
         'permissions' => 'array',
     ];

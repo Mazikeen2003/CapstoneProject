@@ -39,6 +39,8 @@ public function store(StoreUserRequest $request): RedirectResponse
 
     $data['password_hash'] = Hash::make($data['password_hash']);
     $data['permissions'] = $this->normalizePermissions($request);
+    $data['is_disabled'] = $request->boolean('is_disabled');
+    $data['disabled_at'] = $data['is_disabled'] ? now() : null;
 
     $user = User::create($data);
 
@@ -72,6 +74,8 @@ public function store(StoreUserRequest $request): RedirectResponse
                 unset($data['password_hash']);
             }
 
+            $data['is_disabled'] = $request->boolean('is_disabled');
+            $data['disabled_at'] = $data['is_disabled'] ? ($user->disabled_at ?? now()) : null;
             $data['permissions'] = $this->normalizePermissions($request);
 
             $original = $user->getOriginal();

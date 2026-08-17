@@ -71,6 +71,11 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ $user->barangay?->barangay_name ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-700">
                             <div class="flex items-center gap-4">
+                                @if ($user->is_disabled)
+                                    <span class="inline-flex rounded-full bg-rose-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-rose-700">Disabled</span>
+                                @else
+                                    <span class="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">Active</span>
+                                @endif
                                 <a href="{{ route('admin.users.edit', $user->user_id) }}" class="text-slate-700 hover:text-slate-900 font-semibold">Edit</a>
                                 <form action="{{ route('admin.users.destroy', $user->user_id) }}" method="POST" class="inline delete-user-form">
                                     @csrf
