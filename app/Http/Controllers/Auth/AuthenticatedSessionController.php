@@ -79,6 +79,7 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
+        // Successful login: clear the rate limit
         RateLimiter::clear($this->loginThrottleKey($request));
 
         // OTP remains valid for its full window rather than being single-use,
@@ -105,18 +106,24 @@ class AuthenticatedSessionController extends Controller
 
         return redirect()->route('otp.verify.form');
     }
+    /**
+     * Ensure the login request is not rate limited.
+     *
+     * @throws ValidationException
+     */
     protected function ensureLoginRateLimited(Request $request): void
     {
-        $key = $this->loginThrottleKey($request);
-
-        if (! RateLimiter::tooManyAttempts($key, 5)) {
+        if (! RateLimiter::tooManyAttempts($this->loginThrottleKey($request), 5)) {
             return;
         }
 
-        $seconds = RateLimiter::availableIn($key);
+        $seconds = RateLimiter::availableIn($this->loginThrottleKey($request));
 
         throw ValidationException::withMessages([
-            'email' => __('auth.throttle', ['seconds' => $seconds, 'minutes' => (int) ceil($seconds / 60)]),
+            'email' => trans('auth.throttle', [
+                'seconds' => $seconds,
+                'minutes' => ceil($seconds / 60),
+            ]),
         ]);
     }
 
