@@ -43,7 +43,7 @@ class AuthenticatedSessionController extends Controller
             ->where('user_email', $credentials['email'])
             ->first();
 
-        if (! $user || ! Hash::check($credentials['password'], $user->password_hash)) {
+        if (! $user) {
             // Record the failed login attempt for auditing purposes.
             try {
                 AuditLogService::logFailedLogin($credentials['email'] ?? '', $request->ip());
@@ -57,33 +57,73 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
+        if ($user->is_disabled) {
+            RateLimiter::hit($this->loginThrottleKey($request));
+
+            throw ValidationException::withMessages([
+                'email' => 'This account has been disabled. Please contact the administrator.',
+            ]);
+        }
+
+        if (! Hash::check($credentials['password'], $user->password_hash)) {
+            // Record the failed login attempt for auditing purposes.
+            try {
+                AuditLogService::logFailedLogin($credentials['email'] ?? '', $request->ip());
+            } catch (\Throwable $e) {
+                // Do not let logging errors affect authentication flow.
+            }
+            RateLimiter::hit($this->loginThrottleKey($request));
+
+            throw ValidationException::withMessages([
+                'email' => 'The provided credentials do not match our records.',
+            ]);
+        }
+
+        // Successful login: clear the rate limit
         RateLimiter::clear($this->loginThrottleKey($request));
 
-        $code = (string) random_int(100000, 999999);
-        $user->forceFill([
-            'otp_code' => $code,
-            'otp_expires_at' => now()->addMinutes(10),
-        ])->save();
+        // OTP remains valid for its full window rather than being single-use,
+        // functioning similarly to a temporary passphrase — this reduces repeated
+        // email sends during normal login/logout cycles while still requiring
+        // correct email+password credentials before the OTP step is ever reached,
+        // and the window is capped at 10 minutes.
+        $hasValidUnexpiredOtp = ! empty($user->otp_code)
+            && ! empty($user->otp_expires_at)
+            && now()->lessThan($user->otp_expires_at);
 
-        Mail::to($user->user_email)->send(new OtpMail($code, $user->first_name ?: $user->username));
+        if (! $hasValidUnexpiredOtp) {
+            $code = (string) random_int(100000, 999999);
+            $user->forceFill([
+                'otp_code' => $code,
+                'otp_expires_at' => now()->addMinutes(10),
+            ])->save();
+
+            Mail::to($user->user_email)->send(new OtpMail($code, $user->first_name ?: $user->username));
+        }
 
         $request->session()->put('pending_otp_user_id', $user->user_id);
         $request->session()->put('pending_otp_remember', $request->boolean('remember'));
 
         return redirect()->route('otp.verify.form');
     }
+    /**
+     * Ensure the login request is not rate limited.
+     *
+     * @throws ValidationException
+     */
     protected function ensureLoginRateLimited(Request $request): void
     {
-        $key = $this->loginThrottleKey($request);
-
-        if (! RateLimiter::tooManyAttempts($key, 5)) {
+        if (! RateLimiter::tooManyAttempts($this->loginThrottleKey($request), 5)) {
             return;
         }
 
-        $seconds = RateLimiter::availableIn($key);
+        $seconds = RateLimiter::availableIn($this->loginThrottleKey($request));
 
         throw ValidationException::withMessages([
-            'email' => __('auth.throttle', ['seconds' => $seconds, 'minutes' => (int) ceil($seconds / 60)]),
+            'email' => trans('auth.throttle', [
+                'seconds' => $seconds,
+                'minutes' => ceil($seconds / 60),
+            ]),
         ]);
     }
 

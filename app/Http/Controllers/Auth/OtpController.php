@@ -62,11 +62,10 @@ class OtpController extends Controller
 
         RateLimiter::clear($this->otpThrottleKey($request));
 
-        $user->forceFill([
-            'otp_code' => null,
-            'otp_expires_at' => null,
-        ])->save();
-
+        // Intentionally keep the OTP in place until it naturally expires. The same
+        // valid code may be used again within the 10-minute window after a normal
+        // login/logout cycle, while still requiring valid email/password before the
+        // OTP step is ever reached. This is analogous to a temporary passphrase.
         session()->forget(['pending_otp_user_id', 'pending_otp_remember']);
 
         Auth::login($user, $remember);

@@ -87,7 +87,18 @@
                 </div>
             </div>
 
-            <!-- Row 3: Role and Barangay -->
+            <!-- Row 3: Account status -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="md:col-span-2">
+                    <label class="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                        <input type="checkbox" name="is_disabled" value="1" {{ old('is_disabled', $user->is_disabled ?? false) ? 'checked' : '' }} class="h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500">
+                        Disable login access for this user
+                    </label>
+                    <p class="mt-2 text-xs text-gray-500">Enable this if the user has resigned, left the organization, or should no longer access the system.</p>
+                </div>
+            </div>
+
+            <!-- Row 4: Role and Barangay -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="role_id" class="block text-sm font-semibold text-gray-700 mb-2">Role *</label>
