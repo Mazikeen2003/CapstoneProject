@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Department;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Services\AnalyticsInsightsService;
 use Illuminate\Http\Request;
 
 class AnalyticsController extends Controller
 {
     public function index(Request $request)
     {
-        $projects = Project::withBasicRelations()->get();
+        $projects = Project::withBasicRelations()->with('latestUpdate')->get();
         $availableYears = collect(range(now()->year, 2000));
         $statusYear = $request->query('status_year');
         $budgetYear = $request->query('budget_year');
@@ -22,9 +23,9 @@ class AnalyticsController extends Controller
         $stats = [
             'total_projects'  => $projects->count(),
             'completed'       => $projects->where('current_status', 'Completed')->count(),
-            'ongoing'         => $projects->where('current_status', 'On Going')->count(),
+            'ongoing'         => $projects->whereIn('current_status', ['Implementation', 'On Going'])->count(),
             'on_hold'         => $projects->where('current_status', 'On Hold')->count(),
-            'planning'        => $projects->where('current_status', 'Planning')->count(),
+            'planning'        => $projects->whereIn('current_status', ['Proposed', 'Planning'])->count(),
             'total_budget'    => $projects->sum('approved_budget') ?? 0,
             'total_spent'     => $projects->sum('actual_budget') ?? 0,
         ];
@@ -44,7 +45,8 @@ class AnalyticsController extends Controller
             ->take(10);
 
         $budgetStats = ['total_budget' => $budgetProjects->sum('approved_budget') ?? 0, 'total_spent' => $budgetProjects->sum('actual_budget') ?? 0];
+        $insights = AnalyticsInsightsService::summarize($projects);
 
-        return view('department.analytics.index', compact('stats', 'byStatus', 'byBarangay', 'availableYears', 'statusYear', 'budgetYear', 'budgetStats'));
+        return view('department.analytics.index', compact('stats', 'byStatus', 'byBarangay', 'availableYears', 'statusYear', 'budgetYear', 'budgetStats', 'insights'));
     }
 }

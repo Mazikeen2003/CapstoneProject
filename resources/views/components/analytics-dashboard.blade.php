@@ -1,7 +1,18 @@
 @php
-    $statusOrder = ['Planning', 'On Going', 'On Hold', 'Completed'];
-    $statusColors = ['#fbbf24', '#3b82f6', '#ef4444', '#10b981'];
-    $statusCounts = collect($statusOrder)->map(fn ($status) => $byStatus[$status]['count'] ?? 0)->values();
+    $statusOrder = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation', 'Completed', 'On Hold', 'Cancelled'];
+    $statusColors = ['#fbbf24', '#f59e0b', '#3b82f6', '#8b5cf6', '#0ea5e9', '#10b981', '#ef4444', '#64748b'];
+    $statusAliases = [
+        'Planning' => 'Proposed',
+        'Procurement' => 'For bidding',
+        'Bidding - Success' => 'Award of contract',
+        'On Going' => 'Implementation',
+    ];
+    $lifecycleStatusCounts = collect($byStatus)->reduce(function ($counts, $item, $status) use ($statusAliases) {
+        $lifecycleStatus = $statusAliases[$status] ?? $status;
+        $counts[$lifecycleStatus] = ($counts[$lifecycleStatus] ?? 0) + ($item['count'] ?? 0);
+        return $counts;
+    }, []);
+    $statusCounts = collect($statusOrder)->map(fn ($status) => $lifecycleStatusCounts[$status] ?? 0)->values();
     $remainingBudget = max(($budgetStats['total_budget'] ?? 0) - ($budgetStats['total_spent'] ?? 0), 0);
     $barangayLabels = isset($byBarangay) ? $byBarangay->take(10)->keys()->values() : collect();
     $barangayValues = isset($byBarangay) ? $byBarangay->take(10)->map(fn ($item) => $item['budget'] ?? 0)->values() : collect();
@@ -25,6 +36,43 @@
             </div>
         @endforeach
     </div>
+
+    <section class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        @foreach ([
+            ['Needs attention', $insights['overdue'], 'Overdue projects', '#dc2626'],
+            ['Coming up', $insights['due_soon'], 'Due within 30 days', '#d97706'],
+            ['Missing updates', $insights['without_updates'], 'Active projects', '#2563eb'],
+            ['Budget used', number_format($insights['budget_utilization'], 1) . '%', 'Actual versus approved', '#059669'],
+        ] as [$label, $value, $caption, $color])
+            <div class="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $label }}</p>
+                <p class="mt-2 text-2xl font-bold" style="color: {{ $color }};">{{ $value }}</p>
+                <p class="mt-1 text-xs text-slate-500">{{ $caption }}</p>
+            </div>
+        @endforeach
+    </section>
+
+    <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+                <h2 class="text-lg font-bold text-slate-900">Lifecycle Overview</h2>
+                <p class="text-sm text-slate-500">Projects grouped by their current lifecycle stage.</p>
+            </div>
+            <span class="text-xs text-slate-500">Completed and exception statuses remain visible.</span>
+        </div>
+        <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            @foreach (['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation', 'Completed', 'On Hold', 'Cancelled'] as $lifecycleStatus)
+                @php $lifecycleCount = $insights['lifecycle_counts'][$lifecycleStatus] ?? 0; @endphp
+                <div class="rounded-2xl bg-slate-50 p-3">
+                    <div class="flex items-center justify-between gap-3 text-sm">
+                        <span class="font-semibold text-slate-700">{{ $lifecycleStatus }}</span>
+                        <span class="font-bold text-slate-900">{{ $lifecycleCount }}</span>
+                    </div>
+                    <div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full rounded-full bg-emerald-500" style="width: {{ $stats['total_projects'] > 0 ? min(100, ($lifecycleCount / $stats['total_projects']) * 100) : 0 }}%;"></div></div>
+                </div>
+            @endforeach
+        </div>
+    </section>
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <section class="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm">
@@ -76,6 +124,18 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    const analyticsScrollPosition = sessionStorage.getItem('analyticsScrollPosition');
+    if (analyticsScrollPosition !== null) {
+        sessionStorage.removeItem('analyticsScrollPosition');
+        window.scrollTo(0, Number(analyticsScrollPosition));
+    }
+
+    document.querySelectorAll('form[method="GET"]').forEach(form => {
+        form.addEventListener('submit', () => {
+            sessionStorage.setItem('analyticsScrollPosition', String(window.scrollY));
+        });
+    });
+
     const statusLabels = @json($statusOrder);
     const statusCounts = @json($statusCounts);
     const statusColors = @json($statusColors);

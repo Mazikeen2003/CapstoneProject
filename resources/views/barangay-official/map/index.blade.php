@@ -10,7 +10,7 @@
             <h1 class="text-3xl font-bold text-slate-900">Barangay Map</h1>
             <p class="mt-1 text-sm text-slate-500">Tap a map marker or project card to view your barangay projects.</p>
         </div>
-        <div class="grid gap-6 lg:grid-cols-[1.45fr_0.95fr]">
+        <div class="grid gap-6 lg:grid-cols-[1.35fr_1fr]">
             <div class="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm" style="height: calc(100vh - 13.5rem);">
                 <div id="map" class="min-w-0 w-full h-full relative" style="background-color: #f0f0f0;"></div>
             </div>
@@ -69,6 +69,15 @@
             return `hsl(${hue}, 65%, 55%)`;
         }
 
+        function renderLifecycleStepper(status) {
+            const steps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation'];
+            const stageByStatus = { Proposed: 0, 'For bidding': 1, 'Bidding ongoing': 2, 'Award of contract': 3, Implementation: 4, Completed: 4, Planning: 0, Procurement: 1, 'Bidding - Success': 3, 'On Going': 4 };
+            const activeStep = stageByStatus[status];
+            const completedProject = status === 'Completed';
+
+            return `<div class="mt-4 mb-4 rounded-2xl border border-slate-200 bg-white p-4"><div class="flex items-center justify-between gap-3"><span class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Project lifecycle</span><span class="text-xs font-semibold text-slate-700">${status || 'Unknown'}</span></div><div class="mt-4 grid grid-cols-5 gap-1 sm:gap-2">${steps.map((step, stepIndex) => { const complete = activeStep !== undefined && (stepIndex < activeStep || completedProject); const current = activeStep !== undefined && stepIndex === activeStep && !completedProject; const circle = complete ? 'bg-emerald-600 border-emerald-600 text-white' : (current ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-slate-400'); const label = complete || current ? 'text-slate-700' : 'text-slate-400'; const line = activeStep !== undefined && (stepIndex < activeStep || completedProject) ? 'bg-emerald-600' : 'bg-slate-200'; return `<div class="relative text-center">${stepIndex < steps.length - 1 ? `<div class="absolute left-1/2 top-3.5 h-0.5 w-full ${line}"></div>` : ''}<div class="relative z-10 mx-auto flex h-7 w-7 items-center justify-center rounded-full border-2 text-[10px] font-bold ${circle}">${complete ? '&#10003;' : stepIndex + 1}</div><p class="mt-2 text-[9px] font-semibold leading-tight sm:text-[10px] ${label}">${step}</p></div>`; }).join('')}</div></div>`;
+        }
+
         function renderProjectCard(project, index) {
             const props = project.properties;
             const progress = calculateProgress(project);
@@ -81,6 +90,7 @@
             return `
                 <div class="department-project-card cursor-pointer overflow-hidden rounded-3xl bg-white shadow-sm transition hover:shadow-md ${selectedProjectIndex === index ? selectedClass : 'border border-transparent'}" data-index="${index}">
                     <div class="overflow-hidden p-2">${imageHtml}</div>
+                    ${renderLifecycleStepper(props.status)}
                     <div class="p-4">
                         <h3 class="text-base font-semibold text-slate-900">${props.name}</h3>
                         <p class="mt-2 text-xs text-slate-500">${props.barangay || 'Barangay not specified'}</p>
@@ -89,7 +99,7 @@
                             <div><span class="font-semibold">Budget:</span> ${formatCurrency(props.budget)}</div>
                             <div><span class="font-semibold">Progress:</span> ${progress.toFixed(1)}%</div>
                         </div>
-                        <p class="mt-3 text-sm text-slate-600 leading-relaxed">${props.description || 'No description available.'}</p>
+                        <p class="mt-3 max-h-20 overflow-hidden break-words text-sm leading-relaxed text-slate-600" style="display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow-wrap:anywhere;">${props.description || 'No description available.'}</p>
                     </div>
                 </div>
             `;

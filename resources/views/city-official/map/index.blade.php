@@ -10,7 +10,7 @@
             <h1 class="text-3xl font-bold text-slate-900">City Map</h1>
             <p class="text-sm text-slate-500">Browse city projects by location with interactive markers and project details.</p>
         </div>
-        <div class="grid gap-6 lg:grid-cols-[1.45fr_0.95fr]">
+        <div class="grid gap-6 lg:grid-cols-[1.35fr_1fr]">
             <div class="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm" style="height: calc(100vh - 13.5rem);">
                 <div id="map" class="min-w-0 w-full h-full relative" style="background-color: #f0f0f0;"></div>
             </div>
@@ -66,9 +66,21 @@
             return totalDays > 0 ? Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100)) : 0;
         }
 
+        function renderLifecycleStepper(status) {
+            const steps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation'];
+            const stageByStatus = { Proposed: 0, 'For bidding': 1, 'Bidding ongoing': 2, 'Award of contract': 3, Implementation: 4, Completed: 4, Planning: 0, Procurement: 1, 'Bidding - Success': 3, 'On Going': 4 };
+            const activeStep = stageByStatus[status];
+            const completedProject = status === 'Completed';
+
+            return `<div class="mt-4 mb-4 rounded-2xl border border-slate-200 bg-white p-4"><div class="flex items-center justify-between gap-3"><span class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Project lifecycle</span><span class="text-xs font-semibold text-slate-700">${status || 'Unknown'}</span></div><div class="mt-4 grid grid-cols-5 gap-1 sm:gap-2">${steps.map((step, stepIndex) => { const complete = activeStep !== undefined && (stepIndex < activeStep || completedProject); const current = activeStep !== undefined && stepIndex === activeStep && !completedProject; const circle = complete ? 'bg-emerald-600 border-emerald-600 text-white' : (current ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-slate-400'); const label = complete || current ? 'text-slate-700' : 'text-slate-400'; const line = activeStep !== undefined && (stepIndex < activeStep || completedProject) ? 'bg-emerald-600' : 'bg-slate-200'; return `<div class="relative text-center">${stepIndex < steps.length - 1 ? `<div class="absolute left-1/2 top-3.5 h-0.5 w-full ${line}"></div>` : ''}<div class="relative z-10 mx-auto flex h-7 w-7 items-center justify-center rounded-full border-2 text-[10px] font-bold ${circle}">${complete ? '&#10003;' : stepIndex + 1}</div><p class="mt-2 text-[9px] font-semibold leading-tight sm:text-[10px] ${label}">${step}</p></div>`; }).join('')}</div></div>`;
+        }
+
         function renderProjectCard(project, index, isSingle = false) {
             const props = project.properties;
             const progress = calculateProgress(project);
+            const allocatedBudget = Number(props.budget || 0);
+            const expenditure = Number(props.actual_budget || 0);
+            const expenditureProgress = allocatedBudget > 0 ? Math.min(100, Math.max(0, (expenditure / allocatedBudget) * 100)) : 0;
             const startDate = props.start_date ? new Date(props.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
             const targetDate = props.target_end_date ? new Date(props.target_end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
             const imageHtml = props.image
@@ -87,11 +99,14 @@
                                 <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-700">${props.status || 'Unknown'}</span>
                             </div>
                             <div class="mb-4 overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 p-2">${imageHtml}</div>
+                            ${renderLifecycleStepper(props.status)}
                             <div class="grid gap-3 rounded-3xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
                                 <div class="flex justify-between"><span>Barangay</span><span class="font-semibold text-slate-900">${props.barangay || 'Not specified'}</span></div>
-                                <div class="flex justify-between"><span>Budget</span><span class="font-semibold text-slate-900">${formatCurrency(props.budget)}</span></div>
+                                <div class="flex justify-between"><span>Allocated budget</span><span class="font-semibold text-slate-900">${formatCurrency(allocatedBudget)}</span></div>
+                                <div class="flex justify-between"><span>Expenditure</span><span class="font-semibold text-slate-900">${formatCurrency(expenditure)}</span></div>
                                 <div class="flex justify-between"><span>Progress</span><span class="font-semibold text-slate-900">${progress.toFixed(1)}%</span></div>
                             </div>
+                            <div class="mt-4 rounded-3xl border border-slate-200 bg-slate-50 p-4"><div class="flex items-center justify-between text-xs text-slate-500"><span>Expenditure progress</span><span class="font-semibold text-slate-700">${expenditureProgress.toFixed(1)}%</span></div><div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full rounded-full bg-emerald-500" style="width: ${expenditureProgress}%"></div></div></div>
                             <div class="mt-4 rounded-3xl border border-slate-200 bg-slate-50 p-4">
                                 <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
                                     <span>Timeline</span>
@@ -106,7 +121,7 @@
                                 </div>
                             </div>
                             <p class="mt-4 text-sm leading-6 text-slate-600">${props.description || 'No description available.'}</p>
-                            <button type="button" id="showAllProjects" class="mt-5 inline-flex w-full items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View all projects</button>
+                            <button type="button" class="show-all-projects-btn mt-5 inline-flex w-full items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View all projects</button>
                         </div>
                     </div>
                 `;
@@ -123,7 +138,7 @@
                             <div class="flex justify-between"><span>Budget</span><span>${formatCurrency(props.budget)}</span></div>
                             <div class="flex justify-between"><span>Progress</span><span>${progress.toFixed(1)}%</span></div>
                         </div>
-                        <p class="mt-3 text-sm leading-6 text-slate-600">${props.description || 'No description available.'}</p>
+                        <p class="mt-3 max-h-20 overflow-hidden break-words text-sm leading-6 text-slate-600" style="display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow-wrap:anywhere;">${props.description || 'No description available.'}</p>
                     </div>
                 </div>
             `;
@@ -178,10 +193,12 @@
                     selectProject(projectFeatures[index], index);
                 });
             });
-            const showAllBtn = document.getElementById('showAllProjects');
-            if (showAllBtn) {
-                showAllBtn.addEventListener('click', showAllProjects);
-            }
+            document.querySelectorAll('.show-all-projects-btn').forEach(function(button) {
+                button.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    showAllProjects();
+                });
+            });
         }
 
         function showAllProjects() {

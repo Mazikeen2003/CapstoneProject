@@ -11,11 +11,52 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Public+Sans:wght@400;600;700&display=swap">
+
+        <style>
+            .guest-glass-nav {
+                backdrop-filter: blur(16px);
+                background-color: rgba(248, 249, 255, 0.8);
+            }
+        </style>
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-slate-900 antialiased bg-slate-50">
+        <header class="guest-glass-nav sticky top-0 z-50 w-full border-b border-slate-200/50">
+            <nav class="relative mx-auto flex w-full items-center justify-between px-4 py-4 sm:px-8 lg:px-12">
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <div class="rounded-lg bg-slate-900 p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M3 21h18v-2H3v2Zm2-4h2V9H5v8Zm6 0h2V5h-2v12Zm6 0h2V2h-2v15Z" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-base font-bold tracking-tight text-slate-900 sm:text-xl" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
+                        <span class="text-[9px] uppercase tracking-widest text-slate-500 opacity-70 sm:text-[10px]" style="font-family:'Public Sans',sans-serif;">Cabuyao Municipal Office</span>
+                    </div>
+                </div>
+
+                <div class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 text-xs uppercase tracking-widest md:flex" style="font-family:'Public Sans',sans-serif;">
+                    <a href="{{ url('/') }}" class="py-2 font-semibold text-slate-500 transition-colors hover:text-emerald-700">Home</a>
+                    <a href="{{ route('public.map') }}" class="py-2 font-semibold text-slate-500 transition-colors hover:text-emerald-700">Public Map</a>
+                    <a href="{{ route('public.analytics') }}" class="py-2 font-semibold text-slate-500 transition-colors hover:text-emerald-700">Analytics</a>
+                </div>
+
+                <a href="{{ route('login') }}" class="shrink-0 rounded-md bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 sm:px-5">
+                    Login
+                </a>
+            </nav>
+            <div class="border-t border-slate-200 bg-white md:hidden">
+                <div class="flex flex-wrap items-center justify-center gap-3 px-4 py-3 text-xs uppercase tracking-widest text-slate-600">
+                    <a href="{{ url('/') }}" class="transition-colors hover:text-emerald-700">Home</a>
+                    <a href="{{ route('public.map') }}" class="transition-colors hover:text-emerald-700">Public Map</a>
+                    <a href="{{ route('public.analytics') }}" class="transition-colors hover:text-emerald-700">Analytics</a>
+                </div>
+            </div>
+        </header>
+
         {{ $slot }}
 
         <script>

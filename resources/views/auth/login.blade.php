@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="min-h-screen flex flex-col bg-slate-50 text-slate-900">
+    <div class="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-emerald-50/50 to-slate-100 text-slate-900">
 
         <!-- Main Content -->
         <div class="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
@@ -32,10 +32,10 @@
                         <form method="POST" action="{{ route('login') }}" class="space-y-6">
                             @csrf
 
-                            <!-- Username -->
+                            <!-- Email -->
                             <div class="space-y-2">
                                 <label class="block text-[0.65rem] font-semibold tracking-[0.22em] text-slate-500 uppercase">
-                                    Username
+                                    Email
                                 </label>
                                 <div class="rounded-2xl bg-slate-100 px-4 py-3 shadow-inner">
                                     <div class="flex items-center gap-3">
@@ -44,7 +44,7 @@
                                             <path fill-rule="evenodd" d="M2 16.5A6.5 6.5 0 0110 10a6.5 6.5 0 018 6.5v.5H2v-.5z" clip-rule="evenodd" />
                                         </svg>
                                         <input type="email" name="email" required autofocus
-                                            placeholder="Enter administrator ID"
+                                            placeholder="Enter your email"
                                             class="w-full bg-transparent text-sm border-none outline-none focus:ring-0" />
                                     </div>
                                 </div>
