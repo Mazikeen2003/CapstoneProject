@@ -45,6 +45,23 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
     </style>
+
+    <style>
+        /* Constrain project details sidebar on wide screens so a single project card
+           doesn't expand to cover most of the viewport. Keep small-screen behavior unchanged. */
+        @media (min-width: 1024px) {
+            #projectSidebar {
+                width: 420px;
+                flex: 0 0 420px;
+            }
+
+            /* Ensure project cards fill the sidebar width but don't force wider layout */
+            #projectSidebar .department-project-card {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body class="bg-white font-sans text-slate-900 antialiased">
 
@@ -94,7 +111,7 @@
                     </div>
                     <div id="departmentSidebarAction" class="mt-4"></div>
                 </div>
-                <div id="departmentProjectList" class="divide-y divide-gray-200 overflow-y-auto min-h-0 flex-1"></div>
+                <div id="departmentProjectList" class="space-y-4 overflow-y-auto bg-slate-50 p-4 min-h-0 flex-1"></div>
             </div>
         </div>
     </main>
@@ -149,6 +166,15 @@
                 return `₱${Number(value || 0).toLocaleString()}`;
             }
 
+            function escapeHtml(value) {
+                return String(value ?? '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+
             function calculateProgress(project) {
                 if (!project.properties.start_date || !project.properties.target_end_date) {
                     return 0;
@@ -164,11 +190,62 @@
                 return totalDays > 0 ? Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100)) : 0;
             }
 
+            function renderLifecycleStepper(status) {
+                const steps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation'];
+                const stageByStatus = {
+                    Proposed: 0,
+                    'For bidding': 1,
+                    'Bidding ongoing': 2,
+                    'Award of contract': 3,
+                    Implementation: 4,
+                    Completed: 4,
+                    Planning: 0,
+                    Procurement: 1,
+                    'Bidding - Success': 3,
+                    'On Going': 4
+                };
+                const activeStep = stageByStatus[status];
+                const isCompleted = status === 'Completed';
+
+                return `
+                    <div class="mt-4 mb-4 rounded-2xl border border-slate-200 bg-white p-4">
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Project lifecycle</span>
+                            <span class="text-xs font-semibold text-slate-700">${status || 'Unknown'}</span>
+                        </div>
+                        <div class="mt-4 grid grid-cols-5 gap-1 sm:gap-2">
+                            ${steps.map((step, index) => {
+                                const complete = activeStep !== undefined && (index < activeStep || isCompleted);
+                                const current = activeStep !== undefined && index === activeStep && !isCompleted;
+                                const circleClass = complete
+                                    ? 'bg-emerald-600 border-emerald-600 text-white'
+                                    : (current ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-slate-400');
+                                const labelClass = complete || current ? 'text-slate-700' : 'text-slate-400';
+                                const lineClass = activeStep !== undefined && (index < activeStep || isCompleted) ? 'bg-emerald-600' : 'bg-slate-200';
+
+                                return `
+                                    <div class="relative text-center">
+                                        ${index < steps.length - 1 ? `<div class="absolute left-1/2 top-3.5 h-0.5 w-full ${lineClass}"></div>` : ''}
+                                        <div class="relative z-10 mx-auto flex h-7 w-7 items-center justify-center rounded-full border-2 text-[10px] font-bold ${circleClass}">${complete ? '&#10003;' : index + 1}</div>
+                                        <p class="mt-2 text-[9px] font-semibold leading-tight sm:text-[10px] ${labelClass}">${step}</p>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
             function renderProjectCard(project, index, isSingle = false) {
                 const props = project.properties;
                 const progress = calculateProgress(project);
+                const allocatedBudget = Number(props.budget || 0);
+                const expenditure = Number(props.actual_budget || 0);
+                const expenditureProgress = allocatedBudget > 0 ? Math.min(100, Math.max(0, (expenditure / allocatedBudget) * 100)) : 0;
                 const startDate = props.start_date ? new Date(props.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
                 const targetDate = props.target_end_date ? new Date(props.target_end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
+                const lifecycleHtml = renderLifecycleStepper(props.status);
+                const description = escapeHtml(props.description || 'No description available.');
 
                 const imageHtml = props.image
                     ? `<img src="${props.image}" alt="${props.name}" class="h-40 w-full rounded-2xl object-cover bg-slate-100">`
@@ -186,12 +263,15 @@
                                     <span class="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-700">${props.status || 'Unknown'}</span>
                                 </div>
                                 <div class="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-2">${imageHtml}</div>
+                                ${lifecycleHtml}
                                 <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
                                     <div class="grid gap-3 text-sm text-slate-600">
                                         <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Barangay</span><span class="text-right font-semibold text-slate-900">${props.barangay || 'Not specified'}</span></div>
-                                        <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Budget</span><span class="font-semibold text-slate-900">${formatCurrency(props.budget)}</span></div>
+                                        <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Allocated budget</span><span class="font-semibold text-slate-900">${formatCurrency(allocatedBudget)}</span></div>
+                                        <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Expenditure</span><span class="font-semibold text-slate-900">${formatCurrency(expenditure)}</span></div>
                                         <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Progress</span><span class="font-semibold text-slate-900">${progress.toFixed(1)}%</span></div>
                                     </div>
+                                    <div class="mt-3 border-t border-slate-300 pt-3"><div class="flex items-center justify-between text-xs text-slate-500"><span>Expenditure progress</span><span class="font-semibold text-slate-700">${expenditureProgress.toFixed(1)}%</span></div><div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full rounded-full bg-emerald-500" style="width: ${expenditureProgress}%"></div></div></div>
                                     <div class="mt-3 pt-3 border-t border-slate-300">
                                         <div class="flex justify-between items-center mb-1">
                                             <span class="text-xs font-semibold text-slate-600">Timeline</span>
@@ -205,9 +285,9 @@
                                             <span>Target: ${targetDate}</span>
                                         </div>
                                     </div>
-                                    <p class="mt-4 text-sm leading-6 text-slate-600">${props.description || 'No description available.'}</p>
+                                    <p class="mt-4 whitespace-pre-wrap break-words text-sm leading-6 text-slate-600" style="overflow-wrap:anywhere;">${description}</p>
                                 </div>
-                                <button type="button" id="showAllProjects" class="mt-5 inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View all projects</button>
+                                <button type="button" data-barangay="${props.barangay || ''}" class="show-all-projects-btn mt-5 inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View all projects</button>
                             </div>
                         </div>
                     `;
@@ -224,7 +304,7 @@
                                 <div><span class="font-semibold">Budget:</span> ${formatCurrency(props.budget)}</div>
                                 <div><span class="font-semibold">Progress:</span> ${progress.toFixed(1)}%</div>
                             </div>
-                            <p class="mt-3 text-sm text-slate-600 leading-relaxed">${props.description || 'No description available.'}</p>
+                            <p class="mt-3 max-h-20 overflow-hidden break-words text-sm leading-relaxed text-slate-600" style="display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow-wrap:anywhere;">${description}</p>
                         </div>
                     </div>
                 `;
@@ -285,19 +365,30 @@
                     });
                 });
 
-                const showAllBtn = document.getElementById('showAllProjects');
-                if (showAllBtn) {
-                    showAllBtn.addEventListener('click', function() {
-                        showAllProjects();
+                document.querySelectorAll('.show-all-projects-btn').forEach(function(button) {
+                    button.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                        const barangay = this.dataset.barangay || null;
+                        showAllProjects(barangay);
                     });
-                }
+                });
             }
 
             function showAllProjects() {
                 selectedProjectIndex = null;
+                // If a specific barangay is requested, show only that barangay's projects and focus markers.
+                if (typeof arguments[0] === 'string' && arguments[0]) {
+                    const targetBarangay = arguments[0];
+                    selectedBarangayName = targetBarangay;
+
+                    focusBarangayByName(targetBarangay);
+                    return;
+                }
+
                 const activeList = selectedBarangayName
                     ? projectFeatures.filter(p => p.properties.barangay === selectedBarangayName)
                     : projectFeatures;
+
                 renderProjectList(activeList);
                 if (map && boundedArea && !selectedBarangayName) {
                     map.fitBounds(boundedArea, { padding: [24, 24], animate: true, duration: 0.7, easeLinearity: 0.3 });
@@ -349,6 +440,29 @@
                 }
                 (markersByBarangay[name] || []).forEach(marker => marker.addTo(map));
 
+                const filtered = projectFeatures.filter(p => p.properties.barangay === name);
+                renderProjectList(filtered);
+            }
+
+            function focusBarangayByName(name) {
+                let targetLayer = null;
+
+                if (barangayLayer) {
+                    barangayLayer.eachLayer(function(layer) {
+                        if (layer.feature?.properties?.name === name) {
+                            targetLayer = layer;
+                        }
+                    });
+                }
+
+                if (targetLayer) {
+                    selectBarangayOnMap(targetLayer, name);
+                    return;
+                }
+
+                // Keep the project list useful even if the map data has no matching polygon.
+                selectedBarangayName = name;
+                selectedProjectIndex = null;
                 const filtered = projectFeatures.filter(p => p.properties.barangay === name);
                 renderProjectList(filtered);
             }

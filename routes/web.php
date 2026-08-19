@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use App\Http\Controllers\NotificationPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +77,8 @@ Route::get('/dashboard', function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/api/projects/geojson', [\App\Http\Controllers\Api\ProjectController::class, 'geojson'])->name('api.projects.geojson');
+Route::middleware('auth')->get('/api/notifications', [\App\Http\Controllers\Api\NotificationController::class, 'index'])->name('api.notifications');
+Route::middleware('auth')->get('/notifications', [NotificationPageController::class, 'index'])->name('notifications.index');
 Route::get('/ProjectTracker/public/map', [PublicMapController::class, 'index'])->name('public.map.alt');
 Route::get('/ProjectTracker/public/analytics', [PublicAnalyticsController::class, 'index'])->name('public.analytics.alt');
 

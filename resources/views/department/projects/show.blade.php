@@ -41,6 +41,8 @@
         </div>
     @endif
 
+    @include('components.project-stepper', ['project' => $project])
+
     <div class="bg-white rounded-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-4" style="border: 1px solid #B2BEB5;">
         <div>
             <p class="text-xs text-gray-500">Status</p>
@@ -70,13 +72,13 @@
             <p class="text-xs text-gray-500">Location</p>
             <p class="text-black font-medium">{{ $project->location_description ?? '—' }}</p>
         </div>
-        <div class="md:col-span-2">
+        <div class="md:col-span-2 max-w-full">
             <p class="text-xs text-gray-500">Public Description</p>
-            <p class="text-black font-medium">{{ $project->public_description ?? 'No public description available.' }}</p>
+            <p class="max-w-full overflow-hidden text-black font-medium break-words whitespace-pre-wrap" style="overflow-wrap:anywhere; word-break:break-word;">{{ $project->public_description ?? 'No public description available.' }}</p>
         </div>
-        <div class="md:col-span-2">
+        <div class="md:col-span-2 max-w-full">
             <p class="text-xs text-gray-500">Internal Remarks (Private)</p>
-            <p class="text-black font-medium">{{ $project->remarks ?? '—' }}</p>
+            <p class="max-w-full overflow-hidden text-black font-medium break-words whitespace-pre-wrap" style="overflow-wrap:anywhere; word-break:break-word;">{{ $project->remarks ?? '—' }}</p>
         </div>
     </div>
 

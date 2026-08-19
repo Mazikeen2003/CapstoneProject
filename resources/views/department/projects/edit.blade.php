@@ -10,6 +10,8 @@
         <p class="text-sm text-gray-500 mt-1">{{ $project->project_name }}</p>
     </div>
 
+    @include('components.project-stepper', ['project' => $project])
+
     {{-- Progress Bar Section --}}
     <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
         <h2 class="text-lg font-bold text-black mb-4">Project Progress</h2>
@@ -17,7 +19,7 @@
         @php
             $startDate = \Carbon\Carbon::parse($project->start_date);
             $endDate = \Carbon\Carbon::parse($project->target_end_date);
-            $today = \Carbon\Carbon::now();
+            $today = \Carbon\Carbon::today();
             
             $totalDays = $startDate->diffInDays($endDate);
             $daysElapsed = $startDate->diffInDays($today);
@@ -50,9 +52,10 @@
             </div>
             <div class="p-3 bg-gray-50 rounded" style="border: 1px solid #B2BEB5;">
                 <p class="text-xs text-gray-600">Days Remaining</p>
-                <p class="text-sm font-semibold" style="color: #c9a84c;">{{ max(0, $endDate->diffInDays($today)) }} days</p>
+                <p class="text-sm font-semibold" style="color: #c9a84c;">{{ max(0, $today->diffInDays($endDate, false)) }} days</p>
             </div>
         </div>
+    </div>
 
     @if ($errors->any())
         <div class="bg-red-50 border border-red-300 text-red-700 rounded-md p-3 text-sm">
@@ -140,8 +143,22 @@
             <div class="mt-6 p-4 bg-gray-50 rounded" style="border: 2px solid #B2BEB5;">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-sm font-bold text-black">Critical Project Details (Requires Approval)</h3>
-                    <button type="button" id="askPermissionBtn" class="px-3 py-1 text-xs font-semibold rounded transition" style="background-color: #c9a84c; color: #0f1e3d;">
-                        🔒 Ask Permission to Edit
+                    <button
+                        type="button"
+                        id="askPermissionBtn"
+                        class="px-3 py-1 text-xs font-semibold rounded transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        style="background-color: {{ ($canEditCriticalFields ?? false) ? '#d1fae5' : (($canRequestPermission ?? true) ? '#c9a84c' : '#e5e7eb') }}; color: {{ ($canEditCriticalFields ?? false) ? '#065f46' : (($canRequestPermission ?? true) ? '#0f1e3d' : '#6b7280') }};"
+                        @if($canEditCriticalFields ?? false) disabled @endif
+                        @if(!($canRequestPermission ?? true)) disabled @endif
+                        title="{{ ($canEditCriticalFields ?? false) ? 'Permission already approved' : (($canRequestPermission ?? true) ? 'Request permission to edit critical fields' : 'Waiting for admin approval') }}"
+                    >
+                        @if($canEditCriticalFields ?? false)
+                            ✅ Permission Approved
+                        @elseif(!($canRequestPermission ?? true))
+                            🔒 Awaiting Admin Approval
+                        @else
+                            🔒 Ask Permission to Edit
+                        @endif
                     </button>
                 </div>
 
@@ -204,14 +221,18 @@
                     <label class="block text-sm font-medium text-black">Status</label>
                     @php $status = old('current_status', $project->current_status); @endphp
                     <select name="current_status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
-                        <option value="Planning" @selected($status == 'Planning')>Planning</option>
-                        <option value="On Going" @selected($status == 'On Going')>On Going</option>
-                        <option value="On Hold" @selected($status == 'On Hold')>On Hold</option>
-                        <option value="Completed" @selected($status == 'Completed')>Completed</option>
-                        <option value="Cancelled" @selected($status == 'Cancelled')>Cancelled</option>
-                        <option value="Bidding - Success" @selected($status == 'Bidding - Success')>Bidding - Success</option>
-                        <option value="Bidding - Failed" @selected($status == 'Bidding - Failed')>Bidding - Failed</option>
-                        <option value="Procurement" @selected($status == 'Procurement')>Procurement</option>
+                        <optgroup label="Project Lifecycle">
+                            <option value="Proposed" @selected($status == 'Proposed')>Proposed</option>
+                            <option value="For bidding" @selected($status == 'For bidding')>For bidding</option>
+                            <option value="Bidding ongoing" @selected($status == 'Bidding ongoing')>Bidding ongoing</option>
+                            <option value="Award of contract" @selected($status == 'Award of contract')>Award of contract</option>
+                            <option value="Implementation" @selected($status == 'Implementation')>Implementation</option>
+                            <option value="Completed" @selected($status == 'Completed')>Completed</option>
+                        </optgroup>
+                        <optgroup label="Other statuses">
+                            <option value="On Hold" @selected($status == 'On Hold')>On Hold</option>
+                            <option value="Cancelled" @selected($status == 'Cancelled')>Cancelled</option>
+                        </optgroup>
                     </select>
                 </div>
 

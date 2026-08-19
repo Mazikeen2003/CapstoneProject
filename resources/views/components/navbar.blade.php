@@ -56,13 +56,22 @@
                 </button>
                 
                 <!-- Notification Dropdown Panel -->
-                <div id="notificationPanel" class="fixed z-[9999] w-[min(18rem,calc(100vw-2rem))] rounded-lg border border-gray-200 bg-white shadow-2xl" style="display: none; max-height: min(24rem, 70vh); overflow-y: auto;">
-                    <div class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-3">
-                        <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
-                        <button id="clearNotificationsBtn" type="button" class="text-xs font-medium text-blue-600 hover:text-blue-800">Clear</button>
+                <div id="notificationPanel" class="fixed z-[9999] w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl" style="display: none; max-height: min(34rem, 75vh);">
+                    <div class="flex items-center justify-between border-b border-slate-200 bg-gradient-to-r from-slate-900 to-slate-800 px-5 py-4 text-white">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-400"></span>
+                                <h3 class="text-sm font-semibold">Notifications</h3>
+                            </div>
+                            <p class="mt-1 text-[11px] text-slate-300">Live project activity</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <a href="{{ route('notifications.index') }}" class="rounded-full border border-white/20 px-3 py-1 text-xs font-semibold text-slate-200 transition hover:bg-white/10 hover:text-white">View all</a>
+                            <button id="clearNotificationsBtn" type="button" class="rounded-full border border-white/20 px-3 py-1 text-xs font-semibold text-slate-200 transition hover:bg-white/10 hover:text-white">Clear all</button>
+                        </div>
                     </div>
-                    <div id="notificationList" class="divide-y divide-gray-200">
-                        <div class="p-4 text-center text-sm text-gray-500">No new notifications</div>
+                    <div id="notificationList" class="max-h-[calc(75vh-5rem)] space-y-3 overflow-y-auto bg-slate-50 p-3">
+                        <div class="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">No new notifications</div>
                     </div>
                 </div>
             </div>
@@ -82,6 +91,8 @@
                 const notificationList = document.getElementById('notificationList');
                 const clearNotificationsBtn = document.getElementById('clearNotificationsBtn');
                 const storageKey = 'projectTrackerNotifications:' + (window.__currentRole || 'public');
+                const cursorKey = 'projectTrackerNotificationCursor:' + (window.__currentRole || 'public');
+                const clearedAtKey = 'projectTrackerNotificationsClearedAt:' + (window.__currentRole || 'public');
                 const pendingCookieName = 'project_tracker_pending_notification:' + (window.__currentRole || 'public');
 
                 function getStoredNotifications() {
@@ -94,6 +105,19 @@
 
                 function saveStoredNotifications(notifications) {
                     localStorage.setItem(storageKey, JSON.stringify(notifications));
+                }
+
+                function markNotificationAsRead(notificationId) {
+                    const notifications = getStoredNotifications();
+                    const notification = notifications.find(item => item.id === notificationId);
+                    if (!notification) {
+                        return;
+                    }
+
+                    notification.read = true;
+                    saveStoredNotifications(notifications);
+                    renderNotifications();
+                    updateNotificationBadge();
                 }
 
                 function addNotification(notification) {
@@ -131,10 +155,52 @@
                     updateNotificationBadge();
                 }
 
+                async function pollNotifications() {
+                    const storedCursor = localStorage.getItem(cursorKey);
+                    const clearedAt = localStorage.getItem(clearedAtKey);
+                    const storedNotifications = getStoredNotifications();
+                    const oldestCachedTime = storedNotifications
+                        .map(item => item.time || item.timestamp)
+                        .filter(Boolean)
+                        .sort()[0];
+                    const since = oldestCachedTime || storedCursor || new Date(Date.now() - 30000).toISOString();
+
+                    try {
+                        const response = await fetch('{{ route('api.notifications') }}?since=' + encodeURIComponent(since), {
+                            headers: { 'Accept': 'application/json' },
+                            credentials: 'same-origin',
+                        });
+                        if (!response.ok) {
+                            return;
+                        }
+
+                        const payload = await response.json();
+                        const fetchedNotifications = (payload.notifications || []).filter(notification => {
+                            return !clearedAt || !notification.time || Date.parse(notification.time) > Date.parse(clearedAt);
+                        });
+                        // Refresh cached notifications so older entries gain their destination URL.
+                        fetchedNotifications.forEach(notification => {
+                            const existingIndex = storedNotifications.findIndex(item => item.id === notification.id);
+                            if (existingIndex >= 0) {
+                                storedNotifications[existingIndex] = { ...storedNotifications[existingIndex], ...notification };
+                            } else {
+                                storedNotifications.unshift(notification);
+                            }
+                        });
+                        saveStoredNotifications(storedNotifications);
+                        localStorage.setItem(cursorKey, new Date().toISOString());
+                        renderNotifications();
+                        updateNotificationBadge();
+                    } catch (error) {
+                        console.warn('Unable to refresh notifications', error);
+                    }
+                }
+
                 function updateNotificationBadge() {
                     const notifications = getStoredNotifications();
-                    if (notifications.length > 0) {
-                        notificationBadge.textContent = notifications.length > 9 ? '9+' : notifications.length;
+                    const unreadCount = notifications.filter(notification => !notification.read).length;
+                    if (unreadCount > 0) {
+                        notificationBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
                         notificationBadge.style.display = 'flex';
                     } else {
                         notificationBadge.style.display = 'none';
@@ -143,6 +209,9 @@
 
                 function clearNotifications() {
                     saveStoredNotifications([]);
+                    const clearedAt = new Date().toISOString();
+                    localStorage.setItem(clearedAtKey, clearedAt);
+                    localStorage.setItem(cursorKey, clearedAt);
                     renderNotifications();
                     updateNotificationBadge();
                 }
@@ -192,7 +261,7 @@
                 function renderNotifications() {
                     const notifications = getStoredNotifications();
                     if (notifications.length === 0) {
-                        notificationList.innerHTML = '<div class="p-4 text-center text-sm text-gray-500">No new notifications</div>';
+                        notificationList.innerHTML = '<div class="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">No new notifications</div>';
                         return;
                     }
 
@@ -200,32 +269,54 @@
                         const timestampValue = notif.timestamp || notif.time;
                         const displayTime = formatNotificationTime(timestampValue);
                         const exactTime = formatExactNotificationTime(timestampValue);
+                        const isAuditActivity = notif.type === 'audit_activity';
+                        const isRead = Boolean(notif.read);
+                        const accentClass = isAuditActivity ? 'border-l-emerald-500' : 'border-l-blue-500';
+                        const iconClass = isAuditActivity ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600';
+                        const notificationTag = notif.url ? 'a' : 'div';
+                        const notificationHref = notif.url ? ` href="${notif.url}"` : '';
+                        const clickableClass = notif.url ? 'cursor-pointer hover:bg-slate-50' : '';
+                        const readClass = isRead ? 'border-l-slate-300 bg-slate-100 opacity-70 grayscale' : '';
+                        const readIconClass = isRead ? 'bg-slate-200 text-slate-500' : iconClass;
 
                         return `
-                        <div class="mx-3 my-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-500 hover:shadow-md">
+                        <${notificationTag}${notificationHref} data-notification-id="${notif.id}" class="block rounded-xl border border-slate-200 border-l-4 ${isRead ? 'border-l-slate-300' : accentClass} ${isRead ? 'bg-slate-100 opacity-70 grayscale' : 'bg-white'} p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md ${clickableClass}">
                             <div class="flex items-start gap-3">
-                                <div class="mt-0.5 flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+                                <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${readIconClass}">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isAuditActivity ? 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 12c0 5.591 3.824 10.291 9 11.623C17.176 22.291 21 17.591 21 12c0-1.042-.133-2.052-.382-3.016z' : 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'}" />
                                     </svg>
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center justify-between gap-2">
-                                        <p class="text-sm font-semibold text-slate-900">${notif.title}</p>
+                                        <p class="text-sm font-semibold ${isRead ? 'text-slate-600' : 'text-slate-900'}">${notif.title}</p>
                                         <span title="${exactTime}" class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">${displayTime}</span>
                                     </div>
-                                    <p class="mt-1 text-sm leading-5 text-slate-600">${notif.message}</p>
+                                    <p class="mt-1 text-sm leading-5 ${isRead ? 'text-slate-500' : 'text-slate-600'}">${notif.message}</p>
                                 </div>
                             </div>
-                        </div>
+                        </${notificationTag}>
                     `;
                     }).join('');
+
+                    notificationList.querySelectorAll('[data-notification-id]').forEach(card => {
+                        card.addEventListener('click', () => markNotificationAsRead(card.dataset.notificationId));
+                    });
                 }
 
                 function positionNotificationPanel() {
                     const rect = notificationBtn.getBoundingClientRect();
-                    notificationPanel.style.top = `${rect.bottom + 8}px`;
+                    const panelHeight = Math.min(544, Math.max(220, window.innerHeight - 32));
+                    const spaceBelow = window.innerHeight - rect.bottom - 16;
+                    const openAbove = spaceBelow < 220 && rect.top > panelHeight;
+                    const top = openAbove
+                        ? Math.max(16, rect.top - panelHeight - 8)
+                        : Math.min(rect.bottom + 8, window.innerHeight - panelHeight - 16);
+
+                    notificationPanel.style.top = `${top}px`;
                     notificationPanel.style.left = `${Math.max(12, rect.right - 320)}px`;
+                    notificationPanel.style.maxHeight = `${panelHeight}px`;
+                    notificationList.style.maxHeight = `${Math.max(140, panelHeight - 82)}px`;
                 }
 
                 notificationBtn.addEventListener('click', function(e) {
@@ -246,6 +337,12 @@
                     }
                 });
 
+                window.addEventListener('resize', function() {
+                    if (notificationPanel.style.display !== 'none') {
+                        positionNotificationPanel();
+                    }
+                });
+
                 window.addEventListener('storage', function() {
                     renderNotifications();
                     updateNotificationBadge();
@@ -257,6 +354,8 @@
                 });
 
                 ensurePendingNotificationVisibility();
+                pollNotifications();
+                window.setInterval(pollNotifications, 10000);
             });
         </script>
     </div>

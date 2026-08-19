@@ -4,6 +4,7 @@ namespace App\Http\Controllers\CityOfficial;
 
 use App\Models\PortalVisit;
 use App\Models\Project;
+use App\Services\AnalyticsInsightsService;
 use Illuminate\Http\Request;
 
 class AnalyticsController
@@ -13,6 +14,7 @@ class AnalyticsController
         // City sees all projects
         $projects = Project::withoutRoleScope()
             ->withBasicRelations()
+            ->with('latestUpdate')
             ->get();
         $availableYears = collect(range(now()->year, 2000));
         $statusYear = $request->query('status_year');
@@ -25,9 +27,9 @@ class AnalyticsController
         $stats = [
             'total_projects'  => $projects->count(),
             'completed'       => $projects->where('current_status', 'Completed')->count(),
-            'ongoing'         => $projects->where('current_status', 'On Going')->count(),
+            'ongoing'         => $projects->whereIn('current_status', ['Implementation', 'On Going'])->count(),
             'on_hold'         => $projects->where('current_status', 'On Hold')->count(),
-            'planning'        => $projects->where('current_status', 'Planning')->count(),
+            'planning'        => $projects->whereIn('current_status', ['Proposed', 'Planning'])->count(),
             'total_budget'    => $projects->sum('approved_budget') ?? 0,
             'total_spent'     => $projects->sum('actual_budget') ?? 0,
         ];
@@ -46,6 +48,7 @@ class AnalyticsController
             ->sortByDesc('budget');
 
         $budgetStats = ['total_budget' => $budgetProjects->sum('approved_budget') ?? 0, 'total_spent' => $budgetProjects->sum('actual_budget') ?? 0];
+        $insights = AnalyticsInsightsService::summarize($projects);
 
         $portalVisits = PortalVisit::query()->orderBy('visited_at');
         $portalVisitStats = [
@@ -86,6 +89,7 @@ class AnalyticsController
             'statusYear',
             'budgetYear',
             'budgetStats',
+            'insights',
             'portalVisitStats',
             'dailyVisits',
             'pageBreakdown'

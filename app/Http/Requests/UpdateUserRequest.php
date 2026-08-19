@@ -35,7 +35,7 @@ class UpdateUserRequest extends FormRequest
             'first_name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'username' => ['required', 'string', 'max:100', Rule::unique('users', 'username')->ignore($userId, 'user_id')],
-            'user_email' => ['required', 'email', 'max:100', Rule::unique('users', 'user_email')->ignore($userId, 'user_id')],
+            'user_email' => ['required', 'email', 'max:100', Rule::unique('users', 'user_email')->whereNull('deleted_at')->ignore($userId, 'user_id')],
             'password_hash' => ['nullable', 'string', 'min:8', 'confirmed'],
             'is_disabled' => ['nullable', 'boolean'],
             'role_id' => ['required', 'exists:roles,role_id'],

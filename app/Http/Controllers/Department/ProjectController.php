@@ -118,8 +118,9 @@ class ProjectController extends Controller
             ->first();
 
         $canEditCriticalFields = $latestPermissionRequest?->status === 'approved';
+        $canRequestPermission = ! $latestPermissionRequest || in_array($latestPermissionRequest->status, ['rejected', 'used'], true);
 
-        return view('department.projects.edit', compact('project', 'barangays', 'canEditCriticalFields'));
+        return view('department.projects.edit', compact('project', 'barangays', 'canEditCriticalFields', 'canRequestPermission'));
     }
 
     public function update(UpdateProjectRequest $request, $id)

@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Barangay;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class BarangaySeeder extends Seeder
 {
@@ -32,12 +31,10 @@ class BarangaySeeder extends Seeder
         ];
 
         foreach ($barangays as $name) {
-            DB::table('barangays')->insert([
-                'barangay_name' => $name,
-                'boundary_geojson' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            Barangay::query()->updateOrCreate(
+                ['barangay_name' => $name],
+                ['boundary_geojson' => null]
+            );
         }
     }
 }

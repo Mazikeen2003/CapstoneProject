@@ -85,11 +85,11 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-black">Status *</label>
-                            <input type="hidden" name="current_status" value="Planning">
+                            <input type="hidden" name="current_status" value="Proposed">
                             <div class="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2" style="border: 1px solid #B2BEB5; background-color: #f9fafb; color: black; border-radius: 0.375rem;">
-                                Planning
+                                Proposed
                             </div>
-                            <p class="text-xs text-gray-600 mt-1">All new projects start in Planning status. Other statuses can be changed when editing the project.</p>
+                            <p class="text-xs text-gray-600 mt-1">All new projects start at the Proposed stage. Other stages can be selected when editing the project.</p>
                         </div>
                     </div>
                     <div>
