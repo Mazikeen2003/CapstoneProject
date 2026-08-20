@@ -76,7 +76,12 @@ public function store(StoreUserRequest $request): RedirectResponse
 
             $data['is_disabled'] = $request->boolean('is_disabled');
             $data['disabled_at'] = $data['is_disabled'] ? ($user->disabled_at ?? now()) : null;
-            $data['permissions'] = $this->normalizePermissions($request);
+
+            if ($this->usesGranularPermissions($user, (int) $data['role_id'])) {
+                $data['permissions'] = $this->normalizePermissions($request);
+            } else {
+                unset($data['permissions']);
+            }
 
             $original = $user->getOriginal();
             $user->update($data);
@@ -135,5 +140,14 @@ public function store(StoreUserRequest $request): RedirectResponse
     private function isAdminRole(int $roleId): bool
     {
         return $roleId === 1;
+    }
+
+    private function usesGranularPermissions(User $user, int $roleId): bool
+    {
+        if ($roleId === 3) {
+            return true;
+        }
+
+        return $roleId === 1 && ! $user->isPrimaryAdmin();
     }
 }

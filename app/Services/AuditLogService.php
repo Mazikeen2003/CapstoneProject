@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Auth;
 class AuditLogService
 {
     /**
+     * Attributes that must never be persisted in audit log JSON.
+     */
+    private const EXCLUDED_FIELDS = [
+        'password_hash',
+        'remember_token',
+        'otp_code',
+        'otp_expires_at',
+    ];
+
+    /**
      * Log a create action.
      */
     public static function logCreate(Model $model): void
@@ -22,13 +32,15 @@ class AuditLogService
      */
     public static function logUpdate(Model $model, array $oldValues): void
     {
+        $oldValues = self::withoutExcludedFields($oldValues);
         $newValues = array_intersect_key($model->getAttributes(), $oldValues);
+        $newValues = self::withoutExcludedFields($newValues);
 
         // Only log fields that actually changed
         $changedOld = [];
         $changedNew = [];
         foreach ($oldValues as $key => $value) {
-            if (($newValues[$key] ?? null) != $value) {
+            if (! self::valuesAreEquivalent($key, $newValues[$key] ?? null, $value)) {
                 $changedOld[$key] = $value;
                 $changedNew[$key] = $newValues[$key] ?? null;
             }
@@ -56,11 +68,49 @@ class AuditLogService
             'action'     => $action,
             'table_name' => $model->getTable(),
             'record_id'  => $model->getKey(),
-            'old_values' => $old,
-            'new_values' => $new,
+            'old_values' => $old === null ? null : self::withoutExcludedFields($old),
+            'new_values' => $new === null ? null : self::withoutExcludedFields($new),
             'full_name'  => Auth::user()?->full_name ?: Auth::user()?->username,
             'created_at' => now(),
         ]);
+    }
+
+    private static function withoutExcludedFields(array $values): array
+    {
+        return array_diff_key($values, array_flip(self::EXCLUDED_FIELDS));
+    }
+
+    private static function valuesAreEquivalent(string $key, mixed $newValue, mixed $oldValue): bool
+    {
+        if ($key !== 'permissions') {
+            return $newValue == $oldValue;
+        }
+
+        return self::normalizePermissionsValue($newValue) === self::normalizePermissionsValue($oldValue);
+    }
+
+    private static function normalizePermissionsValue(mixed $value): mixed
+    {
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $value = $decoded;
+            }
+        }
+
+        if (! is_array($value)) {
+            return $value;
+        }
+
+        foreach ($value as $key => $item) {
+            $value[$key] = self::normalizePermissionsValue($item);
+        }
+
+        if (! array_is_list($value)) {
+            ksort($value);
+        }
+
+        return $value;
     }
 
     /**

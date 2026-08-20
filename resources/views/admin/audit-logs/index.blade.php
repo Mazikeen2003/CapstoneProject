@@ -72,20 +72,32 @@
                             <div class="mt-2 space-y-2">
                                 @if(!empty($log->old_values))
                                     <div>
-                                        <div class="font-semibold">Old Values</div>
+                                            <div class="font-semibold">Old Values</div>
                                         <ul class="list-disc list-inside">
                                             @foreach((array) $log->old_values as $key => $value)
-                                                <li><span class="font-semibold">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span> {{ is_array($value) ? json_encode($value) : $value }}</li>
+                                                @php
+                                                    $displayValue = is_array($value) ? json_encode($value) : $value;
+                                                    if (is_string($displayValue) && preg_match('/^\d{4}-\d{2}-\d{2}T.*(?:Z|[+-]\d{2}:\d{2})$/', $displayValue)) {
+                                                        $displayValue = \Carbon\Carbon::parse($displayValue)->format('M d, Y h:i A');
+                                                    }
+                                                @endphp
+                                                <li><span class="font-semibold">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span> {{ $displayValue }}</li>
                                             @endforeach
                                         </ul>
                                     </div>
                                 @endif
                                 @if(!empty($log->new_values))
                                     <div>
-                                        <div class="font-semibold">New Values</div>
+                                            <div class="font-semibold">New Values</div>
                                         <ul class="list-disc list-inside">
                                             @foreach((array) $log->new_values as $key => $value)
-                                                <li><span class="font-semibold">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span> {{ is_array($value) ? json_encode($value) : $value }}</li>
+                                                @php
+                                                    $displayValue = is_array($value) ? json_encode($value) : $value;
+                                                    if (is_string($displayValue) && preg_match('/^\d{4}-\d{2}-\d{2}T.*(?:Z|[+-]\d{2}:\d{2})$/', $displayValue)) {
+                                                        $displayValue = \Carbon\Carbon::parse($displayValue)->format('M d, Y h:i A');
+                                                    }
+                                                @endphp
+                                                <li><span class="font-semibold">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span> {{ $displayValue }}</li>
                                             @endforeach
                                         </ul>
                                     </div>
@@ -153,7 +165,13 @@
                                                     <div class="font-semibold">Old Values</div>
                                                     <ul class="list-disc list-inside text-xs text-slate-700">
                                                         @foreach((array) $log->old_values as $key => $value)
-                                                            <li><span class="font-semibold">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span> {{ is_array($value) ? json_encode($value) : $value }}</li>
+                                                            @php
+                                                                $displayValue = is_array($value) ? json_encode($value) : $value;
+                                                                if (is_string($displayValue) && preg_match('/^\d{4}-\d{2}-\d{2}T.*(?:Z|[+-]\d{2}:\d{2})$/', $displayValue)) {
+                                                                    $displayValue = \Carbon\Carbon::parse($displayValue)->format('M d, Y h:i A');
+                                                                }
+                                                            @endphp
+                                                            <li><span class="font-semibold">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span> {{ $displayValue }}</li>
                                                         @endforeach
                                                     </ul>
                                                 </div>
@@ -163,7 +181,13 @@
                                                     <div class="font-semibold">New Values</div>
                                                     <ul class="list-disc list-inside text-xs text-slate-700">
                                                         @foreach((array) $log->new_values as $key => $value)
-                                                            <li><span class="font-semibold">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span> {{ is_array($value) ? json_encode($value) : $value }}</li>
+                                                            @php
+                                                                $displayValue = is_array($value) ? json_encode($value) : $value;
+                                                                if (is_string($displayValue) && preg_match('/^\d{4}-\d{2}-\d{2}T.*(?:Z|[+-]\d{2}:\d{2})$/', $displayValue)) {
+                                                                    $displayValue = \Carbon\Carbon::parse($displayValue)->format('M d, Y h:i A');
+                                                                }
+                                                            @endphp
+                                                            <li><span class="font-semibold">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span> {{ $displayValue }}</li>
                                                         @endforeach
                                                     </ul>
                                                 </div>
