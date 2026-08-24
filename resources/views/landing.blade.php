@@ -56,15 +56,15 @@
 
     <main>
         {{-- ============ HERO ============ --}}
-        <section id="home" class="relative min-h-[85vh] flex items-center overflow-hidden">
+        <section id="home" class="relative flex min-h-[560px] items-center overflow-hidden sm:min-h-[620px] lg:min-h-[680px]">
             <div class="absolute inset-0 z-0">
                 <div class="absolute inset-0 hero-gradient z-10"></div>
                 <div class="w-full h-full bg-cover bg-center bg-slate-800"
                      style="background-image: url('{{ asset('images/hero-cabuyao.jpg') }}');"></div>
             </div>
 
-            <div class="relative z-20 w-full max-w-7xl mx-auto px-6 py-20 text-white">
-                <div class="flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
+            <div class="relative z-20 mx-auto w-full max-w-7xl px-6 py-12 text-white sm:py-16 lg:py-20">
+                <div class="mx-auto flex max-w-4xl flex-col items-center space-y-6 text-center sm:space-y-7 lg:space-y-8">
                     <div class="flex items-center gap-6 mb-4">
                         <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md p-2 flex items-center justify-center border border-white/20">
                             <span class="material-symbols-outlined text-4xl">verified_user</span>
@@ -77,16 +77,16 @@
                         </div>
                     </div>
 
-                    <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter leading-tight" style="font-family:'Manrope',sans-serif;">
+                    <h1 class="text-4xl font-extrabold leading-tight tracking-tighter sm:text-5xl lg:text-7xl" style="font-family:'Manrope',sans-serif;">
                         Cabuyao City <br>
                         <span>Project Tracker System</span>
                     </h1>
 
-                    <p class="text-xl text-slate-200 max-w-2xl leading-relaxed">
+                    <p class="max-w-2xl text-lg leading-relaxed text-slate-200 sm:text-xl">
                         Empowering citizens with real-time access to official city reports, public budgets, and community project tracking.
                     </p>
 
-                    <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                    <div class="flex w-full flex-col gap-4 pt-4 sm:w-auto sm:flex-row lg:pt-6">
                         <a href="{{ route('public.map') }}"
                             class="px-8 py-4 bg-white text-slate-900 font-bold rounded-md hover:bg-slate-100 transition-all flex items-center justify-center gap-2 shadow-xl">
                             <span class="material-symbols-outlined">map</span>
@@ -104,7 +104,7 @@
         </section>
 
         {{-- ============ LIVE STATS (overlapping hero) ============ --}}
-        <section class="relative z-20 -mt-16 flex justify-center bg-transparent px-4 py-6 sm:-mt-24 sm:px-6 sm:py-8 lg:-mt-32 lg:px-8 lg:py-10">
+        <section class="relative z-20 -mt-10 flex justify-center bg-transparent px-4 py-5 sm:-mt-14 sm:px-6 sm:py-7 lg:-mt-20 lg:px-8 lg:py-8">
             <div class="mx-auto w-full max-w-7xl">
                 <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 lg:gap-6">
                     <div class="flex flex-col items-center justify-center rounded-xl border border-slate-200/60 bg-white p-4 text-center shadow-[0_20px_25px_-8px_rgba(0,0,0,0.15)] sm:p-6 md:p-8">
