@@ -1,10 +1,13 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="space-y-6">
-    <div>
-        <h1 class="text-3xl font-bold text-slate-900">Admin Reports</h1>
-        <p class="text-sm text-slate-500">Summary reports for system usage, activity audits, data quality, and technical compliance.</p>
+<div class="max-w-7xl mx-auto space-y-6">
+    <div class="flex items-end justify-between border-b border-slate-200 pb-4">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900">Admin Reports</h1>
+            <p class="mt-1 text-sm text-slate-500">Monitor system usage, activity audits, data quality, and technical compliance from one place.</p>
+        </div>
+        <span class="hidden rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-500 sm:inline-flex">ADMIN CONTROL CENTER</span>
     </div>
 
     @if(session('status'))
@@ -14,7 +17,7 @@
     @endif
 
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
             <h2 class="text-xl font-semibold text-slate-900">System usage</h2>
             <p class="mt-2 text-sm text-slate-500">Login activity and active users by role.</p>
             <div class="mt-5 space-y-3 text-sm text-slate-700">
@@ -49,7 +52,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
             <h2 class="text-xl font-semibold text-slate-900">Activity summary</h2>
             <p class="mt-2 text-sm text-slate-500">Audit log activity and top contributors.</p>
             <div class="mt-5 space-y-4 text-sm text-slate-700">
@@ -78,7 +81,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
             <h2 class="text-xl font-semibold text-slate-900">Peak usage</h2>
             <p class="mt-2 text-sm text-slate-500">Realtime hourly activity for the last 24 hours.</p>
             <div class="mt-5 space-y-2 text-sm text-slate-700">
