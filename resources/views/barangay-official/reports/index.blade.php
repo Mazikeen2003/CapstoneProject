@@ -1,10 +1,13 @@
 @extends('layouts.barangay')
 
 @section('content')
-<div class="space-y-6">
-    <div>
-        <h1 class="text-3xl font-bold text-black">Reports & Exports</h1>
-        <p style="color: #6B7280;">Generate and download barangay reports in PDF format.</p>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div class="flex items-end justify-between border-b border-slate-200 pb-4">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900">Reports & Exports</h1>
+            <p class="mt-1 text-sm text-slate-500">Generate official project and financial reports for your barangay.</p>
+        </div>
+        <span class="hidden rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-500 sm:inline-flex">BARANGAY PORTAL</span>
     </div>
 
     @if (session('success'))
@@ -13,30 +16,22 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Projects Report -->
-        <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
-            <h3 class="text-lg font-bold text-black mb-2">📋 Projects Report</h3>
-            <p class="text-sm text-gray-500 mb-4">Complete list of all projects in your barangay with details and budget.</p>
-            <a href="{{ route('barangay.reports.projects-pdf') }}" class="block w-full px-4 py-3 rounded text-center font-medium" style="background-color: #c9a84c; color: #0f1e3d; text-decoration: none;">Download PDF</a>
-        </div>
-
-        <!-- Budget Report -->
-        <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
-            <h3 class="text-lg font-bold text-black mb-2">💰 Budget Analysis</h3>
-            <p class="text-sm text-gray-500 mb-4">Detailed budget breakdown and spending analysis for your barangay.</p>
-            <a href="{{ route('barangay.reports.budget-pdf') }}" class="block w-full px-4 py-3 rounded text-center font-medium" style="background-color: #c9a84c; color: #0f1e3d; text-decoration: none;">Download PDF</a>
-        </div>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <x-report-card eyebrow="Project overview" title="Projects Report" description="Complete list of all projects in your barangay with details and budget information." icon="document" :route="route('barangay.reports.projects-pdf')" />
+        <x-report-card eyebrow="Financial overview" title="Budget Analysis" description="Detailed budget breakdown by status and spending analysis for your barangay." icon="budget" :route="route('barangay.reports.budget-pdf')" />
     </div>
 
     <!-- Info -->
-    <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
-        <h3 class="text-lg font-bold text-black mb-4">About These Reports</h3>
-        <ul class="text-sm text-gray-700 space-y-2">
-            <li>✓ Reports show only projects assigned to your barangay</li>
-            <li>✓ PDF format is suitable for printing and official documentation</li>
-            <li>✓ All reports include your barangay name and generation timestamp</li>
-            <li>✓ Easy to share with local government partners</li>
+    <div class="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
+        <div class="flex items-center gap-3">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">✓</span>
+            <h3 class="text-lg font-bold text-slate-900">About These Reports</h3>
+        </div>
+        <ul class="mt-5 grid gap-3 text-sm text-slate-700 sm:grid-cols-2">
+            <li>✓ Reports show only projects assigned to your barangay.</li>
+            <li>✓ PDF format is ideal for official distribution and archiving.</li>
+            <li>✓ All reports include your barangay name and generation timestamp.</li>
+            <li>✓ Formatted for easy printing and sharing.</li>
         </ul>
     </div>
 </div>
