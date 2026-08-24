@@ -10,17 +10,19 @@
 <!-- Mobile backdrop overlay -->
 <div id="sidebarBackdrop" class="fixed inset-0 bg-black bg-opacity-50 z-[9998] hidden xl:hidden" style="display: none;"></div>
 
-<aside id="sidebar" class="fixed left-0 top-0 h-screen w-72 sm:w-72 xl:w-80 shrink-0 text-white transform -translate-x-full transition-transform duration-300 overflow-y-auto xl:sticky xl:top-0 xl:self-start xl:translate-x-0 xl:flex xl:flex-col xl:h-screen z-[9999]" style="background-color: #0F172A;">
+<aside id="sidebar" class="fixed left-0 top-0 h-screen w-72 sm:w-72 xl:w-80 shrink-0 text-white transform -translate-x-full transition-transform duration-300 overflow-y-auto xl:sticky xl:top-0 xl:self-start xl:translate-x-0 xl:flex xl:flex-col xl:h-screen z-[9999]" style="background: linear-gradient(180deg, #0B1220 0%, #070C16 100%); border-right: 1px solid rgba(148, 163, 184, 0.12); box-shadow: 18px 0 45px rgba(2, 6, 23, 0.22);">
     <div class="flex h-full flex-col justify-between min-h-screen xl:min-h-0">
         <div class="space-y-6 p-4 sm:p-6">
             <div class="space-y-4 text-center">
                 <div class="flex flex-col items-center justify-center gap-4 py-2">
-                    <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="mx-auto h-16 w-auto object-contain" />
+                    <div class="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1.4rem] border border-white/10 bg-[#141F33] shadow-[0_12px_30px_rgba(0,0,0,0.3)] ring-1 ring-[#F4C95D]/10">
+                        <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-14 w-auto object-contain" />
+                    </div>
                     <div>
                         <div class="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-300">Project Tracker System</div>
                     </div>
                 </div>
-                <nav class="mt-6 space-y-2">
+                <nav class="mt-6 space-y-2 border-t border-white/[0.06] pt-5">
                     @if($role === 'admin')
                         <a href="{{ url('/admin/dashboard') }}" class="flex items-center gap-3 rounded-3xl px-3 py-3 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('admin/dashboard') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Admin Dashboard">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Dashboard">
@@ -61,31 +63,31 @@
                             Audit Logs
                         </a>
                     @elseif($role === 'department')
-                        <a href="{{ url('/department/dashboard') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('department/dashboard') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Department Dashboard">
+                        <a href="{{ url('/department/dashboard') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('department.dashboard') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Department Dashboard">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Dashboard">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
                             </span>
                             Dashboard
                         </a>
-                        <a href="{{ url('/department/projects') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold text-slate-300 transition hover:bg-slate-800" title="Projects">
+                        <a href="{{ url('/department/projects') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('department.projects*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Projects">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Projects">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11 7h2v2h-2zm0 4h2v2h-2zm-4-4h2v2H7zm0 4h2v2H7zM7 3h10c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2zm12-2v18H3V1h18z"/></svg>
                             </span>
                             Projects
                         </a>
-                        <a href="{{ url('/department/map') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold text-slate-300 transition hover:bg-slate-800" title="Map">
+                        <a href="{{ url('/department/map') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('department.map*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Map">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Map">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
                             </span>
                             Map
                         </a>
-                        <a href="{{ url('/department/analytics') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold text-slate-300 transition hover:bg-slate-800" title="Analytics">
+                        <a href="{{ url('/department/analytics') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('department.analytics*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Analytics">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Analytics">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
                             </span>
                             Analytics
                         </a>
-                        <a href="{{ url('/department/reports') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold text-slate-300 transition hover:bg-slate-800" title="Reports">
+                        <a href="{{ url('/department/reports') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('department.reports*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Reports">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Reports">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 9c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm3 6H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/></svg>
                             </span>
@@ -116,7 +118,7 @@
                             </span>
                             Analytics
                         </a>
-                        <a href="{{ url('/city/reports') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold text-slate-300 transition hover:bg-slate-800" title="City Reports">
+                        <a href="{{ url('/city/reports') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('city/reports*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="City Reports">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Reports">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 9c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm3 6H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/></svg>
                             </span>
@@ -129,25 +131,25 @@
                             </span>
                             Dashboard
                         </a>
-                        <a href="{{ url('/barangay/projects') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold text-slate-300 transition hover:bg-slate-800" title="Projects">
+                        <a href="{{ url('/barangay/projects') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('barangay/projects*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Projects">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Projects">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11 7h2v2h-2zm0 4h2v2h-2zm-4-4h2v2H7zm0 4h2v2H7zM7 3h10c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2zm12-2v18H3V1h18z"/></svg>
                             </span>
                             Projects
                         </a>
-                        <a href="{{ url('/barangay/map') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold text-slate-300 transition hover:bg-slate-800" title="Map">
+                        <a href="{{ url('/barangay/map') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('barangay/map') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Map">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Map">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
                             </span>
                             Map
                         </a>
-                        <a href="{{ url('/barangay/analytics') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold text-slate-300 transition hover:bg-slate-800" title="Analytics">
+                        <a href="{{ url('/barangay/analytics') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('barangay/analytics') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Analytics">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Analytics">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
                             </span>
                             Analytics
                         </a>
-                        <a href="{{ url('/barangay/reports') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold text-slate-300 transition hover:bg-slate-800" title="Reports">
+                        <a href="{{ url('/barangay/reports') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('barangay/reports') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Reports">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Reports">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 9c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm3 6H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/></svg>
                             </span>
@@ -194,6 +196,31 @@
         @endif
     </div>
 </aside>
+
+<style>
+    #sidebar nav a > span {
+        border: 1px solid rgba(244, 201, 93, 0.16);
+        background: linear-gradient(145deg, #1D2B45 0%, #141F33 100%) !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 6px 16px rgba(0, 0, 0, 0.2);
+        color: #F4C95D !important;
+        transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    #sidebar nav a:hover {
+        background-color: #141F33 !important;
+    }
+
+    #sidebar nav a.bg-slate-800 {
+        background-color: #1D2B45 !important;
+    }
+
+    #sidebar nav a:hover > span,
+    #sidebar nav a.bg-slate-800 > span {
+        transform: translateY(-1px);
+        border-color: rgba(244, 201, 93, 0.52);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 8px 20px rgba(0, 0, 0, 0.28), 0 0 0 3px rgba(201, 168, 76, 0.06);
+    }
+</style>
 
 @if($role !== 'public')
 <!-- Logout Confirmation Modal -->
