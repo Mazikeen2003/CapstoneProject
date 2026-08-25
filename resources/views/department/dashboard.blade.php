@@ -5,44 +5,58 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div class="admin-dashboard-hero rounded-3xl px-6 py-7 shadow-lg sm:px-8">
+        <div>
+            <p class="text-xs font-bold uppercase tracking-[0.24em] text-amber-300">Department workspace</p>
+            <h1 class="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">Department Dashboard</h1>
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-300">A focused view of your projects, locations, and current delivery progress.</p>
+        </div>
+    </div>
+
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="rounded-3xl p-5 bg-white border border-slate-200 shadow-sm">
-            <p class="text-xs text-slate-500 uppercase tracking-[0.18em]">Total Projects</p>
-            <p class="text-3xl font-bold text-slate-900 mt-3">{{ $stats['total_projects'] }}</p>
+        <div class="admin-dashboard-stat admin-dashboard-stat-blue rounded-2xl p-6 shadow-sm">
+            <p class="text-sm font-semibold text-slate-600">Total Projects</p>
+            <p class="mt-4 text-4xl font-bold text-slate-950">{{ $stats['total_projects'] }}</p>
         </div>
 
-        <div class="rounded-3xl p-5 bg-white border border-slate-200 shadow-sm">
-            <p class="text-xs text-slate-500 uppercase tracking-[0.18em]">Ongoing Projects</p>
-            <p class="text-3xl font-bold text-slate-900 mt-3">{{ $stats['ongoing'] }}</p>
+        <div class="admin-dashboard-stat admin-dashboard-stat-amber rounded-2xl p-6 shadow-sm">
+            <p class="text-sm font-semibold text-slate-600">Ongoing Projects</p>
+            <p class="mt-4 text-4xl font-bold text-slate-950">{{ $stats['ongoing'] }}</p>
         </div>
 
-        <div class="rounded-3xl p-5 bg-white border border-slate-200 shadow-sm">
-            <p class="text-xs text-slate-500 uppercase tracking-[0.18em]">Completed Projects</p>
-            <p class="text-3xl font-bold text-slate-900 mt-3">{{ $stats['completed'] }}</p>
+        <div class="admin-dashboard-stat admin-dashboard-stat-emerald rounded-2xl p-6 shadow-sm">
+            <p class="text-sm font-semibold text-slate-600">Completed Projects</p>
+            <p class="mt-4 text-4xl font-bold text-slate-950">{{ $stats['completed'] }}</p>
         </div>
 
-        <div class="rounded-3xl p-5 bg-white border border-slate-200 shadow-sm">
-            <p class="text-xs text-slate-500 uppercase tracking-[0.18em]">Budget Allocated</p>
-            <p class="text-3xl font-bold text-slate-900 mt-3">₱{{ number_format($stats['budget_allocated'] ?? 0, 0) }}</p>
+        <div class="admin-dashboard-stat admin-dashboard-stat-rose rounded-2xl p-6 shadow-sm">
+            <p class="text-sm font-semibold text-slate-600">Budget Allocated</p>
+            <p class="mt-4 text-4xl font-bold text-slate-950">₱{{ number_format($stats['budget_allocated'] ?? 0, 0) }}</p>
         </div>
     </div>
 
     <!-- Map Section -->
-    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 class="text-xl font-bold text-slate-900 mb-4">Project Locations</h2>
-        <div id="department-map" class="h-[42vh] sm:h-[48vh] md:h-[56vh] overflow-hidden rounded-3xl border border-slate-200"></div>
+    <div class="admin-dashboard-activity overflow-hidden rounded-2xl shadow-sm">
+        <div class="admin-card-header border-b border-slate-200 px-6 py-5">
+            <h2 class="text-xl font-bold text-slate-900">Project Locations</h2>
+            <p class="mt-1 text-sm text-slate-500">Explore the geographic distribution of your department projects.</p>
+        </div>
+        <div class="p-6">
+        <div id="department-map" class="relative z-0 h-[42vh] overflow-hidden rounded-3xl border border-slate-200 sm:h-[48vh] md:h-[56vh]"></div>
+        </div>
     </div>
 
     <!-- Recent Projects -->
-    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+    <div class="admin-dashboard-activity overflow-hidden rounded-2xl shadow-sm">
+        <div class="admin-card-header flex flex-col gap-2 border-b border-slate-200 px-6 py-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
                 <h2 class="text-xl font-bold text-slate-900">Recent Projects</h2>
                 <p class="text-sm text-slate-500">Latest department project activity.</p>
             </div>
         </div>
 
+        <div class="p-6">
         @if ($recentProjects->isEmpty())
             <p class="mt-4 text-sm text-slate-500">No projects yet.</p>
         @else
@@ -60,6 +74,7 @@
                 @endforeach
             </div>
         @endif
+        </div>
     </div>
 </div>
 

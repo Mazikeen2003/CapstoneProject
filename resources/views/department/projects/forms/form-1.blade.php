@@ -227,9 +227,9 @@
         </div>
 
         <div class="flex justify-end space-x-3">
-            <a href="{{ route('department.projects.show', $project->project_id) }}" class="px-4 py-2 rounded" style="background-color: #e5e7eb;">Cancel</a>
-            @if ($form)<a href="{{ route('department.projects.forms.pdf', [$project->project_id, 'form_1']) }}" class="px-4 py-2 rounded" style="background-color: #c9a84c; color: #0f1e3d;">Download PDF</a>@else<span title="Save the form first before generating a PDF" class="px-4 py-2 rounded cursor-not-allowed" style="background-color: #e5e7eb; color: #9ca3af;">Download PDF</span>@endif
-            <button type="submit" class="px-4 py-2 rounded" style="background-color: #162347; color: #f2f3f7;">Save Form</button>
+            <a href="{{ route('department.projects.show', $project->project_id) }}" class="project-form-action project-form-action-secondary">Cancel</a>
+            @if ($form)<a href="{{ route('department.projects.forms.pdf', [$project->project_id, 'form_1']) }}" class="project-form-action project-form-action-download">Download PDF</a>@else<span title="Save the form first before generating a PDF" class="project-form-action project-form-action-disabled">Download PDF</span>@endif
+            <button type="submit" class="project-form-action project-form-action-primary">Save Form</button>
         </div>
     </form>
 </div>

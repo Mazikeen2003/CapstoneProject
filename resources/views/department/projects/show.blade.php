@@ -31,7 +31,7 @@
 </script>
 <div class="space-y-6">
     <div>
-        <h1 class="text-3xl font-bold" style="color: black;">{{ $project->project_name }}</h1>
+        <h1 class="department-project-title text-3xl font-bold" style="color: black;">{{ $project->project_name }}</h1>
         <p class="text-sm text-gray-500 mt-1">Code: {{ $project->project_code }} &middot; Type: {{ $project->project_type }}</p>
     </div>
 
@@ -43,40 +43,40 @@
 
     @include('components.project-stepper', ['project' => $project])
 
-    <div class="bg-white rounded-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-4" style="border: 1px solid #B2BEB5;">
-        <div>
+    <div class="project-details-grid bg-white rounded-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-4" style="border: 1px solid #B2BEB5;">
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
             <p class="text-xs text-gray-500">Status</p>
             <p class="text-black font-medium">{{ $project->current_status }}</p>
         </div>
-        <div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
             <p class="text-xs text-gray-500">Barangay</p>
             <p class="text-black font-medium">{{ $project->barangay->barangay_name ?? 'Citywide' }}</p>
         </div>
-        <div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
             <p class="text-xs text-gray-500">Approved Budget</p>
             <p class="text-black font-medium">₱{{ number_format($project->approved_budget ?? 0, 2) }}</p>
         </div>
-        <div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
             <p class="text-xs text-gray-500">Actual Budget</p>
             <p class="text-black font-medium">₱{{ number_format($project->actual_budget ?? 0, 2) }}</p>
         </div>
-        <div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
             <p class="text-xs text-gray-500">Start Date</p>
             <p class="text-black font-medium">{{ $project->start_date?->format('M d, Y') ?? '—' }}</p>
         </div>
-        <div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
             <p class="text-xs text-gray-500">Target Completion</p>
             <p class="text-black font-medium">{{ $project->target_end_date?->format('M d, Y') ?? '—' }}</p>
         </div>
-        <div class="md:col-span-2">
+        <div class="md:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
             <p class="text-xs text-gray-500">Location</p>
             <p class="text-black font-medium">{{ $project->location_description ?? '—' }}</p>
         </div>
-        <div class="md:col-span-2 max-w-full">
+        <div class="md:col-span-2 max-w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
             <p class="text-xs text-gray-500">Public Description</p>
             <p class="max-w-full overflow-hidden text-black font-medium break-words whitespace-pre-wrap" style="overflow-wrap:anywhere; word-break:break-word;">{{ $project->public_description ?? 'No public description available.' }}</p>
         </div>
-        <div class="md:col-span-2 max-w-full">
+        <div class="md:col-span-2 max-w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
             <p class="text-xs text-gray-500">Internal Remarks (Private)</p>
             <p class="max-w-full overflow-hidden text-black font-medium break-words whitespace-pre-wrap" style="overflow-wrap:anywhere; word-break:break-word;">{{ $project->remarks ?? '—' }}</p>
         </div>
@@ -145,7 +145,7 @@
 
     <div class="flex justify-end space-x-3">
         <a href="{{ route('department.projects.edit', $project->project_id) }}" class="px-4 py-2 rounded" style="background-color: #c9a84c; color: #0f1e3d;">Edit Project</a>
-        <a href="{{ route('department.projects.index') }}" class="px-4 py-2 rounded" style="background-color: #e5e7eb;">Back to List</a>
+        <a href="{{ route('department.projects.index') }}" class="department-project-back px-4 py-2 rounded" style="background-color: #e5e7eb;">Back to List</a>
     </div>
 </div>
 @endsection

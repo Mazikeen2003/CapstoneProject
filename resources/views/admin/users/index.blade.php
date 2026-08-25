@@ -49,7 +49,7 @@
 
     <div class="hidden md:block overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-200">
         <table class="min-w-full divide-y divide-slate-200">
-            <thead class="bg-slate-100">
+            <thead class="admin-card-header bg-slate-100">
                 <tr>
                     <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Username</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Email</th>
@@ -60,7 +60,7 @@
             </thead>
             <tbody class="bg-white divide-y divide-slate-200">
                 @forelse ($users as $user)
-                    <tr class="hover:bg-slate-50">
+                    <tr class="admin-user-row hover:bg-slate-50">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">{{ $user->username }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ $user->user_email }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">

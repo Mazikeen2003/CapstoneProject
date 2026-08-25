@@ -19,36 +19,36 @@
     </div>
 
     <!-- Project Details Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-white rounded-lg p-4 border border-gray-200">
+    <div class="project-details-grid grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-slate-50 rounded-lg p-4 border border-slate-300 shadow-sm">
             <p class="text-xs text-gray-500 uppercase">Barangay</p>
             <p class="text-black font-bold mt-2">{{ $project->barangay->barangay_name ?? 'Unknown' }}</p>
         </div>
-        <div class="bg-white rounded-lg p-4 border border-gray-200">
+        <div class="bg-slate-50 rounded-lg p-4 border border-slate-300 shadow-sm">
             <p class="text-xs text-gray-500 uppercase">Project Type</p>
             <p class="text-black font-bold mt-2">{{ $project->project_type }}</p>
         </div>
-        <div class="bg-white rounded-lg p-4 border border-gray-200">
+        <div class="bg-slate-50 rounded-lg p-4 border border-slate-300 shadow-sm">
             <p class="text-xs text-gray-500 uppercase">Approved Budget</p>
             <p class="text-black font-bold mt-2">₱{{ number_format($project->approved_budget ?? 0, 2) }}</p>
         </div>
-        <div class="bg-white rounded-lg p-4 border border-gray-200">
+        <div class="bg-slate-50 rounded-lg p-4 border border-slate-300 shadow-sm">
             <p class="text-xs text-gray-500 uppercase">Actual Budget</p>
             <p class="text-black font-bold mt-2">₱{{ number_format($project->actual_budget ?? 0, 2) }}</p>
         </div>
     </div>
 
     <!-- Dates -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-white rounded-lg p-4 border border-gray-200">
+    <div class="project-details-grid grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-slate-50 rounded-lg p-4 border border-slate-300 shadow-sm">
             <p class="text-xs text-gray-500 uppercase">Start Date</p>
             <p class="text-black font-bold mt-2">{{ $project->start_date?->format('M d, Y') ?? '—' }}</p>
         </div>
-        <div class="bg-white rounded-lg p-4 border border-gray-200">
+        <div class="bg-slate-50 rounded-lg p-4 border border-slate-300 shadow-sm">
             <p class="text-xs text-gray-500 uppercase">Target End Date</p>
             <p class="text-black font-bold mt-2">{{ $project->target_end_date?->format('M d, Y') ?? '—' }}</p>
         </div>
-        <div class="bg-white rounded-lg p-4 border border-gray-200">
+        <div class="bg-slate-50 rounded-lg p-4 border border-slate-300 shadow-sm">
             <p class="text-xs text-gray-500 uppercase">Actual End Date</p>
             <p class="text-black font-bold mt-2">{{ $project->actual_end_date?->format('M d, Y') ?? '—' }}</p>
         </div>

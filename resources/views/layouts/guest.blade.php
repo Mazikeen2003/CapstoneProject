@@ -7,6 +7,7 @@
 
         <title>{{ config('app.name', 'Cabuyao Project Tracker') }}</title>
         @include('layouts.favicon')
+        @include('components.theme-init')
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -44,9 +45,10 @@
                     <a href="{{ route('public.analytics') }}" class="py-2 font-semibold text-slate-500 transition-colors hover:text-emerald-700">Analytics</a>
                 </div>
 
-                <a href="{{ route('login') }}" class="shrink-0 rounded-md bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 sm:px-5">
-                    Login
-                </a>
+                <div class="flex items-center gap-2">
+                    @include('components.public-theme-toggle')
+                    <a href="{{ route('login') }}" class="public-login-button shrink-0 rounded-md bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 sm:px-5">Login</a>
+                </div>
             </nav>
             <div class="border-t border-slate-200 bg-white md:hidden">
                 <div class="flex flex-wrap items-center justify-center gap-3 px-4 py-3 text-xs uppercase tracking-widest text-slate-600">

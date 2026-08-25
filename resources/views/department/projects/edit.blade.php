@@ -4,17 +4,17 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-<div class="space-y-6">
+<div class="department-edit-project space-y-6">
     <div>
-        <h1 class="text-3xl font-bold" style="color: black;">Edit Project</h1>
-        <p class="text-sm text-gray-500 mt-1">{{ $project->project_name }}</p>
+        <h1 class="department-edit-project-title text-3xl font-bold">Edit Project</h1>
+        <p class="department-edit-project-subtitle text-sm mt-1">{{ $project->project_name }}</p>
     </div>
 
     @include('components.project-stepper', ['project' => $project])
 
     {{-- Progress Bar Section --}}
-    <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
-        <h2 class="text-lg font-bold text-black mb-4">Project Progress</h2>
+    <div class="department-edit-project-card bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
+        <h2 class="department-edit-project-label text-lg font-bold mb-4">Project Progress</h2>
         
         @php
             $startDate = \Carbon\Carbon::parse($project->start_date);
@@ -31,8 +31,8 @@
         
         <div class="mb-3">
             <div class="flex justify-between mb-2">
-                <span class="text-sm font-semibold text-gray-700">{{ $progressLabel }}</span>
-                <span class="text-sm font-bold" style="color: #c9a84c;">{{ number_format($progress, 1) }}%</span>
+                <span class="department-edit-project-muted text-sm font-semibold">{{ $progressLabel }}</span>
+                <span class="department-edit-project-accent text-sm font-bold">{{ number_format($progress, 1) }}%</span>
             </div>
             <div class="relative h-4 bg-gray-300 rounded-full overflow-hidden">
                 <div class="h-full transition-all duration-300" style="width: {{ $progress }}%; background-color: #c9a84c;"></div>
@@ -42,17 +42,17 @@
             </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
-            <div class="p-3 bg-gray-50 rounded" style="border: 1px solid #B2BEB5;">
-                <p class="text-xs text-gray-600">Start Date</p>
-                <p class="text-sm font-semibold text-black">{{ $startDate->format('M d, Y') }}</p>
+            <div class="department-edit-project-mini-card p-3 bg-gray-50 rounded" style="border: 1px solid #B2BEB5;">
+                <p class="department-edit-project-muted text-xs">Start Date</p>
+                <p class="department-edit-project-label text-sm font-semibold">{{ $startDate->format('M d, Y') }}</p>
             </div>
-            <div class="p-3 bg-gray-50 rounded" style="border: 1px solid #B2BEB5;">
-                <p class="text-xs text-gray-600">Target Completion</p>
-                <p class="text-sm font-semibold text-black">{{ $endDate->format('M d, Y') }}</p>
+            <div class="department-edit-project-mini-card p-3 bg-gray-50 rounded" style="border: 1px solid #B2BEB5;">
+                <p class="department-edit-project-muted text-xs">Target Completion</p>
+                <p class="department-edit-project-label text-sm font-semibold">{{ $endDate->format('M d, Y') }}</p>
             </div>
-            <div class="p-3 bg-gray-50 rounded" style="border: 1px solid #B2BEB5;">
-                <p class="text-xs text-gray-600">Days Remaining</p>
-                <p class="text-sm font-semibold" style="color: #c9a84c;">{{ max(0, $today->diffInDays($endDate, false)) }} days</p>
+            <div class="department-edit-project-mini-card p-3 bg-gray-50 rounded" style="border: 1px solid #B2BEB5;">
+                <p class="department-edit-project-muted text-xs">Days Remaining</p>
+                <p class="department-edit-project-accent text-sm font-semibold">{{ max(0, $today->diffInDays($endDate, false)) }} days</p>
             </div>
         </div>
     </div>
@@ -73,8 +73,8 @@
         <p class="text-xs mt-1">Your request to edit critical project fields has been submitted to the System Administrator for approval.</p>
     </div>
 
-    <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
-        <form method="POST" action="{{ route('department.projects.update', $project->project_id) }}" enctype="multipart/form-data">
+    <div class="department-edit-project-card bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
+        <form class="department-edit-project-form" method="POST" action="{{ route('department.projects.update', $project->project_id) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -87,12 +87,12 @@
             {{-- Basic Information --}}
             <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                 <div>
-                    <label class="block text-sm font-medium text-black">Project Code</label>
-                    <input type="text" name="project_code" value="{{ old('project_code', $project->project_code) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
+                    <label class="department-edit-project-label block text-sm font-medium">Project Code</label>
+                    <input type="text" name="project_code" value="{{ old('project_code', $project->project_code) }}" class="department-edit-project-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-black">Project Type *</label>
-                    <select id="project_type_select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" required>
+                    <label class="department-edit-project-label block text-sm font-medium">Project Type *</label>
+                    <select id="project_type_select" class="department-edit-project-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" required>
                         <option value="">-- Select Project Type --</option>
                         <option value="Bridges" @selected($currentType == 'Bridges')>Bridges</option>
                         <option value="Buildings and Facilities" @selected($currentType == 'Buildings and Facilities')>Buildings and Facilities</option>
@@ -104,20 +104,20 @@
                     </select>
                     <input type="hidden" id="project_type" name="project_type" value="{{ $currentType }}">
                     <div id="project_type_other_wrapper" class="mt-2" style="{{ $isOtherType ? '' : 'display: none;' }}">
-                        <label class="block text-xs font-medium text-gray-600">Please specify</label>
-                        <input type="text" id="project_type_other" value="{{ $isOtherType ? $currentType : '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" placeholder="Enter project type">
+                        <label class="department-edit-project-muted block text-xs font-medium">Please specify</label>
+                        <input type="text" id="project_type_other" value="{{ $isOtherType ? $currentType : '' }}" class="department-edit-project-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" placeholder="Enter project type">
                     </div>
                 </div>
             </div>
 
             <div class="mt-3">
-                <label class="block text-sm font-medium text-black">Project Name</label>
-                <input type="text" name="project_name" value="{{ old('project_name', $project->project_name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
+                <label class="department-edit-project-label block text-sm font-medium">Project Name</label>
+                <input type="text" name="project_name" value="{{ old('project_name', $project->project_name) }}" class="department-edit-project-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
             </div>
 
             <div class="mt-3">
-                <label class="block text-sm font-medium text-black">Barangay</label>
-                <select id="barangay_id" name="barangay_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" disabled>
+                <label class="department-edit-project-label block text-sm font-medium">Barangay</label>
+                <select id="barangay_id" name="barangay_id" class="department-edit-project-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" disabled>
                     <option value="">-- None / Citywide --</option>
                     @foreach ($barangays as $barangay)
                         <option value="{{ $barangay->barangay_id }}" @selected(old('barangay_id', $project->barangay_id) == $barangay->barangay_id)>
@@ -130,19 +130,19 @@
 
             {{-- Map Section (Read-only) --}}
             <div class="mt-6">
-                <label class="block text-sm font-medium text-black mb-2">Project Location (Locked)</label>
+                <label class="department-edit-project-label block text-sm font-medium mb-2">Project Location (Locked)</label>
                 <div id="project-location-map" class="h-80 w-full overflow-hidden rounded-md border" style="border-color: #B2BEB5; opacity: 0.8;"></div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-600 mt-2">Selected Address</label>
-                    <input id="project-address" type="text" readonly value="{{ $project->location_description }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="background-color: #f9fafb; border-color: #B2BEB5; color: black;">
+                    <label class="department-edit-project-muted block text-xs font-medium mt-2">Selected Address</label>
+                    <input id="project-address" type="text" readonly value="{{ $project->location_description }}" class="department-edit-project-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="background-color: #f9fafb; border-color: #B2BEB5; color: black;">
                 </div>
-                <p class="text-xs text-gray-500 mt-1">📍 Map location is locked. Contact System Administrator to change project location.</p>
+                <p class="department-edit-project-muted text-xs mt-1">📍 Map location is locked. Contact System Administrator to change project location.</p>
             </div>
 
             {{-- Locked Fields Section --}}
-            <div class="mt-6 p-4 bg-gray-50 rounded" style="border: 2px solid #B2BEB5;">
+            <div class="department-edit-project-panel mt-6 p-4 bg-gray-50 rounded" style="border: 2px solid #B2BEB5;">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-sm font-bold text-black">Critical Project Details (Requires Approval)</h3>
+                    <h3 class="department-edit-project-label text-sm font-bold">Critical Project Details (Requires Approval)</h3>
                     <button
                         type="button"
                         id="askPermissionBtn"
@@ -164,9 +164,9 @@
 
                 <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                     <div>
-                        <label class="block text-sm font-medium text-black">Start Date *</label>
-                        <input type="date" id="start_date" name="start_date" value="{{ old('start_date', $project->start_date?->format('Y-m-d')) }}" class="locked-field mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" @if(!($canEditCriticalFields ?? false)) disabled @endif required>
-                        <p class="text-xs text-gray-500 mt-1">
+                        <label class="department-edit-project-label block text-sm font-medium">Start Date *</label>
+                        <input type="date" id="start_date" name="start_date" value="{{ old('start_date', $project->start_date?->format('Y-m-d')) }}" class="department-edit-project-input locked-field mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" @if(!($canEditCriticalFields ?? false)) disabled @endif required>
+                        <p class="department-edit-project-muted text-xs mt-1">
                             @if($canEditCriticalFields ?? false)
                                 ✅ Permission approved — you can now edit this field.
                             @else
@@ -175,9 +175,9 @@
                         </p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-black">Target Completion *</label>
-                        <input type="date" id="target_end_date" name="target_end_date" value="{{ old('target_end_date', $project->target_end_date?->format('Y-m-d')) }}" class="locked-field mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" @if(!($canEditCriticalFields ?? false)) disabled @endif required>
-                        <p class="text-xs text-gray-500 mt-1">
+                        <label class="department-edit-project-label block text-sm font-medium">Target Completion *</label>
+                        <input type="date" id="target_end_date" name="target_end_date" value="{{ old('target_end_date', $project->target_end_date?->format('Y-m-d')) }}" class="department-edit-project-input locked-field mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" @if(!($canEditCriticalFields ?? false)) disabled @endif required>
+                        <p class="department-edit-project-muted text-xs mt-1">
                             @if($canEditCriticalFields ?? false)
                                 ✅ Permission approved — you can now edit this field.
                             @else
@@ -189,9 +189,9 @@
 
                 <div class="grid grid-cols-1 gap-3 md:grid-cols-2 mt-3">
                     <div>
-                        <label class="block text-sm font-medium text-black">Approved Budget *</label>
-                        <input type="number" step="0.01" id="approved_budget" name="approved_budget" value="{{ old('approved_budget', $project->approved_budget) }}" class="locked-field mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" @if(!($canEditCriticalFields ?? false)) disabled @endif required>
-                        <p class="text-xs text-gray-500 mt-1">
+                        <label class="department-edit-project-label block text-sm font-medium">Approved Budget *</label>
+                        <input type="number" step="0.01" id="approved_budget" name="approved_budget" value="{{ old('approved_budget', $project->approved_budget) }}" class="department-edit-project-input locked-field mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" @if(!($canEditCriticalFields ?? false)) disabled @endif required>
+                        <p class="department-edit-project-muted text-xs mt-1">
                             @if($canEditCriticalFields ?? false)
                                 ✅ Permission approved — you can now edit this field.
                             @else
@@ -200,9 +200,9 @@
                         </p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-black">Actual Budget Spent</label>
-                        <input type="number" step="0.01" id="actual_budget" name="actual_budget" value="{{ old('actual_budget', $project->actual_budget) }}" class="locked-field mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" @if(!($canEditCriticalFields ?? false)) disabled @endif>
-                        <p class="text-xs text-gray-500 mt-1">
+                        <label class="department-edit-project-label block text-sm font-medium">Actual Budget Spent</label>
+                        <input type="number" step="0.01" id="actual_budget" name="actual_budget" value="{{ old('actual_budget', $project->actual_budget) }}" class="department-edit-project-input locked-field mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;" @if(!($canEditCriticalFields ?? false)) disabled @endif>
+                        <p class="department-edit-project-muted text-xs mt-1">
                             @if($canEditCriticalFields ?? false)
                                 ✅ Permission approved — you can now edit this field.
                             @else
@@ -215,12 +215,12 @@
 
             {{-- Editable Fields Section --}}
             <div class="mt-6">
-                <h3 class="text-sm font-bold text-black mb-3">Project Details</h3>
+                <h3 class="department-edit-project-label text-sm font-bold mb-3">Project Details</h3>
 
                 <div>
-                    <label class="block text-sm font-medium text-black">Status</label>
+                    <label class="department-edit-project-label block text-sm font-medium">Status</label>
                     @php $status = old('current_status', $project->current_status); @endphp
-                    <select name="current_status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
+                    <select name="current_status" class="department-edit-project-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
                         <optgroup label="Project Lifecycle">
                             <option value="Proposed" @selected($status == 'Proposed')>Proposed</option>
                             <option value="For bidding" @selected($status == 'For bidding')>For bidding</option>
@@ -237,27 +237,27 @@
                 </div>
 
                 <div class="mt-3">
-                    <label class="block text-sm font-medium text-black">👁️ Public Description</label>
-                    <p class="text-xs text-gray-500 mb-2">Shown to the public on the transparency portal. Keep this general and non-sensitive.</p>
-                    <textarea name="public_description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black; background-color: #f8fafc;">{{ old('public_description', $project->public_description) }}</textarea>
+                    <label class="department-edit-project-label block text-sm font-medium">👁️ Public Description</label>
+                    <p class="department-edit-project-muted text-xs mb-2">Shown to the public on the transparency portal. Keep this general and non-sensitive.</p>
+                    <textarea name="public_description" rows="3" class="department-edit-project-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black; background-color: #f8fafc;">{{ old('public_description', $project->public_description) }}</textarea>
                 </div>
 
                 <div class="mt-3">
-                    <label class="block text-sm font-medium text-black">🔒 Internal Remarks (Private)</label>
-                    <p class="text-xs text-gray-500 mb-2">Encrypted and only visible to authorized staff — not shown publicly.</p>
-                    <textarea name="remarks" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black; background-color: #ffffff;">{{ old('remarks', $project->remarks) }}</textarea>
+                    <label class="department-edit-project-label block text-sm font-medium">🔒 Internal Remarks (Private)</label>
+                    <p class="department-edit-project-muted text-xs mb-2">Encrypted and only visible to authorized staff — not shown publicly.</p>
+                    <textarea name="remarks" rows="3" class="department-edit-project-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black; background-color: #ffffff;">{{ old('remarks', $project->remarks) }}</textarea>
                 </div>
 
                 <div class="mt-3">
-                    <label class="block text-sm font-medium text-black">Replace Project Image</label>
-                    <input type="file" name="project_image" accept="image/*" class="mt-1 block w-full rounded-md border border-gray-300 text-sm shadow-sm">
+                    <label class="department-edit-project-label block text-sm font-medium">Replace Project Image</label>
+                    <input type="file" name="project_image" accept="image/*" class="department-edit-project-input mt-1 block w-full rounded-md border border-gray-300 text-sm shadow-sm">
                 </div>
             </div>
 
             {{-- Action Buttons --}}
             <div class="mt-6 flex justify-end space-x-3">
-                <a href="{{ route('department.projects.show', $project->project_id) }}" class="px-4 py-2 rounded" style="background-color: #e5e7eb;">Cancel</a>
-                <button type="submit" class="px-4 py-2 rounded" style="background-color: #c9a84c; color: #0f1e3d;">Save Changes</button>
+                <a href="{{ route('department.projects.show', $project->project_id) }}" class="department-project-secondary-action department-edit-project-button-secondary px-4 py-2 rounded">Cancel</a>
+                <button type="submit" class="department-project-primary-action department-edit-project-button-primary px-4 py-2 rounded">Save Changes</button>
             </div>
         </form>
     </div>
@@ -270,13 +270,13 @@
 </form>
 
 <div id="permissionModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
-    <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-        <h3 class="text-lg font-semibold text-black">Reason for Edit Request</h3>
-        <p class="mt-2 text-sm text-gray-600">Please tell the administrator why you need to edit these critical project details.</p>
-        <textarea id="permissionReasonTextarea" rows="4" class="mt-4 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Example: We need to update the approved budget due to revised funding."></textarea>
+    <div class="department-edit-project-modal w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+        <h3 class="department-edit-project-label text-lg font-semibold">Reason for Edit Request</h3>
+        <p class="department-edit-project-muted mt-2 text-sm">Please tell the administrator why you need to edit these critical project details.</p>
+        <textarea id="permissionReasonTextarea" rows="4" class="department-edit-project-input mt-4 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Example: We need to update the approved budget due to revised funding."></textarea>
         <div class="mt-5 flex justify-end gap-2">
-            <button type="button" id="cancelPermissionBtn" class="rounded bg-gray-200 px-4 py-2 text-sm text-gray-700">Cancel</button>
-            <button type="button" id="submitPermissionBtn" class="rounded bg-amber-600 px-4 py-2 text-sm font-semibold text-white">Send Request</button>
+            <button type="button" id="cancelPermissionBtn" class="department-edit-project-cancel-button rounded px-4 py-2 text-sm">Cancel</button>
+            <button type="button" id="submitPermissionBtn" class="department-edit-project-submit-button rounded px-4 py-2 text-sm font-semibold text-white">Send Request</button>
         </div>
     </div>
 </div>

@@ -28,19 +28,19 @@
             @endforelse
         </div>
 
-        <div class="overflow-x-auto hidden lg:block">
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="border-b border-gray-200">
-                        <th class="text-left py-3 px-4 font-semibold text-gray-500 text-xs uppercase">Project Name</th>
-                        <th class="text-left py-3 px-4 font-semibold text-gray-500 text-xs uppercase">Status</th>
-                        <th class="text-left py-3 px-4 font-semibold text-gray-500 text-xs uppercase">Budget</th>
-                        <th class="text-left py-3 px-4 font-semibold text-gray-500 text-xs uppercase">Action</th>
+        <div class="overflow-x-auto hidden lg:block rounded-3xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-200">
+            <table class="w-full min-w-[640px] border-collapse text-sm">
+                <thead class="admin-card-header bg-slate-100">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Project Name</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Status</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Budget</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-slate-200 bg-white">
                     @forelse($projects as $project)
-                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        <tr class="department-project-table-row hover:bg-slate-50">
                             <td class="py-3 px-4 text-black font-medium">{{ $project->project_name }}</td>
                             <td class="py-3 px-4">
                                 <span class="px-3 py-1 rounded-full text-xs font-semibold"

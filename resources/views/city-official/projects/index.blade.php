@@ -29,20 +29,20 @@
                 @endforeach
             </div>
 
-            <div class="hidden lg:block overflow-x-auto rounded-3xl border border-slate-200 shadow-sm">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-slate-200 bg-slate-50">
-                            <th class="py-3 px-4 text-left text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Project Name</th>
-                            <th class="py-3 px-4 text-left text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Status</th>
-                            <th class="py-3 px-4 text-left text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Barangay</th>
-                            <th class="py-3 px-4 text-left text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Budget</th>
-                            <th class="py-3 px-4 text-left text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Action</th>
+            <div class="hidden lg:block overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-200">
+                <table class="w-full min-w-[720px] border-collapse text-sm">
+                    <thead class="admin-card-header bg-slate-100">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Project Name</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Barangay</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Budget</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white">
+                    <tbody class="divide-y divide-slate-200 bg-white">
                         @foreach ($projects as $project)
-                            <tr class="border-b border-slate-100 hover:bg-slate-50">
+                            <tr class="department-project-table-row hover:bg-slate-50">
                                 <td class="py-3 px-4 text-slate-900 font-medium">{{ $project->project_name }}</td>
                                 <td class="py-3 px-4 text-slate-900">{{ $project->current_status }}</td>
                                 <td class="py-3 px-4 text-slate-900">{{ $project->barangay?->barangay_name ?? 'Citywide' }}</td>

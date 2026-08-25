@@ -111,7 +111,7 @@
 
     @if (isset($byBarangay))
         <section class="rounded-3xl bg-white p-5 border border-slate-200 shadow-sm">
-            <h2 class="mb-4 text-lg font-bold text-slate-900">Barangay Budget Share</h2>
+            <h2 class="barangay-budget-share-heading mb-4 text-lg font-bold text-slate-900">Barangay Budget Share</h2>
             <div class="h-[340px] sm:h-96"><canvas id="barangayChart"></canvas></div>
         </section>
     @endif
@@ -124,10 +124,17 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('theme:changed', () => window.location.reload());
+
     const analyticsScrollPosition = sessionStorage.getItem('analyticsScrollPosition');
     if (analyticsScrollPosition !== null) {
         sessionStorage.removeItem('analyticsScrollPosition');
-        window.scrollTo(0, Number(analyticsScrollPosition));
+        const analyticsScrollContainer = document.querySelector('main');
+        if (analyticsScrollContainer && analyticsScrollContainer.scrollHeight > analyticsScrollContainer.clientHeight) {
+            analyticsScrollContainer.scrollTo(0, Number(analyticsScrollPosition));
+        } else {
+            window.scrollTo(0, Number(analyticsScrollPosition));
+        }
     }
 
     document.querySelectorAll('form[method="GET"]').forEach(form => {
@@ -138,7 +145,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const statusLabels = @json($statusOrder);
     const statusCounts = @json($statusCounts);
-    const statusColors = @json($statusColors);
+    const darkMode = document.documentElement.classList.contains('dark-mode');
+    const chartTextColor = darkMode ? '#e2e8f0' : '#334155';
+    const chartGridColor = darkMode ? 'rgba(148, 163, 184, 0.22)' : 'rgba(148, 163, 184, 0.18)';
+    Chart.defaults.color = chartTextColor;
+    const statusColors = darkMode
+        ? ['#fcd34d', '#fbbf24', '#60a5fa', '#c4b5fd', '#38bdf8', '#34d399', '#fb7185', '#94a3b8']
+        : @json($statusColors);
     const peso = value => '₱' + Number(value || 0).toLocaleString();
     const smoothAnimation = { duration: 1300, easing: 'easeOutQuart' };
     const smoothHover = { mode: 'nearest', intersect: true, animationDuration: 420 };
@@ -146,21 +159,21 @@ document.addEventListener('DOMContentLoaded', () => {
     new Chart(document.getElementById('statusChart'), {
         type: 'polarArea',
         data: { labels: statusLabels, datasets: [{ data: statusCounts, backgroundColor: statusColors, hoverOffset: 18, borderWidth: 2, borderColor: '#ffffff' }] },
-        options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, scales: { r: { ticks: { precision: 0 } } }, plugins: { legend: { position: 'bottom' } } }
+        options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, scales: { r: { ticks: { precision: 0, color: chartTextColor }, grid: { color: chartGridColor } } }, plugins: { legend: { position: 'bottom', labels: { color: chartTextColor } } } }
     });
 
     new Chart(document.getElementById('budgetChart'), {
         type: 'bar',
-        data: { labels: ['Allocated', 'Spent', 'Remaining'], datasets: [{ data: @json([$budgetStats['total_budget'], $budgetStats['total_spent'], $remainingBudget]), backgroundColor: ['#162347', '#c9a84c', '#10b981'], hoverBackgroundColor: ['#243a70', '#dfbe63', '#34c995'], borderRadius: 8, hoverBorderRadius: 12 }] },
-        options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, scales: { y: { beginAtZero: true, ticks: { callback: value => peso(value) } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)}` } } } }
+        data: { labels: ['Allocated', 'Spent', 'Remaining'], datasets: [{ data: @json([$budgetStats['total_budget'], $budgetStats['total_spent'], $remainingBudget]), backgroundColor: darkMode ? ['#60a5fa', '#fbbf24', '#34d399'] : ['#162347', '#c9a84c', '#10b981'], hoverBackgroundColor: darkMode ? ['#93c5fd', '#fcd34d', '#6ee7b7'] : ['#243a70', '#dfbe63', '#34c995'], borderRadius: 8, hoverBorderRadius: 12 }] },
+        options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, scales: { y: { beginAtZero: true, grid: { color: chartGridColor }, ticks: { color: chartTextColor, callback: value => peso(value) } }, x: { ticks: { color: chartTextColor }, grid: { color: chartGridColor } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)}` } } } }
     });
 
     @if (isset($byBarangay))
         const barangayProjectCounts = @json($barangayProjectCounts);
         new Chart(document.getElementById('barangayChart'), {
             type: 'doughnut',
-            data: { labels: @json($barangayLabels), datasets: [{ data: @json($barangayValues), backgroundColor: ['#162347', '#c9a84c', '#10b981', '#3b82f6', '#8b5cf6', '#f97316', '#ec4899', '#14b8a6', '#64748b', '#eab308'], hoverOffset: 20, borderWidth: 2, borderColor: '#ffffff' }] },
-            options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, plugins: { legend: { position: 'bottom', labels: { generateLabels: chart => chart.data.labels.map((label, index) => ({ text: `${label} — ${barangayProjectCounts[index] || 0} project(s)`, fillStyle: chart.data.datasets[0].backgroundColor[index], strokeStyle: chart.data.datasets[0].backgroundColor[index], lineWidth: 0, index })) } }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)} · ${barangayProjectCounts[context.dataIndex] || 0} project(s)` } } } }
+            data: { labels: @json($barangayLabels), datasets: [{ data: @json($barangayValues), backgroundColor: darkMode ? ['#60a5fa', '#fbbf24', '#34d399', '#93c5fd', '#c4b5fd', '#fb923c', '#f472b6', '#2dd4bf', '#94a3b8', '#fcd34d'] : ['#162347', '#c9a84c', '#10b981', '#3b82f6', '#8b5cf6', '#f97316', '#ec4899', '#14b8a6', '#64748b', '#eab308'], hoverOffset: 20, borderWidth: 2, borderColor: darkMode ? '#1e293b' : '#ffffff' }] },
+            options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, plugins: { legend: { position: 'bottom', labels: { color: chartTextColor, generateLabels: chart => { const labels = Chart.defaults.plugins.legend.labels.generateLabels(chart); return labels.map((item, index) => ({ ...item, text: `${chart.data.labels[index]} — ${barangayProjectCounts[index] || 0} project(s)` })); } } }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)} · ${barangayProjectCounts[context.dataIndex] || 0} project(s)` } } } }
         });
     @endif
 });

@@ -134,7 +134,7 @@
                                 </div>
                                 <p class="mt-4 whitespace-pre-wrap break-words text-sm leading-6 text-slate-600" style="overflow-wrap:anywhere;">${props.description || 'No description available.'}</p>
                             </div>
-                            <button type="button" class="show-all-projects-btn mt-5 inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View all projects</button>
+                            <button type="button" class="show-all-projects-btn mt-5 inline-flex w-full items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View all projects</button>
                         </div>
                     </div>
                 `;

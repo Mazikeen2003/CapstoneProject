@@ -10,15 +10,32 @@
 <!-- Mobile backdrop overlay -->
 <div id="sidebarBackdrop" class="fixed inset-0 bg-black bg-opacity-50 z-[9998] hidden xl:hidden" style="display: none;"></div>
 
-<aside id="sidebar" class="fixed left-0 top-0 h-screen w-72 sm:w-72 xl:w-80 shrink-0 text-white transform -translate-x-full transition-transform duration-300 overflow-y-auto xl:sticky xl:top-0 xl:self-start xl:translate-x-0 xl:flex xl:flex-col xl:h-screen z-[9999]" style="background: linear-gradient(180deg, #0B1220 0%, #070C16 100%); border-right: 1px solid rgba(148, 163, 184, 0.12); box-shadow: 18px 0 45px rgba(2, 6, 23, 0.22);">
+<script>
+    try {
+        if (localStorage.getItem('projectTrackerSidebarCollapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-collapsed');
+        }
+    } catch (error) {}
+</script>
+
+<aside id="sidebar" class="fixed left-0 top-0 h-screen w-72 sm:w-72 xl:w-80 shrink-0 overflow-x-hidden overflow-y-auto text-white transform -translate-x-full transition-transform duration-300 xl:sticky xl:top-0 xl:self-start xl:translate-x-0 xl:flex xl:flex-col xl:h-screen z-[9999]" style="background: linear-gradient(180deg, #0B1220 0%, #070C16 100%); border-right: 1px solid rgba(148, 163, 184, 0.12); box-shadow: 18px 0 45px rgba(2, 6, 23, 0.22);">
     <div class="flex h-full flex-col justify-between min-h-screen xl:min-h-0">
-        <div class="space-y-6 p-4 sm:p-6">
+        <div class="sidebar-content space-y-6 p-4 sm:p-6">
             <div class="space-y-4 text-center">
+                <div class="hidden xl:flex justify-end">
+                    <button id="sidebarCollapseBtn" type="button" class="sidebar-collapse-toggle inline-flex h-8 w-12 items-center rounded-full border border-white/10 bg-white/5 p-1 text-slate-200 transition hover:bg-white/10" aria-label="Collapse sidebar" aria-pressed="false" title="Collapse sidebar">
+                        <span class="sidebar-toggle-thumb inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-700 shadow-sm">
+                            <svg id="sidebarCollapseIcon" xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </span>
+                    </button>
+                </div>
                 <div class="flex flex-col items-center justify-center gap-4 py-2">
                     <div class="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1.4rem] border border-white/10 bg-[#141F33] shadow-[0_12px_30px_rgba(0,0,0,0.3)] ring-1 ring-[#F4C95D]/10">
-                        <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-14 w-auto object-contain" />
+                        <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-14 w-auto object-contain" width="56" height="56" decoding="sync" fetchpriority="high" />
                     </div>
-                    <div>
+                    <div class="sidebar-brand-name">
                         <div class="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-300">Project Tracker System</div>
                     </div>
                 </div>
@@ -176,9 +193,9 @@
         <!-- Logout Button at Bottom (Only for authenticated users, not public) -->
         @if($role !== 'public')
         <div class="border-t border-slate-800 p-4 sm:p-5" style="border-color: #162347;">
-            <div class="flex items-center gap-2 sm:gap-3 mb-4">
+            <div class="sidebar-user-summary mb-4 flex items-center gap-2 sm:gap-3">
                 <div class="flex h-10 w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;">{{ strtoupper(substr($userName, 0, 2)) }}</div>
-                <div class="min-w-0">
+                <div class="sidebar-user-meta min-w-0">
                     <div class="text-sm font-semibold text-white truncate">{{ $userName }}</div>
                     <div class="text-[11px] text-slate-300 truncate">{{ $userEmail }}</div>
                 </div>
@@ -214,11 +231,92 @@
         background-color: #1D2B45 !important;
     }
 
+    .sidebar-toggle-thumb {
+        transform: translateX(1rem);
+        transition: transform 200ms ease, background-color 200ms ease;
+    }
+
+    .sidebar-brand-name {
+        max-height: 2rem;
+        overflow: hidden;
+        opacity: 1;
+        transform: translateY(0);
+        transition: max-height 200ms ease, opacity 160ms ease, transform 200ms ease;
+        white-space: nowrap;
+    }
+
+    .sidebar-user-meta {
+        max-width: 12rem;
+        max-height: 2.5rem;
+        overflow: hidden;
+        opacity: 1;
+        transform: translateY(0);
+        transition: max-width 200ms ease, max-height 200ms ease, opacity 160ms ease, transform 200ms ease;
+        white-space: nowrap;
+    }
+
+    .sidebar-collapse-toggle.is-collapsed .sidebar-toggle-thumb {
+        transform: translateX(0);
+        background-color: #1D2B45;
+    }
+
     #sidebar nav a:hover > span,
     #sidebar nav a.bg-slate-800 > span {
         transform: translateY(-1px);
         border-color: rgba(244, 201, 93, 0.52);
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 8px 20px rgba(0, 0, 0, 0.28), 0 0 0 3px rgba(201, 168, 76, 0.06);
+    }
+
+    @media (min-width: 1280px) {
+        #sidebar {
+            transition: none;
+        }
+
+        #sidebar.sidebar-collapse-ready {
+            transition: width 300ms ease, transform 300ms ease;
+        }
+
+        html.sidebar-collapsed #sidebar {
+            width: 6.5rem !important;
+        }
+
+        html.sidebar-collapsed #sidebar .sidebar-content {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        html.sidebar-collapsed #sidebar .sidebar-brand-name {
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-0.25rem);
+        }
+
+        html.sidebar-collapsed #sidebar .sidebar-user-meta {
+            max-width: 0;
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-0.25rem);
+        }
+
+        html.sidebar-collapsed #sidebar .sidebar-user-summary {
+            justify-content: center;
+            gap: 0;
+        }
+
+        html.sidebar-collapsed #sidebar nav a {
+            justify-content: center;
+            gap: 0;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            font-size: 0;
+        }
+
+        html.sidebar-collapsed #sidebar #logoutTriggerBtn {
+            width: auto;
+            margin: 0 auto;
+            gap: 0;
+            font-size: 0;
+        }
     }
 </style>
 
@@ -248,6 +346,35 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('sidebar');
+        const collapseBtn = document.getElementById('sidebarCollapseBtn');
+        const collapseIcon = document.getElementById('sidebarCollapseIcon');
+        const sidebarStateKey = 'projectTrackerSidebarCollapsed';
+
+        function setSidebarCollapsed(collapsed) {
+            document.documentElement.classList.toggle('sidebar-collapsed', collapsed);
+            sidebar.classList.toggle('sidebar-collapsed', collapsed);
+            collapseBtn.classList.toggle('is-collapsed', collapsed);
+            collapseBtn.setAttribute('aria-pressed', String(collapsed));
+            collapseBtn.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+            collapseBtn.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+            collapseIcon.innerHTML = collapsed
+                ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />'
+                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />';
+        }
+
+        if (sidebar && collapseBtn && collapseIcon) {
+            setSidebarCollapsed(localStorage.getItem(sidebarStateKey) === 'true');
+            requestAnimationFrame(function() {
+                sidebar.classList.add('sidebar-collapse-ready');
+            });
+            collapseBtn.addEventListener('click', function() {
+                const collapsed = !sidebar.classList.contains('sidebar-collapsed');
+                setSidebarCollapsed(collapsed);
+                localStorage.setItem(sidebarStateKey, String(collapsed));
+            });
+        }
+
         const triggerBtn = document.getElementById('logoutTriggerBtn');
         const cancelBtn = document.getElementById('logoutCancelBtn');
         const confirmBtn = document.getElementById('logoutConfirmBtn');
@@ -298,4 +425,3 @@
     });
 </script>
 @endif
-
