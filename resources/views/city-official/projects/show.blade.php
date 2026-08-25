@@ -7,41 +7,43 @@
         <p class="text-sm text-slate-500 mt-1">Project Code: {{ $project->project_code }}</p>
     </div>
 
-    <div class="grid gap-4 md:grid-cols-2">
-        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="project-details-grid grid gap-4 md:grid-cols-2">
+        <div class="project-detail-field rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div class="grid gap-4">
-                <div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
                     <p class="text-xs text-slate-500">Status</p>
                     <p class="text-slate-900 font-semibold">{{ $project->current_status }}</p>
                 </div>
-                <div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
                     <p class="text-xs text-slate-500">Barangay</p>
                     <p class="text-slate-900 font-semibold">{{ $project->barangay?->barangay_name ?? 'Citywide' }}</p>
                 </div>
-                <div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
                     <p class="text-xs text-slate-500">Approved Budget</p>
                     <p class="text-slate-900 font-semibold">₱{{ number_format($project->approved_budget ?? 0, 2) }}</p>
                 </div>
-                <div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
                     <p class="text-xs text-slate-500">Actual Budget</p>
                     <p class="text-slate-900 font-semibold">₱{{ number_format($project->actual_budget ?? 0, 2) }}</p>
                 </div>
-                <div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
                     <p class="text-xs text-slate-500">Start Date</p>
                     <p class="text-slate-900 font-semibold">{{ $project->start_date?->format('M d, Y') ?? '—' }}</p>
                 </div>
-                <div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
                     <p class="text-xs text-slate-500">Target Completion</p>
                     <p class="text-slate-900 font-semibold">{{ $project->target_end_date?->format('M d, Y') ?? '—' }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <p class="text-xs text-slate-500">Location</p>
-            <p class="text-slate-900 font-semibold">{{ $project->location_description ?? '—' }}</p>
+        <div class="project-detail-field rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
+                <p class="text-xs text-slate-500">Location</p>
+                <p class="text-slate-900 font-semibold">{{ $project->location_description ?? '—' }}</p>
+            </div>
 
-            <div class="mt-6">
+            <div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
                 <p class="text-xs text-slate-500">Remarks</p>
                 <p class="text-slate-900 font-semibold">{{ $project->remarks ?? '—' }}</p>
             </div>

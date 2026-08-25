@@ -14,6 +14,7 @@
         <!-- Leaflet CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
         
+        @include('components.theme-init')
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased" style="background-color: #0f1e3d; color: white;">

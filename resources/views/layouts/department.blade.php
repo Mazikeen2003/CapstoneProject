@@ -10,14 +10,18 @@
 
         <link rel="preconnect" href="https://fonts.bunny.net" />
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="preload" as="image" href="{{ asset('images/CPDC LOGO.png') }}" />
+        @include('components.theme-init')
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased" style="background-color: #F7F9FB; color: #0F172A;">
-        <div class="flex flex-col xl:flex-row min-h-screen">
+        <div class="flex min-h-screen flex-col xl:h-screen xl:flex-row">
             @include('components.sidebar')
-            <div class="flex-1 flex flex-col xl:overflow-hidden">
-                @include('components.navbar')
-                <main class="flex-1 p-6 overflow-y-auto">
+            <div class="flex min-h-0 flex-1 flex-col xl:overflow-hidden">
+                <div class="sticky top-0 z-40">
+                    @include('components.navbar')
+                </div>
+                <main class="min-h-0 flex-1 overflow-y-auto p-6">
                     @if (session('error'))
                         <div class="mb-4 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
                             {{ session('error') }}

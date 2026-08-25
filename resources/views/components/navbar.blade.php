@@ -47,6 +47,11 @@
         </div>
 
         <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0 overflow-visible">
+            <button id="darkModeBtn" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-2xl p-2 transition hover:opacity-80 sm:h-11 sm:w-11 sm:p-2.5" style="background-color: #F0F4F8; color: #0F172A;" title="Enable dark mode" aria-label="Enable dark mode" aria-pressed="false">
+                <svg id="darkModeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364-.707-.707M6.343 6.343l-.707-.707m12.728 0-.707.707M6.343 17.657l-.707.707M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
             <div class="relative overflow-visible">
                 <button id="notificationBtn" class="rounded-2xl p-2 sm:p-2.5 transition hover:opacity-80 relative" style="background-color: #F0F4F8; color: #0F172A;" title="Notifications" aria-label="Open notifications">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -76,7 +81,7 @@
                 </div>
             </div>
             @if(!$isPublicRoute)
-                <div class="rounded-full px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold truncate" style="color: #0F172A;">
+                <div class="navbar-user-name rounded-full px-2 py-2 text-xs font-semibold truncate sm:px-4 sm:text-sm" style="color: #0F172A;">
                     <span class="hidden sm:inline">{{ $userName }}</span>
                     <span class="sm:hidden">User</span>
                 </div>
@@ -84,16 +89,42 @@
         </div>
         
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            function initializeNavbarControls() {
                 const notificationBtn = document.getElementById('notificationBtn');
                 const notificationPanel = document.getElementById('notificationPanel');
                 const notificationBadge = document.getElementById('notificationBadge');
                 const notificationList = document.getElementById('notificationList');
                 const clearNotificationsBtn = document.getElementById('clearNotificationsBtn');
+                const darkModeBtn = document.getElementById('darkModeBtn');
+                const darkModeIcon = document.getElementById('darkModeIcon');
                 const storageKey = 'projectTrackerNotifications:' + (window.__currentRole || 'public');
                 const cursorKey = 'projectTrackerNotificationCursor:' + (window.__currentRole || 'public');
                 const clearedAtKey = 'projectTrackerNotificationsClearedAt:' + (window.__currentRole || 'public');
                 const pendingCookieName = 'project_tracker_pending_notification:' + (window.__currentRole || 'public');
+                const darkModeKey = 'projectTrackerDarkMode';
+
+                function setDarkMode(enabled) {
+                    document.documentElement.classList.toggle('dark-mode', enabled);
+                    darkModeBtn.setAttribute('aria-pressed', String(enabled));
+                    darkModeBtn.setAttribute('aria-label', enabled ? 'Enable light mode' : 'Enable dark mode');
+                    darkModeBtn.title = enabled ? 'Enable light mode' : 'Enable dark mode';
+                    darkModeIcon.innerHTML = enabled
+                        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364-.707-.707M6.343 6.343l-.707-.707m12.728 0-.707.707M6.343 17.657l-.707.707M15 12a3 3 0 11-6 0 3 3 0 016 0z" />'
+                        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />';
+                }
+
+                setDarkMode(localStorage.getItem(darkModeKey) === 'true');
+                darkModeBtn.addEventListener('click', function() {
+                    const enabled = !document.documentElement.classList.contains('dark-mode');
+                    setDarkMode(enabled);
+                    localStorage.setItem(darkModeKey, String(enabled));
+                    if (window.location.pathname.includes('/analytics')) {
+                        const analyticsScrollContainer = document.querySelector('main');
+                        const scrollPosition = analyticsScrollContainer?.scrollTop || window.scrollY;
+                        sessionStorage.setItem('analyticsScrollPosition', String(scrollPosition));
+                    }
+                    window.dispatchEvent(new CustomEvent('theme:changed'));
+                });
 
                 function getStoredNotifications() {
                     try {
@@ -259,7 +290,7 @@
                 }
 
                 function renderNotifications() {
-                    const notifications = getStoredNotifications();
+                    const notifications = getStoredNotifications().filter(notification => !notification.read);
                     if (notifications.length === 0) {
                         notificationList.innerHTML = '<div class="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">No new notifications</div>';
                         return;
@@ -270,29 +301,26 @@
                         const displayTime = formatNotificationTime(timestampValue);
                         const exactTime = formatExactNotificationTime(timestampValue);
                         const isAuditActivity = notif.type === 'audit_activity';
-                        const isRead = Boolean(notif.read);
                         const accentClass = isAuditActivity ? 'border-l-emerald-500' : 'border-l-blue-500';
                         const iconClass = isAuditActivity ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600';
                         const notificationTag = notif.url ? 'a' : 'div';
                         const notificationHref = notif.url ? ` href="${notif.url}"` : '';
                         const clickableClass = notif.url ? 'cursor-pointer hover:bg-slate-50' : '';
-                        const readClass = isRead ? 'border-l-slate-300 bg-slate-100 opacity-70 grayscale' : '';
-                        const readIconClass = isRead ? 'bg-slate-200 text-slate-500' : iconClass;
 
                         return `
-                        <${notificationTag}${notificationHref} data-notification-id="${notif.id}" class="block rounded-xl border border-slate-200 border-l-4 ${isRead ? 'border-l-slate-300' : accentClass} ${isRead ? 'bg-slate-100 opacity-70 grayscale' : 'bg-white'} p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md ${clickableClass}">
+                        <${notificationTag}${notificationHref} data-notification-id="${notif.id}" class="block rounded-xl border border-slate-200 border-l-4 ${accentClass} bg-white p-4 shadow-sm transition hover:border-slate-300 hover:bg-slate-100 ${clickableClass}">
                             <div class="flex items-start gap-3">
-                                <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${readIconClass}">
+                                <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${iconClass}">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isAuditActivity ? 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 12c0 5.591 3.824 10.291 9 11.623C17.176 22.291 21 17.591 21 12c0-1.042-.133-2.052-.382-3.016z' : 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'}" />
                                     </svg>
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center justify-between gap-2">
-                                        <p class="text-sm font-semibold ${isRead ? 'text-slate-600' : 'text-slate-900'}">${notif.title}</p>
+                                        <p class="text-sm font-semibold text-slate-900">${notif.title}</p>
                                         <span title="${exactTime}" class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">${displayTime}</span>
                                     </div>
-                                    <p class="mt-1 text-sm leading-5 ${isRead ? 'text-slate-500' : 'text-slate-600'}">${notif.message}</p>
+                                    <p class="mt-1 text-sm leading-5 text-slate-600">${notif.message}</p>
                                 </div>
                             </div>
                         </${notificationTag}>
@@ -356,7 +384,13 @@
                 ensurePendingNotificationVisibility();
                 pollNotifications();
                 window.setInterval(pollNotifications, 10000);
-            });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initializeNavbarControls);
+            } else {
+                initializeNavbarControls();
+            }
         </script>
     </div>
 </header>
@@ -384,7 +418,8 @@
             // Close sidebar when clicking on a navigation link
             const navLinks = sidebar.querySelectorAll('a');
             navLinks.forEach(link => {
-                link.addEventListener('click', function() {
+                link.addEventListener('click', function(event) {
+                    event.stopPropagation();
                     if (window.innerWidth < 1280) { // xl breakpoint
                         sidebar.classList.add('-translate-x-full');
                         backdrop.style.display = 'none';

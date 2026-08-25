@@ -23,7 +23,7 @@
             ] as [$label, $value, $color])
                 <div class="rounded-3xl border border-slate-200 bg-slate-50 p-4">
                     <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{{ $label }}</p>
-                    <p class="mt-2 text-2xl font-bold" style="color: {{ $color }};">{{ $value }}</p>
+                    <p class="mt-2 text-2xl font-bold {{ $color === '#c9a84c' ? 'portal-usage-metric-gold' : 'portal-usage-metric-navy' }}">{{ $value }}</p>
                 </div>
             @endforeach
         </div>
@@ -49,6 +49,9 @@
         const analyticsSeries = @json(collect($dailyVisits)->pluck('analytics'));
         const pageBreakdownLabels = ['Map', 'Analytics'];
         const pageBreakdownValues = [@json($pageBreakdown['map'] ?? 0), @json($pageBreakdown['analytics'] ?? 0)];
+        const darkMode = document.documentElement.classList.contains('dark-mode');
+        const chartTextColor = darkMode ? '#e2e8f0' : '#334155';
+        const chartGridColor = darkMode ? 'rgba(148, 163, 184, 0.22)' : 'rgba(148, 163, 184, 0.18)';
 
         const commonOptions = {
             responsive: true,
@@ -65,28 +68,28 @@
                     {
                         label: 'Map Visits',
                         data: mapSeries,
-                        borderColor: '#0f1e3d',
-                        backgroundColor: 'rgba(15, 30, 61, 0.12)',
+                        borderColor: darkMode ? '#60a5fa' : '#0f1e3d',
+                        backgroundColor: darkMode ? 'rgba(96, 165, 250, 0.16)' : 'rgba(15, 30, 61, 0.12)',
                         fill: false,
                         tension: 0.35,
-                        pointBackgroundColor: '#0f1e3d',
-                        pointBorderColor: '#0f1e3d'
+                        pointBackgroundColor: darkMode ? '#60a5fa' : '#0f1e3d',
+                        pointBorderColor: darkMode ? '#60a5fa' : '#0f1e3d'
                     },
                     {
                         label: 'Analytics Visits',
                         data: analyticsSeries,
-                        borderColor: '#c9a84c',
-                        backgroundColor: 'rgba(201, 168, 76, 0.18)',
+                        borderColor: darkMode ? '#fbbf24' : '#c9a84c',
+                        backgroundColor: darkMode ? 'rgba(251, 191, 36, 0.18)' : 'rgba(201, 168, 76, 0.18)',
                         fill: false,
                         tension: 0.35,
-                        pointBackgroundColor: '#c9a84c',
-                        pointBorderColor: '#c9a84c'
+                        pointBackgroundColor: darkMode ? '#fbbf24' : '#c9a84c',
+                        pointBorderColor: darkMode ? '#fbbf24' : '#c9a84c'
                     }
                 ]
             },
             options: {
                 ...commonOptions,
-                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                scales: { y: { beginAtZero: true, grid: { color: chartGridColor }, ticks: { precision: 0, color: chartTextColor } }, x: { ticks: { color: chartTextColor }, grid: { color: chartGridColor } } }
             }
         });
 
@@ -96,14 +99,14 @@
                 labels: pageBreakdownLabels,
                 datasets: [{
                     data: pageBreakdownValues,
-                    backgroundColor: ['#0f1e3d', '#c9a84c'],
-                    borderColor: ['#ffffff', '#ffffff'],
+                    backgroundColor: darkMode ? ['#60a5fa', '#fbbf24'] : ['#0f1e3d', '#c9a84c'],
+                    borderColor: darkMode ? ['#1e293b', '#1e293b'] : ['#ffffff', '#ffffff'],
                     borderWidth: 2
                 }]
             },
             options: {
                 ...commonOptions,
-                plugins: { legend: { position: 'bottom' } }
+                plugins: { legend: { position: 'bottom', labels: { color: chartTextColor } } }
             }
         });
     });

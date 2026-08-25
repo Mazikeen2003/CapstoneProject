@@ -23,7 +23,7 @@
         @else
             <div class="space-y-4 md:hidden">
                 @foreach ($projects as $project)
-                    <div class="rounded-3xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
+                    <div class="department-project-list-card rounded-3xl border border-slate-300 bg-white p-4 shadow-sm">
                         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                             <div>
                                 <p class="text-base font-semibold text-slate-900">{{ $project->project_name }}</p>
@@ -47,20 +47,20 @@
                     </div>
                 @endforeach
             </div>
-            <div class="hidden md:block overflow-x-auto rounded-3xl border border-slate-200 shadow-sm">
-                <table class="w-full min-w-[720px] text-sm border-collapse">
-                    <thead class="bg-slate-50">
+            <div class="hidden md:block overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-200">
+                <table class="w-full min-w-[720px] border-collapse text-sm">
+                    <thead class="admin-card-header bg-slate-100">
                         <tr>
-                            <th class="text-left py-3 px-4 font-semibold text-slate-900">Code</th>
-                            <th class="text-left py-3 px-4 font-semibold text-slate-900">Project Name</th>
-                            <th class="text-left py-3 px-4 font-semibold text-slate-900">Status</th>
-                            <th class="text-left py-3 px-4 font-semibold text-slate-900">Budget</th>
-                            <th class="text-left py-3 px-4 font-semibold text-slate-900">Actions</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Code</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Project Name</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Budget</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 bg-white">
                         @foreach ($projects as $project)
-                            <tr>
+                            <tr class="department-project-table-row">
                                 <td class="py-3 px-4 text-slate-800">{{ $project->project_code }}</td>
                                 <td class="py-3 px-4 text-slate-800">{{ $project->project_name }}</td>
                                 <td class="py-3 px-4 text-slate-800">{{ $project->current_status }}</td>

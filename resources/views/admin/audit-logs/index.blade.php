@@ -109,7 +109,7 @@
             </div>
             <div class="hidden md:block overflow-x-auto mt-4">
                 <table class="w-full text-sm">
-                    <thead>
+                    <thead class="admin-card-header">
                         <tr style="border-bottom: 1px solid #B2BEB5;">
                             <th class="text-left py-3 px-4 font-semibold text-black">
                                 <a href="{{ route('admin.audit-logs.index', array_merge(request()->except('page'), ['sort' => request('sort') === 'created_at_asc' ? 'created_at_desc' : 'created_at_asc'])) }}" class="inline-flex items-center gap-2">

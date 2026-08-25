@@ -175,7 +175,7 @@
         @else
             <div class="mt-6 overflow-x-auto rounded-3xl border border-slate-200">
                 <table class="min-w-full divide-y divide-slate-200 text-sm">
-                    <thead class="bg-slate-50 text-left text-slate-500">
+                    <thead class="admin-card-header bg-slate-50 text-left text-slate-500">
                         <tr>
                             <th class="px-4 py-3">Generated</th>
                             <th class="px-4 py-3">Type</th>

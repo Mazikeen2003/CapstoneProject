@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Public Projects Map | Cabuyao</title>
     @include('layouts.favicon')
+    @include('components.theme-init')
 
     {{-- Fonts --}}
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Public+Sans:wght@400;600;700&display=swap">
@@ -51,14 +52,31 @@
            doesn't expand to cover most of the viewport. Keep small-screen behavior unchanged. */
         @media (min-width: 1024px) {
             #projectSidebar {
-                width: 420px;
-                flex: 0 0 420px;
+                width: 380px;
+                flex: 0 0 380px;
             }
 
             /* Ensure project cards fill the sidebar width but don't force wider layout */
             #projectSidebar .department-project-card {
                 width: 100%;
                 max-width: 100%;
+            }
+        }
+
+        @media (min-width: 1280px) {
+            #projectSidebar {
+                width: 480px;
+                flex-basis: 480px;
+            }
+
+            #projectSidebar .public-map-project-card .text-xs {
+                font-size: 0.8rem;
+                line-height: 1.25rem;
+            }
+
+            #projectSidebar .public-map-project-card .text-sm {
+                font-size: 0.9rem;
+                line-height: 1.4rem;
             }
         }
     </style>
@@ -84,10 +102,10 @@
                 <a href="{{ route('public.analytics') }}" class="text-slate-500 hover:text-emerald-700 transition-colors py-2 font-semibold">Analytics</a>
             </div>
 
-            <a href="{{ route('login') }}"
-                class="bg-slate-900 text-white px-5 py-2.5 rounded-md font-semibold text-sm hover:opacity-90 transition-all duration-200 shrink-0">
-                Login
-            </a>
+            <div class="flex items-center gap-2">
+                @include('components.public-theme-toggle')
+                <a href="{{ route('login') }}" class="public-login-button bg-slate-900 text-white px-5 py-2.5 rounded-md font-semibold text-sm hover:opacity-90 transition-all duration-200 shrink-0">Login</a>
+            </div>
         </nav>
         <div class="md:hidden border-t border-slate-200 bg-white">
             <div class="flex flex-wrap items-center justify-center gap-3 px-4 py-3 text-xs uppercase tracking-widest text-slate-600">
@@ -253,7 +271,7 @@
 
                 if (isSingle) {
                     return `
-                        <div class="department-project-card cursor-pointer overflow-hidden rounded-[24px] border border-slate-200 bg-white text-slate-800 shadow-sm" data-index="${index}">
+                        <div class="public-map-project-card department-project-card cursor-pointer overflow-hidden rounded-[24px] border-2 border-slate-300 bg-white text-slate-800 shadow-md" data-index="${index}">
                             <div class="p-5 sm:p-6">
                                 <div class="mb-4 flex items-start justify-between gap-3">
                                     <div>
@@ -287,14 +305,14 @@
                                     </div>
                                     <p class="mt-4 whitespace-pre-wrap break-words text-sm leading-6 text-slate-600" style="overflow-wrap:anywhere;">${description}</p>
                                 </div>
-                                <button type="button" data-barangay="${props.barangay || ''}" class="show-all-projects-btn mt-5 inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View all projects</button>
+                                <button type="button" data-barangay="${props.barangay || ''}" class="show-all-projects-btn mt-5 inline-flex w-full items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View all projects</button>
                             </div>
                         </div>
                     `;
                 }
 
                 return `
-                    <div class="department-project-card cursor-pointer overflow-hidden rounded-3xl bg-white shadow-sm transition hover:shadow-md ${selectedProjectIndex === index ? selectedClass : 'border border-transparent'}" data-index="${index}">
+                    <div class="public-map-project-card department-project-card cursor-pointer overflow-hidden rounded-3xl border-2 border-slate-300 bg-white shadow-md transition hover:shadow-md" data-index="${index}">
                         <div class="overflow-hidden p-2">${imageHtml}</div>
                         <div class="p-4">
                             <h3 class="text-base font-semibold text-slate-900">${props.name}</h3>

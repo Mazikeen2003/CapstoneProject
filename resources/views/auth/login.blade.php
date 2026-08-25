@@ -1,15 +1,15 @@
 <x-guest-layout>
-    <div class="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-emerald-50/50 to-slate-100 text-slate-900">
+    <div class="login-page min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-emerald-50/50 to-slate-100 text-slate-900">
 
         <!-- Main Content -->
         <div class="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
             <div class="w-full max-w-7xl">
                 
                 <!-- Login Card -->
-                <div class="mx-auto w-full max-w-md rounded-[1.75rem] border border-slate-200/70 bg-white shadow-[0_25px_90px_rgba(15,23,42,0.12)] backdrop-blur-xl px-6 py-8 sm:px-10">
+                <div class="login-card mx-auto w-full max-w-md rounded-[1.75rem] border border-slate-200/70 bg-white shadow-[0_25px_90px_rgba(15,23,42,0.12)] backdrop-blur-xl px-6 py-8 sm:px-10">
                     
                     <div class="mx-auto flex w-full max-w-sm flex-col items-center gap-3 text-center">
-                        <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-emerald-700">
+                        <span class="login-badge inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-emerald-700">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                             </svg>
@@ -37,7 +37,7 @@
                                 <label class="block text-[0.65rem] font-semibold tracking-[0.22em] text-slate-500 uppercase">
                                     Email
                                 </label>
-                                <div class="rounded-2xl bg-slate-100 px-4 py-3 shadow-inner">
+                                <div class="login-field rounded-2xl bg-slate-100 px-4 py-3 shadow-inner">
                                     <div class="flex items-center gap-3">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M10 4a4 4 0 100 8 4 4 0 000-8z" />
@@ -63,7 +63,7 @@
                                     @endif
                                 </div>
 
-                                <div class="rounded-2xl bg-slate-100 px-4 py-3 shadow-inner">
+                                <div class="login-field rounded-2xl bg-slate-100 px-4 py-3 shadow-inner">
                                     <div class="flex items-center gap-3">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M5 8V6a5 5 0 1110 0v2h1a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2v-6a2 2 0 012-2h1zm2-2a3 3 0 116 0v2H7V6z" clip-rule="evenodd" />
@@ -72,7 +72,7 @@
                                             placeholder="•••••••••••••"
                                             class="w-full bg-transparent text-sm border-none outline-none focus:ring-0"
                                             aria-label="Password field" />
-                                        <button type="button" id="togglePassword" class="text-slate-400 hover:text-slate-600 transition text-sm font-semibold" aria-label="Toggle password visibility">
+                                        <button type="button" id="togglePassword" class="login-password-toggle text-slate-400 hover:text-slate-600 transition text-sm font-semibold" aria-label="Toggle password visibility">
                                             Show
                                         </button>
                                     </div>
@@ -96,7 +96,7 @@
 
                             <!-- Button -->
                             <button type="submit"
-                                class="w-full rounded-full bg-gradient-to-r from-slate-950 to-slate-800 px-5 py-3 text-sm font-semibold text-white shadow-lg">
+                                class="login-submit-button w-full rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition-colors">
                                 Sign In
                             </button>
                         </form>
@@ -110,7 +110,7 @@
         </div>
 
         <!-- ✅ FULL WIDTH FOOTER -->
-        <footer class="w-full border-t border-slate-200 bg-slate-100 px-6 py-5 text-xs text-slate-500">
+        <footer class="login-footer w-full border-t border-slate-200 bg-slate-100 px-6 py-5 text-xs text-slate-500">
             <div class="mx-auto w-full max-w-7xl grid items-center gap-3 md:grid-cols-[auto_1fr_auto]">
                 
                 <div class="text-slate-700 font-semibold">

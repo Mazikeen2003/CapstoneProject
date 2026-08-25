@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-<div class="space-y-2">
+<div class="department-create-project space-y-2">
     <div>
         <h1 class="text-xl font-bold text-white" style="color: black;">Create New Project</h1>
     </div>
@@ -121,7 +121,7 @@
                 </div>
             </div>
             <div class="mt-3 flex justify-end space-x-3">
-                <a href="{{ route('department.projects.index') }}" class="px-4 py-2 rounded" style="background-color: #c1d1d7;">Cancel</a>
+                <a href="{{ route('department.projects.index') }}" class="department-create-cancel px-4 py-2 rounded" style="background-color: #c1d1d7;">Cancel</a>
                 <button type="submit" id="createProjectButton" class="px-4 py-2 rounded inline-flex items-center justify-center gap-2" style="background-color: #162347; color: #f2f3f7;">
                     <span id="createProjectSpinner" class="hidden inline-flex items-center gap-2">
                         <svg class="h-4 w-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

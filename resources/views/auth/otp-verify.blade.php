@@ -1,8 +1,8 @@
 <x-guest-layout>
-    <div class="min-h-screen flex flex-col bg-slate-50 text-slate-900">
+    <div class="login-page min-h-screen flex flex-col bg-slate-50 text-slate-900">
         <div class="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
             <div class="w-full max-w-7xl">
-                <div class="mx-auto w-full max-w-md rounded-[1.75rem] border border-slate-200/70 bg-white shadow-[0_25px_90px_rgba(15,23,42,0.12)] backdrop-blur-xl px-6 py-8 sm:px-10">
+                <div class="login-card mx-auto w-full max-w-md rounded-[1.75rem] border border-slate-200/70 bg-white shadow-[0_25px_90px_rgba(15,23,42,0.12)] backdrop-blur-xl px-6 py-8 sm:px-10">
                     <div class="mx-auto flex w-full max-w-sm flex-col items-center gap-3 text-center">
                         <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-emerald-700">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
@@ -11,7 +11,7 @@
                             Secure Verification
                         </span>
 
-                        <h1 class="text-3xl font-semibold tracking-tight text-slate-950">
+                        <h1 class="login-verification-heading text-3xl font-semibold tracking-tight text-slate-950">
                             Verify Your Login
                         </h1>
 
@@ -50,7 +50,7 @@
                             </div>
 
                             <button type="submit"
-                                class="w-full rounded-full bg-gradient-to-r from-slate-950 to-slate-800 px-5 py-3 text-sm font-semibold text-white shadow-lg">
+                                class="login-submit-button w-full rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition-colors">
                                 Verify & Log In
                             </button>
                         </form>

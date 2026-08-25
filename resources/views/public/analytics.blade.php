@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analytics | City Transparency Portal</title>
     @include('layouts.favicon')
+    @include('components.theme-init')
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Public+Sans:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap">
@@ -42,10 +43,10 @@
                 <a href="{{ route('public.analytics') }}" class="text-emerald-700 font-bold border-b-2 border-emerald-600 py-2 transition-all">Analytics</a>
             </div>
 
-            <a href="{{ route('login') }}"
-                class="bg-slate-900 text-white px-5 py-2.5 rounded-md font-semibold text-sm hover:opacity-90 transition-all duration-200 shrink-0">
-                Login
-            </a>
+            <div class="flex items-center gap-2">
+                @include('components.public-theme-toggle')
+                <a href="{{ route('login') }}" class="public-login-button bg-slate-900 text-white px-5 py-2.5 rounded-md font-semibold text-sm hover:opacity-90 transition-all duration-200 shrink-0">Login</a>
+            </div>
         </nav>
         <div class="md:hidden border-t border-slate-200 bg-white">
             <div class="flex flex-wrap items-center justify-center gap-3 px-4 py-3 text-xs uppercase tracking-widest text-slate-600">
@@ -68,7 +69,7 @@
             return $counts;
         }, []);
         $statusCounts = collect($statusOrder)->map(fn ($status) => $lifecycleStatusCounts[$status] ?? 0)->values();
-        $remainingBudget = max(($stats['total_budget'] ?? 0) - ($stats['total_spent'] ?? 0), 0);
+        $remainingBudget = max(($budgetStats['total_budget'] ?? 0) - ($budgetStats['total_spent'] ?? 0), 0);
         $barangayLabels = isset($byBarangay) ? $byBarangay->take(10)->keys()->values() : collect();
         $barangayValues = isset($byBarangay) ? $byBarangay->take(10)->map(fn ($item) => $item['budget'] ?? 0)->values() : collect();
         $barangayProjectCounts = isset($byBarangay) ? $byBarangay->take(10)->map(fn ($item) => $item['count'] ?? 0)->values() : collect();
@@ -132,18 +133,42 @@
 
         <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
             <section class="rounded-2xl bg-white border border-slate-200 shadow-sm p-6">
-                <h2 class="mb-4 text-lg font-bold text-slate-900" style="font-family:'Manrope',sans-serif;">Project Status Distribution</h2>
+                <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                    <h2 class="text-lg font-bold text-slate-900" style="font-family:'Manrope',sans-serif;">Project Status Distribution</h2>
+                    <form method="GET" class="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-3 w-full sm:w-auto">
+                        <input type="hidden" name="budget_year" value="{{ $budgetYear }}">
+                        <select aria-label="Filter project status by year" name="status_year" class="min-w-[11rem] flex-1 h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700">
+                            <option value="">All years</option>
+                            @foreach ($availableYears as $year)
+                                <option value="{{ $year }}" @selected((string) $statusYear === (string) $year)>{{ $year }}</option>
+                            @endforeach
+                        </select>
+                        <button type="submit" class="inline-flex h-10 min-w-[7rem] items-center justify-center rounded-full bg-slate-900 px-4 text-sm font-semibold text-white">Filter</button>
+                    </form>
+                </div>
                 <div class="h-80"><canvas id="statusChart"></canvas></div>
             </section>
             <section class="rounded-2xl bg-white border border-slate-200 shadow-sm p-6">
-                <h2 class="mb-4 text-lg font-bold text-slate-900" style="font-family:'Manrope',sans-serif;">Budget Comparison</h2>
+                <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                    <h2 class="text-lg font-bold text-slate-900" style="font-family:'Manrope',sans-serif;">Budget Comparison</h2>
+                    <form method="GET" class="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-3 w-full sm:w-auto">
+                        <input type="hidden" name="status_year" value="{{ $statusYear }}">
+                        <select aria-label="Filter budget comparison by year" name="budget_year" class="min-w-[11rem] flex-1 h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700">
+                            <option value="">All years</option>
+                            @foreach ($availableYears as $year)
+                                <option value="{{ $year }}" @selected((string) $budgetYear === (string) $year)>{{ $year }}</option>
+                            @endforeach
+                        </select>
+                        <button type="submit" class="inline-flex h-10 min-w-[7rem] items-center justify-center rounded-full bg-slate-900 px-4 text-sm font-semibold text-white">Filter</button>
+                    </form>
+                </div>
                 <div class="h-80"><canvas id="budgetChart"></canvas></div>
             </section>
         </div>
 
         @if (isset($byBarangay))
             <section class="rounded-2xl bg-white border border-slate-200 shadow-sm p-6">
-                <h2 class="mb-4 text-lg font-bold text-slate-900" style="font-family:'Manrope',sans-serif;">Barangay Budget Share</h2>
+                <h2 class="barangay-budget-share-heading mb-4 text-lg font-bold text-slate-900" style="font-family:'Manrope',sans-serif;">Barangay Budget Share</h2>
                 <div class="h-96"><canvas id="barangayChart"></canvas></div>
             </section>
         @endif
@@ -175,6 +200,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('theme:changed', () => window.location.reload());
+
         const analyticsScrollPosition = sessionStorage.getItem('analyticsScrollPosition');
         if (analyticsScrollPosition !== null) {
             sessionStorage.removeItem('analyticsScrollPosition');
@@ -189,7 +216,13 @@
 
         const statusLabels = @json($statusOrder);
         const statusCounts = @json($statusCounts);
-        const statusColors = @json($statusColors);
+        const darkMode = document.documentElement.classList.contains('dark-mode');
+        const chartTextColor = darkMode ? '#e2e8f0' : '#334155';
+        const chartGridColor = darkMode ? 'rgba(148, 163, 184, 0.22)' : 'rgba(148, 163, 184, 0.18)';
+        Chart.defaults.color = chartTextColor;
+        const statusColors = darkMode
+            ? ['#fcd34d', '#fbbf24', '#60a5fa', '#c4b5fd', '#38bdf8', '#34d399', '#fb7185', '#94a3b8']
+            : @json($statusColors);
         const peso = value => '₱' + Number(value || 0).toLocaleString();
         const smoothAnimation = { duration: 1300, easing: 'easeOutQuart' };
         const smoothHover = { mode: 'nearest', intersect: true, animationDuration: 420 };
@@ -197,21 +230,21 @@
         new Chart(document.getElementById('statusChart'), {
             type: 'polarArea',
             data: { labels: statusLabels, datasets: [{ data: statusCounts, backgroundColor: statusColors, hoverOffset: 18, borderWidth: 2, borderColor: '#ffffff' }] },
-            options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, scales: { r: { ticks: { precision: 0 } } }, plugins: { legend: { position: 'bottom' } } }
+            options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, scales: { r: { ticks: { precision: 0, color: chartTextColor }, grid: { color: chartGridColor } } }, plugins: { legend: { position: 'bottom', labels: { color: chartTextColor } } } }
         });
 
         new Chart(document.getElementById('budgetChart'), {
             type: 'bar',
-            data: { labels: ['Allocated', 'Spent', 'Remaining'], datasets: [{ data: @json([$stats['total_budget'], $stats['total_spent'], $remainingBudget]), backgroundColor: ['#0f172a', '#059669', '#10b981'], hoverBackgroundColor: ['#1e293b', '#047857', '#34d399'], borderRadius: 8, hoverBorderRadius: 12 }] },
-            options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, scales: { y: { beginAtZero: true, ticks: { callback: value => peso(value) } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)}` } } } }
+            data: { labels: ['Allocated', 'Spent', 'Remaining'], datasets: [{ data: @json([$budgetStats['total_budget'], $budgetStats['total_spent'], $remainingBudget]), backgroundColor: darkMode ? ['#60a5fa', '#fbbf24', '#34d399'] : ['#0f172a', '#059669', '#10b981'], hoverBackgroundColor: darkMode ? ['#93c5fd', '#fcd34d', '#6ee7b7'] : ['#1e293b', '#047857', '#34d399'], borderRadius: 8, hoverBorderRadius: 12 }] },
+            options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, scales: { y: { beginAtZero: true, grid: { color: chartGridColor }, ticks: { color: chartTextColor, callback: value => peso(value) } }, x: { ticks: { color: chartTextColor }, grid: { color: chartGridColor } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)}` } } } }
         });
 
         @if (isset($byBarangay))
             const barangayProjectCounts = @json($barangayProjectCounts);
             new Chart(document.getElementById('barangayChart'), {
                 type: 'doughnut',
-                data: { labels: @json($barangayLabels), datasets: [{ data: @json($barangayValues), backgroundColor: ['#0f172a', '#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#f97316', '#ec4899', '#14b8a6', '#64748b', '#eab308'], hoverOffset: 20, borderWidth: 2, borderColor: '#ffffff' }] },
-                options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, plugins: { legend: { position: 'bottom', labels: { generateLabels: chart => chart.data.labels.map((label, index) => ({ text: `${label} — ${barangayProjectCounts[index] || 0} project(s)`, fillStyle: chart.data.datasets[0].backgroundColor[index], strokeStyle: chart.data.datasets[0].backgroundColor[index], lineWidth: 0, index })) } }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)} · ${barangayProjectCounts[context.dataIndex] || 0} project(s)` } } } }
+                data: { labels: @json($barangayLabels), datasets: [{ data: @json($barangayValues), backgroundColor: darkMode ? ['#60a5fa', '#fbbf24', '#34d399', '#93c5fd', '#c4b5fd', '#fb923c', '#f472b6', '#2dd4bf', '#94a3b8', '#fcd34d'] : ['#0f172a', '#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#f97316', '#ec4899', '#14b8a6', '#64748b', '#eab308'], hoverOffset: 20, borderWidth: 2, borderColor: darkMode ? '#1e293b' : '#ffffff' }] },
+                options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, plugins: { legend: { position: 'bottom', labels: { color: chartTextColor, generateLabels: chart => { const labels = Chart.defaults.plugins.legend.labels.generateLabels(chart); return labels.map((item, index) => ({ ...item, text: `${chart.data.labels[index]} — ${barangayProjectCounts[index] || 0} project(s)` })); } } }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)} · ${barangayProjectCounts[context.dataIndex] || 0} project(s)` } } } }
             });
         @endif
     });
