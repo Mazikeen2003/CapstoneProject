@@ -28,11 +28,7 @@
         <header class="guest-glass-nav sticky top-0 z-50 w-full border-b border-slate-200/50">
             <nav class="relative mx-auto flex w-full items-center justify-between px-4 py-4 sm:px-8 lg:px-12">
                 <div class="flex items-center gap-3 sm:gap-4">
-                    <div class="rounded-lg bg-slate-900 p-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path d="M3 21h18v-2H3v2Zm2-4h2V9H5v8Zm6 0h2V5h-2v12Zm6 0h2V2h-2v15Z" />
-                        </svg>
-                    </div>
+                    <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-10 w-10 shrink-0 rounded-lg object-contain" width="40" height="40" decoding="async" />
                     <div class="flex flex-col">
                         <span class="text-base font-bold tracking-tight text-slate-900 sm:text-xl" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
                         <span class="text-[9px] uppercase tracking-widest text-slate-500 opacity-70 sm:text-[10px]" style="font-family:'Public Sans',sans-serif;">Cabuyao Municipal Office</span>

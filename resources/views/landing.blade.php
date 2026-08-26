@@ -33,9 +33,7 @@
     <header class="sticky top-0 z-50 glass-nav w-full border-b border-slate-200/50">
         <nav class="relative flex items-center py-4 w-full mx-auto px-12 justify-between">
             <div class="flex items-center gap-4">
-                <div class="bg-slate-900 p-2 rounded-lg">
-                    <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">account_balance</span>
-                </div>
+                <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-10 w-10 shrink-0 rounded-lg object-contain" width="40" height="40" decoding="async" />
                 <div class="flex flex-col">
                     <span class="text-xl font-bold tracking-tighter text-slate-900" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
                     <span class="text-[10px] uppercase tracking-widest text-slate-500 opacity-70" style="font-family:'Public Sans',sans-serif;">Cabuyao Municipal Office</span>
@@ -66,15 +64,15 @@
 
             <div class="relative z-20 mx-auto w-full max-w-7xl px-6 py-12 text-white sm:py-16 lg:py-20">
                 <div class="mx-auto flex max-w-4xl flex-col items-center space-y-6 text-center sm:space-y-7 lg:space-y-8">
-                    <div class="flex items-center gap-6 mb-4">
-                        <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md p-2 flex items-center justify-center border border-white/20">
-                            <span class="material-symbols-outlined text-4xl">verified_user</span>
+                    <div class="mb-4 flex items-center gap-3 sm:gap-4">
+                        <div class="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 backdrop-blur-md sm:h-16 sm:w-16">
+                            <span class="material-symbols-outlined text-3xl sm:text-4xl">verified_user</span>
                         </div>
-                        <div class="w-24 h-24 rounded-full bg-white/10 backdrop-blur-lg p-2 flex items-center justify-center border border-white/20">
-                            <span class="material-symbols-outlined text-5xl" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+                        <div class="flex h-[5.5rem] w-[5.5rem] items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 backdrop-blur-lg sm:h-[6.5rem] sm:w-[6.5rem]">
+                            <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-20 w-20 rounded-xl object-contain sm:h-24 sm:w-24" width="96" height="96" decoding="async" />
                         </div>
-                        <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md p-2 flex items-center justify-center border border-white/20">
-                            <span class="material-symbols-outlined text-4xl">visibility</span>
+                        <div class="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 backdrop-blur-md sm:h-16 sm:w-16">
+                            <span class="material-symbols-outlined text-3xl sm:text-4xl">visibility</span>
                         </div>
                     </div>
 
