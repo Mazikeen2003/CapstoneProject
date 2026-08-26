@@ -32,8 +32,8 @@
                     </button>
                 </div>
                 <div class="flex flex-col items-center justify-center gap-4 py-2">
-                    <div class="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1.4rem] border border-white/10 bg-[#141F33] shadow-[0_12px_30px_rgba(0,0,0,0.3)] ring-1 ring-[#F4C95D]/10">
-                        <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-14 w-auto object-contain" width="56" height="56" decoding="sync" fetchpriority="high" />
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-[#141F33] shadow-[0_12px_30px_rgba(0,0,0,0.3)] ring-1 ring-[#F4C95D]/10">
+                        <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-10 w-10 object-contain" width="40" height="40" decoding="sync" fetchpriority="high" />
                     </div>
                     <div class="sidebar-brand-name">
                         <div class="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-300">Project Tracker System</div>
@@ -88,13 +88,13 @@
                         </a>
                         <a href="{{ url('/department/projects') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('department.projects*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Projects">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Projects">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11 7h2v2h-2zm0 4h2v2h-2zm-4-4h2v2H7zm0 4h2v2H7zM7 3h10c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2zm12-2v18H3V1h18z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20h18v2H3v-2Zm2-2V9l7-4 7 4v9h-3v-6h-2v6h-4v-6H8v6H5Zm7-10.7L8.5 10h7L12 7.3Z"/></svg>
                             </span>
                             Projects
                         </a>
                         <a href="{{ url('/department/map') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('department.map*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Map">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Map">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="m9 4 6-2 6 2v16l-6 2-6-2-6 2V4l6-2Zm0 2.1L5 7.43v11.74l4-1.33V6.1Zm2 0v11.74l3 1V6.1l-3 1Zm5-.67v11.74l3-.99V6.43l-3-.99Z"/></svg>
                             </span>
                             Map
                         </a>
@@ -119,13 +119,13 @@
                         </a>
                         <a href="{{ url('/city/projects') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('city/projects*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="City Projects">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Projects">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11 7h2v2h-2zm0 4h2v2h-2zm-4-4h2v2H7zm0 4h2v2H7zM7 3h10c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2zm12-2v18H3V1h18z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20h18v2H3v-2Zm2-2V9l7-4 7 4v9h-3v-6h-2v6h-4v-6H8v6H5Zm7-10.7L8.5 10h7L12 7.3Z"/></svg>
                             </span>
                             Projects
                         </a>
                         <a href="{{ url('/city/map') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('city/map') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="City Map">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Map">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="m9 4 6-2 6 2v16l-6 2-6-2-6 2V4l6-2Zm0 2.1L5 7.43v11.74l4-1.33V6.1Zm2 0v11.74l3 1V6.1l-3 1Zm5-.67v11.74l3-.99V6.43l-3-.99Z"/></svg>
                             </span>
                             Map
                         </a>
@@ -150,13 +150,13 @@
                         </a>
                         <a href="{{ url('/barangay/projects') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('barangay/projects*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Projects">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Projects">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11 7h2v2h-2zm0 4h2v2h-2zm-4-4h2v2H7zm0 4h2v2H7zM7 3h10c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2zm12-2v18H3V1h18z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20h18v2H3v-2Zm2-2V9l7-4 7 4v9h-3v-6h-2v6h-4v-6H8v6H5Zm7-10.7L8.5 10h7L12 7.3Z"/></svg>
                             </span>
                             Projects
                         </a>
                         <a href="{{ url('/barangay/map') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('barangay/map') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Map">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Map">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="m9 4 6-2 6 2v16l-6 2-6-2-6 2V4l6-2Zm0 2.1L5 7.43v11.74l4-1.33V6.1Zm2 0v11.74l3 1V6.1l-3 1Zm5-.67v11.74l3-.99V6.43l-3-.99Z"/></svg>
                             </span>
                             Map
                         </a>
@@ -175,7 +175,7 @@
                     @else
                         <a href="{{ url('/public/map') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('public/map') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Public Map">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Map">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="m9 4 6-2 6 2v16l-6 2-6-2-6 2V4l6-2Zm0 2.1L5 7.43v11.74l4-1.33V6.1Zm2 0v11.74l3 1V6.1l-3 1Zm5-.67v11.74l3-.99V6.43l-3-.99Z"/></svg>
                             </span>
                             Map
                         </a>
