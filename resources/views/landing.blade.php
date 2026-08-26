@@ -196,41 +196,76 @@
         </section>
 
         {{-- ============ MISSION / VISION CTA ============ --}}
-        <section class="py-20 bg-slate-900 relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-30"></div>
-            <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-                <div class="space-y-8">
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tighter" style="font-family:'Manrope',sans-serif;">
-                        Our Institutional Commitment
-                    </h2>
-                    <p class="text-slate-300 text-lg leading-relaxed">
-                        Cabuyao City is dedicated to fostering a culture of excellence and integrity in public service, ensuring that every citizen benefits from a government that is both responsive and visionary.
-                    </p>
-                </div>
-
-                <div class="grid gap-6">
-                    <div class="bg-white/5 rounded-2xl p-8 backdrop-blur-sm border border-white/10 flex items-start gap-6">
-                        <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined text-emerald-400">flag</span>
-                        </div>
+        <section class="relative overflow-hidden bg-slate-900 px-6 py-20">
+            <div class="relative mx-auto max-w-7xl">
+                <div class="mb-10 grid gap-6 border-b border-white/10 pb-7 md:grid-cols-[1fr_auto] md:items-end">
+                    <div class="flex items-start gap-4">
+                        <span class="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-400 text-slate-950">
+                            <span class="material-symbols-outlined">explore</span>
+                        </span>
                         <div>
-                            <h4 class="text-white font-bold text-xl mb-2">Mission</h4>
-                            <p class="text-slate-300 text-sm leading-relaxed">
-                                To promote the general welfare of its inhabitants by providing quality basic services and ensuring a peaceful, orderly, and sustainable environment through transparent, accountable, and participatory governance.
-                            </p>
+                            <span class="block text-xs font-bold uppercase tracking-[0.2em] text-emerald-400">Our Direction</span>
+                            <h2 class="mt-1 text-2xl font-extrabold tracking-tight text-white" style="font-family:'Manrope',sans-serif;">Vision &amp; Mission</h2>
+                            <p class="mt-2 max-w-lg text-sm leading-6 text-slate-400">The principles that guide sustainable development and responsive planning in Cabuyao City.</p>
                         </div>
                     </div>
+                    <div class="border-l border-emerald-400/40 pl-4 text-left md:text-right">
+                        <span class="block text-[10px] font-bold uppercase tracking-[0.25em] text-emerald-400">Planning framework</span>
+                        <span class="mt-1 block text-xs uppercase tracking-widest text-slate-500">Cabuyao City</span>
+                    </div>
+                </div>
 
-                    <div class="bg-white/5 rounded-2xl p-8 backdrop-blur-sm border border-white/10 flex items-start gap-6">
-                        <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined text-emerald-400">visibility</span>
-                        </div>
-                        <div>
-                            <h4 class="text-white font-bold text-xl mb-2">Vision</h4>
-                            <p class="text-slate-300 text-sm leading-relaxed">
-                                A premier city of opportunity, character, and resilience, driven by an empowered and healthy citizenry living in a sustainable and globally competitive environment.
+                <div class="grid gap-10 lg:grid-cols-[0.75fr_1.25fr]">
+                    <article class="group relative flex min-h-[300px] flex-col justify-between overflow-hidden rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-950/30">
+                        <div class="relative z-10">
+                            <div class="mb-8 flex items-center justify-between">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-400 transition-transform group-hover:scale-110">
+                                    <span class="material-symbols-outlined text-2xl text-slate-950">visibility</span>
+                                </div>
+                                <span class="text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">Vision</span>
+                            </div>
+                            <p class="text-lg font-semibold leading-8 text-white">
+                                The implementation of sustainable development planning towards an entrepreneurial, progressive and environment-friendly City of Cabuyao.
                             </p>
                         </div>
+                        <div class="relative z-10 mt-8 flex items-center gap-2 text-xs uppercase tracking-widest text-emerald-300">
+                            <span class="h-px w-8 bg-emerald-300"></span>
+                            <span>Our future</span>
+                        </div>
+                        <span class="material-symbols-outlined absolute -bottom-5 -right-4 text-8xl text-emerald-300/10">visibility</span>
+                    </article>
+
+                    <div>
+                        <div class="mb-6 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-emerald-400">
+                                    <span class="material-symbols-outlined">flag</span>
+                                </span>
+                                <div>
+                                    <h3 class="text-xl font-bold text-white" style="font-family:'Manrope',sans-serif;">Mission</h3>
+                                    <p class="mt-1 text-xs uppercase tracking-widest text-slate-400">Four commitments</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-400">01 — 04</span>
+                        </div>
+                        <ol class="grid gap-3 sm:grid-cols-2">
+                            <li class="group flex gap-4 rounded-lg border border-white/10 bg-white/5 p-5 text-sm leading-6 text-slate-300 transition-colors hover:border-emerald-400/40 hover:bg-emerald-400/10">
+                                <span class="font-bold text-emerald-400">01</span>
+                                <span>To formulate sound plans and programs participated by all sectors;</span>
+                            </li>
+                            <li class="group flex gap-4 rounded-lg border border-white/10 bg-white/5 p-5 text-sm leading-6 text-slate-300 transition-colors hover:border-emerald-400/40 hover:bg-emerald-400/10">
+                                <span class="font-bold text-emerald-400">02</span>
+                                <span>To implement Comprehensive Land Use Plan (CLUP) taking into consideration the protection of environment and efficient services to humanity with the continued support of hardworking staff;</span>
+                            </li>
+                            <li class="group flex gap-4 rounded-lg border border-white/10 bg-white/5 p-5 text-sm leading-6 text-slate-300 transition-colors hover:border-emerald-400/40 hover:bg-emerald-400/10">
+                                <span class="font-bold text-emerald-400">03</span>
+                                <span>To ensure sustainability in development planning and implementation;</span>
+                            </li>
+                            <li class="group flex gap-4 rounded-lg border border-white/10 bg-white/5 p-5 text-sm leading-6 text-slate-300 transition-colors hover:border-emerald-400/40 hover:bg-emerald-400/10">
+                                <span class="font-bold text-emerald-400">04</span>
+                                <span>To provide the public with data and information, best planning regulatory and monitoring services for the development of the City.</span>
+                            </li>
+                        </ol>
                     </div>
                 </div>
             </div>
