@@ -14,6 +14,10 @@
     }, []);
     $statusCounts = collect($statusOrder)->map(fn ($status) => $lifecycleStatusCounts[$status] ?? 0)->values();
     $remainingBudget = max(($budgetStats['total_budget'] ?? 0) - ($budgetStats['total_spent'] ?? 0), 0);
+    $totalBudget = (float) ($stats['total_budget'] ?? 0);
+    $totalBudgetDisplay = $totalBudget >= 1000000000
+        ? '₱' . number_format($totalBudget / 1000000000, 1) . 'B'
+        : ($totalBudget >= 1000000 ? '₱' . number_format($totalBudget / 1000000, 1) . 'M' : '₱' . number_format($totalBudget, 0));
     $barangayLabels = isset($byBarangay) ? $byBarangay->take(10)->keys()->values() : collect();
     $barangayValues = isset($byBarangay) ? $byBarangay->take(10)->map(fn ($item) => $item['budget'] ?? 0)->values() : collect();
     $barangayProjectCounts = isset($byBarangay) ? $byBarangay->take(10)->map(fn ($item) => $item['count'] ?? 0)->values() : collect();
@@ -28,7 +32,7 @@
             ['Completed', $stats['completed'], '#10b981'],
             ['Ongoing', $stats['ongoing'], '#3b82f6'],
             ['On Hold', $stats['on_hold'], '#ef4444'],
-            ['Total Budget', '₱' . number_format($stats['total_budget'], 0), '#0f172a'],
+            ['Total Budget', $totalBudgetDisplay, '#0f172a'],
         ] as [$label, $value, $color])
             <div class="rounded-3xl bg-white p-4 border border-slate-200 shadow-sm">
                 <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $label }}</p>
@@ -61,14 +65,14 @@
             <span class="text-xs text-slate-500">Completed and exception statuses remain visible.</span>
         </div>
         <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            @foreach (['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation', 'Completed', 'On Hold', 'Cancelled'] as $lifecycleStatus)
+            @foreach ($statusOrder as $statusIndex => $lifecycleStatus)
                 @php $lifecycleCount = $insights['lifecycle_counts'][$lifecycleStatus] ?? 0; @endphp
                 <div class="rounded-2xl bg-slate-50 p-3">
                     <div class="flex items-center justify-between gap-3 text-sm">
                         <span class="font-semibold text-slate-700">{{ $lifecycleStatus }}</span>
                         <span class="font-bold text-slate-900">{{ $lifecycleCount }}</span>
                     </div>
-                    <div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full rounded-full bg-emerald-500" style="width: {{ $stats['total_projects'] > 0 ? min(100, ($lifecycleCount / $stats['total_projects']) * 100) : 0 }}%;"></div></div>
+                    <div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full rounded-full" style="width: {{ $stats['total_projects'] > 0 ? min(100, ($lifecycleCount / $stats['total_projects']) * 100) : 0 }}%; background-color: {{ $statusColors[$statusIndex] }};"></div></div>
                 </div>
             @endforeach
         </div>

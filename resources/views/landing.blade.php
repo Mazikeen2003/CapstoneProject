@@ -308,7 +308,12 @@
                         document.getElementById('totalProjects').textContent = data.features.length;
                         document.getElementById('completedProjects').textContent = completed;
                         document.getElementById('ongoingProjects').textContent = ongoing;
-                        document.getElementById('totalBudget').textContent = '₱' + (totalBudget / 1000000).toFixed(1) + 'M';
+                        const budgetDisplay = totalBudget >= 1000000000
+                            ? '₱' + (totalBudget / 1000000000).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 'B'
+                            : (totalBudget >= 1000000
+                                ? '₱' + (totalBudget / 1000000).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 'M'
+                                : '₱' + totalBudget.toLocaleString(undefined, { maximumFractionDigits: 0 }));
+                        document.getElementById('totalBudget').textContent = budgetDisplay;
                     }
                 })
                 .catch(err => console.error('Error:', err));

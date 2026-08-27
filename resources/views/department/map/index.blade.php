@@ -320,7 +320,7 @@
                 }).addTo(map);
 
                 function getMarkerColor(status) {
-                    return ({ 'Completed': '#10b981', 'On Going': '#3b82f6', 'On Hold': '#ef4444', 'Planning': '#fbbf24' })[status] || '#64748b';
+                    return ({ 'Proposed': '#fbbf24', 'Planning': '#fbbf24', 'For bidding': '#f59e0b', 'Procurement': '#f59e0b', 'Bidding ongoing': '#3b82f6', 'Award of contract': '#8b5cf6', 'Bidding - Success': '#8b5cf6', 'Implementation': '#0ea5e9', 'On Going': '#0ea5e9', 'Completed': '#10b981', 'On Hold': '#ef4444', 'Cancelled': '#64748b' })[status] || '#64748b';
                 }
 
                 allMarkers = L.featureGroup();

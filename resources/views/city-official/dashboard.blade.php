@@ -1,6 +1,12 @@
 ﻿@extends('layouts.city')
 
 @section('content')
+@php
+    $budgetAllocated = (float) ($stats['budget_allocated'] ?? 0);
+    $budgetDisplay = $budgetAllocated >= 1000000000
+        ? '₱' . number_format($budgetAllocated / 1000000000, 1) . 'B'
+        : ($budgetAllocated >= 1000000 ? '₱' . number_format($budgetAllocated / 1000000, 1) . 'M' : '₱' . number_format($budgetAllocated, 0));
+@endphp
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
@@ -31,7 +37,7 @@
 
         <div class="admin-dashboard-stat admin-dashboard-stat-rose rounded-2xl p-6 shadow-sm">
             <p class="text-sm font-semibold text-slate-600">Budget Allocated</p>
-            <p class="mt-4 text-4xl font-bold text-slate-950">₱{{ number_format($stats['budget_allocated'] ?? 0, 0) }}</p>
+            <p class="dashboard-budget-value mt-4 font-bold text-slate-950" title="₱{{ number_format($budgetAllocated, 0) }}">{{ $budgetDisplay }}</p>
         </div>
     </div>
 

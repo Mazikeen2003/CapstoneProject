@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const list = document.getElementById('allNotificationsList');
     const pagination = document.getElementById('notificationsPagination');
     const storageKey = 'projectTrackerNotifications:' + (window.__currentRole || 'public');
+    const clearedAtKey = 'projectTrackerNotificationsClearedAt:' + (window.__currentRole || 'public');
     const pageSize = 10;
     let currentPage = 1;
 
@@ -86,8 +87,20 @@ document.addEventListener('DOMContentLoaded', function () {
             const payload = await response.json();
             const existing = getNotifications();
             const byId = new Map(existing.map(notification => [notification.id, notification]));
+            const clearedAt = localStorage.getItem(clearedAtKey);
+            const clearedTimestamp = clearedAt ? Date.parse(clearedAt) : Number.NaN;
             (payload.notifications || []).forEach(notification => {
-                byId.set(notification.id, { ...byId.get(notification.id), ...notification });
+                const previous = byId.get(notification.id);
+                const notificationTimestamp = Date.parse(notification.time || '');
+                const wasCleared = !Number.isNaN(clearedTimestamp)
+                    && !Number.isNaN(notificationTimestamp)
+                    && notificationTimestamp <= clearedTimestamp;
+
+                byId.set(notification.id, {
+                    ...previous,
+                    ...notification,
+                    read: Boolean(previous?.read || wasCleared),
+                });
             });
             saveNotifications(Array.from(byId.values()).sort((a, b) => Date.parse(b.time || 0) - Date.parse(a.time || 0)));
             render();
