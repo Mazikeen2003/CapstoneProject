@@ -206,19 +206,21 @@
                         }
 
                         const payload = await response.json();
+                        const latestClearedAt = localStorage.getItem(clearedAtKey);
+                        const latestStoredNotifications = getStoredNotifications();
                         const fetchedNotifications = (payload.notifications || []).filter(notification => {
-                            return !clearedAt || !notification.time || Date.parse(notification.time) > Date.parse(clearedAt);
+                            return !latestClearedAt || !notification.time || Date.parse(notification.time) > Date.parse(latestClearedAt);
                         });
                         // Refresh cached notifications so older entries gain their destination URL.
                         fetchedNotifications.forEach(notification => {
-                            const existingIndex = storedNotifications.findIndex(item => item.id === notification.id);
+                            const existingIndex = latestStoredNotifications.findIndex(item => item.id === notification.id);
                             if (existingIndex >= 0) {
-                                storedNotifications[existingIndex] = { ...storedNotifications[existingIndex], ...notification };
+                                latestStoredNotifications[existingIndex] = { ...latestStoredNotifications[existingIndex], ...notification };
                             } else {
-                                storedNotifications.unshift(notification);
+                                latestStoredNotifications.unshift(notification);
                             }
                         });
-                        saveStoredNotifications(storedNotifications);
+                        saveStoredNotifications(latestStoredNotifications);
                         localStorage.setItem(cursorKey, new Date().toISOString());
                         renderNotifications();
                         updateNotificationBadge();
@@ -231,7 +233,7 @@
                     const notifications = getStoredNotifications();
                     const unreadCount = notifications.filter(notification => !notification.read).length;
                     if (unreadCount > 0) {
-                        notificationBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                        notificationBadge.textContent = unreadCount;
                         notificationBadge.style.display = 'flex';
                     } else {
                         notificationBadge.style.display = 'none';

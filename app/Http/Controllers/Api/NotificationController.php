@@ -128,8 +128,8 @@ class NotificationController extends Controller
             };
         }
 
-        if ($log->table_name === 'users' && $user->role_slug === 'admin') {
-            return route('admin.users.edit', $log->record_id);
+        if ($log->table_name === 'users' && $user->role_slug === 'admin' && $log->record_id) {
+            return route('admin.users.edit', ['user' => $log->record_id]);
         }
 
         return null;
