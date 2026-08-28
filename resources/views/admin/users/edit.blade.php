@@ -61,33 +61,7 @@
                 </div>
             </div>
 
-            <!-- Row 2: Password and Confirm Password -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="password_hash" class="block text-sm font-semibold text-gray-700 mb-2">Password (Leave blank to keep current)</label>
-                    <div class="relative">
-                        <input type="password" id="password_hash" name="password_hash" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('password_hash') border-red-500 @enderror" placeholder="Leave blank to keep current password">
-                        <button type="button" id="togglePasswordEdit" class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700">
-                            Show
-                        </button>
-                    </div>
-                    @error('password_hash')
-                        <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="password_hash_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">Confirm Password</label>
-                    <div class="relative">
-                        <input type="password" id="password_hash_confirmation" name="password_hash_confirmation" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Confirm new password if changing">
-                        <button type="button" id="togglePasswordConfirmationEdit" class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700">
-                            Show
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Row 3: Account status -->
+            <!-- Row 2: Account status -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="md:col-span-2">
                     <label class="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">

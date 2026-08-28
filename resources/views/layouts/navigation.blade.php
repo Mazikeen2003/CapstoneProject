@@ -5,8 +5,9 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                        <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-10 w-10 rounded-lg object-contain" width="40" height="40" />
+                        <span class="hidden text-base font-bold tracking-tight text-slate-900 lg:inline">City Transparency Portal</span>
                     </a>
                 </div>
 
@@ -18,9 +19,9 @@
                 </div>
             </div>
 
-            <!-- Settings Section - Removed -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <span class="text-gray-500 text-sm">{{ Auth::user()?->name ?? session('mock_user.name') ?? __('Guest') }}</span>
+            <div class="ml-auto flex items-center gap-3 sm:gap-5">
+                <span class="text-sm font-semibold text-slate-700">{{ Auth::user()?->username ?? session('mock_user.username') ?? __('Guest') }}</span>
+                @include('components.public-theme-toggle')
             </div>
 
             <!-- Hamburger -->
@@ -46,7 +47,7 @@
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()?->name ?? session('mock_user.name') ?? __('Guest') }}</div>
+                <div class="font-medium text-base text-gray-800">{{ Auth::user()?->username ?? session('mock_user.username') ?? __('Guest') }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()?->email ?? session('mock_user.email') ?? '' }}</div>
             </div>
         </div>

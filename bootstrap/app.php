@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'department' => \App\Http\Middleware\DepartmentMiddleware::class,
             'city' => \App\Http\Middleware\CityOfficialMiddleware::class,
             'barangay' => \App\Http\Middleware\BarangayMiddleware::class,
+            'must_change_password' => \App\Http\Middleware\RequirePasswordChange::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

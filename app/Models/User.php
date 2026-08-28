@@ -21,6 +21,7 @@ class User extends Authenticatable
         'username',
         'user_email',
         'password_hash',
+        'must_change_password',
         'role_id',
         'barangay_id',
         'permissions',
@@ -43,6 +44,7 @@ class User extends Authenticatable
         'disabled_at' => 'datetime',
         'otp_expires_at' => 'datetime',
         'permissions' => 'array',
+        'must_change_password' => 'boolean',
     ];
 
     // Relationships

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\AccountSetupController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
@@ -10,9 +11,19 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 
 Route::middleware('guest')->group(function () {
+    Route::get('account/setup/{token}', [AccountSetupController::class, 'create'])
+        ->name('account.setup');
+
+    Route::post('account/setup/{token}', [AccountSetupController::class, 'store'])
+        ->name('account.setup.store');
+
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
@@ -41,6 +52,26 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('password/change', function () {
+        return view('auth.change-password');
+    })->name('password.change');
+
+    Route::post('password/change', function (Request $request) {
+        $validated = $request->validate([
+            'password' => ['required', 'string', 'confirmed', PasswordRule::min(12)->letters()->mixedCase()->numbers()->symbols()->uncompromised()],
+        ]);
+
+        $user = $request->user();
+        $user->forceFill([
+            'password_hash' => Hash::make($validated['password']),
+            'must_change_password' => false,
+        ])->save();
+
+        Auth::login($user, true);
+
+        return redirect()->route('dashboard')->with('status', 'Password updated successfully.');
+    })->name('password.change.submit');
+
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 

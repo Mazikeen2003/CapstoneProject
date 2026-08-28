@@ -7,6 +7,7 @@
 
         <title>{{ config('app.name', 'Cabuyao Project Tracker') }}</title>
         @include('layouts.favicon')
+        @include('components.theme-init')
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -30,7 +31,7 @@
 
             <!-- Page Content -->
             <main>
-                @yield('content')
+                {{ $slot }}
             </main>
         </div>
     </body>

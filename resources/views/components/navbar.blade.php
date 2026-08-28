@@ -81,9 +81,22 @@
                 </div>
             </div>
             @if(!$isPublicRoute)
-                <div class="navbar-user-name rounded-full px-2 py-2 text-xs font-semibold truncate sm:px-4 sm:text-sm" style="color: #0F172A;">
-                    <span class="hidden sm:inline">{{ $userName }}</span>
-                    <span class="sm:hidden">User</span>
+                <div class="relative">
+                    <button id="accountMenuBtn" type="button" class="navbar-user-name inline-flex max-w-[10rem] items-center gap-2 rounded-full px-2 py-2 text-xs font-semibold truncate transition hover:bg-slate-200 sm:max-w-[14rem] sm:px-4 sm:text-sm" style="color: #0F172A;" aria-expanded="false" aria-controls="accountMenu">
+                        <span class="truncate hidden sm:inline">{{ $userName }}</span>
+                        <span class="sm:hidden">User</span>
+                        <svg class="h-4 w-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div id="accountMenu" class="absolute right-0 top-full z-[9999] mt-2 hidden w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl" role="menu">
+                        <div class="border-b border-slate-100 px-4 py-3">
+                            <p class="truncate text-xs font-semibold text-slate-900">{{ $userName }}</p>
+                        </div>
+                        <a href="{{ route('profile.edit') }}" class="block px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900" role="menuitem">
+                            Change password
+                        </a>
+                    </div>
                 </div>
             @endif
         </div>
@@ -97,6 +110,8 @@
                 const clearNotificationsBtn = document.getElementById('clearNotificationsBtn');
                 const darkModeBtn = document.getElementById('darkModeBtn');
                 const darkModeIcon = document.getElementById('darkModeIcon');
+                const accountMenuBtn = document.getElementById('accountMenuBtn');
+                const accountMenu = document.getElementById('accountMenu');
                 const storageKey = 'projectTrackerNotifications:' + (window.__currentRole || 'public');
                 const cursorKey = 'projectTrackerNotificationCursor:' + (window.__currentRole || 'public');
                 const clearedAtKey = 'projectTrackerNotificationsClearedAt:' + (window.__currentRole || 'public');
@@ -125,6 +140,15 @@
                     }
                     window.dispatchEvent(new CustomEvent('theme:changed'));
                 });
+
+                if (accountMenuBtn && accountMenu) {
+                    accountMenuBtn.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                        const isOpen = !accountMenu.classList.contains('hidden');
+                        accountMenu.classList.toggle('hidden', isOpen);
+                        accountMenuBtn.setAttribute('aria-expanded', String(!isOpen));
+                    });
+                }
 
                 function getStoredNotifications() {
                     try {
@@ -364,6 +388,10 @@
                 document.addEventListener('click', function(e) {
                     if (!notificationBtn.contains(e.target) && !notificationPanel.contains(e.target)) {
                         notificationPanel.style.display = 'none';
+                    }
+                    if (accountMenuBtn && accountMenu && !accountMenuBtn.contains(e.target) && !accountMenu.contains(e.target)) {
+                        accountMenu.classList.add('hidden');
+                        accountMenuBtn.setAttribute('aria-expanded', 'false');
                     }
                 });
 

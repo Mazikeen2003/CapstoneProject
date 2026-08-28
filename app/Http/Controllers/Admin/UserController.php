@@ -5,12 +5,17 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Mail\NewAccountPasswordMail;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Barangay;
 use App\Services\AuditLogService;
 use App\Services\BackupService;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -37,18 +42,55 @@ public function store(StoreUserRequest $request): RedirectResponse
         abort(403, 'Only the original Admin can create additional Admin accounts.');
     }
 
-    $data['password_hash'] = Hash::make($data['password_hash']);
+    $setupToken = Str::random(64);
+
+    $data['password_hash'] = Hash::make(Str::random(48));
+    $data['must_change_password'] = true;
     $data['permissions'] = $this->normalizePermissions($request);
     $data['is_disabled'] = $request->boolean('is_disabled');
     $data['disabled_at'] = $data['is_disabled'] ? now() : null;
 
     $user = User::create($data);
 
+    DB::table('account_setup_tokens')->where('user_id', $user->user_id)->delete();
+    DB::table('account_setup_tokens')->insert([
+        'user_id' => $user->user_id,
+        'token_hash' => hash('sha256', $setupToken),
+        'expires_at' => now()->addHours(24),
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    $setupUrl = route('account.setup', ['token' => $setupToken]);
+
+    $emailSent = true;
+
+    try {
+        Mail::to($user->user_email)->send(
+            new NewAccountPasswordMail($user->first_name ?: $user->username, $user->username, $setupUrl)
+        );
+    } catch (\Throwable $exception) {
+        $emailSent = false;
+        Log::error('New user account email could not be sent.', [
+            'user_id' => $user->user_id,
+            'email' => $user->user_email,
+            'error' => $exception->getMessage(),
+        ]);
+    }
+
     AuditLogService::logCreate($user);
     BackupService::createBackup('user_create', $request->user()->user_id);
 
-    return redirect()->route('admin.users.index')
-        ->with('success', 'User created successfully.');
+    $redirect = redirect()->route('admin.users.index')
+        ->with('success', $emailSent
+            ? 'User created successfully. A secure password setup link has been emailed to them.'
+            : 'User created successfully, but the password setup email could not be sent.');
+
+    if (! $emailSent) {
+        $redirect->with('warning', 'Check the mail configuration or application logs before asking the user to sign in.');
+    }
+
+    return $redirect;
 }
 
     public function edit($id): View
@@ -68,11 +110,7 @@ public function store(StoreUserRequest $request): RedirectResponse
                 abort(403, 'Only the original Admin can modify Admin accounts.');
             }
 
-            if (!empty($data['password_hash'])) {
-                $data['password_hash'] = Hash::make($data['password_hash']);
-            } else {
-                unset($data['password_hash']);
-            }
+            unset($data['password_hash']);
 
             $data['is_disabled'] = $request->boolean('is_disabled');
             $data['disabled_at'] = $data['is_disabled'] ? ($user->disabled_at ?? now()) : null;

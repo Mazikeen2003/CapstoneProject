@@ -20,6 +20,12 @@
         </div>
     @endif
 
+    @if ($message = Session::get('warning'))
+        <div class="bg-amber-50 border border-amber-200 text-amber-900 px-4 py-3 rounded-3xl mb-4 shadow-sm">
+            {{ $message }}
+        </div>
+    @endif
+
     <div class="space-y-4 md:hidden">
         @forelse ($users as $user)
             <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
