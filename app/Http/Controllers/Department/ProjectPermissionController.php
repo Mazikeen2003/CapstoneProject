@@ -1,17 +1,29 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Department;
 
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\EditPermissionRequest;
 use App\Models\Project;
-use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ProjectPermissionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $user = Auth::user();
+
+            if (! $user || ! $user->isDepartmentHead()) {
+                abort(403, 'Department Head access required.');
+            }
+
+            return $next($request);
+        });
+    }
+
     public function index()
     {
         $this->authorize('viewAny', Project::class);
@@ -20,7 +32,7 @@ class ProjectPermissionController extends Controller
             ->latest('created_at')
             ->get();
 
-        return view('admin.project-permissions.index', compact('requests'));
+        return view('department.project-permissions.index', compact('requests'));
     }
 
     public function approve(Request $request, $id)
@@ -43,7 +55,7 @@ class ProjectPermissionController extends Controller
             'created_at' => now(),
         ]);
 
-        return redirect()->route('admin.project-permissions.index')->with('success', 'Permission request approved.');
+        return redirect()->route('department.project-permissions.index')->with('success', 'Permission request approved.');
     }
 
     public function reject(Request $request, $id)
@@ -66,6 +78,6 @@ class ProjectPermissionController extends Controller
             'created_at' => now(),
         ]);
 
-        return redirect()->route('admin.project-permissions.index')->with('success', 'Permission request rejected.');
+        return redirect()->route('department.project-permissions.index')->with('success', 'Permission request rejected.');
     }
 }

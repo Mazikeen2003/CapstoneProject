@@ -70,7 +70,7 @@
     {{-- Permission Status Alert --}}
     <div id="permissionAlert" class="bg-blue-50 border border-blue-300 text-blue-700 rounded-md p-4" style="display: none;">
         <p class="text-sm font-semibold">⏳ Permission Request Pending</p>
-        <p class="text-xs mt-1">Your request to edit critical project fields has been submitted to the System Administrator for approval.</p>
+        <p class="text-xs mt-1">Your request to edit critical project fields has been submitted to the Department Head for approval.</p>
     </div>
 
     <div class="department-edit-project-card bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
@@ -150,12 +150,12 @@
                         style="background-color: {{ ($canEditCriticalFields ?? false) ? '#d1fae5' : (($canRequestPermission ?? true) ? '#c9a84c' : '#e5e7eb') }}; color: {{ ($canEditCriticalFields ?? false) ? '#065f46' : (($canRequestPermission ?? true) ? '#0f1e3d' : '#6b7280') }};"
                         @if($canEditCriticalFields ?? false) disabled @endif
                         @if(!($canRequestPermission ?? true)) disabled @endif
-                        title="{{ ($canEditCriticalFields ?? false) ? 'Permission already approved' : (($canRequestPermission ?? true) ? 'Request permission to edit critical fields' : 'Waiting for admin approval') }}"
+                        title="{{ ($canEditCriticalFields ?? false) ? 'Permission already approved' : (($canRequestPermission ?? true) ? 'Request permission to edit critical fields' : 'Waiting for department head approval') }}"
                     >
                         @if($canEditCriticalFields ?? false)
                             ✅ Permission Approved
                         @elseif(!($canRequestPermission ?? true))
-                            🔒 Awaiting Admin Approval
+                            🔒 Awaiting Department Head Approval
                         @else
                             🔒 Ask Permission to Edit
                         @endif
@@ -170,7 +170,7 @@
                             @if($canEditCriticalFields ?? false)
                                 ✅ Permission approved — you can now edit this field.
                             @else
-                                🔒 Locked - Requires Admin Approval
+                                🔒 Locked - Requires Department Head Approval
                             @endif
                         </p>
                     </div>
@@ -181,7 +181,7 @@
                             @if($canEditCriticalFields ?? false)
                                 ✅ Permission approved — you can now edit this field.
                             @else
-                                🔒 Locked - Requires Admin Approval
+                                🔒 Locked - Requires Department Head Approval
                             @endif
                         </p>
                     </div>
@@ -195,7 +195,7 @@
                             @if($canEditCriticalFields ?? false)
                                 ✅ Permission approved — you can now edit this field.
                             @else
-                                🔒 Locked - Requires Admin Approval
+                                🔒 Locked - Requires Department Head Approval
                             @endif
                         </p>
                     </div>
@@ -206,7 +206,7 @@
                             @if($canEditCriticalFields ?? false)
                                 ✅ Permission approved — you can now edit this field.
                             @else
-                                🔒 Locked - Requires Admin Approval
+                                🔒 Locked - Requires Department Head Approval
                             @endif
                         </p>
                     </div>
@@ -272,11 +272,11 @@
 <div id="permissionModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
     <div class="department-edit-project-modal w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
         <h3 class="department-edit-project-label text-lg font-semibold">Reason for Edit Request</h3>
-        <p class="department-edit-project-muted mt-2 text-sm">Please tell the administrator why you need to edit these critical project details.</p>
+        <p class="department-edit-project-muted mt-2 text-sm">Please tell the department head why you need to edit these critical project details.</p>
         <textarea id="permissionReasonTextarea" rows="4" class="department-edit-project-input mt-4 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Example: We need to update the approved budget due to revised funding."></textarea>
         <div class="mt-5 flex justify-end gap-2">
-            <button type="button" id="cancelPermissionBtn" class="department-edit-project-cancel-button rounded px-4 py-2 text-sm">Cancel</button>
-            <button type="button" id="submitPermissionBtn" class="department-edit-project-submit-button rounded px-4 py-2 text-sm font-semibold text-white">Send Request</button>
+            <button type="button" id="cancelPermissionBtn" class="department-edit-project-cancel-button rounded px-4 py-2 text-sm font-medium">Cancel</button>
+            <button type="button" id="submitPermissionBtn" class="department-edit-project-submit-button rounded px-4 py-2 text-sm font-semibold text-white shadow-sm">Send Request</button>
         </div>
     </div>
 </div>

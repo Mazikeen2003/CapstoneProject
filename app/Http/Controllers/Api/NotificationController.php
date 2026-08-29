@@ -112,8 +112,8 @@ class NotificationController extends Controller
         }
 
         if ($log->table_name === 'edit_permission_requests') {
-            if ($user->role_slug === 'admin') {
-                return route('admin.project-permissions.index');
+            if ($user->isDepartmentHead()) {
+                return route('department.project-permissions.index');
             }
 
             $permissionRequest = EditPermissionRequest::find($log->record_id);

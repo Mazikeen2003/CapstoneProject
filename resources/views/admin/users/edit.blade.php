@@ -125,6 +125,10 @@
                         <input type="checkbox" name="permissions[can_generate_reports]" value="1" {{ ($userPermissions['can_generate_reports'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                         Generate/Export Reports
                     </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700 md:col-span-2">
+                        <input type="checkbox" name="is_department_head" value="1" {{ old('is_department_head', $user->is_department_head ?? false) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Department Head — can approve/reject edit permission requests from department personnel
+                    </label>
                 </div>
             </div>
 
@@ -135,10 +139,6 @@
                     <label class="flex items-center gap-2 text-sm text-gray-700">
                         <input type="checkbox" name="permissions[can_manage_users]" value="1" {{ ($userPermissions['can_manage_users'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                         User Access Management
-                    </label>
-                    <label class="flex items-center gap-2 text-sm text-gray-700">
-                        <input type="checkbox" name="permissions[can_manage_project_permissions]" value="1" {{ ($userPermissions['can_manage_project_permissions'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                        Project Edit Permissions
                     </label>
                     <label class="flex items-center gap-2 text-sm text-gray-700">
                         <input type="checkbox" name="permissions[can_view_reports]" value="1" {{ ($userPermissions['can_view_reports'] ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">

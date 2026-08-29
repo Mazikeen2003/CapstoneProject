@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.department')
 
 @section('content')
 <div class="space-y-6">
@@ -6,12 +6,6 @@
         <h1 class="text-3xl font-bold text-black">Project Edit Permissions</h1>
         <p class="text-sm text-gray-500 mt-1">Review department requests to edit critical project fields.</p>
     </div>
-
-    @if (session('success'))
-        <div class="rounded-md border border-green-300 bg-green-50 p-3 text-sm text-green-700">
-            {{ session('success') }}
-        </div>
-    @endif
 
     <div class="space-y-4 md:hidden">
         @forelse ($requests as $request)
@@ -24,19 +18,19 @@
                     <span class="project-permission-reviewed inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ ucfirst($request->status) }}</span>
                 </div>
                 <div class="mt-3 text-sm text-slate-700 space-y-2">
-                    <p><span class="font-semibold">Fields:</span> {{ $fieldLabel ?? '—' }}</p>
+                    <p><span class="font-semibold">Fields:</span> {{ $request->fields_requested ? (is_array($request->fields_requested) ? implode(', ', $request->fields_requested) : $request->fields_requested) : '—' }}</p>
                     <p><span class="font-semibold">Reason:</span> {{ $request->reason ?: '—' }}</p>
                 </div>
                 <div class="mt-4 flex flex-wrap gap-2">
                     @if ($request->status === 'pending')
-                        <form method="POST" action="{{ route('admin.project-permissions.approve', $request->request_id) }}" class="inline-block">
+                        <form method="POST" action="{{ route('department.project-permissions.approve', $request->request_id) }}" class="inline-block">
                             @csrf
-                            <input type="hidden" name="review_notes" value="Approved by administrator." />
+                            <input type="hidden" name="review_notes" value="Approved by department head." />
                             <button type="submit" class="rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white">Approve</button>
                         </form>
-                        <form method="POST" action="{{ route('admin.project-permissions.reject', $request->request_id) }}" class="inline-block">
+                        <form method="POST" action="{{ route('department.project-permissions.reject', $request->request_id) }}" class="inline-block">
                             @csrf
-                            <input type="hidden" name="review_notes" value="Rejected by administrator." />
+                            <input type="hidden" name="review_notes" value="Rejected by department head." />
                             <button type="submit" class="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white">Reject</button>
                         </form>
                     @else
@@ -101,14 +95,14 @@
                         </td>
                         <td class="px-4 py-3 text-sm">
                             @if ($request->status === 'pending')
-                                <form method="POST" action="{{ route('admin.project-permissions.approve', $request->request_id) }}" class="inline-block">
+                                <form method="POST" action="{{ route('department.project-permissions.approve', $request->request_id) }}" class="inline-block">
                                     @csrf
-                                    <input type="hidden" name="review_notes" value="Approved by administrator." />
+                                    <input type="hidden" name="review_notes" value="Approved by department head." />
                                     <button type="submit" class="rounded bg-green-600 px-3 py-1 text-white">Approve</button>
                                 </form>
-                                <form method="POST" action="{{ route('admin.project-permissions.reject', $request->request_id) }}" class="ml-2 inline-block">
+                                <form method="POST" action="{{ route('department.project-permissions.reject', $request->request_id) }}" class="ml-2 inline-block">
                                     @csrf
-                                    <input type="hidden" name="review_notes" value="Rejected by administrator." />
+                                    <input type="hidden" name="review_notes" value="Rejected by department head." />
                                     <button type="submit" class="rounded bg-red-600 px-3 py-1 text-white">Reject</button>
                                 </form>
                             @else

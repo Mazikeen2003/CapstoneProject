@@ -128,7 +128,7 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
 
         if (Auth::user()?->cannot('update', $project)) {
-            if (Auth::user()?->hasRole('department') && $project->created_by !== Auth::id()) {
+            if (Auth::user()?->hasRole('department') && ! Auth::user()->isDepartmentHead() && $project->created_by !== Auth::id()) {
                 abort(403, 'You can view this project, but you can only edit projects you created.');
             }
 
@@ -204,7 +204,7 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
 
         if (Auth::user()?->cannot('delete', $project)) {
-            if (Auth::user()?->hasRole('department') && $project->created_by !== Auth::id()) {
+            if (Auth::user()?->hasRole('department') && ! Auth::user()->isDepartmentHead() && $project->created_by !== Auth::id()) {
                 abort(403, 'You can view this project, but you can only delete projects you created.');
             }
 
@@ -236,7 +236,7 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
 
         if (Auth::user()?->cannot('update', $project)) {
-            if (Auth::user()?->hasRole('department') && $project->created_by !== Auth::id()) {
+            if (Auth::user()?->hasRole('department') && ! Auth::user()->isDepartmentHead() && $project->created_by !== Auth::id()) {
                 abort(403, 'You can view this project, but you can only edit projects you created.');
             }
 

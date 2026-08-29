@@ -48,6 +48,9 @@ public function store(StoreUserRequest $request): RedirectResponse
     $data['must_change_password'] = true;
     $data['permissions'] = $this->normalizePermissions($request);
     $data['is_disabled'] = $request->boolean('is_disabled');
+    $data['is_department_head'] = $this->roleSlugForId((int) $data['role_id']) === 'department'
+        ? (bool) $request->boolean('is_department_head')
+        : false;
     $data['disabled_at'] = $data['is_disabled'] ? now() : null;
 
     $user = User::create($data);
@@ -113,6 +116,9 @@ public function store(StoreUserRequest $request): RedirectResponse
             unset($data['password_hash']);
 
             $data['is_disabled'] = $request->boolean('is_disabled');
+            $data['is_department_head'] = $this->roleSlugForId((int) $data['role_id']) === 'department'
+                ? (bool) $request->boolean('is_department_head')
+                : false;
             $data['disabled_at'] = $data['is_disabled'] ? ($user->disabled_at ?? now()) : null;
 
             if ($this->usesGranularPermissions($user, (int) $data['role_id'])) {
@@ -160,7 +166,6 @@ public function store(StoreUserRequest $request): RedirectResponse
         'can_delete_project',
         'can_generate_reports',
         'can_manage_users',
-        'can_manage_project_permissions',
         'can_view_reports',
         'can_manage_audit_logs',
         'can_manage_backups',
@@ -178,6 +183,17 @@ public function store(StoreUserRequest $request): RedirectResponse
     private function isAdminRole(int $roleId): bool
     {
         return $roleId === 1;
+    }
+
+    private function roleSlugForId(int $roleId): string
+    {
+        return match ($roleId) {
+            1 => 'admin',
+            2 => 'city',
+            3 => 'department',
+            4 => 'barangay',
+            default => '',
+        };
     }
 
     private function usesGranularPermissions(User $user, int $roleId): bool
