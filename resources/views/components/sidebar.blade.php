@@ -287,6 +287,15 @@
             padding-right: 0.75rem;
         }
 
+        html.sidebar-collapsed #sidebar .hidden.xl\:flex.justify-end {
+            justify-content: center !important;
+        }
+
+        html.sidebar-collapsed #sidebar .sidebar-collapse-toggle {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         html.sidebar-collapsed #sidebar .sidebar-brand-name {
             max-height: 0;
             opacity: 0;

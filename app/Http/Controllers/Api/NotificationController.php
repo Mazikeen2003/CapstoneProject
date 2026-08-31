@@ -32,15 +32,24 @@ class NotificationController extends Controller
                                     ->whereColumn('projects.project_id', 'audit_logs.record_id')
                                     ->where('projects.created_by', $user->user_id);
                             });
-                    })->orWhere(function ($permissionScope) use ($user) {
-                        $permissionScope->where('table_name', 'edit_permission_requests')
-                            ->whereExists(function ($requestQuery) use ($user) {
-                                $requestQuery->selectRaw('1')
-                                    ->from('edit_permission_requests')
-                                    ->whereColumn('edit_permission_requests.request_id', 'audit_logs.record_id')
-                                    ->where('edit_permission_requests.requested_by', $user->user_id);
-                            });
                     });
+
+                    if ($user->isDepartmentHead()) {
+                        $scope->orWhere('table_name', 'edit_permission_requests');
+                    } else {
+                        $scope->orWhere(function ($permissionScope) use ($user) {
+                            $permissionScope->where('table_name', 'edit_permission_requests')
+                                ->whereExists(function ($requestQuery) use ($user) {
+                                    $requestQuery->selectRaw('1')
+                                        ->from('edit_permission_requests')
+                                        ->whereColumn('edit_permission_requests.request_id', 'audit_logs.record_id')
+                                        ->where(function ($requestOrReview) use ($user) {
+                                            $requestOrReview->where('edit_permission_requests.requested_by', $user->user_id)
+                                                ->orWhere('edit_permission_requests.reviewed_by', $user->user_id);
+                                        });
+                                });
+                        });
+                    }
                 } elseif ($user->role_slug === 'barangay') {
                     $scope->where(function ($projectScope) use ($user) {
                         $projectScope->where('table_name', 'projects')
