@@ -20,7 +20,9 @@
 
             <div style="margin:0 0 20px; font-size:14px; line-height:1.6; color:#475569;">
                 Create your password here:
-                <a href="{{ $setupUrl }}" style="color:#0f1e3d; font-weight:700; text-decoration:underline;">{{ $setupUrl }}</a>
+                <div style="margin-top:10px;">
+                    <a href="{{ $setupUrl }}" style="display:inline-block; color:#0f1e3d; font-weight:700; text-decoration:underline;">{{ $setupUrl }}</a>
+                </div>
             </div>
 
             <div style="margin:24px 0; padding:20px; border:1px solid #e2e8f0; border-radius:14px; background:#f8fafc;">
