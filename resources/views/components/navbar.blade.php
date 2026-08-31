@@ -22,7 +22,7 @@
 <script>
     window.__currentRole = @json($currentRole);
 </script>
-<header style="background-color: #F7F9FB; border-color: #E0E7F1;" class="border-b">
+<header class="border-b border-slate-200 bg-white shadow-sm">
     <div class="mx-auto flex max-w-7xl items-center justify-between gap-2 sm:gap-4 px-3 py-1.5 sm:px-4 sm:py-2 sm:px-6 lg:px-8">
         <!-- Hamburger Menu (Mobile/Tablet) -->
         <button id="sidebarToggle" class="xl:hidden flex-shrink-0 inline-flex items-center justify-center rounded-md p-1.5 sm:p-2 transition hover:bg-gray-200" style="color: #0F172A;">
@@ -47,13 +47,13 @@
         </div>
 
         <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0 overflow-visible">
-            <button id="darkModeBtn" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-2xl p-2 transition hover:opacity-80 sm:h-11 sm:w-11 sm:p-2.5" style="background-color: #F0F4F8; color: #0F172A;" title="Enable dark mode" aria-label="Enable dark mode" aria-pressed="false">
+            <button id="darkModeBtn" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-slate-100 p-2 text-slate-700 transition hover:bg-slate-200 sm:h-11 sm:w-11 sm:p-2.5" title="Enable dark mode" aria-label="Enable dark mode" aria-pressed="false">
                 <svg id="darkModeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364-.707-.707M6.343 6.343l-.707-.707m12.728 0-.707.707M6.343 17.657l-.707.707M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
             </button>
             <div class="relative overflow-visible">
-                <button id="notificationBtn" class="rounded-2xl p-2 sm:p-2.5 transition hover:opacity-80 relative" style="background-color: #F0F4F8; color: #0F172A;" title="Notifications" aria-label="Open notifications">
+                <button id="notificationBtn" class="relative rounded-2xl border border-slate-200 bg-slate-100 p-2 text-slate-700 transition hover:bg-slate-200 sm:p-2.5" title="Notifications" aria-label="Open notifications">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                     </svg>
@@ -82,7 +82,7 @@
             </div>
             @if(!$isPublicRoute)
                 <div class="relative">
-                    <button id="accountMenuBtn" type="button" class="navbar-user-name inline-flex max-w-[10rem] items-center gap-2 rounded-full px-2 py-2 text-xs font-semibold truncate transition hover:bg-slate-200 sm:max-w-[14rem] sm:px-4 sm:text-sm" style="color: #0F172A;" aria-expanded="false" aria-controls="accountMenu">
+                    <button id="accountMenuBtn" type="button" class="navbar-user-name inline-flex max-w-[10rem] items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-2 py-2 text-xs font-semibold text-slate-700 truncate transition hover:bg-slate-200 sm:max-w-[14rem] sm:px-4 sm:text-sm" aria-expanded="false" aria-controls="accountMenu">
                         <span class="truncate hidden sm:inline">{{ $userName }}</span>
                         <span class="sm:hidden">User</span>
                         <svg class="h-4 w-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
