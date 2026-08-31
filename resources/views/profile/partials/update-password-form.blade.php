@@ -1,45 +1,74 @@
 <section>
-    <form id="profilePasswordForm" method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+    <form id="profilePasswordForm" method="post" action="{{ route('password.update') }}" class="space-y-6">
         @csrf
         @method('put')
 
-        <div>
-            <x-input-label for="update_password_current_password" :value="__('Current Password')" />
-            <x-text-input id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
-            <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
-        </div>
-
-        <div>
-            <x-input-label for="update_password_password" :value="__('New Password')" />
-            <div class="relative mt-1">
-                <x-text-input id="update_password_password" name="password" type="password" class="block w-full pr-16" autocomplete="new-password" minlength="12" />
-                <button type="button" data-password-toggle="update_password_password" class="absolute inset-y-0 right-3 text-sm font-semibold text-gray-500 hover:text-gray-800">Show</button>
+        <div class="space-y-2">
+            <label for="update_password_current_password" class="block text-[0.65rem] font-semibold tracking-[0.22em] text-slate-500 uppercase">
+                Current Password
+            </label>
+            <div class="login-field rounded-2xl bg-slate-100 px-4 py-3 shadow-inner">
+                <div class="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 8V6a5 5 0 1110 0v2h1a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2v-6a2 2 0 012-2h1zm2-2a3 3 0 116 0v2H7V6z" clip-rule="evenodd" />
+                    </svg>
+                    <input id="update_password_current_password" name="current_password" type="password" required autocomplete="current-password" placeholder="Enter your current password" class="w-full bg-transparent border-none text-sm text-slate-900 outline-none focus:ring-0 placeholder:text-slate-400" />
+                </div>
             </div>
-            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
+            @error('current_password', 'updatePassword')
+                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+            @enderror
         </div>
 
-        <div class="rounded-lg border border-gray-200 bg-gray-50 p-3">
-            <div class="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-gray-500">
+        <div class="space-y-2">
+            <label for="update_password_password" class="block text-[0.65rem] font-semibold tracking-[0.22em] text-slate-500 uppercase">
+                New Password
+            </label>
+            <div class="login-field rounded-2xl bg-slate-100 px-4 py-3 shadow-inner">
+                <div class="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 8V6a5 5 0 1110 0v2h1a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2v-6a2 2 0 012-2h1zm2-2a3 3 0 116 0v2H7V6z" clip-rule="evenodd" />
+                    </svg>
+                    <input id="update_password_password" name="password" type="password" required autocomplete="new-password" minlength="12" placeholder="Create a new password" class="w-full bg-transparent border-none text-sm text-slate-900 outline-none focus:ring-0 placeholder:text-slate-400" />
+                    <button type="button" data-password-toggle="update_password_password" class="login-password-toggle text-sm font-semibold text-slate-400 hover:text-slate-600 transition">Show</button>
+                </div>
+            </div>
+            @error('password', 'updatePassword')
+                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+            <div class="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
                 <span>Password strength</span>
-                <span id="profilePasswordStrengthText">Weak</span>
+                <span id="profilePasswordStrengthText" class="text-red-500">Weak</span>
             </div>
-            <div class="h-2 overflow-hidden rounded-full bg-gray-200">
+            <div class="h-2 overflow-hidden rounded-full bg-slate-200">
                 <div id="profilePasswordStrengthBar" class="h-full w-0 rounded-full bg-red-500 transition-all duration-200"></div>
             </div>
-            <p class="mt-2 text-xs text-gray-500">At least 12 characters, mixed case, a number, and a symbol.</p>
+            <p class="mt-2 text-xs text-slate-500">At least 12 characters, mixed case, a number, and a symbol.</p>
         </div>
 
-        <div>
-            <x-input-label for="update_password_password_confirmation" :value="__('Confirm Password')" />
-            <div class="relative mt-1">
-                <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="block w-full pr-16" autocomplete="new-password" minlength="12" />
-                <button type="button" data-password-toggle="update_password_password_confirmation" class="absolute inset-y-0 right-3 text-sm font-semibold text-gray-500 hover:text-gray-800">Show</button>
+        <div class="space-y-2">
+            <label for="update_password_password_confirmation" class="block text-[0.65rem] font-semibold tracking-[0.22em] text-slate-500 uppercase">
+                Confirm Password
+            </label>
+            <div class="login-field rounded-2xl bg-slate-100 px-4 py-3 shadow-inner">
+                <div class="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 8V6a5 5 0 1110 0v2h1a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2v-6a2 2 0 012-2h1zm2-2a3 3 0 116 0v2H7V6z" clip-rule="evenodd" />
+                    </svg>
+                    <input id="update_password_password_confirmation" name="password_confirmation" type="password" required autocomplete="new-password" minlength="12" placeholder="Re-enter your new password" class="w-full bg-transparent border-none text-sm text-slate-900 outline-none focus:ring-0 placeholder:text-slate-400" />
+                    <button type="button" data-password-toggle="update_password_password_confirmation" class="login-password-toggle text-sm font-semibold text-slate-400 hover:text-slate-600 transition">Show</button>
+                </div>
             </div>
-            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
+            @error('password_confirmation', 'updatePassword')
+                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+            @enderror
         </div>
 
-        <div class="flex items-center gap-4">
-            <button id="profilePasswordSubmit" type="submit" class="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70">
+        <div class="flex items-center gap-4 pt-2">
+            <button id="profilePasswordSubmit" type="submit" class="login-submit-button inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70">
                 <span class="password-submit-spinner hidden h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" aria-hidden="true"></span>
                 <span class="password-submit-label">{{ __('Save') }}</span>
             </button>
@@ -96,8 +125,10 @@
             if (passwordForm && passwordSubmit) {
                 passwordForm.addEventListener('submit', function () {
                     passwordSubmit.disabled = true;
-                    passwordSubmit.querySelector('.password-submit-spinner').classList.remove('hidden');
-                    passwordSubmit.querySelector('.password-submit-label').textContent = 'Saving...';
+                    const spinner = passwordSubmit.querySelector('.password-submit-spinner');
+                    const label = passwordSubmit.querySelector('.password-submit-label');
+                    if (spinner) spinner.classList.remove('hidden');
+                    if (label) label.textContent = 'Saving...';
                 });
             }
         });
