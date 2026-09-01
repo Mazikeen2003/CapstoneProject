@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="login-page min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-emerald-50/50 to-slate-100 text-slate-900">
+    <div class="login-page min-h-screen flex flex-col bg-slate-100 text-slate-900">
         <div class="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
             <div class="w-full max-w-xl">
                 <div class="login-card mx-auto w-full rounded-[1.75rem] border border-slate-200/70 bg-white shadow-[0_25px_90px_rgba(15,23,42,0.12)] backdrop-blur-xl px-6 py-8 sm:px-10">
