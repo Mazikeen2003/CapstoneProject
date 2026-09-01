@@ -12,7 +12,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M5 8V6a5 5 0 1110 0v2h1a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2v-6a2 2 0 012-2h1zm2-2a3 3 0 116 0v2H7V6z" clip-rule="evenodd" />
                     </svg>
-                    <input id="update_password_current_password" name="current_password" type="password" required autocomplete="current-password" placeholder="Enter your current password" class="w-full bg-transparent border-none text-sm text-slate-900 outline-none focus:ring-0 placeholder:text-slate-400" />
+                    <input id="update_password_current_password" name="current_password" type="password" required autocomplete="current-password" placeholder="Enter your current password" class="w-full bg-transparent text-sm border-none outline-none focus:ring-0 text-slate-900 placeholder:text-slate-400" />
                 </div>
             </div>
             @error('current_password', 'updatePassword')
