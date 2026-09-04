@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container mx-auto px-4 py-6">
+<div class="container mx-auto px-0 py-4 sm:px-4 sm:py-6">
     <div class="mb-6 rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
@@ -30,14 +30,24 @@
         @forelse ($users as $user)
             <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div class="flex items-center justify-between gap-3">
-                    <div>
+                    <div class="min-w-0">
                         <p class="text-sm font-semibold text-slate-900">{{ $user->username }}</p>
-                        <p class="text-sm text-slate-500">{{ $user->user_email }}</p>
+                        <p class="truncate text-sm text-slate-500">{{ $user->user_email }}</p>
                     </div>
-                    <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ $user->role?->role_name ?? 'N/A' }}</span>
+                    <span class="inline-flex max-w-[40%] shrink-0 rounded-full bg-slate-100 px-3 py-1 text-right text-xs font-semibold text-slate-700">{{ $user->role?->role_name ?? 'N/A' }}</span>
                 </div>
                 <div class="mt-3 text-sm text-slate-600">
                     <p><span class="font-semibold text-slate-700">Barangay:</span> {{ $user->barangay?->barangay_name ?? 'N/A' }}</p>
+                </div>
+                <div class="mt-2 text-sm text-slate-600">
+                    <p>
+                        <span class="font-semibold text-slate-700">Status:</span>
+                        @if ($user->is_disabled)
+                            <span class="font-semibold text-rose-700">Disabled</span>
+                        @else
+                            <span class="font-semibold text-emerald-700">Active</span>
+                        @endif
+                    </p>
                 </div>
                 <div class="mt-4 flex flex-wrap gap-2">
                     <a href="{{ route('admin.users.edit', $user->user_id) }}" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50">Edit</a>
@@ -61,6 +71,7 @@
                     <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Email</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Role</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Barangay</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Status</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Actions</th>
                 </tr>
             </thead>
@@ -75,13 +86,15 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ $user->barangay?->barangay_name ?? 'N/A' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                            @if ($user->is_disabled)
+                                <span class="inline-flex rounded-full bg-rose-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-rose-700">Disabled</span>
+                            @else
+                                <span class="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">Active</span>
+                            @endif
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-700">
                             <div class="flex items-center gap-4">
-                                @if ($user->is_disabled)
-                                    <span class="inline-flex rounded-full bg-rose-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-rose-700">Disabled</span>
-                                @else
-                                    <span class="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">Active</span>
-                                @endif
                                 <a href="{{ route('admin.users.edit', $user->user_id) }}" class="text-slate-700 hover:text-slate-900 font-semibold">Edit</a>
                                 <form action="{{ route('admin.users.destroy', $user->user_id) }}" method="POST" class="inline delete-user-form">
                                     @csrf
@@ -93,7 +106,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-4 text-center text-slate-500">No users found</td>
+                        <td colspan="6" class="px-6 py-4 text-center text-slate-500">No users found</td>
                     </tr>
                 @endforelse
             </tbody>
