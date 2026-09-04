@@ -35,6 +35,7 @@ class ProjectFormController extends Controller
             'number' => (int) str_replace('form_', '', $type),
             'title' => $this->formTitle($type),
             'formType' => $type,
+            'formRoutePrefix' => Auth::user()?->role_slug === 'engineering' ? 'engineering' : 'department',
         ]);
     }
 
@@ -63,7 +64,7 @@ class ProjectFormController extends Controller
 
     public function update(Request $request, Project $project, string $type)
     {
-        $this->authorize('update', $project);
+        $this->authorize('updateForms', $project);
 
         abort_unless(in_array($type, ['form_1', 'form_2', 'form_3', 'form_4', 'form_5', 'form_6', 'form_7', 'form_8', 'form_9', 'form_10', 'form_11'], true), 404);
 
@@ -92,8 +93,10 @@ class ProjectFormController extends Controller
             AuditLogService::logCreate($form);
         }
 
+        $routePrefix = Auth::user()?->role_slug === 'engineering' ? 'engineering' : 'department';
+
         return redirect()
-            ->route('department.projects.show', $project->project_id)
+            ->route($routePrefix . '.projects.show', $project->project_id)
             ->with('success', 'Form ' . str_replace('form_', '', $type) . ' saved successfully.');
     }
 

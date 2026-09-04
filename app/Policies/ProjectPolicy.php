@@ -14,13 +14,13 @@ class ProjectPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role_slug, ['admin', 'city', 'department', 'barangay']);
+        return in_array($user->role_slug, ['admin', 'city', 'department', 'barangay', 'engineering']);
     }
 
     public function view(User $user, Project $project): bool
     {
         return match ($user->role_slug) {
-            'admin', 'city' => true,
+            'admin', 'city', 'engineering' => true,
             'department'    => true,
             'barangay'      => $project->barangay_id === $user->barangay_id,
             default         => false,
@@ -62,7 +62,7 @@ class ProjectPolicy
 
     public function generateReports(User $user): bool
     {
-        if (! in_array($user->role_slug, ['admin', 'city', 'department', 'barangay'])) {
+        if (! in_array($user->role_slug, ['admin', 'city', 'department', 'barangay', 'engineering'])) {
             return false;
         }
 
@@ -71,5 +71,22 @@ class ProjectPolicy
         }
 
         return $user->hasPermission('can_generate_reports');
+    }
+
+    public function updateForms(User $user, Project $project): bool
+    {
+        if (! in_array($user->role_slug, ['admin', 'department', 'engineering'], true)) {
+            return false;
+        }
+
+        if ($user->role_slug === 'admin') {
+            return true;
+        }
+
+        if ($user->role_slug === 'engineering') {
+            return true;
+        }
+
+        return $user->isDepartmentHead() || $project->created_by === $user->user_id || $user->hasPermission('can_edit_project');
     }
 }

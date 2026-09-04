@@ -31,6 +31,7 @@ class Role extends Model
             'City Official' => 'city',
             'Barangay Official' => 'barangay',
             'Department' => 'department',
+            'Engineering' => 'engineering',
         ];
 
         return $slugMap[$this->role_name] ?? strtolower(str_replace(' ', '-', $this->role_name));

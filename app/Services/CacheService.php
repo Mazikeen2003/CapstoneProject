@@ -117,6 +117,7 @@ class CacheService
 
                 $projectUrl = match ($user?->role_slug ?? 'public') {
                     'department' => route('department.projects.show', $project->project_id, false),
+                    'engineering' => route('engineering.projects.show', $project->project_id, false),
                     'city' => route('city.projects.show', $project->project_id, false),
                     'barangay' => route('barangay.projects.show', $project->project_id, false),
                     default => route('public.map', [], false),

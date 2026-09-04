@@ -28,6 +28,7 @@ class RoleScopedScope implements Scope
         match ($user->role_slug) {
             'department' => null, // department users can view projects broadly; policy controls actions
             'barangay'   => $builder->where('barangay_id', $user->barangay_id),
+            'engineering' => null, // engineering sees all projects by default; they are progress-focused reviewers
             default      => null, // admin and city see everything, no filter applied
         };
     }

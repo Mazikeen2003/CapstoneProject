@@ -29,6 +29,10 @@ class RoleSeeder extends Seeder
                 'role_name' => 'Barangay Official',
                 'role_description' => 'Barangay Official',
             ],
+            [
+                'role_name' => 'Engineering',
+                'role_description' => 'Engineering Staff',
+            ],
         ];
 
         foreach ($roles as $role) {

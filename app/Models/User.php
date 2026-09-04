@@ -130,6 +130,7 @@ class User extends Authenticatable
             2 => 'city',
             3 => 'department',
             4 => 'barangay',
+            5 => 'engineering',
             default => 'public',
         };
     }
@@ -150,6 +151,7 @@ class User extends Authenticatable
             'cityofficial', 'city' => 'city',
             'barangayofficial', 'barangay' => 'barangay',
             'department' => 'department',
+            'engineering' => 'engineering',
             default => $normalizedRole,
         };
 
