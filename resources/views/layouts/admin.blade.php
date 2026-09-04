@@ -19,7 +19,7 @@
                 @include('components.sidebar')
                 <div class="flex-1 flex flex-col overflow-hidden">
                     @include('components.navbar')
-                    <main class="flex-1 overflow-y-auto px-6 py-6">
+                    <main class="flex-1 overflow-y-auto px-3 py-4 sm:px-6 sm:py-6">
                         <div class="mx-auto max-w-7xl">
                             @yield('content')
                         </div>
