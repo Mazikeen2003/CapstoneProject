@@ -100,7 +100,7 @@ class CacheService
     {
         $query = $ignoreRoleScope ? Project::withoutRoleScope() : Project::query();
 
-        $projects = $query->with('barangay')->get();
+        $projects = $query->with(['barangay', 'latestUpdate'])->get();
 
         $features = $projects->map(function ($project) use ($user) {
                 $latitude = $project->latitude;
@@ -141,6 +141,7 @@ class CacheService
                         'image'             => $project->project_image ? Storage::url($project->project_image) : null,
                         'start_date'        => $project->start_date?->toDateString(),
                         'target_end_date'   => $project->target_end_date?->toDateString(),
+                        'progress_percentage' => $project->latestUpdate?->progress_percentage,
                         'url'               => $projectUrl,
                     ],
                 ];

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\ProjectUpdate;
 use App\Services\AuditLogService;
+use App\Services\CacheService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -53,6 +54,7 @@ class ProjectController extends Controller
         ]);
 
         AuditLogService::logCreate($update);
+        CacheService::invalidateGeoJsonCache();
 
         return redirect()
             ->route('engineering.projects.show', $project->project_id)

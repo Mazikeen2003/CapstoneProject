@@ -62,6 +62,12 @@
         }
 
         function calculateProgress(project) {
+            const reportedProgress = project.properties.progress_percentage;
+
+            if (reportedProgress !== null && reportedProgress !== undefined && reportedProgress !== '') {
+                return Math.min(100, Math.max(0, Number(reportedProgress)));
+            }
+
             if (!project.properties.start_date || !project.properties.target_end_date) {
                 return 0;
             }
