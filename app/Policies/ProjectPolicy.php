@@ -33,24 +33,30 @@ class ProjectPolicy
             return false;
         }
 
+        if ($user->isDepartmentHead()) {
+            return true;
+        }
+
         return $user->hasPermission('can_create_project');
     }
 
     public function update(User $user, Project $project): bool
     {
         return match ($user->role_slug) {
-            'admin'      => true,
-            'department' => $project->created_by === $user->user_id && $user->hasPermission('can_edit_project'),
-            default      => false,
+            'admin' => true,
+            'department' => $user->isDepartmentHead()
+                || ($project->created_by === $user->user_id && $user->hasPermission('can_edit_project')),
+            default => false,
         };
     }
 
     public function delete(User $user, Project $project): bool
     {
         return match ($user->role_slug) {
-            'admin'      => true,
-            'department' => $project->created_by === $user->user_id && $user->hasPermission('can_delete_project'),
-            default      => false,
+            'admin' => true,
+            'department' => $user->isDepartmentHead()
+                || ($project->created_by === $user->user_id && $user->hasPermission('can_delete_project')),
+            default => false,
         };
     }
 
@@ -58,6 +64,10 @@ class ProjectPolicy
     {
         if (! in_array($user->role_slug, ['admin', 'city', 'department', 'barangay'])) {
             return false;
+        }
+
+        if ($user->isDepartmentHead()) {
+            return true;
         }
 
         return $user->hasPermission('can_generate_reports');

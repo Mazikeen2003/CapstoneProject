@@ -12,6 +12,15 @@ class Project extends Model
 {
     use SoftDeletes;
 
+    public const LIFECYCLE_STAGES = [
+        1 => 'Proposed',
+        2 => 'For Bidding',
+        3 => 'Bidding Ongoing',
+        4 => 'Award of Contract',
+        5 => 'Implementation',
+        6 => 'Completed',
+    ];
+
     protected $primaryKey = 'project_id';
     protected $keyType = 'int';
     public $timestamps = true;
@@ -31,6 +40,7 @@ class Project extends Model
         'target_end_date',
         'actual_end_date',
         'current_status',
+        'lifecycle_stage',
         'remarks',
         'project_image',
         'created_by',
@@ -50,6 +60,7 @@ class Project extends Model
         'start_date' => 'datetime',
         'target_end_date' => 'datetime',
         'actual_end_date' => 'datetime',
+        'lifecycle_stage' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
@@ -162,6 +173,32 @@ class Project extends Model
     public function scopeForUser($query)
     {
         return $query->where('created_by', auth()->id());
+    }
+
+    public static function syncCurrentStatusFromLifecycleStage(?int $stage): string
+    {
+        return match ((int) ($stage ?? 1)) {
+            1 => 'Proposed',
+            2 => 'For bidding',
+            3 => 'Bidding ongoing',
+            4 => 'Award of contract',
+            5 => 'On Going',
+            6 => 'Completed',
+            default => 'Proposed',
+        };
+    }
+
+    public static function syncLifecycleStageFromCurrentStatus(?string $status): int
+    {
+        return match ($status ?? 'Proposed') {
+            'Proposed' => 1,
+            'For bidding' => 2,
+            'Bidding ongoing' => 3,
+            'Award of contract' => 4,
+            'Implementation', 'On Going' => 5,
+            'Completed' => 6,
+            default => 1,
+        };
     }
 
     // Helper to bypass role scope when needed

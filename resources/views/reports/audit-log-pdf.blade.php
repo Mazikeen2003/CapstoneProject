@@ -34,6 +34,7 @@
             <tr>
                 <th>Date</th>
                 <th>User</th>
+                <th>IP Address</th>
                 <th>Full Name</th>
                 <th>Action</th>
                 <th>Table</th>
@@ -46,6 +47,7 @@
                 <tr>
                     <td>{{ $log->created_at?->format('M d, Y h:i A') }}</td>
                     <td>{{ $log->user->username ?? 'Unknown' }}</td>
+                    <td>{{ $log->ip_address ?: 'N/A' }}</td>
                     <td>{{ $log->full_name ?: ($log->user->full_name ?? 'Unknown') }}</td>
                     <td>{{ ucfirst($log->action) }}</td>
                     <td>{{ $log->table_name }}</td>

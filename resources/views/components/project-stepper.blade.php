@@ -5,6 +5,7 @@
         'Bidding ongoing',
         'Award of contract',
         'Implementation',
+        'Completed',
     ];
 
     $stageByStatus = [
@@ -17,7 +18,7 @@
         'Procurement' => 1,
         'Bidding - Success' => 3,
         'On Going' => 4,
-        'Completed' => 4,
+        'Completed' => 5,
     ];
 
     $activeStep = $stageByStatus[$project->current_status] ?? null;
@@ -37,7 +38,7 @@
         @endif
     </div>
 
-    <div class="mt-6 grid grid-cols-5 gap-1 sm:gap-3">
+    <div class="mt-6 grid grid-cols-6 gap-1 sm:gap-3">
         @foreach ($steps as $index => $step)
             @php
                 $isComplete = $activeStep !== null && $index < $activeStep;

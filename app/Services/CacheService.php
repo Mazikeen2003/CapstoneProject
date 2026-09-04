@@ -102,7 +102,7 @@ class CacheService
 
         $projects = $query->with('barangay')->get();
 
-        $features = $projects->map(function ($project) {
+        $features = $projects->map(function ($project) use ($user) {
                 $latitude = $project->latitude;
                 $longitude = $project->longitude;
 
@@ -114,6 +114,13 @@ class CacheService
                 if (empty($latitude) || empty($longitude)) {
                     return null;
                 }
+
+                $projectUrl = match ($user?->role_slug ?? 'public') {
+                    'department' => route('department.projects.show', $project->project_id, false),
+                    'city' => route('city.projects.show', $project->project_id, false),
+                    'barangay' => route('barangay.projects.show', $project->project_id, false),
+                    default => route('public.map', [], false),
+                };
 
                 return [
                     'type'       => 'Feature',
@@ -133,6 +140,7 @@ class CacheService
                         'image'             => $project->project_image ? Storage::url($project->project_image) : null,
                         'start_date'        => $project->start_date?->toDateString(),
                         'target_end_date'   => $project->target_end_date?->toDateString(),
+                        'url'               => $projectUrl,
                     ],
                 ];
             })

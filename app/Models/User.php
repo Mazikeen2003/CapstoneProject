@@ -21,7 +21,9 @@ class User extends Authenticatable
         'username',
         'user_email',
         'password_hash',
+        'must_change_password',
         'role_id',
+        'is_department_head',
         'barangay_id',
         'permissions',
         'is_disabled',
@@ -43,6 +45,8 @@ class User extends Authenticatable
         'disabled_at' => 'datetime',
         'otp_expires_at' => 'datetime',
         'permissions' => 'array',
+        'must_change_password' => 'boolean',
+        'is_department_head' => 'boolean',
     ];
 
     // Relationships
@@ -176,9 +180,18 @@ class User extends Authenticatable
         return (int) $this->user_id === (int) $firstAdminId;
     }
 
+    public function isDepartmentHead(): bool
+    {
+        if (! in_array($this->role_slug, ['department', 'admin'], true)) {
+            return false;
+        }
+
+        return (bool) $this->is_department_head;
+    }
+
     public function hasPermission(string $key): bool
     {
-        if ($this->isPrimaryAdmin() || ! in_array($this->role_slug, ['admin', 'department'], true)) {
+        if ($this->isPrimaryAdmin() || $this->isDepartmentHead() || ! in_array($this->role_slug, ['admin', 'department'], true)) {
             return true;
         }
 

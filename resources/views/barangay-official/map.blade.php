@@ -90,7 +90,7 @@
                         weight: 2,
                         opacity: 0.7,
                         fillOpacity: 0.6
-                    }).bindPopup(`<div class="text-sm"><h4 class="font-bold text-black">${barangay.properties.name}</h4></div>`).addTo(map);
+                    }).bindPopup(`<div class="text-sm" style="color: ${document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#000'}"><h4 class="font-bold" style="color: ${document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#000'}">${barangay.properties.name}</h4></div>`).addTo(map);
                 });
 
                 const projectMarkers = L.featureGroup();
@@ -357,13 +357,7 @@
                                 fillOpacity: 0.9
                             });
 
-                            marker.bindPopup(`
-                                <div class="p-2 text-sm">
-                                    <h4 class="font-bold text-black">${project.properties.name}</h4>
-                                    <p class="text-xs text-gray-600 mt-1">Status: ${project.properties.status || 'Unknown'}</p>
-                                </div>
-                            `);
-
+                            marker.bindPopup(`<div class="text-sm" style="color: ${document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#000'}"><h4 class="font-bold" style="color: ${document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#000'}">${project.properties.name}</h4><p class="text-xs" style="color: ${document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#4b5563'}">${project.properties.status || 'Unknown'}</p></div>`);
                             marker.on('click', function(e) {
                                 L.DomEvent.stopPropagation(e);
                                 selectProject(projectFeatures[projectIndex], projectIndex, true);

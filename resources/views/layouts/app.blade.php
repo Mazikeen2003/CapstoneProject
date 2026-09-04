@@ -7,6 +7,7 @@
 
         <title>{{ config('app.name', 'Cabuyao Project Tracker') }}</title>
         @include('layouts.favicon')
+        @include('components.theme-init')
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -15,8 +16,8 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+    <body class="font-sans antialiased bg-[#5f7483]">
+        <div class="min-h-screen bg-[#5f7483]">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -30,7 +31,7 @@
 
             <!-- Page Content -->
             <main>
-                @yield('content')
+                {{ $slot }}
             </main>
         </div>
     </body>

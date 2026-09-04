@@ -131,6 +131,7 @@
                                     @endif
                                 </a>
                             </th>
+                            <th class="text-left py-3 px-4 font-semibold text-black">IP Address</th>
                             <th class="text-left py-3 px-4 font-semibold text-black">Full Name</th>
                             <th class="text-left py-3 px-4 font-semibold text-black">
                                 <a href="{{ route('admin.audit-logs.index', array_merge(request()->except('page'), ['sort' => request('sort') === 'action_asc' ? 'action_desc' : 'action_asc'])) }}" class="inline-flex items-center gap-2">
@@ -152,6 +153,7 @@
                             <tr style="border-bottom: 1px solid #B2BEB5;">
                                 <td class="py-3 px-4 text-black">{{ $log->created_at?->format('M d, Y h:i A') }}</td>
                                 <td class="py-3 px-4 text-black">{{ $log->user->username ?? 'Unknown' }}</td>
+                                <td class="py-3 px-4 text-black">{{ $log->ip_address ?: 'N/A' }}</td>
                                 <td class="py-3 px-4 text-black">{{ $log->full_name ?: ($log->user->full_name ?? 'Unknown') }}</td>
                                 <td class="py-3 px-4 text-black capitalize">{{ $log->action }}</td>
                                 <td class="py-3 px-4 text-black">{{ $log->table_name }}</td>

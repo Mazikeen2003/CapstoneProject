@@ -120,10 +120,6 @@ Route::middleware(['auth', 'admin'])
         Route::post('/reports/generate', [AdminReportController::class, 'generate'])->middleware('admin.permission:can_view_reports')->name('reports.generate');
         Route::get('/reports/{report}/download', [AdminReportController::class, 'download'])->middleware('admin.permission:can_view_reports')->name('reports.download');
 
-        Route::get('/project-permissions', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'index'])->middleware('admin.permission:can_manage_project_permissions')->name('project-permissions.index');
-        Route::post('/project-permissions/{id}/approve', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'approve'])->middleware('admin.permission:can_manage_project_permissions')->name('project-permissions.approve');
-        Route::post('/project-permissions/{id}/reject', [\App\Http\Controllers\Admin\ProjectPermissionController::class, 'reject'])->middleware('admin.permission:can_manage_project_permissions')->name('project-permissions.reject');
-
         Route::get('/backups', [AdminBackupController::class, 'index'])->middleware('admin.permission:can_manage_backups')->name('backups.index');
         Route::post('/backups/manual', [AdminBackupController::class, 'manual'])->middleware('admin.permission:can_manage_backups')->name('backups.manual');
         Route::get('/backups/{backup}/download', [AdminBackupController::class, 'download'])->middleware('admin.permission:can_manage_backups')->name('backups.download');
@@ -160,6 +156,11 @@ Route::middleware(['auth', 'department'])
 
         Route::get('/map',       [DepartmentMapController::class,      'index'])->name('map.index');
         Route::get('/analytics', [DepartmentAnalyticsController::class, 'index'])->name('analytics.index');
+
+        Route::get('/project-permissions', [\App\Http\Controllers\Department\ProjectPermissionController::class, 'index'])->name('project-permissions.index');
+        Route::post('/project-permissions/{id}/approve', [\App\Http\Controllers\Department\ProjectPermissionController::class, 'approve'])->name('project-permissions.approve');
+        Route::post('/project-permissions/{id}/reject', [\App\Http\Controllers\Department\ProjectPermissionController::class, 'reject'])->name('project-permissions.reject');
+
         Route::get('/reports',   [DepartmentReportController::class,    'index'])->name('reports.index');
         Route::get('/reports', [\App\Http\Controllers\Department\ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/projects/pdf', [\App\Http\Controllers\Department\ReportController::class, 'projectsPdf'])->name('reports.projects-pdf');

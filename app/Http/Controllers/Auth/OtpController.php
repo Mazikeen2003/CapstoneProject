@@ -71,6 +71,10 @@ class OtpController extends Controller
         Auth::login($user, $remember);
         $request->session()->regenerate();
 
+        if ($user->must_change_password) {
+            return redirect()->route('password.change');
+        }
+
         return redirect()->route("{$user->role_slug}.dashboard");
     }
 

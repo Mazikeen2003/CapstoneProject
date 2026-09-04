@@ -53,12 +53,6 @@
                             </span>
                             User Access
                         </a>
-                        <a href="{{ url('/admin/project-permissions') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('admin/project-permissions') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Project Edit Permissions">
-                            <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Permissions">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.25 3.44 10.17 9 12 5.56-1.83 9-6.75 9-12V5l-9-4zm0 2.18l6 2.67v4.15c0 4.15-2.74 8.16-6 9.49-3.26-1.33-6-5.34-6-9.49V5.85l6-2.67zm-1 4.84h2v5h-2zm0 6h2v2h-2z"/></svg>
-                            </span>
-                            Permissions
-                        </a>
                         <a href="{{ url('/admin/reports') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('admin/reports') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="System Reports">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Reports">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 9c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm3 6H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/></svg>
@@ -104,6 +98,14 @@
                             </span>
                             Analytics
                         </a>
+                        @if(Auth::check() && Auth::user()->isDepartmentHead())
+                            <a href="{{ url('/department/project-permissions') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('department.project-permissions.*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Permission Requests">
+                                <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Permission Requests">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.25 3.44 10.17 9 12 5.56-1.83 9-6.75 9-12V5l-9-4zm0 2.18l6 2.67v4.15c0 4.15-2.74 8.16-6 9.49-3.26-1.33-6-5.34-6-9.49V5.85l6-2.67zm-1 4.84h2v5h-2zm0 6h2v2h-2z"/></svg>
+                                </span>
+                                Permission Requests
+                            </a>
+                        @endif
                         <a href="{{ url('/department/reports') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('department.reports*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Reports">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Reports">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 9c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm3 6H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/></svg>
@@ -283,6 +285,15 @@
         html.sidebar-collapsed #sidebar .sidebar-content {
             padding-left: 0.75rem;
             padding-right: 0.75rem;
+        }
+
+        html.sidebar-collapsed #sidebar .hidden.xl\:flex.justify-end {
+            justify-content: center !important;
+        }
+
+        html.sidebar-collapsed #sidebar .sidebar-collapse-toggle {
+            margin-left: auto;
+            margin-right: auto;
         }
 
         html.sidebar-collapsed #sidebar .sidebar-brand-name {

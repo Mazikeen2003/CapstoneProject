@@ -15,7 +15,9 @@ class DepartmentMiddleware
             return redirect()->route('login');
         }
 
-        if (Auth::user()->role_slug !== 'department') {
+        $user = Auth::user();
+
+        if ($user->role_slug !== 'department' && ! $user->isDepartmentHead()) {
             abort(403, 'Access denied. Department privileges required.');
         }
 

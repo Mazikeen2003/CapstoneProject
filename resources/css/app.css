@@ -24,6 +24,40 @@ html.dark-mode header {
     border-color: #334155 !important;
 }
 
+html.dark-mode #darkModeBtn,
+html.dark-mode #notificationBtn,
+html.dark-mode .navbar-user-name {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+    color: #f8fafc !important;
+}
+
+html.dark-mode #darkModeBtn:hover,
+html.dark-mode #notificationBtn:hover,
+html.dark-mode .navbar-user-name:hover {
+    background-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+html.dark-mode #accountMenu {
+    background-color: #0f172a !important;
+    border-color: #475569 !important;
+    color: #f8fafc !important;
+}
+
+html.dark-mode #accountMenu .text-slate-900,
+html.dark-mode #accountMenu p,
+html.dark-mode #accountMenu a,
+html.dark-mode #accountMenu [role='menuitem'] {
+    color: #f8fafc !important;
+}
+
+html.dark-mode #accountMenu a:hover,
+html.dark-mode #accountMenu [role='menuitem']:hover {
+    background-color: #1e293b !important;
+    color: #f8fafc !important;
+}
+
 html.dark-mode .bg-white,
 html.dark-mode .bg-slate-50,
 html.dark-mode .bg-gray-50 {
@@ -239,6 +273,28 @@ html.dark-mode .department-create-project #createProjectButton {
     color: #0f172a !important;
     border: 1px solid #d1d5db;
     font-weight: 600;
+}
+
+.department-edit-project-cancel-button,
+.department-edit-project-submit-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.department-edit-project-cancel-button {
+    background-color: #e5e7eb !important;
+    color: #0f172a !important;
+    border: 1px solid #d1d5db;
+    font-weight: 600;
+}
+
+.department-edit-project-submit-button {
+    background-color: #c9a84c !important;
+    color: #0f1e3d !important;
+    border: 1px solid #b89637;
+    font-weight: 700;
 }
 
 html.dark-mode .department-create-cancel {
