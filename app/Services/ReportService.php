@@ -46,7 +46,7 @@ class ReportService
 
         return [
             'title'           => match ($user->role_slug) {
-                'department' => 'Department Project Report',
+                'department' => 'Planning Project Report',
                 'city'       => 'Citywide Project Report',
                 'barangay'   => 'Barangay ' . ($user->barangay->barangay_name ?? 'Unknown') . ' Report',
                 'admin'      => 'System-Wide Project Report',

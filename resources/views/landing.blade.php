@@ -27,7 +27,7 @@
         }
     </style>
 </head>
-<body class="bg-white font-sans text-slate-900 antialiased">
+<body class="public-layout bg-white font-sans text-slate-900 antialiased">
 
     {{-- ============ TOP NAV ============ --}}
     <header class="sticky top-0 z-50 glass-nav w-full border-b border-slate-200/50">

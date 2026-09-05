@@ -17,7 +17,7 @@
         @include('components.theme-init')
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased" style="background-color: #F7F9FB; color: #0F172A;">
+    <body class="public-layout font-sans antialiased" style="background-color: #F7F9FB; color: #0F172A;">
         <div class="flex flex-col xl:flex-row min-h-screen">
             @include('components.sidebar')
             <div class="flex-1 flex flex-col xl:overflow-hidden">

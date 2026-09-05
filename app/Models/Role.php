@@ -30,6 +30,7 @@ class Role extends Model
             'Admin' => 'admin',
             'City Official' => 'city',
             'Barangay Official' => 'barangay',
+            'Planning' => 'department',
             'Department' => 'department',
             'Engineering' => 'engineering',
         ];

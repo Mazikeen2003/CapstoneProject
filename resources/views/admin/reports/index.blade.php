@@ -17,7 +17,7 @@
     @endif
 
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
+        <div class="rounded-3xl border border-slate-400 bg-white p-6 shadow-sm">
             <h2 class="text-xl font-semibold text-slate-900">System usage</h2>
             <p class="mt-2 text-sm text-slate-500">Login activity and active users by role.</p>
             <div class="mt-5 space-y-3 text-sm text-slate-700">
@@ -52,7 +52,7 @@
             </div>
         </div>
 
-        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
+        <div class="rounded-3xl border border-slate-400 bg-white p-6 shadow-sm">
             <h2 class="text-xl font-semibold text-slate-900">Activity summary</h2>
             <p class="mt-2 text-sm text-slate-500">Audit log activity and top contributors.</p>
             <div class="mt-5 space-y-4 text-sm text-slate-700">
@@ -81,7 +81,7 @@
             </div>
         </div>
 
-        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
+        <div class="rounded-3xl border border-slate-400 bg-white p-6 shadow-sm">
             <h2 class="text-xl font-semibold text-slate-900">Peak usage</h2>
             <p class="mt-2 text-sm text-slate-500">Realtime hourly activity for the last 24 hours.</p>
             <div class="mt-5 space-y-2 text-sm text-slate-700">
@@ -96,7 +96,7 @@
     </div>
 
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+        <div class="bg-white rounded-3xl border border-slate-400 p-6 shadow-sm">
             <h2 class="text-xl font-semibold text-slate-900">Data quality</h2>
             <p class="mt-2 text-sm text-slate-500">Validation issues and orphaned records.</p>
             <div class="mt-5 space-y-3 text-sm text-slate-700">
@@ -119,7 +119,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm xl:col-span-2">
+        <div class="bg-white rounded-3xl border border-slate-400 p-6 shadow-sm xl:col-span-2">
             <h2 class="text-xl font-semibold text-slate-900">Technical / compliance</h2>
             <p class="mt-2 text-sm text-slate-500">Checks for synchronization and audit readiness.</p>
             <div class="mt-5 grid gap-4 sm:grid-cols-2">
@@ -143,7 +143,7 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+    <div class="bg-white rounded-3xl border border-slate-400 p-6 shadow-sm">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
                 <h2 class="text-xl font-semibold text-slate-900">Generate stored report</h2>
@@ -164,7 +164,7 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+    <div class="bg-white rounded-3xl border border-slate-400 p-6 shadow-sm">
         <h2 class="text-xl font-semibold text-slate-900">Report history</h2>
         <p class="mt-2 text-sm text-slate-500">Previously generated reports with persisted snapshots and downloadable PDF files.</p>
 
@@ -173,7 +173,7 @@
                 No generated reports have been stored yet.
             </div>
         @else
-            <div class="mt-6 overflow-x-auto rounded-3xl border border-slate-200">
+            <div class="mt-6 overflow-x-auto rounded-3xl border border-slate-400">
                 <table class="min-w-full divide-y divide-slate-200 text-sm">
                     <thead class="admin-card-header bg-slate-50 text-left text-slate-500">
                         <tr>
@@ -206,7 +206,7 @@
                 </table>
             </div>
 
-            <div class="mt-4 flex items-center justify-between rounded-3xl border border-slate-200 bg-white px-4 py-3">
+            <div class="mt-4 flex items-center justify-between rounded-3xl border border-slate-400 bg-white px-4 py-3">
                 <div class="text-sm text-slate-500">Showing {{ $reportHistory->firstItem() ?? 0 }} to {{ $reportHistory->lastItem() ?? 0 }} of {{ $reportHistory->total() }} reports</div>
                 <div class="text-sm">
                     {{ $reportHistory->links() }}

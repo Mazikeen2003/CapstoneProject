@@ -87,7 +87,7 @@
         }
     </style>
 </head>
-<body class="bg-white font-sans text-slate-900 antialiased">
+<body class="public-layout bg-white font-sans text-slate-900 antialiased">
 
     {{-- ============ TOP NAV (same as landing page) ============ --}}
     <header class="public-map-header glass-nav w-full border-b border-slate-200/50">

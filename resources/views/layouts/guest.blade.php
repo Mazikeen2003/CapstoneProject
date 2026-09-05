@@ -35,6 +35,11 @@
                     </div>
                 </div>
 
+                <div class="guest-public-nav absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 text-xs font-semibold uppercase tracking-widest md:flex" style="font-family:'Public Sans',sans-serif;">
+                    <a href="{{ url('/') }}" class="py-2 transition-colors {{ request()->is('/') ? 'text-emerald-700' : 'text-slate-500 hover:text-emerald-700' }}">Home</a>
+                    <a href="{{ route('public.map') }}" class="py-2 transition-colors {{ request()->routeIs('public.map') ? 'text-emerald-700' : 'text-slate-500 hover:text-emerald-700' }}">Public Map</a>
+                    <a href="{{ route('public.analytics') }}" class="py-2 transition-colors {{ request()->routeIs('public.analytics') ? 'text-emerald-700' : 'text-slate-500 hover:text-emerald-700' }}">Analytics</a>
+                </div>
 
 
                 <div class="flex items-center gap-2">
@@ -42,6 +47,14 @@
                     <a href="{{ route('login') }}" class="public-login-button shrink-0 rounded-md bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 sm:px-5">Login</a>
                 </div>
             </nav>
+
+            <div class="guest-public-nav-mobile border-t border-slate-200/50 px-4 py-3 md:hidden">
+                <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-semibold uppercase tracking-widest" style="font-family:'Public Sans',sans-serif;">
+                    <a href="{{ url('/') }}" class="transition-colors {{ request()->is('/') ? 'text-emerald-700' : 'text-slate-500 hover:text-emerald-700' }}">Home</a>
+                    <a href="{{ route('public.map') }}" class="transition-colors {{ request()->routeIs('public.map') ? 'text-emerald-700' : 'text-slate-500 hover:text-emerald-700' }}">Public Map</a>
+                    <a href="{{ route('public.analytics') }}" class="transition-colors {{ request()->routeIs('public.analytics') ? 'text-emerald-700' : 'text-slate-500 hover:text-emerald-700' }}">Analytics</a>
+                </div>
+            </div>
 
         </header>
 

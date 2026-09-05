@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mx-auto px-0 py-4 sm:px-4 sm:py-6">
-    <div class="mb-6 rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
+    <div class="mb-6 rounded-3xl border border-slate-400 bg-slate-50 p-6 shadow-sm">
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
                 <h1 class="text-3xl font-bold text-slate-900">User Access</h1>
@@ -26,9 +26,27 @@
         </div>
     @endif
 
+    <form method="GET" action="{{ route('admin.users.index') }}" class="mb-6 rounded-3xl border border-slate-400 bg-white p-5 shadow-sm">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div class="w-full sm:max-w-xs">
+                <label for="role_id" class="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Filter by role</label>
+                <select id="role_id" name="role_id" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900">
+                    <option value="">All roles</option>
+                    @foreach ($roles as $role)
+                        <option value="{{ $role->role_id }}" @selected((string) request('role_id') === (string) $role->role_id)>{{ $role->role_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="flex gap-2">
+                <button type="submit" class="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">Filter</button>
+                <a href="{{ route('admin.users.index') }}" class="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Clear</a>
+            </div>
+        </div>
+    </form>
+
     <div class="space-y-4 md:hidden">
         @forelse ($users as $user)
-            <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div class="rounded-3xl border border-slate-400 bg-white p-4 shadow-sm">
                 <div class="flex items-center justify-between gap-3">
                     <div class="min-w-0">
                         <p class="text-sm font-semibold text-slate-900">{{ $user->username }}</p>
@@ -59,12 +77,20 @@
                 </div>
             </div>
         @empty
-            <div class="rounded-3xl border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">No users found</div>
+            <div class="rounded-3xl border border-slate-400 bg-slate-50 p-6 text-center text-sm text-slate-500">No users found</div>
         @endforelse
     </div>
 
-    <div class="hidden md:block overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-200">
-        <table class="min-w-full divide-y divide-slate-200">
+    <div class="hidden overflow-x-auto rounded-3xl border border-slate-400 bg-white shadow-sm md:block">
+        <table class="min-w-full table-fixed divide-y divide-slate-200">
+            <colgroup>
+                <col class="w-[18%]">
+                <col class="w-[28%]">
+                <col class="w-[15%]">
+                <col class="w-[18%]">
+                <col class="w-[11%]">
+                <col class="w-[10%]">
+            </colgroup>
             <thead class="admin-card-header bg-slate-100">
                 <tr>
                     <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Username</th>
@@ -113,8 +139,21 @@
         </table>
     </div>
 
-    <div class="mt-6">
-        {{ $users->links() }}
+    <div class="mt-6 flex items-center justify-between gap-4 text-sm text-slate-600">
+        <span>Page {{ $users->currentPage() }} of {{ $users->lastPage() }}</span>
+        <div class="flex items-center gap-2">
+            @if ($users->onFirstPage())
+                <span class="cursor-not-allowed rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-700 opacity-40">Previous</span>
+            @else
+                <a href="{{ $users->previousPageUrl() }}" class="rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-700 transition hover:bg-slate-50">Previous</a>
+            @endif
+
+            @if ($users->hasMorePages())
+                <a href="{{ $users->nextPageUrl() }}" class="rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-700 transition hover:bg-slate-50">Next</a>
+            @else
+                <span class="cursor-not-allowed rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-700 opacity-40">Next</span>
+            @endif
+        </div>
     </div>
 
     <div id="adminDeleteConfirmModal" class="fixed inset-0 z-[99999] hidden items-center justify-center bg-slate-950/60 p-4" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; width: 100vw !important; min-width: 100vw !important; height: 100vh !important; min-height: 100vh !important;">

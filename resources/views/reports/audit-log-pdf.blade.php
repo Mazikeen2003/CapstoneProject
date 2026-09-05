@@ -6,13 +6,13 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; color: #333; font-size: 11px; line-height: 1.4; }
-        .header { text-align: center; margin-bottom: 20px; border-bottom: 3px solid #0F1E3D; padding-bottom: 10px; }
+        .header { text-align: center; margin: 0 auto 20px; border-bottom: 3px solid #0F1E3D; padding-bottom: 10px; }
         .header h1 { color: #0F1E3D; font-size: 18px; margin-bottom: 5px; }
         .header p { color: #666; font-size: 10px; }
-        .metadata { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 10px; color: #666; }
-        .table-wrap { width: 100%; border-collapse: collapse; }
+        .metadata { display: flex; justify-content: center; gap: 80px; margin: 0 auto 15px; font-size: 10px; color: #666; text-align: center; }
+        .table-wrap { width: 100%; margin: 0 auto; border-collapse: collapse; }
         .table-wrap th, .table-wrap td { border: 1px solid #ddd; padding: 8px; }
-        .table-wrap th { background: #c9a84c; color: #0F1E3D; font-weight: bold; text-align: left; font-size: 10px; }
+        .table-wrap th { background: #c9a84c; color: #0F1E3D; font-weight: bold; text-align: center; font-size: 10px; }
         .table-wrap tbody tr:nth-child(even) { background: #f9f9f9; }
         .footer { margin-top: 20px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 9px; color: #999; }
         .details { font-size: 9px; color: #444; }

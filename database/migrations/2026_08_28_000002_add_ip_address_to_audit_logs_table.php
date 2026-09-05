@@ -8,15 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('audit_logs', function (Blueprint $table) {
-            $table->string('ip_address', 45)->nullable()->after('full_name');
-        });
+        if (Schema::hasColumn('audit_logs', 'ip_address')) {
+            Schema::table('audit_logs', function (Blueprint $table) {
+                $table->dropColumn('ip_address');
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('audit_logs', function (Blueprint $table) {
-            $table->dropColumn('ip_address');
-        });
+        if (! Schema::hasColumn('audit_logs', 'ip_address')) {
+            Schema::table('audit_logs', function (Blueprint $table) {
+                $table->string('ip_address', 45)->nullable()->after('full_name');
+            });
+        }
     }
 };

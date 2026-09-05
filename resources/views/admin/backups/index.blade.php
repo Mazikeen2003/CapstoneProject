@@ -13,7 +13,38 @@
         </div>
     @endif
 
-    <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+    <form method="GET" action="{{ route('admin.backups.index') }}" class="rounded-3xl border border-slate-400 bg-white p-5 shadow-sm">
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5 xl:items-end">
+            <div>
+                <label for="status" class="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Status</label>
+                <select id="status" name="status" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900">
+                    <option value="">All statuses</option>
+                    @foreach ($statuses as $status)
+                        <option value="{{ $status }}" @selected(request('status') === $status)>{{ ucfirst($status) }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label for="trigger_type" class="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Trigger type</label>
+                <select id="trigger_type" name="trigger_type" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900">
+                    <option value="">All trigger types</option>
+                    @foreach ($triggerTypes as $triggerType)
+                        <option value="{{ $triggerType }}" @selected(request('trigger_type') === $triggerType)>{{ ucfirst(str_replace('_', ' ', $triggerType)) }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label for="created_date" class="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Created date</label>
+                <input id="created_date" name="created_date" type="date" value="{{ request('created_date') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900">
+            </div>
+            <div class="flex flex-col gap-2 sm:flex-row xl:justify-end">
+                <button type="submit" class="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">Filter</button>
+                <a href="{{ route('admin.backups.index') }}" class="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Clear</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="bg-white rounded-3xl border border-slate-400 p-6 shadow-sm">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
                 <h2 class="text-xl font-semibold text-slate-900">Backup management</h2>
@@ -30,7 +61,7 @@
 
     <div class="space-y-4 md:hidden">
         @forelse($backups as $backup)
-            <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div class="rounded-3xl border border-slate-400 bg-white p-4 shadow-sm">
                 <div class="flex items-center justify-between gap-3">
                     <div>
                         <p class="text-sm font-semibold text-slate-900">{{ $backup->triggeredBy?->username ?? 'System' }}</p>
@@ -48,7 +79,7 @@
                     <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ ucfirst($backup->status) }}</span>
                 </div>
                 <div class="mt-3 text-sm text-slate-600 space-y-2">
-                    <p><span class="font-semibold text-slate-700">Date:</span> {{ $backup->created_at->format('M d, Y H:i') }}</p>
+                    <p><span class="font-semibold text-slate-700">Date:</span> {{ $backup->created_at->timezone(config('app.timezone'))->format('M d, Y H:i') }}</p>
                     <p><span class="font-semibold text-slate-700">Size:</span> {{ $backup->file_size ? number_format($backup->file_size / 1024, 2) . ' KB' : '-' }}</p>
                 </div>
                 <div class="mt-4 flex flex-wrap gap-2">
@@ -63,11 +94,11 @@
                 </div>
             </div>
         @empty
-            <div class="rounded-3xl border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">No backups have been created yet.</div>
+            <div class="rounded-3xl border border-slate-400 bg-slate-50 p-6 text-center text-sm text-slate-500">No backups have been created yet.</div>
         @endforelse
     </div>
 
-    <div class="hidden md:block overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <div class="hidden md:block overflow-x-auto rounded-3xl border border-slate-400 bg-white shadow-sm">
         <table class="min-w-full divide-y divide-slate-200 text-sm">
             <thead class="admin-card-header bg-slate-50 text-left text-slate-500">
                 <tr>
@@ -93,7 +124,7 @@
                             'user_delete' => 'User Delete',
                             default => ucfirst(str_replace('_', ' ', $backup->trigger_type)),
                         } }}</td>
-                        <td class="px-4 py-4">{{ $backup->created_at->format('M d, Y H:i') }}</td>
+                        <td class="px-4 py-4">{{ $backup->created_at->timezone(config('app.timezone'))->format('M d, Y H:i') }}</td>
                         <td class="px-4 py-4">{{ $backup->file_size ? number_format($backup->file_size / 1024, 2) . ' KB' : '-' }}</td>
                         <td class="px-4 py-4">
                             @php
@@ -129,9 +160,21 @@
         </table>
     </div>
 
-    <div class="mt-4 flex items-center justify-between rounded-3xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500">
-        <div>Showing {{ $backups->firstItem() ?? 0 }} to {{ $backups->lastItem() ?? 0 }} of {{ $backups->total() }} backups</div>
-        <div>{{ $backups->links() }}</div>
+    <div class="mt-4 flex items-center justify-between gap-4 rounded-3xl border border-slate-400 bg-white px-4 py-3 text-sm text-slate-500">
+        <div>Page {{ $backups->currentPage() }} of {{ $backups->lastPage() }}</div>
+        <div class="flex items-center gap-2">
+            @if ($backups->onFirstPage())
+                <span class="cursor-not-allowed rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-700 opacity-40">Previous</span>
+            @else
+                <a href="{{ $backups->previousPageUrl() }}" class="rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-700 transition hover:bg-slate-50">Previous</a>
+            @endif
+
+            @if ($backups->hasMorePages())
+                <a href="{{ $backups->nextPageUrl() }}" class="rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-700 transition hover:bg-slate-50">Next</a>
+            @else
+                <span class="cursor-not-allowed rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-700 opacity-40">Next</span>
+            @endif
+        </div>
     </div>
 </div>
 @endsection

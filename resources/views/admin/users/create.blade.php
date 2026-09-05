@@ -104,10 +104,10 @@
                 </div>
             </div>
 
-            <!-- Row 4: Department Permissions (only shown when Department role selected) -->
+            <!-- Row 4: Planning Permissions (only shown when Planning role selected) -->
             <div id="departmentPermissionsSection" class="border border-gray-200 rounded-lg p-5 bg-gray-50" style="display: none;">
-                <h3 class="text-sm font-semibold text-gray-700 mb-1">Department Permissions</h3>
-                <p class="text-xs text-gray-500 mb-4">Choose which actions this Department user is allowed to perform. All are enabled by default (full access).</p>
+                <h3 class="text-sm font-semibold text-gray-700 mb-1">Planning Permissions</h3>
+                <p class="text-xs text-gray-500 mb-4">Choose which actions this Planning user is allowed to perform. All are enabled by default (full access).</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <label class="flex items-center gap-2 text-sm text-gray-700">
                         <input type="checkbox" name="permissions[can_create_project]" value="1" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">

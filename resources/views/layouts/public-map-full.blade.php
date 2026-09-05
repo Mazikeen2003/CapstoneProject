@@ -17,7 +17,7 @@
         @include('components.theme-init')
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased" style="background-color: #0f1e3d; color: white;">
+    <body class="public-layout font-sans antialiased" style="background-color: #0f1e3d; color: white;">
         <div class="flex h-screen">
             <!-- Sidebar -->
             @include('components.sidebar')

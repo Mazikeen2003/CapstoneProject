@@ -71,7 +71,6 @@ class AuditLogService
             'old_values' => $old === null ? null : self::withoutExcludedFields($old),
             'new_values' => $new === null ? null : self::withoutExcludedFields($new),
             'full_name'  => Auth::user()?->full_name ?: Auth::user()?->username,
-            'ip_address' => request()->ip(),
             'created_at' => now(),
         ]);
     }
@@ -134,7 +133,6 @@ class AuditLogService
                     'ip_address' => $ipAddress,
                 ],
                 'full_name'  => $attemptedEmail,
-                'ip_address' => $ipAddress,
                 'created_at' => now(),
             ]);
         } catch (\Throwable $e) {

@@ -5,7 +5,7 @@
     $currentRole = $isPublicRoute ? 'public' : ($authUser?->role_slug ?? 'public');
     $panelTitle = $isPublicRoute ? 'Public Portal' : match($currentRole) {
         'admin' => 'Admin Overview',
-        'department' => 'Department Dashboard',
+        'department' => 'Planning Dashboard',
         'engineering' => 'Engineering',
         'city' => 'City Official Dashboard',
         'barangay' => 'Barangay Dashboard',
