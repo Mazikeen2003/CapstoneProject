@@ -5,20 +5,20 @@
     <title>{{ $title }}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; color: #333; font-size: 11px; line-height: 1.4; }
-        .header { text-align: center; margin-bottom: 20px; border-bottom: 3px solid #0F1E3D; padding-bottom: 10px; }
-        .header h1 { color: #0F1E3D; font-size: 18px; margin-bottom: 5px; }
-        .header p { color: #666; font-size: 10px; }
+        body { font-family: 'DejaVu Sans', sans-serif; color: #172033; font-size: 11px; line-height: 1.4; background: #f4f6f8; }
+        .header { text-align: left; margin-bottom: 20px; background: #0b1220; border-bottom: 4px solid #c9a84c; padding: 18px 20px 15px; }
+        .header h1 { color: #ffffff; font-size: 18px; margin-bottom: 5px; }
+        .header p { color: #d6deeb; font-size: 10px; }
         .metadata { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 10px; color: #666; }
-        .section-title { background: #0F1E3D; color: white; padding: 8px; margin-top: 20px; margin-bottom: 10px; font-weight: bold; }
-        .summary-box { background: #f5f5f5; border-left: 3px solid #0F1E3D; padding: 10px; margin: 10px 0; }
+        .section-title { background: #162347; color: white; padding: 8px 10px; margin-top: 20px; margin-bottom: 10px; font-weight: bold; border-left: 4px solid #c9a84c; }
+        .summary-box { background: #172b4d; color: #ffffff; border-left: 4px solid #c9a84c; padding: 10px; margin: 10px 0; }
         .summary-row { display: flex; justify-content: space-between; padding: 5px 0; }
         .summary-label { font-weight: bold; }
         .summary-value { text-align: right; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        th { background: #c9a84c; color: #0F1E3D; padding: 8px; text-align: left; font-weight: bold; font-size: 10px; }
+        th { background: #c9a84c; color: #0b1220; padding: 8px; text-align: left; font-weight: bold; font-size: 10px; }
         td { padding: 8px; border-bottom: 1px solid #ddd; }
-        tr:nth-child(even) { background: #f9f9f9; }
+        tr:nth-child(even) { background: #eef2f7; }
         .text-right { text-align: right; }
         .footer { margin-top: 20px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 9px; color: #999; }
     </style>
@@ -54,7 +54,7 @@
     </div>
 
     <div class="footer">
-        <p>Confidential — For Internal Use Only</p>
+        <p>Confidential ï¿½ For Internal Use Only</p>
     </div>
 </body>
 </html>
