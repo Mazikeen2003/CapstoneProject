@@ -1,67 +1,132 @@
 @php
-    $steps = [
-        'Proposed',
-        'For bidding',
-        'Bidding ongoing',
-        'Award of contract',
-        'Implementation',
-        'Completed',
-    ];
-
+    $steps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation', 'Completed'];
     $stageByStatus = [
         'Proposed' => 0,
+        'Planning' => 0,
         'For bidding' => 1,
+        'Procurement' => 1,
         'Bidding ongoing' => 2,
+        'Bidding - Success' => 3,
         'Award of contract' => 3,
         'Implementation' => 4,
-        'Planning' => 0,
-        'Procurement' => 1,
-        'Bidding - Success' => 3,
         'On Going' => 4,
         'Completed' => 5,
     ];
-
     $activeStep = $stageByStatus[$project->current_status] ?? null;
-    $isExceptionStatus = ! array_key_exists($project->current_status, $stageByStatus);
 @endphp
 
-<div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
-    <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-            <h2 class="text-lg font-bold text-black">Project Lifecycle</h2>
-            <p class="text-sm text-gray-500">Current stage: {{ $project->current_status }}</p>
-        </div>
-        @if ($isExceptionStatus)
-            <span class="inline-flex w-fit rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
-                {{ $project->current_status }}
-            </span>
-        @endif
-    </div>
+<style>
+    .dept-stepper-lifecycle {
+        background: var(--de-surface);
+        border: 1px solid var(--de-line);
+        border-radius: var(--de-radius-sm);
+        box-shadow: var(--de-shadow-sm);
+        padding: 24px 28px 28px;
+        margin-bottom: 24px;
+    }
+    .dept-stepper-header { margin-bottom: 28px; }
+    .dept-stepper-title {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-size: 1.0625rem;
+        font-weight: 700;
+        color: var(--de-ink);
+        margin: 0 0 4px;
+    }
+    .dept-stepper-subtitle {
+        font-size: 0.8125rem;
+        color: var(--de-muted);
+        margin: 0;
+        font-weight: 500;
+    }
+    .dept-stepper-track {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+    .dept-step-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        position: relative;
+        z-index: 2;
+    }
+    .dept-step-node {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+    .dept-step-item.completed .dept-step-node { background: #10b981; color: #fff; }
+    .dept-step-item.current .dept-step-node { background: #3b82f6; color: #fff; }
+    .dept-step-item.pending .dept-step-node {
+        background: transparent;
+        color: var(--de-muted);
+        border: 2px solid var(--de-line-strong);
+    }
+    .dept-step-name {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--de-ink-secondary);
+        text-align: center;
+        white-space: nowrap;
+    }
+    .dept-step-item.completed .dept-step-name { color: #059669; font-weight: 700; }
+    .dept-step-item.current .dept-step-name { color: #2563eb; font-weight: 700; }
+    .dept-step-item.pending .dept-step-name { color: var(--de-muted); font-weight: 500; }
+    .dept-step-connector {
+        flex: 1;
+        height: 2px;
+        background: var(--de-line-strong);
+        margin-top: 17px;
+        min-width: 20px;
+        position: relative;
+        z-index: 1;
+    }
+    .dept-step-connector.completed { background: #10b981; }
+    html.dark-mode .dept-step-item.completed .dept-step-node { background: #34d399; color: #064e3b; }
+    html.dark-mode .dept-step-item.current .dept-step-node { background: #60a5fa; color: #0f172a; }
+    html.dark-mode .dept-step-item.completed .dept-step-name { color: #34d399; }
+    html.dark-mode .dept-step-item.current .dept-step-name { color: #60a5fa; }
+    html.dark-mode .dept-step-connector.completed { background: #34d399; }
+    @media (max-width: 640px) {
+        .dept-stepper-track { overflow-x: auto; padding-bottom: 8px; }
+        .dept-step-item { min-width: 80px; }
+        .dept-step-name { white-space: normal; max-width: 80px; }
+    }
+</style>
 
-    <div class="mt-6 grid grid-cols-6 gap-1 sm:gap-3">
+<div class="dept-stepper-lifecycle dept-animate">
+    <div class="dept-stepper-header">
+        <h3 class="dept-stepper-title">Project Lifecycle</h3>
+        <p class="dept-stepper-subtitle">Current stage: {{ $project->current_status }}</p>
+    </div>
+    <div class="dept-stepper-track">
         @foreach ($steps as $index => $step)
             @php
                 $isComplete = $activeStep !== null && $index < $activeStep;
                 $isCurrent = $activeStep !== null && $index === $activeStep;
-                $circleClass = $isComplete
-                    ? 'bg-emerald-600 text-white border-emerald-600'
-                    : ($isCurrent ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-400 border-gray-300');
-                $labelClass = ($isComplete || $isCurrent) ? 'text-gray-800' : 'text-gray-400';
+                $state = $isComplete ? 'completed' : ($isCurrent ? 'current' : 'pending');
             @endphp
-
-            <div class="relative text-center">
-                @if ($index < count($steps) - 1)
-                    <div class="absolute left-1/2 top-4 h-0.5 w-full bg-gray-200" aria-hidden="true">
-                        @if ($activeStep !== null && $index < $activeStep)
-                            <div class="h-full bg-emerald-600"></div>
-                        @endif
-                    </div>
-                @endif
-                <div class="relative z-10 mx-auto flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm font-bold {{ $circleClass }}">
-                    @if ($isComplete)&#10003;@else{{ $index + 1 }}@endif
+            <div class="dept-step-item {{ $state }}">
+                <div class="dept-step-node">
+                    @if ($isComplete)
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                    @else
+                        {{ $index + 1 }}
+                    @endif
                 </div>
-                <p class="mt-2 text-[10px] font-semibold leading-tight sm:text-xs {{ $labelClass }}">{{ $step }}</p>
+                <span class="dept-step-name">{{ $step }}</span>
             </div>
+            @if ($index < count($steps) - 1)
+                <div class="dept-step-connector {{ $activeStep !== null && $index < $activeStep ? 'completed' : '' }}"></div>
+            @endif
         @endforeach
     </div>
 </div>
