@@ -19,6 +19,64 @@ html.dark-mode body {
     color: #e2e8f0 !important;
 }
 
+/* Keep the analytics page canvas consistent with its dashboard surface. */
+html:not(.dark-mode) body:has(.dept-analytics-container) {
+    background-color: #ffffff !important;
+}
+
+html.dark-mode body:has(.dept-analytics-container) {
+    background-color: #0f172a !important;
+}
+
+/* Admin dashboard dark mode */
+html:not(.dark-mode) body:has(.adm-wrap) {
+    background-color: #ffffff !important;
+}
+
+html.dark-mode body:has(.adm-wrap) {
+    background-color: #0f172a !important;
+}
+
+html.dark-mode .adm-wrap {
+    --adm-bg: #0f172a;
+    --adm-surface: #0f172a;
+    --adm-ink: #f8fafc;
+    --adm-muted: #94a3b8;
+    --adm-line: rgba(148, 163, 184, 0.2);
+    --adm-line-strong: rgba(148, 163, 184, 0.35);
+    --adm-shadow: 0 4px 14px rgba(2, 6, 23, 0.25);
+    --adm-shadow-md: 0 8px 24px rgba(2, 6, 23, 0.35);
+    --adm-shadow-lg: 0 24px 48px rgba(2, 6, 23, 0.5);
+}
+
+html.dark-mode .adm-stat,
+html.dark-mode .adm-activity {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+html.dark-mode .adm-activity-item,
+html.dark-mode .adm-empty {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+    color: #f8fafc !important;
+}
+
+html.dark-mode .adm-activity-item:hover {
+    background: #334155 !important;
+}
+
+html.dark-mode .adm-stat-icon.blue { background: rgba(59,130,246,0.12); color: #60a5fa; }
+html.dark-mode .adm-stat-icon.emerald { background: rgba(16,185,129,0.12); color: #34d399; }
+html.dark-mode .adm-stat-icon.amber { background: rgba(245,158,11,0.12); color: #fbbf24; }
+html.dark-mode .adm-stat-icon.rose { background: rgba(244,63,94,0.12); color: #fb7185; }
+
+html.dark-mode .adm-activity-icon {
+    background: #334155 !important;
+    color: #cbd5e1 !important;
+}
+
 html.dark-mode header {
     background-color: #111827 !important;
     border-color: #334155 !important;
@@ -281,11 +339,245 @@ html.dark-mode .department-create-project #createProjectButton {
     color: #052e16 !important;
 }
 
+/* New department create-project screen dark mode */
+html.dark-mode .dept-create-container {
+    --dc-bg: #0f172a;
+    --dc-surface: #0f172a;
+    --dc-raised: #172033;
+    --dc-ink: #f8fafc;
+    --dc-ink-secondary: #cbd5e1;
+    --dc-muted: #94a3b8;
+    --dc-line: rgba(148, 163, 184, 0.2);
+    --dc-line-strong: rgba(148, 163, 184, 0.35);
+}
+
+html.dark-mode .dept-create-card {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    box-shadow: 0 8px 20px rgba(2, 6, 23, 0.35) !important;
+}
+
+html.dark-mode .dept-create-card-header {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+}
+
+html.dark-mode .dept-create-container input,
+html.dark-mode .dept-create-container select,
+html.dark-mode .dept-create-container textarea {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+    color: #f8fafc !important;
+}
+
+html.dark-mode .dept-create-container input::placeholder,
+html.dark-mode .dept-create-container textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* Keep field icons clear of their input text. */
+.dept-create-container .dept-input-wrap.has-icon input,
+.dept-create-container .dept-input-wrap.has-icon select {
+    padding-left: 42px !important;
+}
+
+.dept-create-container .dept-input-wrap .dept-input-icon {
+    z-index: 1;
+}
+
+.dept-edit-container .dept-input-wrap.has-icon input,
+.dept-edit-container .dept-input-wrap.has-icon select {
+    padding-left: 42px !important;
+}
+
+.dept-edit-container .dept-input-wrap .dept-input-icon {
+    z-index: 1;
+}
+
+.dept-modal-box {
+    width: min(100%, 460px) !important;
+    box-sizing: border-box;
+    padding: 28px !important;
+    border-radius: 16px !important;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28), 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+html:not(.dark-mode) .dept-modal {
+    background: rgba(15, 23, 42, 0.42) !important;
+}
+
+html:not(.dark-mode) .dept-modal-title,
+html:not(.dark-mode) .dept-modal-field label {
+    color: #0f172a;
+}
+
+html:not(.dark-mode) .dept-modal-desc {
+    color: #64748b;
+}
+
+.dept-modal-field textarea {
+    display: block;
+    width: 100% !important;
+    min-height: 120px;
+    box-sizing: border-box;
+    resize: vertical;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #0f172a;
+    font: inherit;
+    line-height: 1.5;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.dept-modal-field textarea:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+}
+
+html.dark-mode .dept-modal-box {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 24px 60px rgba(2, 6, 23, 0.55), 0 8px 20px rgba(2, 6, 23, 0.35);
+}
+
+html.dark-mode .dept-modal-field textarea {
+    background: #1e293b;
+    border-color: #475569;
+    color: #f8fafc;
+}
+
+html.dark-mode .dept-modal-field textarea::placeholder {
+    color: #94a3b8;
+}
+
+@media (max-width: 480px) {
+    .dept-modal-box { padding: 22px !important; }
+    .dept-modal-actions { flex-direction: column-reverse; }
+    .dept-modal-actions .dept-btn { width: 100%; }
+}
+
 .department-project-primary-action {
     background-color: #c9a84c !important;
     color: #0f1e3d !important;
     border: 1px solid #b89637;
     font-weight: 600;
+}
+
+/* Department dashboard dark mode */
+html.dark-mode .dept-dashboard {
+    color: #e2e8f0;
+}
+
+html.dark-mode .dept-hero {
+    background: linear-gradient(135deg, #020617 0%, #0f1e3d 55%, #172554 100%) !important;
+    border-color: #334155;
+    box-shadow: 0 20px 35px rgba(2, 6, 23, 0.45);
+}
+
+html.dark-mode .dept-hero::before {
+    background: radial-gradient(circle at 20% 50%, rgba(245, 158, 11, 0.14) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 40%);
+}
+
+html.dark-mode .dept-quick-btn,
+html.dark-mode .dept-stat,
+html.dark-mode .dept-card,
+html.dark-mode .dept-project {
+    background: #172033 !important;
+    border-color: #334155 !important;
+    color: #e2e8f0 !important;
+    box-shadow: 0 8px 20px rgba(2, 6, 23, 0.25);
+}
+
+html.dark-mode .dept-quick-btn:hover,
+html.dark-mode .dept-project:hover {
+    background: #243247 !important;
+    border-color: #64748b !important;
+}
+
+html.dark-mode .dept-stat-icon {
+    background: #26364d !important;
+    color: #bfdbfe !important;
+}
+
+html.dark-mode .dept-stat-trend {
+    background: #064e3b !important;
+    color: #a7f3d0 !important;
+}
+
+html.dark-mode .dept-stat-trend.negative {
+    background: #4c0519 !important;
+    color: #fecdd3 !important;
+}
+
+html.dark-mode .dept-stat-label,
+html.dark-mode .dept-stat-footer,
+html.dark-mode .dept-card-subtitle,
+html.dark-mode .dept-project-meta-item,
+html.dark-mode .dept-empty p {
+    color: #94a3b8 !important;
+}
+
+html.dark-mode .dept-stat-value,
+html.dark-mode .dept-card-title,
+html.dark-mode .dept-project-title,
+html.dark-mode .dept-empty h4 {
+    color: #f8fafc !important;
+}
+
+html.dark-mode .dept-card-header {
+    border-color: #334155 !important;
+}
+
+html.dark-mode .dept-card-action {
+    color: #93c5fd !important;
+}
+
+html.dark-mode .dept-card-action:hover {
+    color: #bfdbfe !important;
+}
+
+html.dark-mode .dept-project-action {
+    background: #243247 !important;
+    border-color: #475569 !important;
+    color: #cbd5e1 !important;
+}
+
+html.dark-mode .dept-project-action:hover {
+    background: #2563eb !important;
+    border-color: #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+html.dark-mode .dept-progress-bg {
+    background: #334155 !important;
+}
+
+html.dark-mode .dept-map-wrap {
+    border-color: #475569 !important;
+}
+
+html.dark-mode .dept-map-legend {
+    background: rgba(15, 23, 42, 0.94) !important;
+    border-color: #475569 !important;
+    color: #e2e8f0 !important;
+}
+
+html.dark-mode .dept-map-legend-title,
+html.dark-mode .dept-map-legend-item {
+    color: #cbd5e1 !important;
+}
+
+html.dark-mode .dept-empty-icon {
+    background: #713f12 !important;
+    color: #fde68a !important;
 }
 
 .department-project-secondary-action {
@@ -433,6 +725,227 @@ html.dark-mode .department-edit-project .bg-blue-50 {
     background-color: #172033 !important;
     border-color: #60a5fa !important;
     color: #bfdbfe !important;
+}
+
+/* Department edit-project screen dark mode */
+html.dark-mode .dept-edit-container {
+    --de-bg: #0f172a;
+    --de-surface: #0f172a;
+    --de-raised: #1e293b;
+    --de-ink: #f8fafc;
+    --de-ink-secondary: #cbd5e1;
+    --de-muted: #94a3b8;
+    --de-line: rgba(148, 163, 184, 0.2);
+    --de-line-strong: rgba(148, 163, 184, 0.35);
+}
+
+html.dark-mode .dept-edit-card,
+html.dark-mode .dept-stepper-lifecycle,
+html.dark-mode .dept-locked-panel {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+html.dark-mode .dept-edit-card-header {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+}
+
+html.dark-mode .dept-edit-container input,
+html.dark-mode .dept-edit-container select,
+html.dark-mode .dept-edit-container textarea {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+    color: #f8fafc !important;
+}
+
+html.dark-mode .dept-edit-container input::placeholder,
+html.dark-mode .dept-edit-container textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+html.dark-mode .dept-progress-hero {
+    background: linear-gradient(135deg, #111827 0%, #172033 55%, #1e293b 100%) !important;
+}
+
+html.dark-mode .dept-progress-stat {
+    background: rgba(15, 23, 42, 0.72) !important;
+    border-color: rgba(148, 163, 184, 0.25) !important;
+}
+
+html.dark-mode .dept-map-locked,
+html.dark-mode .dept-edit-container .dept-alert,
+html.dark-mode .dept-edit-container .dept-field-readonly {
+    border-color: #334155 !important;
+}
+
+html.dark-mode .dept-map-badge {
+    background: rgba(15, 23, 42, 0.95) !important;
+    color: #f8fafc !important;
+}
+
+/* Department project screens dark mode */
+html.dark-mode .dept-proj-container {
+    --dp-bg: #0f172a;
+    --dp-surface: #0f172a;
+    --dp-surface-hover: #202a3d;
+    --dp-ink: #f8fafc;
+    --dp-ink-secondary: #cbd5e1;
+    --dp-muted: #94a3b8;
+    --dp-line: rgba(148, 163, 184, 0.2);
+    --dp-line-hover: rgba(148, 163, 184, 0.35);
+}
+
+html.dark-mode .dept-proj-card,
+html.dark-mode .dept-proj-toolbar,
+html.dark-mode .dept-proj-mcard,
+html.dark-mode .dept-proj-modalbox {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+html.dark-mode .dept-proj-table thead th {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    color: #94a3b8 !important;
+}
+
+html.dark-mode .dept-proj-table tbody td,
+html.dark-mode .dept-proj-pagination,
+html.dark-mode .dept-proj-mactions {
+    border-color: #334155 !important;
+}
+
+html.dark-mode .dept-proj-table tbody tr:hover,
+html.dark-mode .dept-proj-filter:hover,
+html.dark-mode .dept-proj-pagebtn:hover {
+    background-color: #202a3d !important;
+}
+
+html.dark-mode .dept-proj-search input,
+html.dark-mode .dept-proj-filter,
+html.dark-mode .dept-proj-pagebtn,
+html.dark-mode .dept-proj-btn-secondary {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
+}
+
+html.dark-mode .dept-proj-search input::placeholder {
+    color: #64748b !important;
+}
+
+html.dark-mode .dept-proj-title,
+html.dark-mode .dept-proj-nametext .name,
+html.dark-mode .dept-proj-budget,
+html.dark-mode .dept-proj-empty h3,
+html.dark-mode .dept-proj-modaltitle {
+    color: #f8fafc !important;
+}
+
+html.dark-mode .dept-proj-subtitle,
+html.dark-mode .dept-proj-nametext .code,
+html.dark-mode .dept-proj-barangay,
+html.dark-mode .dept-proj-mcode,
+html.dark-mode .dept-proj-mlabel,
+html.dark-mode .dept-proj-pageinfo,
+html.dark-mode .dept-proj-modaldesc {
+    color: #94a3b8 !important;
+}
+
+html.dark-mode .dept-proj-mvalue {
+    color: #cbd5e1 !important;
+}
+
+/* Department project view dark mode */
+html.dark-mode .dept-show-container {
+    --ds-bg: #0f172a;
+    --ds-surface: #0f172a;
+    --ds-raised: #1e293b;
+    --ds-ink: #f8fafc;
+    --ds-ink-secondary: #cbd5e1;
+    --ds-muted: #94a3b8;
+    --ds-line: rgba(148, 163, 184, 0.2);
+    --ds-line-strong: rgba(148, 163, 184, 0.35);
+}
+
+html.dark-mode .dept-show-card,
+html.dark-mode .dept-show-stepper,
+html.dark-mode .dept-detail-item,
+html.dark-mode .dept-timeline-content,
+html.dark-mode .dept-form-card {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+html.dark-mode .dept-detail-item:hover,
+html.dark-mode .dept-timeline-content:hover,
+html.dark-mode .dept-form-card:hover {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+}
+
+html.dark-mode .dept-form-card {
+    box-shadow: 0 4px 12px rgba(2, 6, 23, 0.2);
+}
+
+html.dark-mode .dept-form-icon.completed {
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: #34d399 !important;
+}
+
+html.dark-mode .dept-form-icon.pending {
+    background: rgba(148, 163, 184, 0.12) !important;
+    color: #94a3b8 !important;
+}
+
+html.dark-mode .dept-form-status.completed {
+    color: #34d399 !important;
+}
+
+html.dark-mode .dept-form-status.pending,
+html.dark-mode .dept-form-title,
+html.dark-mode .dept-forms-count {
+    color: #cbd5e1 !important;
+}
+
+html.dark-mode .dept-form-btn-secondary,
+html.dark-mode .dept-forms-nav {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+    color: #cbd5e1 !important;
+}
+
+html.dark-mode .dept-form-btn-secondary:hover,
+html.dark-mode .dept-forms-nav:hover:not(:disabled) {
+    background: #334155 !important;
+    border-color: #f59e0b !important;
+    color: #fbbf24 !important;
+}
+
+html.dark-mode .dept-forms-grid {
+    scrollbar-color: #475569 transparent;
+}
+
+html.dark-mode .dept-forms-grid::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+
+html.dark-mode .dept-show-card-header {
+    border-color: #334155 !important;
+}
+
+html.dark-mode .dept-progress-mini-track {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+}
+
+html.dark-mode .dept-map-badge {
+    background: rgba(15, 23, 42, 0.95) !important;
+    color: #f8fafc !important;
 }
 
 html.dark-mode form[action*='/forms/'] {
