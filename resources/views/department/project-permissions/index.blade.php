@@ -1,66 +1,626 @@
 @extends('layouts.department')
 
 @section('content')
-<div class="space-y-6">
-    <div>
-        <h1 class="text-3xl font-bold text-black">Project Edit Permissions</h1>
-        <p class="text-sm text-gray-500 mt-1">Review department requests to edit critical project fields.</p>
-    </div>
+<style>
+    .perm-container {
+        --pp-bg: #f8f7f5;
+        --pp-surface: #ffffff;
+        --pp-surface-hover: #fafaf9;
+        --pp-ink: #1e1b4b;
+        --pp-ink-secondary: #374151;
+        --pp-muted: #9ca3af;
+        --pp-line: rgba(0,0,0,0.06);
+        --pp-line-hover: rgba(0,0,0,0.12);
+        --pp-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --pp-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --pp-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --pp-radius: 16px;
+        --pp-radius-sm: 12px;
+    }
 
-    <div class="space-y-4 md:hidden">
-        @forelse ($requests as $request)
-            <div class="project-permission-card rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-                <div class="flex items-center justify-between gap-3">
-                    <div>
-                        <p class="text-sm font-semibold text-slate-900">{{ $request->project->project_name ?? '—' }}</p>
-                        <p class="text-xs text-slate-500">Requested by {{ $request->requester->username ?? '—' }}</p>
-                    </div>
-                    <span class="project-permission-reviewed inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ ucfirst($request->status) }}</span>
-                </div>
-                <div class="mt-3 text-sm text-slate-700 space-y-2">
-                    <p><span class="font-semibold">Fields:</span> {{ $request->fields_requested ? (is_array($request->fields_requested) ? implode(', ', $request->fields_requested) : $request->fields_requested) : '—' }}</p>
-                    <p><span class="font-semibold">Reason:</span> {{ $request->reason ?: '—' }}</p>
-                </div>
-                <div class="mt-4 flex flex-wrap gap-2">
-                    @if ($request->status === 'pending')
-                        <form method="POST" action="{{ route('department.project-permissions.approve', $request->request_id) }}" class="inline-block">
-                            @csrf
-                            <input type="hidden" name="review_notes" value="Approved by department head." />
-                            <button type="submit" class="rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white">Approve</button>
-                        </form>
-                        <form method="POST" action="{{ route('department.project-permissions.reject', $request->request_id) }}" class="inline-block">
-                            @csrf
-                            <input type="hidden" name="review_notes" value="Rejected by department head." />
-                            <button type="submit" class="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white">Reject</button>
-                        </form>
-                    @else
-                        <span class="project-permission-reviewed rounded-full bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-600">Reviewed</span>
-                    @endif
-                </div>
+    html:not(.dark-mode) body:has(.perm-container) {
+        background: #f8f7f5 !important;
+    }
+
+    html.dark-mode body:has(.perm-container) {
+        background: #0f172a !important;
+    }
+
+    html.dark-mode .perm-container,
+    .dark .perm-container {
+        --pp-bg: #0f172a;
+        --pp-surface: #1e293b;
+        --pp-surface-hover: #243247;
+        --pp-ink: #f8fafc;
+        --pp-ink-secondary: #cbd5e1;
+        --pp-muted: #64748b;
+        --pp-line: rgba(148, 163, 184, 0.2);
+        --pp-line-hover: rgba(148, 163, 184, 0.35);
+        --pp-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+        --pp-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+        --pp-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    }
+
+    .perm-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 24px;
+        background: var(--pp-bg);
+        color: var(--pp-ink);
+        transition: background 0.3s, color 0.3s;
+    }
+
+    @media (min-width: 640px) {
+        .perm-container { padding: 32px; }
+    }
+
+    @media (min-width: 1024px) {
+        .perm-container { padding: 40px; }
+    }
+
+    .perm-header {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    @media (min-width: 640px) {
+        .perm-header {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+    }
+
+    .perm-title-wrap {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .perm-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        box-shadow: 0 4px 14px -4px rgba(245, 158, 11, 0.5);
+        flex-shrink: 0;
+    }
+
+    .perm-icon svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .perm-title {
+        font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        color: var(--pp-ink);
+    }
+
+    .perm-subtitle {
+        font-size: 0.875rem;
+        color: var(--pp-muted);
+        margin-top: 4px;
+    }
+
+    .perm-toolbar {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding: 16px;
+        background: var(--pp-surface);
+        border: 1px solid var(--pp-line);
+        border-radius: var(--pp-radius-sm);
+        box-shadow: var(--pp-shadow-sm);
+    }
+
+    @media (min-width: 640px) {
+        .perm-toolbar {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+
+    .perm-search {
+        position: relative;
+        flex: 1;
+        max-width: 400px;
+    }
+
+    .perm-search svg {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+        color: var(--pp-muted);
+        pointer-events: none;
+    }
+
+    .perm-search input {
+        width: 100%;
+        padding: 10px 14px 10px 42px;
+        border: 1px solid var(--pp-line);
+        border-radius: 100px;
+        background: var(--pp-bg);
+        color: var(--pp-ink);
+        font-family: inherit;
+        font-size: 0.875rem;
+        outline: none;
+        transition: all 0.2s;
+    }
+
+    .perm-search input:focus {
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+    }
+
+    .perm-search input::placeholder {
+        color: var(--pp-muted);
+    }
+
+    .perm-filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .perm-filter {
+        padding: 8px 16px;
+        border: 1px solid var(--pp-line);
+        border-radius: 100px;
+        background: var(--pp-bg);
+        color: var(--pp-ink-secondary);
+        font-family: inherit;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .perm-filter:hover {
+        border-color: var(--pp-line-hover);
+        background: var(--pp-surface-hover);
+    }
+
+    .perm-filter.active {
+        background: var(--pp-ink);
+        color: #ffffff;
+        border-color: var(--pp-ink);
+        box-shadow: none;
+    }
+
+    html.dark-mode .perm-filter,
+    .dark .perm-filter {
+        background: rgba(15, 23, 42, 0.72);
+        border-color: rgba(148, 163, 184, 0.18);
+        color: #e5edf9;
+    }
+
+    html.dark-mode .perm-filter.active,
+    .dark .perm-filter.active {
+        background: #f8fafc;
+        color: #1e1b4b;
+        border-color: #f8fafc;
+        box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
+    }
+
+    .perm-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+
+    .perm-stat {
+        background: var(--pp-surface);
+        border: 1px solid var(--pp-line);
+        border-radius: var(--pp-radius-sm);
+        padding: 16px 18px;
+        box-shadow: var(--pp-shadow-sm);
+    }
+
+    .perm-stat-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--pp-muted);
+    }
+
+    .perm-stat-value {
+        margin-top: 10px;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--pp-ink);
+    }
+
+    .perm-card {
+        background: var(--pp-surface);
+        border: 1px solid var(--pp-line);
+        border-radius: var(--pp-radius-sm);
+        box-shadow: var(--pp-shadow-sm);
+        overflow: hidden;
+    }
+
+    .perm-table-wrap {
+        overflow-x: auto;
+    }
+
+    .perm-table {
+        width: 100%;
+        min-width: 900px;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.875rem;
+    }
+
+    .perm-table thead th {
+        padding: 14px 20px;
+        text-align: left;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--pp-muted);
+        background: var(--pp-surface-hover);
+        border-bottom: 1px solid var(--pp-line);
+        white-space: nowrap;
+    }
+
+    .perm-table thead th:first-child { padding-left: 24px; }
+    .perm-table thead th:last-child { padding-right: 24px; }
+
+    .perm-table tbody td {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--pp-line);
+        color: var(--pp-ink-secondary);
+        vertical-align: top;
+    }
+
+    .perm-table tbody td:first-child { padding-left: 24px; }
+    .perm-table tbody td:last-child { padding-right: 24px; }
+
+    .perm-table tbody tr:hover {
+        background: var(--pp-surface-hover);
+    }
+
+    .perm-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .perm-project {
+        font-weight: 700;
+        color: var(--pp-ink);
+    }
+
+    .perm-user {
+        font-weight: 600;
+        color: var(--pp-ink-secondary);
+    }
+
+    .perm-field-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .perm-field-chip {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 9999px;
+        background: #fef3c7;
+        color: #b45309;
+        padding: 6px 10px;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    html.dark-mode .perm-field-chip,
+    .dark .perm-field-chip {
+        background: rgba(251, 191, 36, 0.12);
+        color: #fbbf24;
+    }
+
+    .perm-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9999px;
+        padding: 6px 10px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .perm-status.pending {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .perm-status.approved {
+        background: #d1fae5;
+        color: #047857;
+    }
+
+    .perm-status.rejected {
+        background: #ffe4e6;
+        color: #be123c;
+    }
+
+    html.dark-mode .perm-status.pending,
+    .dark .perm-status.pending {
+        background: rgba(251, 191, 36, 0.15);
+        color: #fbbf24;
+    }
+
+    html.dark-mode .perm-status.approved,
+    .dark .perm-status.approved {
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+    }
+
+    html.dark-mode .perm-status.rejected,
+    .dark .perm-status.rejected {
+        background: rgba(244, 63, 94, 0.15);
+        color: #fb7185;
+    }
+
+    .perm-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .perm-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        border: 1px solid transparent;
+        transition: all 0.15s ease;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .perm-btn-approve {
+        background: #d1fae5;
+        color: #047857;
+        border-color: rgba(16, 185, 129, 0.2);
+    }
+
+    .perm-btn-approve:hover {
+        background: #10b981;
+        color: white;
+    }
+
+    html.dark-mode .perm-btn-approve,
+    .dark .perm-btn-approve {
+        background: rgba(16, 185, 129, 0.12);
+        color: #34d399;
+    }
+
+    .perm-btn-reject {
+        background: #ffe4e6;
+        color: #be123c;
+        border-color: rgba(244, 63, 94, 0.2);
+    }
+
+    .perm-btn-reject:hover {
+        background: #f43f5e;
+        color: white;
+    }
+
+    html.dark-mode .perm-btn-reject,
+    .dark .perm-btn-reject {
+        background: rgba(244, 63, 94, 0.12);
+        color: #fb7185;
+    }
+
+    .perm-reviewed {
+        color: var(--pp-muted);
+        font-weight: 600;
+    }
+
+    .perm-empty {
+        text-align: center;
+        padding: 64px 24px;
+    }
+
+    .perm-empty-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 20px;
+        border-radius: var(--pp-radius);
+        background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.08));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #d97706;
+    }
+
+    .perm-empty-icon svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    .perm-empty h3 {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--pp-ink);
+        margin-bottom: 6px;
+    }
+
+    .perm-empty p {
+        font-size: 0.875rem;
+        color: var(--pp-muted);
+    }
+
+    .perm-mobile { display: block; }
+    .perm-desktop { display: none; }
+
+    @media (min-width: 768px) {
+        .perm-mobile { display: none; }
+        .perm-desktop { display: block; }
+    }
+
+    .perm-mcard {
+        background: var(--pp-surface);
+        border: 1px solid var(--pp-line);
+        border-radius: var(--pp-radius-sm);
+        padding: 20px;
+        box-shadow: var(--pp-shadow-sm);
+        margin-bottom: 14px;
+    }
+
+    .perm-mheader {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .perm-mtitle {
+        font-weight: 700;
+        font-size: 0.9375rem;
+        color: var(--pp-ink);
+        line-height: 1.3;
+    }
+
+    .perm-muser {
+        margin-top: 2px;
+        font-size: 0.75rem;
+        color: var(--pp-muted);
+    }
+
+    .perm-mbody {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .perm-mrow {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .perm-mlabel {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--pp-muted);
+    }
+
+    .perm-mvalue {
+        font-size: 0.8125rem;
+        color: var(--pp-ink-secondary);
+        line-height: 1.5;
+    }
+
+    .perm-mactions {
+        display: flex;
+        gap: 8px;
+        padding-top: 12px;
+        border-top: 1px solid var(--pp-line);
+        flex-wrap: wrap;
+    }
+
+    .perm-mactions .perm-btn {
+        flex: 1;
+        min-width: 110px;
+    }
+</style>
+
+<div class="perm-container">
+    <div class="perm-header">
+        <div class="perm-title-wrap">
+            <div class="perm-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.429-2.507a2.117 2.117 0 00-1.86-.22m-7.5 2.1l.22.22m6.44-2.22l-.22.22m-6.44 2.1l.22.22m6.44-2.22l-.22.22m-6.44 2.1l.22.22m6.44-2.22l-.22.22M3.75 6.75l7.5-4.5 7.5 4.5M3.75 6.75v10.5a2.25 2.25 0 002.25 2.25h10.5"/>
+                </svg>
             </div>
-        @empty
-            <div class="rounded-3xl border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">No permission requests found.</div>
-        @endforelse
+            <div>
+                <h1 class="perm-title">Project Edit Permissions</h1>
+                <p class="perm-subtitle">Review department requests to edit critical project fields.</p>
+            </div>
+        </div>
     </div>
 
-    <div class="project-permission-table hidden md:block overflow-x-auto rounded-lg border border-gray-200 bg-white">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="admin-card-header project-permission-table-head bg-gray-50">
-                <tr>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-600">Project</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-600">Requested By</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-600">Fields</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-600">Reason</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-600">Status</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-600">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-                @forelse ($requests as $request)
-                    <tr class="project-permission-row">
-                        <td class="px-4 py-3 text-sm text-black">{{ $request->project->project_name ?? '—' }}</td>
-                        <td class="px-4 py-3 text-sm text-black">{{ $request->requester->username ?? '—' }}</td>
-                        <td class="px-4 py-3 text-sm text-black">
+    <div class="perm-toolbar">
+        <div class="perm-search">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+            </svg>
+            <input type="text" id="permSearch" placeholder="Search project or requester...">
+        </div>
+        <div class="perm-filters">
+            <button class="perm-filter active" data-filter="all" type="button">All</button>
+            <button class="perm-filter" data-filter="pending" type="button">Pending</button>
+            <button class="perm-filter" data-filter="approved" type="button">Approved</button>
+            <button class="perm-filter" data-filter="rejected" type="button">Rejected</button>
+        </div>
+    </div>
+
+    <div class="perm-summary">
+        <div class="perm-stat">
+            <div class="perm-stat-label">Pending</div>
+            <div class="perm-stat-value">{{ $requests->where('status', 'pending')->count() }}</div>
+        </div>
+        <div class="perm-stat">
+            <div class="perm-stat-label">Approved</div>
+            <div class="perm-stat-value">{{ $requests->where('status', 'approved')->count() }}</div>
+        </div>
+        <div class="perm-stat">
+            <div class="perm-stat-label">Rejected</div>
+            <div class="perm-stat-value">{{ $requests->where('status', 'rejected')->count() }}</div>
+        </div>
+    </div>
+
+    @if ($requests->isEmpty())
+        <div class="perm-card perm-empty">
+            <div class="perm-empty-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+                </svg>
+            </div>
+            <h3>No permission requests yet</h3>
+            <p>There are no project edit requests to review at the moment.</p>
+        </div>
+    @else
+        <div class="perm-card perm-desktop">
+            <div class="perm-table-wrap">
+                <table class="perm-table">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Requested By</th>
+                            <th>Fields</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($requests as $request)
                             @php
                                 $fields = $request->fields_requested;
                                 if (is_string($fields)) {
@@ -77,46 +637,159 @@
                                         default => ucwords(str_replace('_', ' ', $field)),
                                     };
                                 }, $fields);
-                                $fieldLabel = $fieldLabels ? implode(', ', $fieldLabels) : '—';
                             @endphp
-                            <div class="flex flex-wrap gap-1">
-                                @foreach ($fieldLabels as $label)
-                                    <span class="project-permission-field rounded-full bg-amber-100 px-2 py-1 text-xs font-medium text-amber-800">{{ $label }}</span>
-                                @endforeach
+                            <tr class="perm-row" data-status="{{ $request->status }}" data-project="{{ strtolower($request->project->project_name ?? '') }}" data-user="{{ strtolower($request->requester->username ?? '') }}">
+                                <td>
+                                    <div class="perm-project">{{ $request->project->project_name ?? '—' }}</div>
+                                </td>
+                                <td>
+                                    <div class="perm-user">{{ $request->requester->username ?? '—' }}</div>
+                                </td>
+                                <td>
+                                    <div class="perm-field-list">
+                                        @forelse ($fieldLabels as $label)
+                                            <span class="perm-field-chip">{{ $label }}</span>
+                                        @empty
+                                            <span class="perm-reviewed">—</span>
+                                        @endforelse
+                                    </div>
+                                </td>
+                                <td>{{ $request->reason ?: '—' }}</td>
+                                <td>
+                                    <span class="perm-status {{ $request->status }}">{{ ucfirst($request->status) }}</span>
+                                </td>
+                                <td>
+                                    @if ($request->status === 'pending')
+                                        <div class="perm-actions">
+                                            <form method="POST" action="{{ route('department.project-permissions.approve', $request->request_id) }}">
+                                                @csrf
+                                                <input type="hidden" name="review_notes" value="Approved by department head." />
+                                                <button type="submit" class="perm-btn perm-btn-approve">Approve</button>
+                                            </form>
+                                            <form method="POST" action="{{ route('department.project-permissions.reject', $request->request_id) }}">
+                                                @csrf
+                                                <input type="hidden" name="review_notes" value="Rejected by department head." />
+                                                <button type="submit" class="perm-btn perm-btn-reject">Reject</button>
+                                            </form>
+                                        </div>
+                                    @else
+                                        <span class="perm-reviewed">Reviewed</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="perm-mobile">
+            @foreach ($requests as $request)
+                @php
+                    $fields = $request->fields_requested;
+                    if (is_string($fields)) {
+                        $decoded = json_decode($fields, true);
+                        $fields = is_array($decoded) ? $decoded : [$fields];
+                    }
+                    $fields = is_array($fields) ? $fields : [];
+                    $fieldLabels = array_map(function ($field) {
+                        return match ($field) {
+                            'start_date' => 'Start Date',
+                            'target_end_date' => 'Target End Date',
+                            'approved_budget' => 'Approved Budget',
+                            'actual_budget' => 'Actual Budget',
+                            default => ucwords(str_replace('_', ' ', $field)),
+                        };
+                    }, $fields);
+                @endphp
+                <div class="perm-mcard perm-row" data-status="{{ $request->status }}" data-project="{{ strtolower($request->project->project_name ?? '') }}" data-user="{{ strtolower($request->requester->username ?? '') }}">
+                    <div class="perm-mheader">
+                        <div>
+                            <div class="perm-mtitle">{{ $request->project->project_name ?? '—' }}</div>
+                            <div class="perm-muser">Requested by {{ $request->requester->username ?? '—' }}</div>
+                        </div>
+                        <span class="perm-status {{ $request->status }}">{{ ucfirst($request->status) }}</span>
+                    </div>
+                    <div class="perm-mbody">
+                        <div class="perm-mrow">
+                            <span class="perm-mlabel">Fields</span>
+                            <div class="perm-field-list">
+                                @forelse ($fieldLabels as $label)
+                                    <span class="perm-field-chip">{{ $label }}</span>
+                                @empty
+                                    <span class="perm-mvalue">—</span>
+                                @endforelse
                             </div>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-black">
-                            {{ $request->reason ? $request->reason : '—' }}
-                        </td>
-                        <td class="px-4 py-3 text-sm">
-                            <span class="project-permission-status rounded-full px-2 py-1 text-xs font-semibold {{ $request->status === 'approved' ? 'bg-green-100 text-green-700' : ($request->status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700') }}">
-                                {{ ucfirst($request->status) }}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-sm">
-                            @if ($request->status === 'pending')
-                                <form method="POST" action="{{ route('department.project-permissions.approve', $request->request_id) }}" class="inline-block">
-                                    @csrf
-                                    <input type="hidden" name="review_notes" value="Approved by department head." />
-                                    <button type="submit" class="rounded bg-green-600 px-3 py-1 text-white">Approve</button>
-                                </form>
-                                <form method="POST" action="{{ route('department.project-permissions.reject', $request->request_id) }}" class="ml-2 inline-block">
-                                    @csrf
-                                    <input type="hidden" name="review_notes" value="Rejected by department head." />
-                                    <button type="submit" class="rounded bg-red-600 px-3 py-1 text-white">Reject</button>
-                                </form>
-                            @else
-                                <span class="project-permission-reviewed text-gray-500">Reviewed</span>
-                            @endif
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="px-4 py-6 text-center text-sm text-gray-500">No permission requests found.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+                        </div>
+                        <div class="perm-mrow">
+                            <span class="perm-mlabel">Reason</span>
+                            <div class="perm-mvalue">{{ $request->reason ?: '—' }}</div>
+                        </div>
+                    </div>
+                    @if ($request->status === 'pending')
+                        <div class="perm-mactions">
+                            <form method="POST" action="{{ route('department.project-permissions.approve', $request->request_id) }}" style="flex:1;">
+                                @csrf
+                                <input type="hidden" name="review_notes" value="Approved by department head." />
+                                <button type="submit" class="perm-btn perm-btn-approve" style="width:100%;">Approve</button>
+                            </form>
+                            <form method="POST" action="{{ route('department.project-permissions.reject', $request->request_id) }}" style="flex:1;">
+                                @csrf
+                                <input type="hidden" name="review_notes" value="Rejected by department head." />
+                                <button type="submit" class="perm-btn perm-btn-reject" style="width:100%;">Reject</button>
+                            </form>
+                        </div>
+                    @else
+                        <div class="perm-reviewed">Reviewed</div>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    @endif
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('permSearch');
+        const filterButtons = document.querySelectorAll('.perm-filter');
+        const rows = document.querySelectorAll('.perm-row');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                const query = this.value.toLowerCase();
+                const activeFilter = document.querySelector('.perm-filter.active')?.dataset.filter || 'all';
+
+                rows.forEach(function (row) {
+                    const project = (row.dataset.project || '').toLowerCase();
+                    const user = (row.dataset.user || '').toLowerCase();
+                    const status = (row.dataset.status || '').toLowerCase();
+                    const matchesQuery = project.includes(query) || user.includes(query);
+                    const matchesFilter = activeFilter === 'all' || status === activeFilter;
+                    row.style.display = matchesQuery && matchesFilter ? '' : 'none';
+                });
+            });
+        }
+
+        filterButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                filterButtons.forEach(function (btn) {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                const filter = this.dataset.filter || 'all';
+                const query = (searchInput?.value || '').toLowerCase();
+
+                rows.forEach(function (row) {
+                    const project = (row.dataset.project || '').toLowerCase();
+                    const user = (row.dataset.user || '').toLowerCase();
+                    const status = (row.dataset.status || '').toLowerCase();
+                    const matchesQuery = project.includes(query) || user.includes(query);
+                    const matchesFilter = filter === 'all' || status === filter;
+                    row.style.display = matchesQuery && matchesFilter ? '' : 'none';
+                });
+            });
+        });
+    });
+</script>
 @endsection
