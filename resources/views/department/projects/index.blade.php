@@ -188,6 +188,27 @@
         border-color: var(--dp-ink);
     }
 
+    html.dark-mode .dept-proj-filter,
+    .dark .dept-proj-filter {
+        background: rgba(15, 23, 42, 0.72);
+        border-color: rgba(148, 163, 184, 0.18);
+        color: #e5edf9;
+    }
+
+    html.dark-mode .dept-proj-filter:hover,
+    .dark .dept-proj-filter:hover {
+        background: #243247;
+        border-color: rgba(148, 163, 184, 0.35);
+    }
+
+    html.dark-mode .dept-proj-filter.active,
+    .dark .dept-proj-filter.active {
+        background: #f8fafc;
+        color: #1e1b4b;
+        border-color: #f8fafc;
+        box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
+    }
+
     /* Table card */
     .dept-proj-card {
         background: var(--dp-surface);
