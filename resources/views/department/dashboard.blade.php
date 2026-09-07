@@ -32,18 +32,29 @@
     /* Hero */
     .dept-hero {
         position: relative;
-        border-radius: 16px;
-        padding: 32px;
-        background: linear-gradient(135deg, #451a03 0%, #78350f 48%, #b45309 100%);
+        border-radius: 20px;
+        padding: 36px 40px;
+        background: linear-gradient(135deg, #451a03 0%, #78350f 30%, #b45309 70%, #d97706 100%);
         box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         margin-bottom: 24px;
         overflow: hidden;
     }
+    @media (min-width: 640px) { .dept-hero { padding: 44px 48px; } }
     .dept-hero::before {
         content: ""; position: absolute; inset: 0;
-        background: radial-gradient(circle at 20% 50%, rgba(245,158,11,0.15) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 20%, rgba(251,191,36,0.16) 0%, transparent 40%);
+        background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+        background-size: 24px 24px;
+        opacity: 0.5;
         pointer-events: none;
+    }
+    .dept-hero::after {
+        content: ""; position: absolute; top: -50%; right: -10%;
+        width: 500px; height: 500px;
+        background: radial-gradient(circle, rgba(245,158,11,0.2) 0%, transparent 60%);
+        pointer-events: none;
+    }
+    html.dark-mode .dept-hero {
+        background: linear-gradient(135deg, #451a03 0%, #78350f 30%, #b45309 70%, #d97706 100%) !important;
     }
     .dept-hero-content { position: relative; z-index: 1; }
     .dept-hero-eyebrow {
@@ -57,12 +68,13 @@
         box-shadow: 0 0 0 4px rgba(251,191,36,0.25);
     }
     .dept-hero-title {
-        font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 800;
-        color: white; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 12px;
+        font-size: clamp(1.75rem, 4vw, 2.75rem); font-weight: 800;
+        color: white; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 10px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
     .dept-hero-subtitle {
-        font-size: clamp(0.875rem, 1.5vw, 1rem);
-        color: rgba(255,255,255,0.7); max-width: 520px; line-height: 1.6;
+        font-size: 1rem;
+        color: rgba(255,255,255,0.65); max-width: 620px; line-height: 1.6;
     }
     .dept-hero-meta { display: flex; align-items: center; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
     .dept-hero-badge {
