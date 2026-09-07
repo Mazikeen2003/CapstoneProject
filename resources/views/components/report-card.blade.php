@@ -6,7 +6,7 @@
     'icon' => 'document',
 ])
 
-<article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-amber-300 hover:shadow-xl">
+<article class="dept-report-card group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-amber-300 hover:shadow-xl">
     <div class="absolute bottom-0 right-0 h-24 w-24 rounded-tl-full bg-slate-50 transition duration-300 group-hover:bg-amber-50"></div>
     <div class="relative flex items-start gap-4">
         <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-amber-300 shadow-lg shadow-slate-900/15 ring-4 ring-slate-100">
