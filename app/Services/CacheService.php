@@ -100,7 +100,7 @@ class CacheService
     {
         $query = $ignoreRoleScope ? Project::withoutRoleScope() : Project::query();
 
-        $projects = $query->with('barangay')->get();
+        $projects = $query->with(['barangay', 'latestUpdate'])->get();
 
         $features = $projects->map(function ($project) use ($user) {
                 $latitude = $project->latitude;
@@ -117,6 +117,7 @@ class CacheService
 
                 $projectUrl = match ($user?->role_slug ?? 'public') {
                     'department' => route('department.projects.show', $project->project_id, false),
+                    'engineering' => route('engineering.projects.show', $project->project_id, false),
                     'city' => route('city.projects.show', $project->project_id, false),
                     'barangay' => route('barangay.projects.show', $project->project_id, false),
                     default => route('public.map', [], false),
@@ -140,6 +141,7 @@ class CacheService
                         'image'             => $project->project_image ? Storage::url($project->project_image) : null,
                         'start_date'        => $project->start_date?->toDateString(),
                         'target_end_date'   => $project->target_end_date?->toDateString(),
+                        'progress_percentage' => $project->latestUpdate?->progress_percentage,
                         'url'               => $projectUrl,
                     ],
                 ];

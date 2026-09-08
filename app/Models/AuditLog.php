@@ -17,7 +17,6 @@ class AuditLog extends Model
         'old_values',
         'new_values',
         'full_name',
-        'ip_address',
         'created_at',
     ];
 

@@ -1,96 +1,325 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <style>
-        body { font-family: Helvetica, Arial, sans-serif; font-size: 12px; color: #1a1a1a; }
-        .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #0f1e3d; padding-bottom: 10px; }
-        .header h1 { font-size: 18px; margin: 0; color: #0f1e3d; }
-        .header p { font-size: 11px; color: #555; margin: 4px 0 0; }
-        .meta { font-size: 10px; color: #666; margin-bottom: 20px; }
-        .summary-grid { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .summary-grid td { border: 1px solid #B2BEB5; padding: 8px 10px; width: 50%; }
-        .summary-label { font-size: 10px; color: #555; }
-        .summary-value { font-size: 16px; font-weight: bold; color: #0f1e3d; }
-        table.data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        table.data-table th, table.data-table td { border: 1px solid #B2BEB5; padding: 6px 8px; text-align: left; font-size: 10px; }
-        table.data-table th { background-color: #f2f3f7; font-weight: bold; }
-        .footer { margin-top: 30px; font-size: 9px; color: #666; text-align: center; border-top: 1px solid #ccc; padding-top: 8px; }
-        h2 { font-size: 13px; color: #0f1e3d; margin-top: 20px; margin-bottom: 8px; }
-    </style>
+<meta charset="UTF-8">
+<title>SGLG Compliance Report — Cabuyao City</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "DejaVu Sans", "Arial Unicode MS", Helvetica, Arial, sans-serif;
+  color: #1e293b;
+  font-size: 10pt;
+  line-height: 1.5;
+  background: #ffffff;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: #0a1628;
+  border-bottom: 4px solid #c9a84c;
+  padding: 24px 28px 20px;
+}
+
+.header-tag {
+  font-size: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #c9a84c;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  color: #ffffff;
+  font-size: 22pt;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.header-desc {
+  color: #94a3b8;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+
+.header-badge {
+  display: inline-block;
+  border: 1px solid #c9a84c;
+  color: #c9a84c;
+  padding: 6px 14px;
+  font-size: 7.5pt;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+
+/* ===== METADATA ===== */
+.meta-bar {
+  background: #f1f5f9;
+  border-bottom: 1px solid #cbd5e1;
+  padding: 10px 28px;
+}
+
+.meta-bar table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.meta-bar td {
+  font-size: 8.5pt;
+  color: #475569;
+  padding: 2px 0;
+}
+
+.meta-bar .label {
+  font-weight: bold;
+  color: #0a1628;
+  width: 100px;
+  font-size: 7.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ===== PAGE ===== */
+.page {
+  padding: 20px 28px 24px;
+}
+
+/* ===== SECTION TITLE ===== */
+.section-title {
+  margin: 24px 0 14px;
+  padding: 0 0 0 12px;
+  border-left: 3px solid #c9a84c;
+  font-size: 13pt;
+  font-weight: bold;
+  color: #0a1628;
+}
+
+.section-desc {
+  font-size: 9pt;
+  color: #64748b;
+  margin: -8px 0 14px 16px;
+  line-height: 1.4;
+}
+
+/* ===== STAT GRID ===== */
+.stat-grid {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 10px 10px;
+  margin: 0 -10px 20px;
+}
+
+.stat-grid td {
+  background: #162347;
+  border-top: 3px solid #c9a84c;
+  padding: 16px 18px;
+  width: 33.33%;
+  vertical-align: top;
+}
+
+.stat-label {
+  font-size: 7.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 22pt;
+  font-weight: bold;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.stat-context {
+  font-size: 8pt;
+  color: #94a3b8;
+}
+
+/* ===== TABLE ===== */
+.table-wrapper {
+  border: 1px solid #94a3b8;
+  margin-bottom: 18px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9pt;
+}
+
+.data-table thead {
+  background: #162347;
+}
+
+.data-table th {
+  color: #ffffff;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: bold;
+  font-size: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: none;
+  border-bottom: 2px solid #0a1628;
+}
+
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: middle;
+  color: #334155;
+}
+
+.data-table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.text-right { text-align: right; }
+
+/* Barangay name */
+.barangay-name {
+  font-weight: 600;
+  color: #0a1628;
+}
+
+/* Rate percentage */
+.rate-value {
+  font-family: "DejaVu Sans Mono", monospace;
+  font-size: 9pt;
+  font-weight: bold;
+  color: #0a1628;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  margin-top: 28px;
+  padding: 16px 0 0;
+  border-top: 2px solid #c9a84c;
+  font-size: 8pt;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.footer strong {
+  color: #0a1628;
+}
+</style>
 </head>
 <body>
-    <div class="header">
-        <h1>SGLG Compliance Report — Cabuyao City</h1>
-        <p>Seal of Good Local Governance — Project Monitoring &amp; Transparency Documentation</p>
-    </div>
 
-    <div class="meta">
-        Generated by: {{ $generated_by }} &middot; Generated on: {{ $generated_date }}
-    </div>
+<!-- Header -->
+<div class="header">
+  <div class="header-tag">City of Cabuyao — Transparency Portal</div>
+  <h1>SGLG Compliance Report</h1>
+  <div class="header-desc">Seal of Good Local Governance — Project Monitoring &amp; Transparency Documentation</div>
+  <span class="header-badge">For Official Use</span>
+</div>
 
-    <h2>Summary Indicators</h2>
-    <table class="summary-grid">
+<!-- Metadata -->
+<div class="meta-bar">
+  <table>
+    <tr>
+      <td class="label">Generated by</td>
+      <td>{{ $generated_by }}</td>
+      <td class="label">Date</td>
+      <td>{{ $generated_date }}</td>
+      <td class="label">Type</td>
+      <td>SGLG Assessment</td>
+    </tr>
+  </table>
+</div>
+
+<div class="page">
+
+<!-- Summary Indicators -->
+<div class="section-title">Summary Indicators</div>
+<p class="section-desc">Key performance metrics for DILG Seal of Good Local Governance assessment.</p>
+
+<table class="stat-grid">
+  <tr>
+    <td>
+      <div class="stat-label">Documentation Rate</div>
+      <div class="stat-value">{{ $summary['documentation_rate'] }}%</div>
+      <div class="stat-context">{{ $summary['projects_with_documentation'] }} of {{ $summary['total_projects'] }} projects</div>
+    </td>
+    <td>
+      <div class="stat-label">Up-to-Date Rate</div>
+      <div class="stat-value">{{ $summary['up_to_date_rate'] }}%</div>
+      <div class="stat-context">{{ $summary['projects_recently_updated'] }} of {{ $summary['total_projects'] }} projects (90 days)</div>
+    </td>
+    <td>
+      <div class="stat-label">Transparency Rate</div>
+      <div class="stat-value">{{ $summary['transparency_rate'] }}%</div>
+      <div class="stat-context">{{ $summary['projects_published'] }} of {{ $summary['total_projects'] }} projects published</div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div class="stat-label">Budget Utilization</div>
+      <div class="stat-value">{{ $summary['budget_utilization_rate'] }}%</div>
+      <div class="stat-context">Approved budget spent</div>
+    </td>
+    <td>
+      <div class="stat-label">Completion Rate</div>
+      <div class="stat-value">{{ $summary['completion_rate'] }}%</div>
+      <div class="stat-context">Projects successfully closed</div>
+    </td>
+    <td>
+      <div class="stat-label">Total Projects</div>
+      <div class="stat-value">{{ $summary['total_projects'] }}</div>
+      <div class="stat-context">Projects in assessment scope</div>
+    </td>
+  </tr>
+</table>
+
+<!-- Breakdown by Barangay -->
+<div class="section-title">Breakdown by Barangay</div>
+<p class="section-desc">Documentation compliance rate per barangay within the city jurisdiction.</p>
+
+<div class="table-wrapper">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Barangay</th>
+        <th class="text-right">Project Count</th>
+        <th class="text-right">Documentation Rate</th>
+      </tr>
+    </thead>
+    <tbody>
+      @forelse ($by_barangay as $barangayName => $stats)
         <tr>
-            <td>
-                <div class="summary-label">Documentation Rate</div>
-                <div class="summary-value">{{ $summary['documentation_rate'] }}%</div>
-                <div class="summary-label">{{ $summary['projects_with_documentation'] }} of {{ $summary['total_projects'] }} projects</div>
-            </td>
-            <td>
-                <div class="summary-label">Up-to-Date Rate (updated within 90 days)</div>
-                <div class="summary-value">{{ $summary['up_to_date_rate'] }}%</div>
-                <div class="summary-label">{{ $summary['projects_recently_updated'] }} of {{ $summary['total_projects'] }} projects</div>
-            </td>
+          <td class="barangay-name">{{ $barangayName }}</td>
+          <td class="text-right">{{ $stats['count'] }}</td>
+          <td class="text-right"><span class="rate-value">{{ $stats['documentation_rate'] }}%</span></td>
         </tr>
-        <tr>
-            <td>
-                <div class="summary-label">Transparency Rate (visible on public portal)</div>
-                <div class="summary-value">{{ $summary['transparency_rate'] }}%</div>
-                <div class="summary-label">{{ $summary['projects_published'] }} of {{ $summary['total_projects'] }} projects</div>
-            </td>
-            <td>
-                <div class="summary-label">Budget Utilization Rate</div>
-                <div class="summary-value">{{ $summary['budget_utilization_rate'] }}%</div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="summary-label">Completion Rate</div>
-                <div class="summary-value">{{ $summary['completion_rate'] }}%</div>
-            </td>
-            <td>
-                <div class="summary-label">Total Projects in Scope</div>
-                <div class="summary-value">{{ $summary['total_projects'] }}</div>
-            </td>
-        </tr>
-    </table>
+      @empty
+        <tr><td colspan="3" style="text-align: center; color: #94a3b8;">No data available.</td></tr>
+      @endforelse
+    </tbody>
+  </table>
+</div>
 
-    <h2>Breakdown by Barangay</h2>
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Barangay</th>
-                <th>Project Count</th>
-                <th>Documentation Rate</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($by_barangay as $barangayName => $stats)
-                <tr>
-                    <td>{{ $barangayName }}</td>
-                    <td>{{ $stats['count'] }}</td>
-                    <td>{{ $stats['documentation_rate'] }}%</td>
-                </tr>
-            @empty
-                <tr><td colspan="3">No data available.</td></tr>
-            @endforelse
-        </tbody>
-    </table>
+<!-- Footer -->
+<div class="footer">
+  <strong>City of Cabuyao — Transparency Portal</strong><br>
+  Prepared for DILG Seal of Good Local Governance (SGLG) assessment purposes.<br>
+  Confidential — For Official Use Only — Generated {{ $generated_date }} by {{ $generated_by }}.
+</div>
 
-    <div class="footer">
-        Prepared for DILG Seal of Good Local Governance (SGLG) assessment purposes.<br>
-        Confidential — For Official Use Only
-    </div>
+</div>
+
 </body>
 </html>

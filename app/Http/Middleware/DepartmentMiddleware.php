@@ -18,7 +18,7 @@ class DepartmentMiddleware
         $user = Auth::user();
 
         if ($user->role_slug !== 'department' && ! $user->isDepartmentHead()) {
-            abort(403, 'Access denied. Department privileges required.');
+            abort(403, 'Access denied. Planning privileges required.');
         }
 
         return $next($request);

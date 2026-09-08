@@ -1,60 +1,304 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ $title }}</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; color: #333; font-size: 11px; line-height: 1.4; }
-        .header { text-align: center; margin-bottom: 20px; border-bottom: 3px solid #0F1E3D; padding-bottom: 10px; }
-        .header h1 { color: #0F1E3D; font-size: 18px; margin-bottom: 5px; }
-        .header p { color: #666; font-size: 10px; }
-        .metadata { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 10px; color: #666; }
-        .section-title { background: #0F1E3D; color: white; padding: 8px; margin-top: 20px; margin-bottom: 10px; font-weight: bold; }
-        .summary-box { background: #f5f5f5; border-left: 3px solid #0F1E3D; padding: 10px; margin: 10px 0; }
-        .summary-row { display: flex; justify-content: space-between; padding: 5px 0; }
-        .summary-label { font-weight: bold; }
-        .summary-value { text-align: right; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        th { background: #c9a84c; color: #0F1E3D; padding: 8px; text-align: left; font-weight: bold; font-size: 10px; }
-        td { padding: 8px; border-bottom: 1px solid #ddd; }
-        tr:nth-child(even) { background: #f9f9f9; }
-        .text-right { text-align: right; }
-        .footer { margin-top: 20px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 9px; color: #999; }
-    </style>
+<meta charset="UTF-8">
+<title>{{ $title }} — City Transparency Portal</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "DejaVu Sans", "Arial Unicode MS", Helvetica, Arial, sans-serif;
+  color: #1e293b;
+  font-size: 10pt;
+  line-height: 1.5;
+  background: #ffffff;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: #0a1628;
+  border-bottom: 4px solid #c9a84c;
+  padding: 24px 28px 20px;
+}
+
+.header-tag {
+  font-size: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #c9a84c;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  color: #ffffff;
+  font-size: 22pt;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.header-desc {
+  color: #94a3b8;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+
+.header-badge {
+  display: inline-block;
+  border: 1px solid #c9a84c;
+  color: #c9a84c;
+  padding: 6px 14px;
+  font-size: 7.5pt;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+
+/* ===== METADATA ===== */
+.meta-bar {
+  background: #f1f5f9;
+  border-bottom: 1px solid #cbd5e1;
+  padding: 10px 28px;
+}
+
+.meta-bar table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.meta-bar td {
+  font-size: 8.5pt;
+  color: #475569;
+  padding: 2px 0;
+}
+
+.meta-bar .label {
+  font-weight: bold;
+  color: #0a1628;
+  width: 100px;
+  font-size: 7.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ===== PAGE ===== */
+.page {
+  padding: 20px 28px 24px;
+}
+
+/* ===== SECTION TITLE ===== */
+.section-title {
+  margin: 24px 0 14px;
+  padding: 0 0 0 12px;
+  border-left: 3px solid #c9a84c;
+  font-size: 13pt;
+  font-weight: bold;
+  color: #0a1628;
+}
+
+.section-desc {
+  font-size: 9pt;
+  color: #64748b;
+  margin: -8px 0 14px 16px;
+  line-height: 1.4;
+}
+
+/* ===== STAT CARDS ===== */
+.stat-row {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 10px 0;
+  margin: 0 -10px 20px;
+}
+
+.stat-row td {
+  background: #162347;
+  border-top: 3px solid #c9a84c;
+  padding: 16px 18px;
+  width: 25%;
+  vertical-align: top;
+}
+
+.stat-label {
+  font-size: 7.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 22pt;
+  font-weight: bold;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.stat-context {
+  font-size: 8pt;
+  color: #94a3b8;
+}
+
+/* ===== SUMMARY BOX ===== */
+.summary-box {
+  background: #f8fafc;
+  border: 1px solid #94a3b8;
+  border-left: 4px solid #c9a84c;
+  padding: 16px 20px;
+  margin-bottom: 22px;
+}
+
+.summary-box h3 {
+  font-size: 8.5pt;
+  color: #0a1628;
+  margin-bottom: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.summary-table td {
+  padding: 6px 0;
+  font-size: 9pt;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.summary-table tr:last-child td {
+  border-bottom: none;
+}
+
+.summary-label {
+  color: #475569;
+  font-weight: 600;
+  width: 60%;
+}
+
+.summary-value {
+  color: #0a1628;
+  text-align: right;
+  font-weight: bold;
+  font-family: "DejaVu Sans Mono", monospace;
+  font-size: 9pt;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  margin-top: 28px;
+  padding: 16px 0 0;
+  border-top: 2px solid #c9a84c;
+  font-size: 8pt;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.footer strong {
+  color: #0a1628;
+}
+</style>
 </head>
 <body>
-    <div class="header">
-        <h1>{{ $title }}</h1>
-        <p>City Transparency Portal</p>
-    </div>
 
-    <div class="metadata">
-        <span><strong>Generated by:</strong> {{ $generated_by }}</span>
-        <span><strong>Date:</strong> {{ $generated_date }}</span>
-    </div>
+@php
+  $totalLogs = $technical_metrics['total_audit_logs'] ?? 0;
+  $validationIssues = $technical_metrics['projects_with_validation_issues'] ?? 0;
+  $recentAudits = $technical_metrics['recent_audit_count'] ?? 0;
+  $recentUpdates = $technical_metrics['recent_project_updates'] ?? 0;
+@endphp
 
-    <div class="summary-box">
-        <div class="summary-row">
-            <span class="summary-label">Total Audit Log Entries</span>
-            <span class="summary-value">{{ $technical_metrics['total_audit_logs'] }}</span>
-        </div>
-        <div class="summary-row">
-            <span class="summary-label">Projects with Validation Issues</span>
-            <span class="summary-value">{{ $technical_metrics['projects_with_validation_issues'] }}</span>
-        </div>
-        <div class="summary-row">
-            <span class="summary-label">Recent Audit Count (30 days)</span>
-            <span class="summary-value">{{ $technical_metrics['recent_audit_count'] }}</span>
-        </div>
-        <div class="summary-row">
-            <span class="summary-label">Project Updates (30 days)</span>
-            <span class="summary-value">{{ $technical_metrics['recent_project_updates'] }}</span>
-        </div>
-    </div>
+<!-- Header -->
+<div class="header">
+  <div class="header-tag">City of Cabuyao — Transparency Portal</div>
+  <h1>{{ $title }}</h1>
+  <div class="header-desc">Technical system metrics and audit activity monitoring</div>
+  <span class="header-badge">Internal Use</span>
+</div>
 
-    <div class="footer">
-        <p>Confidential � For Internal Use Only</p>
-    </div>
+<!-- Metadata -->
+<div class="meta-bar">
+  <table>
+    <tr>
+      <td class="label">Generated by</td>
+      <td>{{ $generated_by }}</td>
+      <td class="label">Date</td>
+      <td>{{ $generated_date }}</td>
+      <td class="label">Type</td>
+      <td>Technical Metrics</td>
+    </tr>
+  </table>
+</div>
+
+<div class="page">
+
+<!-- Stat Cards -->
+<div class="section-title">Technical Metrics Overview</div>
+<p class="section-desc">Key system health and activity indicators for the reporting period.</p>
+
+<table class="stat-row">
+  <tr>
+    <td>
+      <div class="stat-label">Total Audit Logs</div>
+      <div class="stat-value">{{ $totalLogs }}</div>
+      <div class="stat-context">All recorded entries</div>
+    </td>
+    <td>
+      <div class="stat-label">Validation Issues</div>
+      <div class="stat-value">{{ $validationIssues }}</div>
+      <div class="stat-context">Projects requiring attention</div>
+    </td>
+    <td>
+      <div class="stat-label">Recent Audits</div>
+      <div class="stat-value">{{ $recentAudits }}</div>
+      <div class="stat-context">Last 30 days</div>
+    </td>
+    <td>
+      <div class="stat-label">Project Updates</div>
+      <div class="stat-value">{{ $recentUpdates }}</div>
+      <div class="stat-context">Last 30 days</div>
+    </td>
+  </tr>
+</table>
+
+<!-- Summary Box -->
+<div class="section-title">Detailed Summary</div>
+<div class="summary-box">
+  <h3>Metric Breakdown</h3>
+  <table class="summary-table">
+    <tr>
+      <td class="summary-label">Total Audit Log Entries</td>
+      <td class="summary-value">{{ $totalLogs }}</td>
+    </tr>
+    <tr>
+      <td class="summary-label">Projects with Validation Issues</td>
+      <td class="summary-value">{{ $validationIssues }}</td>
+    </tr>
+    <tr>
+      <td class="summary-label">Recent Audit Count (30 days)</td>
+      <td class="summary-value">{{ $recentAudits }}</td>
+    </tr>
+    <tr>
+      <td class="summary-label">Project Updates (30 days)</td>
+      <td class="summary-value">{{ $recentUpdates }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <strong>City of Cabuyao — Transparency Portal</strong><br>
+  Confidential — For Internal Use Only — Generated {{ $generated_date }} by {{ $generated_by }}.
+</div>
+
+</div>
+
 </body>
 </html>

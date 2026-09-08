@@ -21,10 +21,19 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function index(): View
+    public function index(\Illuminate\Http\Request $request): View
     {
-        $users = User::with(['role', 'barangay'])->paginate(15);
-        return view('admin.users.index', compact('users'));
+        $roleId = $request->input('role_id');
+        $query = User::with(['role', 'barangay'])->orderBy('username');
+
+        if (is_numeric($roleId) && (int) $roleId > 0) {
+            $query->where('role_id', (int) $roleId);
+        }
+
+        $users = $query->paginate(10)->withQueryString();
+        $roles = Role::orderBy('role_name')->get();
+
+        return view('admin.users.index', compact('users', 'roles'));
     }
 
     public function create(): View

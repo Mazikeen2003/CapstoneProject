@@ -9,7 +9,7 @@
         <p class="text-xs text-gray-400 mt-1">@if ($form) Form created on {{ $form->created_at->format('M d, Y h:i A') }} &middot; Last updated {{ $form->updated_at->format('M d, Y h:i A') }} @else Not yet filled out @endif</p>
     </div>
     @if ($errors->any())<div class="bg-red-50 border border-red-300 text-red-700 rounded-md p-3 text-sm"><ul class="list-disc list-inside">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
-    <form method="POST" action="{{ route('department.projects.forms.update', [$project->project_id, $formType]) }}" class="space-y-6">@csrf @method('PUT')
+    <form method="POST" action="{{ route(($formRoutePrefix ?? 'department') . '.projects.forms.update', [$project->project_id, $formType]) }}" class="space-y-6">@csrf @method('PUT')
         @foreach ($sections as $section)
             <div class="bg-white rounded-lg p-6 space-y-4" style="border: 1px solid #B2BEB5;"><h2 class="text-lg font-bold text-black">{{ $section['title'] }}</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @foreach ($section['fields'] as $field => $definition)
@@ -32,6 +32,6 @@
             </div></div>
         @endforeach
         @include('department.projects.forms.signatories', ['project' => $project, 'data' => $data])
-        <div class="flex justify-end space-x-3"><a href="{{ route('department.projects.show', $project->project_id) }}" class="project-form-action project-form-action-secondary">Cancel</a>@if ($form)<a href="{{ route('department.projects.forms.pdf', [$project->project_id, $formType]) }}" class="project-form-action project-form-action-download">Download PDF</a>@else<span title="Save the form first before generating a PDF" class="project-form-action project-form-action-disabled">Download PDF</span>@endif<button type="submit" class="project-form-action project-form-action-primary">Save Form</button></div>
+        <div class="flex justify-end space-x-3"><a href="{{ route(($formRoutePrefix ?? 'department') . '.projects.show', $project->project_id) }}" class="project-form-action project-form-action-secondary">Cancel</a>@if ($form)<a href="{{ route(($formRoutePrefix ?? 'department') . '.projects.forms.pdf', [$project->project_id, $formType]) }}" class="project-form-action project-form-action-download">Download PDF</a>@else<span title="Save the form first before generating a PDF" class="project-form-action project-form-action-disabled">Download PDF</span>@endif<button type="submit" class="project-form-action project-form-action-primary">Save Form</button></div>
     </form>
 </div>

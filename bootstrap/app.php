@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'admin.permission' => \App\Http\Middleware\AdminPermissionMiddleware::class,
             'department' => \App\Http\Middleware\DepartmentMiddleware::class,
+            'engineering' => \App\Http\Middleware\EngineeringMiddleware::class,
             'city' => \App\Http\Middleware\CityOfficialMiddleware::class,
             'barangay' => \App\Http\Middleware\BarangayMiddleware::class,
             'must_change_password' => \App\Http\Middleware\RequirePasswordChange::class,

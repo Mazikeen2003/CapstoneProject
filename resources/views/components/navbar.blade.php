@@ -6,6 +6,7 @@
     $panelTitle = $isPublicRoute ? 'Public Portal' : match($currentRole) {
         'admin' => 'Admin Overview',
         'department' => 'Department Dashboard',
+        'engineering' => 'Engineering',
         'city' => 'City Official Dashboard',
         'barangay' => 'Barangay Dashboard',
         default => 'Public Portal',
@@ -13,6 +14,7 @@
     $panelSubtitle = $isPublicRoute ? '' : match($currentRole) {
         'admin' => 'Manage Access and monitor system Activity',
         'department' => 'Workspace for Cabuyao City Government',
+        'engineering' => 'Engineering project monitoring and progress updates',
         'city' => 'Citywide project oversight and analytics',
         'barangay' => 'Local Project Management Monitoring',
         default => '',

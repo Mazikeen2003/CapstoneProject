@@ -22,12 +22,16 @@ class RoleSeeder extends Seeder
                 'role_description' => 'City Government Official',
             ],
             [
-                'role_name' => 'Department',
-                'role_description' => 'Department Staff',
+                'role_name' => 'Planning',
+                'role_description' => 'Planning Staff',
             ],
             [
                 'role_name' => 'Barangay Official',
                 'role_description' => 'Barangay Official',
+            ],
+            [
+                'role_name' => 'Engineering',
+                'role_description' => 'Engineering Staff',
             ],
         ];
 

@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-        <title>{{ config('app.name', 'Cabuyao Project Tracker') }} | Department</title>
+        <title>{{ config('app.name', 'Cabuyao Project Tracker') }} | Planning</title>
         @include('layouts.favicon')
 
         <link rel="preconnect" href="https://fonts.bunny.net" />
@@ -14,7 +14,7 @@
         @include('components.theme-init')
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased" style="background-color: #F7F9FB; color: #0F172A;">
+    <body class="authenticated-layout font-sans antialiased" style="background-color: #F7F9FB; color: #0F172A;">
         <div class="flex min-h-screen flex-col xl:h-screen xl:flex-row">
             @include('components.sidebar')
             <div class="flex min-h-0 flex-1 flex-col xl:overflow-hidden">

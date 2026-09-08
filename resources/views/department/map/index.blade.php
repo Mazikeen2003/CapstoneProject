@@ -7,7 +7,7 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
     <div class="space-y-4">
         <div>
-            <h1 class="text-3xl font-bold text-slate-900">Department Map</h1>
+            <h1 class="text-3xl font-bold text-slate-900">{{ $mapTitle ?? 'Department Map' }}</h1>
             <p class="mt-1 text-sm text-slate-500">Tap a barangay to view its projects and explore the city map.</p>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-4">
@@ -17,7 +17,7 @@
 
             <div id="projectSidebar" class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden flex flex-col" style="max-height: calc(100vh - 13.5rem);">
                 <div class="p-6 border-b border-gray-200 bg-white">
-                    <h2 class="text-lg font-bold text-slate-900">Department Projects</h2>
+                    <h2 class="text-lg font-bold text-slate-900">{{ $projectsTitle ?? 'Department Projects' }}</h2>
                     <p class="text-sm text-slate-500 mt-1">Cabuyao City Projects</p>
                     <div id="departmentSidebarAction" class="mt-4"></div>
                 </div>
@@ -62,6 +62,12 @@
         }
 
         function calculateProgress(project) {
+            const reportedProgress = project.properties.progress_percentage;
+
+            if (reportedProgress !== null && reportedProgress !== undefined && reportedProgress !== '') {
+                return Math.min(100, Math.max(0, Number(reportedProgress)));
+            }
+
             if (!project.properties.start_date || !project.properties.target_end_date) {
                 return 0;
             }

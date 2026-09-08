@@ -46,11 +46,14 @@ class ReportController extends Controller
             ->limit(5)
             ->get();
 
-        $peakUsage = AuditLog::where('created_at', '>=', now()->subDay())
-            ->selectRaw('HOUR(created_at) as hour, count(*) as total')
-            ->groupBy('hour')
-            ->orderByDesc('total')
-            ->get();
+        $accountRisks = [
+            'disabled_accounts' => User::where('is_disabled', true)->count(),
+            'unverified_accounts' => User::whereNull('email_verified_at')->count(),
+            'password_changes_required' => User::where('must_change_password', true)->count(),
+            'inactive_accounts' => User::whereDoesntHave('auditLogs', function ($query) {
+                $query->where('created_at', '>=', now()->subDays(30));
+            })->count(),
+        ];
 
         $projects = Project::withoutRoleScope();
 
@@ -92,7 +95,7 @@ class ReportController extends Controller
             'activeUsersByRole' => $activeUsersByRole,
             'auditStats' => $auditStats,
             'topUsers' => $topUsers,
-            'peakUsage' => $peakUsage,
+            'accountRisks' => $accountRisks,
             'dataQuality' => $dataQuality,
             'technicalMetrics' => $technicalMetrics,
             'reportHistory' => $reportHistory,

@@ -12,6 +12,11 @@ use App\Http\Controllers\Department\MapController as DepartmentMapController;
 use App\Http\Controllers\Department\AnalyticsController as DepartmentAnalyticsController;
 use App\Http\Controllers\Department\ReportExportController as DepartmentReportController;
 use App\Http\Controllers\Department\ProjectFormController as DepartmentProjectFormController;
+use App\Http\Controllers\Engineering\DashboardController as EngineeringDashboard;
+use App\Http\Controllers\Engineering\ProjectController as EngineeringProjectController;
+use App\Http\Controllers\Engineering\MapController as EngineeringMapController;
+use App\Http\Controllers\Engineering\AnalyticsController as EngineeringAnalyticsController;
+use App\Http\Controllers\Engineering\ReportController as EngineeringReportController;
 use App\Http\Controllers\CityOfficial\DashboardController as CityDashboard;
 use App\Http\Controllers\CityOfficial\MapController as CityMapController;
 use App\Http\Controllers\CityOfficial\AnalyticsController as CityAnalyticsController;
@@ -67,6 +72,7 @@ Route::get('/dashboard', function () {
         'city'       => redirect()->route('city.dashboard'),
         'barangay'   => redirect()->route('barangay.dashboard'),
         'department' => redirect()->route('department.dashboard'),
+        'engineering' => redirect()->route('engineering.dashboard'),
         default      => view('dashboard'),
     };
 })->middleware('auth')->name('dashboard');
@@ -167,6 +173,36 @@ Route::middleware(['auth', 'department'])
         Route::get('/reports/budget/pdf', [\App\Http\Controllers\Department\ReportController::class, 'budgetPdf'])->name('reports.budget-pdf');
         Route::get('/reports/sglg/pdf', [\App\Http\Controllers\Department\ReportController::class, 'sglgPdf'])->name('reports.sglg-pdf');
 
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Engineering routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'engineering'])
+    ->prefix('engineering')
+    ->name('engineering.')
+    ->group(function () {
+
+        Route::get('/dashboard', [EngineeringDashboard::class, 'index'])->name('dashboard');
+
+        Route::resource('projects', EngineeringProjectController::class)->names([
+            'index' => 'projects.index',
+            'show' => 'projects.show',
+        ])->only(['index', 'show']);
+
+        Route::post('/projects/{id}/progress', [EngineeringProjectController::class, 'updateProgress'])->name('projects.progress');
+        Route::get('/projects/{project}/forms/{type}', [DepartmentProjectFormController::class, 'edit'])->name('projects.forms.edit');
+        Route::get('/projects/{project}/forms/{type}/pdf', [DepartmentProjectFormController::class, 'pdf'])->name('projects.forms.pdf');
+        Route::put('/projects/{project}/forms/{type}', [DepartmentProjectFormController::class, 'update'])->name('projects.forms.update');
+
+        Route::get('/map', [EngineeringMapController::class, 'index'])->name('map.index');
+        Route::get('/analytics', [EngineeringAnalyticsController::class, 'index'])->name('analytics.index');
+        Route::get('/reports', [EngineeringReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/projects/pdf', [EngineeringReportController::class, 'projectsPdf'])->name('reports.projects-pdf');
+        Route::get('/reports/budget/pdf', [EngineeringReportController::class, 'budgetPdf'])->name('reports.budget-pdf');
+        Route::get('/reports/sglg/pdf', [EngineeringReportController::class, 'sglgPdf'])->name('reports.sglg-pdf');
     });
 
 /*

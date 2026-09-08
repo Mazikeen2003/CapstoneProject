@@ -112,6 +112,37 @@
                             </span>
                             Reports
                         </a>
+                    @elseif($role === 'engineering')
+                        <a href="{{ url('/engineering/dashboard') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('engineering.dashboard') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Engineering Dashboard">
+                            <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Dashboard">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                            </span>
+                            Dashboard
+                        </a>
+                        <a href="{{ url('/engineering/projects') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('engineering.projects*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Projects">
+                            <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Projects">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20h18v2H3v-2Zm2-2V9l7-4 7 4v9h-3v-6h-2v6h-4v-6H8v6H5Zm7-10.7L8.5 10h7L12 7.3Z"/></svg>
+                            </span>
+                            Projects
+                        </a>
+                        <a href="{{ url('/engineering/map') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('engineering.map*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Map">
+                            <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Map">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="m9 4 6-2 6 2v16l-6 2-6-2-6 2V4l6-2Zm0 2.1L5 7.43v11.74l4-1.33V6.1Zm2 0v11.74l3 1V6.1l-3 1Zm5-.67v11.74l3-.99V6.43l-3-.99Z"/></svg>
+                            </span>
+                            Map
+                        </a>
+                        <a href="{{ url('/engineering/analytics') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('engineering.analytics*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Analytics">
+                            <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Analytics">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
+                            </span>
+                            Analytics
+                        </a>
+                        <a href="{{ url('/engineering/reports') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->routeIs('engineering.reports*') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="Reports">
+                            <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Reports">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 9c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm3 6H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/></svg>
+                            </span>
+                            Reports
+                        </a>
                     @elseif($role === 'city')
                         <a href="{{ url('/city/dashboard') }}" class="flex items-center gap-2 sm:gap-3 rounded-3xl px-3 py-3 sm:px-4 text-sm font-semibold transition hover:bg-slate-800 {{ request()->is('city/dashboard') ? 'bg-slate-800 text-white' : 'text-slate-300' }}" title="City Dashboard">
                             <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl" style="background-color: #162347; color: #c9a84c;" aria-label="Dashboard">

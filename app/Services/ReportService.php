@@ -46,7 +46,7 @@ class ReportService
 
         return [
             'title'           => match ($user->role_slug) {
-                'department' => 'Department Project Report',
+                'department' => 'Planning Project Report',
                 'city'       => 'Citywide Project Report',
                 'barangay'   => 'Barangay ' . ($user->barangay->barangay_name ?? 'Unknown') . ' Report',
                 'admin'      => 'System-Wide Project Report',
@@ -108,14 +108,16 @@ class ReportService
         $usersByRole = User::with('role')
             ->get()
             ->groupBy(fn($u) => $u->role?->role_name ?? 'Unknown')
-            ->map(fn($g) => $g->count());
+            ->map(fn($g) => $g->count())
+            ->all();
 
         $activeUserIds = AuditLog::distinct()->pluck('user_id')->filter()->all();
         $activeUsersByRole = User::with('role')
             ->whereIn('user_id', $activeUserIds)
             ->get()
             ->groupBy(fn($u) => $u->role?->role_name ?? 'Unknown')
-            ->map(fn($g) => $g->count());
+            ->map(fn($g) => $g->count())
+            ->all();
 
         return [
             'title' => 'System Usage Report',

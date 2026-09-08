@@ -29,7 +29,7 @@
         $data = old() ?: ($form->form_data ?? []);
     @endphp
 
-    <form method="POST" action="{{ route('department.projects.forms.update', [$project->project_id, 'form_1']) }}" class="space-y-6">
+    <form method="POST" action="{{ route(($formRoutePrefix ?? 'department') . '.projects.forms.update', [$project->project_id, 'form_1']) }}" class="space-y-6">
         @csrf
         @method('PUT')
 
@@ -227,8 +227,8 @@
         </div>
 
         <div class="flex justify-end space-x-3">
-            <a href="{{ route('department.projects.show', $project->project_id) }}" class="project-form-action project-form-action-secondary">Cancel</a>
-            @if ($form)<a href="{{ route('department.projects.forms.pdf', [$project->project_id, 'form_1']) }}" class="project-form-action project-form-action-download">Download PDF</a>@else<span title="Save the form first before generating a PDF" class="project-form-action project-form-action-disabled">Download PDF</span>@endif
+            <a href="{{ route(($formRoutePrefix ?? 'department') . '.projects.show', $project->project_id) }}" class="project-form-action project-form-action-secondary">Cancel</a>
+            @if ($form)<a href="{{ route(($formRoutePrefix ?? 'department') . '.projects.forms.pdf', [$project->project_id, 'form_1']) }}" class="project-form-action project-form-action-download">Download PDF</a>@else<span title="Save the form first before generating a PDF" class="project-form-action project-form-action-disabled">Download PDF</span>@endif
             <button type="submit" class="project-form-action project-form-action-primary">Save Form</button>
         </div>
     </form>

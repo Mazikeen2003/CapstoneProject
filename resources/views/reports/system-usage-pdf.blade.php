@@ -1,84 +1,360 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ $title }}</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; color: #333; font-size: 11px; line-height: 1.4; }
-        .header { text-align: center; margin-bottom: 20px; border-bottom: 3px solid #0F1E3D; padding-bottom: 10px; }
-        .header h1 { color: #0F1E3D; font-size: 18px; margin-bottom: 5px; }
-        .header p { color: #666; font-size: 10px; }
-        .metadata { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 10px; color: #666; }
-        .section-title { background: #0F1E3D; color: white; padding: 8px; margin-top: 20px; margin-bottom: 10px; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        th { background: #c9a84c; color: #0F1E3D; padding: 8px; text-align: left; font-weight: bold; font-size: 10px; }
-        td { padding: 8px; border-bottom: 1px solid #ddd; }
-        tr:nth-child(even) { background: #f9f9f9; }
-        .text-right { text-align: right; }
-        .summary-box { background: #f5f5f5; border-left: 3px solid #0F1E3D; padding: 10px; margin: 10px 0; }
-        .summary-row { display: flex; justify-content: space-between; padding: 5px 0; }
-        .summary-label { font-weight: bold; }
-        .summary-value { text-align: right; }
-        .footer { margin-top: 20px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 9px; color: #999; }
-    </style>
+<meta charset="UTF-8">
+<title>{{ $title }} — City of Cabuyao</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "DejaVu Sans", "Arial Unicode MS", Helvetica, Arial, sans-serif;
+  color: #1e293b;
+  font-size: 10pt;
+  line-height: 1.5;
+  background: #ffffff;
+}
+
+/* Header */
+.header {
+  background: #0a1628;
+  border-bottom: 5px solid #c9a84c;
+  padding: 28px 32px 24px;
+}
+
+.header-eyebrow {
+  font-size: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #c9a84c;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.header h1 {
+  color: #ffffff;
+  font-size: 22pt;
+  font-weight: bold;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.header-sub {
+  color: #94a3b8;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+
+.header-badge {
+  display: inline-block;
+  background: #162347;
+  border: 1px solid #c9a84c;
+  color: #c9a84c;
+  padding: 6px 12px;
+  font-size: 7.5pt;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+
+/* Metadata Panel */
+.meta-panel {
+  background: #f8fafc;
+  border: 1px solid #94a3b8;
+  border-top: none;
+  padding: 14px 32px;
+}
+
+.meta-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.meta-table td {
+  padding: 4px 0;
+  border: none;
+  vertical-align: top;
+  font-size: 9pt;
+  color: #475569;
+}
+
+.meta-label {
+  font-weight: bold;
+  color: #0a1628;
+  width: 120px;
+  font-size: 8.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  padding-right: 8px;
+}
+
+.meta-value {
+  color: #475569;
+  padding-right: 24px;
+}
+
+/* Page */
+.page {
+  padding: 0 32px 24px;
+}
+
+/* Stat Cards */
+.stat-cards-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 14px 0;
+  margin: 22px -14px 26px;
+}
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #94a3b8;
+  border-top: 4px solid #c9a84c;
+  padding: 18px 18px 16px;
+  width: 33.33%;
+  vertical-align: top;
+}
+
+.stat-label {
+  font-size: 7.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #64748b;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 22pt;
+  font-weight: bold;
+  color: #0a1628;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.stat-context {
+  font-size: 8.5pt;
+  color: #64748b;
+}
+
+/* Section Title */
+.section-title {
+  margin-top: 28px;
+  margin-bottom: 14px;
+  padding: 0 0 0 14px;
+  border-left: 4px solid #c9a84c;
+  font-size: 13pt;
+  font-weight: bold;
+  color: #0a1628;
+  letter-spacing: -0.01em;
+}
+
+/* Table */
+.table-wrapper {
+  border: 1px solid #94a3b8;
+  margin-bottom: 20px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9pt;
+}
+
+.data-table th {
+  background: #162347;
+  color: #ffffff;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: bold;
+  font-size: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: none;
+  border-bottom: 2px solid #0a1628;
+}
+
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: middle;
+  color: #334155;
+}
+
+.data-table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.text-right { text-align: right; }
+
+/* Role cell */
+.role-cell {
+  font-weight: 600;
+  color: #0a1628;
+}
+
+/* Percentage text */
+.pct-text {
+  font-family: "DejaVu Sans Mono", monospace;
+  font-size: 9pt;
+  font-weight: bold;
+  color: #c9a84c;
+}
+
+.pct-muted {
+  font-size: 8pt;
+  color: #94a3b8;
+}
+
+/* Footer */
+.footer {
+  margin-top: 28px;
+  padding: 16px 0 0;
+  border-top: 2px solid #c9a84c;
+  font-size: 8pt;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.footer strong {
+  color: #0a1628;
+}
+
+/* Column widths */
+.col-role { width: 40%; }
+.col-count { width: 20%; }
+.col-pct { width: 40%; }
+</style>
 </head>
 <body>
-    <div class="header">
-        <h1>{{ $title }}</h1>
-        <p>City Transparency Portal</p>
-    </div>
 
-    <div class="metadata">
-        <span><strong>Generated by:</strong> {{ $generated_by }}</span>
-        <span><strong>Date:</strong> {{ $generated_date }}</span>
-    </div>
+@php
+  $totalActive = array_sum($active_users_by_role);
+  $activeRate = $total_users > 0 ? round(($totalActive / $total_users) * 100, 1) : 0;
+  $maxRoleCount = !empty($users_by_role) ? max($users_by_role) : 1;
+  $maxActiveCount = !empty($active_users_by_role) ? max($active_users_by_role) : 1;
+  $topRole = !empty($users_by_role) ? array_key_first($users_by_role) : 'N/A';
+@endphp
 
-    <div class="summary-box">
-        <div class="summary-row">
-            <span class="summary-label">Total Users</span>
-            <span class="summary-value">{{ $total_users }}</span>
-        </div>
-    </div>
+<!-- Header -->
+<div class="header">
+  <div class="header-eyebrow">City of Cabuyao — Transparency Portal</div>
+  <h1>{{ $title }}</h1>
+  <div class="header-sub">Official user overview report for the City Transparency Portal system</div>
+  <span class="header-badge">Internal Use</span>
+</div>
 
-    <div class="section-title">Users by Role</div>
-    <table>
-        <thead>
-            <tr>
-                <th>Role</th>
-                <th class="text-right">Count</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($users_by_role as $role => $count)
-                <tr>
-                    <td>{{ $role }}</td>
-                    <td class="text-right">{{ $count }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+<!-- Metadata Panel -->
+<div class="meta-panel">
+  <table class="meta-table">
+    <tr>
+      <td class="meta-label">Generated by</td>
+      <td class="meta-value">{{ $generated_by }}</td>
+      <td class="meta-label">Date</td>
+      <td class="meta-value">{{ $generated_date }}</td>
+      <td class="meta-label">Total Users</td>
+      <td class="meta-value">{{ $total_users }}</td>
+    </tr>
+  </table>
+</div>
 
-    <div class="section-title">Active Users by Role</div>
-    <table>
-        <thead>
-            <tr>
-                <th>Role</th>
-                <th class="text-right">Count</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($active_users_by_role as $role => $count)
-                <tr>
-                    <td>{{ $role }}</td>
-                    <td class="text-right">{{ $count }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+<div class="page">
 
-    <div class="footer">
-        <p>Confidential � For Internal Use Only</p>
-    </div>
+<!-- Stat Cards -->
+<table class="stat-cards-table">
+  <tr>
+    <td class="stat-card">
+      <div class="stat-label">Total Users</div>
+      <div class="stat-value">{{ $total_users }}</div>
+      <div class="stat-context">Registered accounts</div>
+    </td>
+    <td class="stat-card">
+      <div class="stat-label">Active Users</div>
+      <div class="stat-value">{{ $totalActive }}</div>
+      <div class="stat-context">{{ $activeRate }}% of total</div>
+    </td>
+    <td class="stat-card">
+      <div class="stat-label">Largest Role</div>
+      <div class="stat-value" style="font-size: 16pt; padding-top: 3px;">{{ $topRole }}</div>
+      <div class="stat-context">{{ $users_by_role[$topRole] ?? 0 }} users</div>
+    </td>
+  </tr>
+</table>
+
+<!-- Users by Role -->
+<div class="section-title">Users by Role</div>
+<div class="table-wrapper">
+  <table class="data-table">
+    <colgroup><col class="col-role"><col class="col-count"><col class="col-pct"></colgroup>
+    <thead>
+      <tr>
+        <th>Role</th>
+        <th class="text-right">Count</th>
+        <th class="text-right">Share</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach ($users_by_role as $role => $count)
+        @php $rolePct = $total_users > 0 ? round(($count / $total_users) * 100, 1) : 0; @endphp
+        <tr>
+          <td class="role-cell">{{ $role }}</td>
+          <td class="text-right">{{ $count }}</td>
+          <td class="text-right">
+            <span class="pct-text">{{ $rolePct }}%</span>
+            <span class="pct-muted">of total</span>
+          </td>
+        </tr>
+      @endforeach
+    </tbody>
+  </table>
+</div>
+
+<!-- Active Users by Role -->
+<div class="section-title">Active Users by Role</div>
+<div class="table-wrapper">
+  <table class="data-table">
+    <colgroup><col class="col-role"><col class="col-count"><col class="col-pct"></colgroup>
+    <thead>
+      <tr>
+        <th>Role</th>
+        <th class="text-right">Active Count</th>
+        <th class="text-right">Activation Rate</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach ($active_users_by_role as $role => $count)
+        @php
+          $totalForRole = $users_by_role[$role] ?? 0;
+          $activationRate = $totalForRole > 0 ? round(($count / $totalForRole) * 100, 1) : 0;
+        @endphp
+        <tr>
+          <td class="role-cell">{{ $role }}</td>
+          <td class="text-right">{{ $count }}</td>
+          <td class="text-right">
+            <span class="pct-text">{{ $activationRate }}%</span>
+            <span class="pct-muted">of {{ $totalForRole }}</span>
+          </td>
+        </tr>
+      @endforeach
+    </tbody>
+  </table>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <strong>City of Cabuyao — Transparency Portal</strong><br>
+  This document contains confidential information intended for internal use only.<br>
+  Generated on {{ $generated_date }} by {{ $generated_by }}.
+</div>
+
+</div>
+
 </body>
 </html>

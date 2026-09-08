@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +16,7 @@ class AuditLogController extends Controller
     {
         $query = $this->buildAuditLogQuery($request);
 
-        $logs = $query->paginate(25)->withQueryString();
+        $logs = $query->paginate(10)->withQueryString();
         $users = User::orderBy('username')->get(['user_id', 'username']);
         $actions = AuditLog::distinct()->orderBy('action')->pluck('action');
 
@@ -32,7 +33,7 @@ class AuditLogController extends Controller
             'generated_by' => Auth::user()->username,
             'generated_date' => now()->format('M d, Y H:i A'),
             'logs' => $logs,
-        ]);
+        ])->setPaper('a4', 'landscape');
 
         return $pdf->download('audit_logs_export_' . now()->format('Y-m-d') . '.pdf');
     }
@@ -56,12 +57,17 @@ class AuditLogController extends Controller
             $query->where('action', $request->input('action'));
         }
 
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->input('date_from'));
+        $dateFrom = $request->input('date_from');
+        $dateTo = $request->input('date_to');
+
+        if (is_string($dateFrom) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
+            $from = Carbon::createFromFormat('!Y-m-d', $dateFrom, config('app.timezone'))->startOfDay();
+            $query->where('audit_logs.created_at', '>=', $from->format('Y-m-d H:i:s'));
         }
 
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->input('date_to'));
+        if (is_string($dateTo) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateTo)) {
+            $to = Carbon::createFromFormat('!Y-m-d', $dateTo, config('app.timezone'))->endOfDay();
+            $query->where('audit_logs.created_at', '<=', $to->format('Y-m-d H:i:s'));
         }
 
         if ($request->filled('sort')) {
@@ -81,13 +87,14 @@ class AuditLogController extends Controller
     private function parseSortParam(string $sort): array
     {
         $allowlist = ['created_at', 'action', 'table_name', 'user'];
-        $parts = explode('_', $sort);
+        $separator = strrpos($sort, '_');
 
-        if (count($parts) !== 2) {
+        if ($separator === false) {
             return ['created_at', 'desc'];
         }
 
-        [$column, $direction] = $parts;
+        $column = substr($sort, 0, $separator);
+        $direction = substr($sort, $separator + 1);
         $direction = strtolower($direction) === 'asc' ? 'asc' : 'desc';
 
         if (!in_array($column, $allowlist, true)) {

@@ -5,6 +5,14 @@ body { font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: #1a1a1
 .meta { font-size: 10px; color: #666; margin-bottom: 16px; } h2 { font-size: 13px; color: #0f1e3d; margin: 18px 0 8px; }
 table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid #B2BEB5; padding: 7px 8px; text-align: left; vertical-align: top; } th { background: #f2f3f7; font-weight: bold; } .label { width: 34%; font-weight: bold; color: #0f1e3d; } .empty { color: #666; font-style: italic; }
 .signatories { margin-top: 25px; } .signatories td { width: 50%; height: 72px; } .signatories strong { color: #0f1e3d; } .footer { margin-top: 25px; font-size: 9px; color: #666; text-align: center; border-top: 1px solid #ccc; padding-top: 8px; }
+</style>
+<style>
+body { font-family: 'DejaVu Sans', sans-serif; font-size: 11px; color: #172033; background: #f4f6f8; }
+.header { text-align: left; background: #0b1220; border-bottom: 4px solid #c9a84c; padding: 18px 20px 15px; }
+.header h1 { color: #ffffff; } .header p { color: #d6deeb; }
+h2 { color: #0b1220; border-left: 4px solid #c9a84c; padding-left: 8px; }
+table { border-collapse: collapse; } th { background: #162347; color: #ffffff; } td, th { border-color: #cbd5e1; } tr:nth-child(even) { background: #eef2f7; }
+.signatories td { background: #172b4d; color: #ffffff; border-color: #27446f; border-top: 3px solid #c9a84c; } .signatories strong { color: #ffffff; }
 </style></head><body>
 <div class="header"><h1>{{ $form_title }}</h1><p>Form {{ $form_number }} &mdash; {{ $project->project_name }} ({{ $project->project_code }})</p></div>
 <div class="meta">Generated on: {{ now()->format('M d, Y h:i A') }}</div>

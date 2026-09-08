@@ -13,13 +13,13 @@
         @include('components.theme-init')
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-white">
+    <body class="authenticated-layout font-sans antialiased bg-white">
         <div class="h-screen">
             <div class="flex h-full">
                 @include('components.sidebar')
                 <div class="flex-1 flex flex-col overflow-hidden">
                     @include('components.navbar')
-                    <main class="flex-1 overflow-y-auto px-6 py-6">
+                    <main class="flex-1 overflow-y-auto px-3 py-4 sm:px-6 sm:py-6">
                         <div class="mx-auto max-w-7xl">
                             @yield('content')
                         </div>
