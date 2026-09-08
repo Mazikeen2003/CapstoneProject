@@ -1,4 +1,13 @@
-@extends('layouts.city')
+@php
+    $projectsLayout = $projectsLayout ?? 'layouts.city';
+    $projectsRoutePrefix = $projectsRoutePrefix ?? 'city';
+    $projectsTitle = $projectsTitle ?? 'City Projects';
+    $projectsSubtitle = $projectsSubtitle ?? 'Browse all city projects across Cabuyao.';
+    $projectsEmptyMessage = $projectsEmptyMessage ?? 'No projects have been recorded for this city.';
+    $projectsTheme = $projectsTheme ?? 'city';
+@endphp
+
+@extends($projectsLayout)
 
 @section('content')
 <style>
@@ -122,9 +131,56 @@
         .city-projects-tablewrap { display: none; }
         .city-projects-mobile { display: flex; }
     }
+
+    .engineering-projects-page .city-projects-toolbar {
+        background: #ffffff;
+    }
+
+    .engineering-projects-page .city-projects-search input,
+    .engineering-projects-page .city-projects-filter {
+        background: #f4f4f5;
+        color: #374151;
+    }
+
+    .engineering-projects-page .city-projects-search input:focus {
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+    }
+
+    .engineering-projects-page .city-projects-filter.active {
+        background: #1e1b4b;
+        border-color: #1e1b4b;
+        color: #ffffff;
+    }
+
+    .engineering-projects-page .city-projects-filter:hover:not(.active) {
+        background: #fafaf9;
+        border-color: rgba(0, 0, 0, 0.12);
+    }
+
+    html.dark-mode .engineering-projects-page .city-projects-toolbar,
+    .dark .engineering-projects-page .city-projects-toolbar {
+        background: #141321;
+    }
+
+    html.dark-mode .engineering-projects-page .city-projects-search input,
+    html.dark-mode .engineering-projects-page .city-projects-filter,
+    .dark .engineering-projects-page .city-projects-search input,
+    .dark .engineering-projects-page .city-projects-filter {
+        background: #0f0e1a;
+        border-color: rgba(148, 163, 184, 0.18);
+        color: #e5edf9;
+    }
+
+    html.dark-mode .engineering-projects-page .city-projects-filter.active,
+    .dark .engineering-projects-page .city-projects-filter.active {
+        background: #f8fafc;
+        border-color: #f8fafc;
+        color: #1e1b4b;
+    }
 </style>
 
-<div class="city-projects-page">
+<div class="city-projects-page {{ $projectsTheme === 'engineering' ? 'engineering-projects-page' : '' }}">
     <div class="city-projects-header cp-animate">
         <div class="city-projects-titlewrap">
             <div class="city-projects-icon">
@@ -133,8 +189,8 @@
                 </svg>
             </div>
             <div>
-                <h1 class="city-projects-title">City Projects</h1>
-                <p class="city-projects-subtitle">Browse all city projects across Cabuyao.</p>
+                <h1 class="city-projects-title">{{ $projectsTitle }}</h1>
+                <p class="city-projects-subtitle">{{ $projectsSubtitle }}</p>
             </div>
         </div>
     </div>
@@ -164,7 +220,7 @@
                     </svg>
                 </div>
                 <h4>No projects yet</h4>
-                <p>No projects have been recorded for this city.</p>
+                <p>{{ $projectsEmptyMessage }}</p>
             </div>
         @else
             <div class="city-projects-tablewrap">
@@ -213,7 +269,7 @@
                                 <td>{{ $project->barangay?->barangay_name ?? 'Citywide' }}</td>
                                 <td>₱{{ number_format($project->approved_budget ?? 0, 2) }}</td>
                                 <td>
-                                    <a class="city-project-view" href="{{ route('city.projects.show', $project->project_id) }}">View</a>
+                                    <a class="city-project-view" href="{{ route($projectsRoutePrefix . '.projects.show', $project->project_id) }}">View</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -256,14 +312,14 @@
                         <div class="city-project-mobile-meta">
                             <div>Barangay<strong>{{ $project->barangay?->barangay_name ?? 'Citywide' }}</strong></div>
                             <div>Budget<strong>₱{{ number_format($project->approved_budget ?? 0, 2) }}</strong></div>
-                            <div>Action<strong><a class="city-project-view" href="{{ route('city.projects.show', $project->project_id) }}">View</a></strong></div>
+                            <div>Action<strong><a class="city-project-view" href="{{ route($projectsRoutePrefix . '.projects.show', $project->project_id) }}">View</a></strong></div>
                         </div>
                     </div>
                 @endforeach
             </div>
         @endif
 
-        @if($projects->hasPages())
+        @if(method_exists($projects, 'hasPages') && $projects->hasPages())
             <div class="city-projects-pagination">{{ $projects->links() }}</div>
         @endif
     </div>

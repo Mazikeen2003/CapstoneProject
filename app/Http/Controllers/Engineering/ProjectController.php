@@ -21,7 +21,15 @@ class ProjectController extends Controller
             ->latest('created_at')
             ->get();
 
-        return view('engineering.projects.index', compact('projects'));
+        return view('city-official.projects.index', [
+            'projects' => $projects,
+            'projectsLayout' => 'layouts.department',
+            'projectsRoutePrefix' => 'engineering',
+            'projectsTitle' => 'Engineering Projects',
+            'projectsSubtitle' => 'Browse all projects and monitor implementation progress.',
+            'projectsEmptyMessage' => 'No projects have been recorded yet.',
+            'projectsTheme' => 'engineering',
+        ]);
     }
 
     public function show($id)

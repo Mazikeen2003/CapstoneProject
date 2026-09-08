@@ -91,6 +91,76 @@
     }
     .dark .engineering-project-detail-value,
     html.dark-mode .engineering-project-detail-value { color: #cbd5e1; }
+
+    .engineering-progress-panel {
+        background: #ffffff;
+        border-color: #B2BEB5 !important;
+    }
+
+    .engineering-progress-form input,
+    .engineering-progress-form select,
+    .engineering-progress-form textarea {
+        background: #ffffff;
+        color: #0f172a !important;
+    }
+
+    .engineering-progress-form label { color: #475569; }
+    .engineering-progress-form textarea::placeholder { color: #94a3b8; }
+
+    html.dark-mode .engineering-progress-panel,
+    .dark .engineering-progress-panel {
+        background: #1a1929 !important;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    html.dark-mode .engineering-progress-panel .border-gray-100,
+    .dark .engineering-progress-panel .border-gray-100 {
+        border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    html.dark-mode .engineering-progress-form input,
+    html.dark-mode .engineering-progress-form select,
+    html.dark-mode .engineering-progress-form textarea,
+    .dark .engineering-progress-form input,
+    .dark .engineering-progress-form select,
+    .dark .engineering-progress-form textarea {
+        background: #222136 !important;
+        border-color: rgba(148, 163, 184, 0.35) !important;
+        color: #cbd5e1 !important;
+        caret-color: #cbd5e1;
+    }
+
+    html.dark-mode .engineering-progress-form label,
+    .dark .engineering-progress-form label {
+        color: #cbd5e1 !important;
+    }
+
+    html.dark-mode .engineering-progress-form textarea::placeholder,
+    .dark .engineering-progress-form textarea::placeholder {
+        color: #94a3b8 !important;
+    }
+
+    html.dark-mode .engineering-progress-form input[type="date"],
+    .dark .engineering-progress-form input[type="date"] {
+        color-scheme: dark;
+    }
+
+    html.dark-mode .engineering-progress-form input[type="date"]::-webkit-calendar-picker-indicator,
+    .dark .engineering-progress-form input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: brightness(0) invert(0.78) !important;
+        opacity: 1 !important;
+    }
+
+    html.dark-mode .engineering-progress-form option,
+    .dark .engineering-progress-form option {
+        background: #222136;
+        color: #f8fafc;
+    }
+
+    html.dark-mode .engineering-progress-panel .text-black,
+    .dark .engineering-progress-panel .text-black {
+        color: #f8fafc !important;
+    }
     @media (min-width: 768px) {
         .engineering-project-details-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
@@ -143,13 +213,13 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-lg p-6" style="border: 1px solid #B2BEB5;">
+    <div class="engineering-progress-panel rounded-lg p-6" style="border: 1px solid #B2BEB5;">
         <div class="flex flex-col gap-4 border-b border-gray-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
             <div>
                 <h3 class="text-lg font-bold text-black">Progress Updates</h3>
                 <p class="mt-1 text-xs text-gray-500">Record the latest field progress for this project.</p>
             </div>
-            <form method="POST" action="{{ route('engineering.projects.progress', $project->project_id) }}" class="grid w-full gap-3 sm:max-w-2xl sm:grid-cols-2 lg:grid-cols-4">
+            <form method="POST" action="{{ route('engineering.projects.progress', $project->project_id) }}" class="engineering-progress-form grid w-full gap-3 sm:max-w-2xl sm:grid-cols-2 lg:grid-cols-4">
                 @csrf
                 <div>
                     <label for="update_date" class="block text-xs font-semibold text-gray-600">Update date</label>
