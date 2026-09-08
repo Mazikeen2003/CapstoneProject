@@ -836,7 +836,7 @@ html.dark-mode .eu3-disable-box:hover {
                         </label>
                         <label class="eu3-checkbox eu3-field-full">
                             <input type="checkbox" name="is_department_head" value="1" {{ old('is_department_head', $user->is_department_head ?? false) ? 'checked' : '' }}>
-                            Department Head — can approve/reject edit permission requests from department personnel
+                            Approve/Reject Project Edit Requests
                         </label>
                     </div>
                 </div>
@@ -898,8 +898,11 @@ html.dark-mode .eu3-disable-box:hover {
         function updatePermissionsVisibility() {
             const selectedOption = roleSelect.options[roleSelect.selectedIndex];
             const selectedRoleText = selectedOption.text.toLowerCase();
+            const isPlanningRole = selectedOption.value === '3'
+                || selectedRoleText.includes('planning')
+                || selectedRoleText.includes('department');
 
-            if (selectedRoleText.includes('department')) {
+            if (isPlanningRole) {
                 departmentPermissionsSection.style.display = 'block';
             } else {
                 departmentPermissionsSection.style.display = 'none';

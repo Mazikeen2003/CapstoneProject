@@ -286,6 +286,13 @@
 .adm-stat.rose::before { background: linear-gradient(90deg, #f43f5e, #fb7185); }
 .adm-stat.rose::after { background: #f43f5e; }
 
+html.dark-mode .adm-stat,
+html.dark-mode .adm-activity {
+    background: #141321 !important;
+    border: 1px solid #020617 !important;
+    box-shadow: inset 0 0 0 1px #1e293b, var(--adm-shadow) !important;
+}
+
 .adm-stat-header {
     display: flex;
     align-items: center;

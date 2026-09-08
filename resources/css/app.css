@@ -14,6 +14,32 @@ html:not(.dark-mode) .bg-white.border-slate-200 {
     box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
 }
 
+html:not(.dark-mode) .authenticated-layout .ua-card,
+html:not(.dark-mode) .authenticated-layout .ua-filter,
+html:not(.dark-mode) .authenticated-layout .ua-table-wrap,
+html:not(.dark-mode) .authenticated-layout .admin-reports-card,
+html:not(.dark-mode) .authenticated-layout .admin-reports-history-table-wrap {
+    border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+html:not(.dark-mode) .authenticated-layout .border-slate-400,
+html:not(.dark-mode) .authenticated-layout .admin-dashboard-stat,
+html:not(.dark-mode) .authenticated-layout .admin-dashboard-activity {
+    border-color: #dbe3ee !important;
+}
+
+html:not(.dark-mode) .authenticated-layout .adm-stat,
+html:not(.dark-mode) .authenticated-layout .adm-activity,
+html:not(.dark-mode) .authenticated-layout .ua-card,
+html:not(.dark-mode) .authenticated-layout .ua-filter,
+html:not(.dark-mode) .authenticated-layout .ua-table-wrap,
+html:not(.dark-mode) .authenticated-layout .bu-filter,
+html:not(.dark-mode) .authenticated-layout .bu-mgmt,
+html:not(.dark-mode) .authenticated-layout .bu-card,
+html:not(.dark-mode) .authenticated-layout .bu-table-wrap {
+    border-color: #dbe3ee !important;
+}
+
 html.dark-mode body {
     background-color: #0f172a !important;
     color: #e2e8f0 !important;
@@ -51,9 +77,9 @@ html.dark-mode .adm-wrap {
 
 html.dark-mode .adm-stat,
 html.dark-mode .adm-activity {
-    background: #0f172a !important;
-    border-color: #334155 !important;
-    color: #f8fafc !important;
+    background: #141321 !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    color: #f8f7f5 !important;
 }
 
 html.dark-mode .adm-activity-item,
@@ -1339,6 +1365,7 @@ html.dark-mode .admin-user-row:hover {
 .authenticated-layout .rounded-lg.border-gray-200,
 .authenticated-layout .rounded-lg[style*='border: 1px solid #B2BEB5'],
 .authenticated-layout .department-project-card.border-transparent,
+.authenticated-layout .border-slate-400,
 .public-layout .rounded-3xl.border-gray-200,
 .public-layout .rounded-2xl.border-gray-200,
 .public-layout .rounded-lg.border-gray-200,
@@ -1362,6 +1389,7 @@ html.dark-mode .authenticated-layout .rounded-2xl.border-gray-200,
 html.dark-mode .authenticated-layout .rounded-lg.border-gray-200,
 html.dark-mode .authenticated-layout .rounded-lg[style*='border: 1px solid #B2BEB5'],
 html.dark-mode .authenticated-layout .department-project-card.border-transparent,
+html.dark-mode .authenticated-layout .border-slate-400,
 html.dark-mode .public-layout .rounded-3xl.border-gray-200,
 html.dark-mode .public-layout .rounded-2xl.border-gray-200,
 html.dark-mode .public-layout .rounded-lg.border-gray-200,
@@ -1439,4 +1467,38 @@ html.dark-mode .department-project-card {
     border-color: #94a3b8 !important;
     background-color: #243247 !important;
     box-shadow: 0 6px 14px rgba(2, 6, 23, 0.28) !important;
+}
+
+/* Keep dark admin menu cards consistent with the Dashboard card treatment. */
+html.dark-mode .authenticated-layout .ua-card,
+html.dark-mode .authenticated-layout .ua-filter,
+html.dark-mode .authenticated-layout .ua-table-wrap,
+html.dark-mode .authenticated-layout .bu-filter,
+html.dark-mode .authenticated-layout .bu-mgmt,
+html.dark-mode .authenticated-layout .bu-card,
+html.dark-mode .authenticated-layout .bu-table-wrap,
+html.dark-mode .authenticated-layout .admin-reports-card,
+html.dark-mode .authenticated-layout .admin-reports-history-table-wrap,
+html.dark-mode .authenticated-layout .admin-audit-card,
+html.dark-mode .authenticated-layout .admin-audit-mobile-card,
+html.dark-mode .authenticated-layout .admin-audit-table-wrap {
+    background: #141321 !important;
+    border: 1px solid #020617 !important;
+    box-shadow: inset 0 0 0 1px #1e293b, 0 1px 3px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+html:not(.dark-mode) .authenticated-layout .ua-table tbody tr:hover,
+html:not(.dark-mode) .authenticated-layout .bu-table tbody tr:hover,
+html:not(.dark-mode) .authenticated-layout .admin-reports-history-table tbody tr:hover,
+html:not(.dark-mode) .authenticated-layout .admin-audit-table tbody tr:hover {
+    background-color: #e2e8f0 !important;
+    transition: background-color 0.2s ease;
+}
+
+html.dark-mode .authenticated-layout .ua-table tbody tr:hover,
+html.dark-mode .authenticated-layout .bu-table tbody tr:hover,
+html.dark-mode .authenticated-layout .admin-reports-history-table tbody tr:hover,
+html.dark-mode .authenticated-layout .admin-audit-table tbody tr:hover {
+    background-color: #1e293b !important;
+    transition: background-color 0.2s ease;
 }

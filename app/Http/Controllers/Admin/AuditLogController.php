@@ -16,7 +16,7 @@ class AuditLogController extends Controller
     {
         $query = $this->buildAuditLogQuery($request);
 
-        $logs = $query->paginate(15)->withQueryString();
+        $logs = $query->paginate(10)->withQueryString();
         $users = User::orderBy('username')->get(['user_id', 'username']);
         $actions = AuditLog::distinct()->orderBy('action')->pluck('action');
 
