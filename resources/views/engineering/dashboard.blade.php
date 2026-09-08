@@ -7,10 +7,62 @@
         ? '₱' . number_format($budgetAllocated / 1000000000, 1) . 'B'
         : ($budgetAllocated >= 1000000 ? '₱' . number_format($budgetAllocated / 1000000, 1) . 'M' : '₱' . number_format($budgetAllocated, 0));
 @endphp
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
+<style>
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .engineering-summary-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        flex-shrink: 0;
+    }
+    .engineering-summary-icon.blue { background: #dbeafe; color: #2563eb; }
+    .engineering-summary-icon.amber { background: #fef3c7; color: #d97706; }
+    .engineering-summary-icon.emerald { background: #d1fae5; color: #059669; }
+    .engineering-summary-icon.rose { background: #ffe4e6; color: #e11d48; }
+    html.dark-mode .engineering-summary-icon.blue,
+    .dark .engineering-summary-icon.blue { background: rgba(59, 130, 246, 0.08); color: #60a5fa; }
+    html.dark-mode .engineering-summary-icon.amber,
+    .dark .engineering-summary-icon.amber { background: rgba(245, 158, 11, 0.08); color: #fbbf24; }
+    html.dark-mode .engineering-summary-icon.emerald,
+    .dark .engineering-summary-icon.emerald { background: rgba(16, 185, 129, 0.08); color: #34d399; }
+    html.dark-mode .engineering-summary-icon.rose,
+    .dark .engineering-summary-icon.rose { background: rgba(244, 63, 94, 0.08); color: #fb7185; }
+</style>
+<style>
+    .engineering-dashboard .admin-dashboard-stat,
+    .engineering-dashboard .admin-dashboard-activity {
+        background: #ffffff !important;
+    }
+
+    .engineering-dashboard .engineering-recent-card {
+        background: #f4f4f5 !important;
+    }
+
+    html.dark-mode .engineering-dashboard .admin-dashboard-stat,
+    html.dark-mode .engineering-dashboard .admin-dashboard-activity,
+    .dark .engineering-dashboard .admin-dashboard-stat,
+    .dark .engineering-dashboard .admin-dashboard-activity {
+        background: #141321 !important;
+        border: 1px solid #020617 !important;
+        box-shadow: inset 0 0 0 1px #1e293b, 0 1px 3px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    html.dark-mode .engineering-dashboard .engineering-recent-card,
+    .dark .engineering-dashboard .engineering-recent-card {
+        background: #0f0e1a !important;
+    }
+</style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="engineering-dashboard max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
     <div class="admin-dashboard-hero rounded-3xl px-6 py-7 shadow-lg sm:px-8">
         <div>
             <p class="text-xs font-bold uppercase tracking-[0.24em] text-amber-300">Engineering workspace</p>
@@ -21,19 +73,19 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="admin-dashboard-stat admin-dashboard-stat-blue rounded-2xl p-6 shadow-sm">
-            <p class="text-sm font-semibold text-slate-600">Total Projects</p>
+            <div class="flex items-center justify-between gap-3"><p class="text-sm font-semibold text-slate-600">Total Projects</p><span class="engineering-summary-icon blue material-symbols-outlined">folder_open</span></div>
             <p class="mt-4 text-4xl font-bold text-slate-950">{{ $stats['total_projects'] }}</p>
         </div>
         <div class="admin-dashboard-stat admin-dashboard-stat-amber rounded-2xl p-6 shadow-sm">
-            <p class="text-sm font-semibold text-slate-600">Ongoing Projects</p>
+            <div class="flex items-center justify-between gap-3"><p class="text-sm font-semibold text-slate-600">Ongoing Projects</p><span class="engineering-summary-icon amber material-symbols-outlined">pending_actions</span></div>
             <p class="mt-4 text-4xl font-bold text-slate-950">{{ $stats['ongoing'] }}</p>
         </div>
         <div class="admin-dashboard-stat admin-dashboard-stat-emerald rounded-2xl p-6 shadow-sm">
-            <p class="text-sm font-semibold text-slate-600">Completed Projects</p>
+            <div class="flex items-center justify-between gap-3"><p class="text-sm font-semibold text-slate-600">Completed Projects</p><span class="engineering-summary-icon emerald material-symbols-outlined">task_alt</span></div>
             <p class="mt-4 text-4xl font-bold text-slate-950">{{ $stats['completed'] }}</p>
         </div>
         <div class="admin-dashboard-stat admin-dashboard-stat-rose rounded-2xl p-6 shadow-sm">
-            <p class="text-sm font-semibold text-slate-600">Budget Allocated</p>
+            <div class="flex items-center justify-between gap-3"><p class="text-sm font-semibold text-slate-600">Budget Allocated</p><span class="engineering-summary-icon rose material-symbols-outlined">account_balance_wallet</span></div>
             <p class="dashboard-budget-value mt-4 font-bold text-slate-950" title="₱{{ number_format($budgetAllocated, 0) }}">{{ $budgetDisplay }}</p>
         </div>
     </div>
@@ -62,7 +114,7 @@
             @else
                 <div class="mt-4 grid gap-4">
                     @foreach ($recentProjects as $project)
-                        <div class="rounded-3xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
+                        <div class="engineering-recent-card rounded-3xl border border-slate-200 p-4 shadow-sm">
                             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
                                     <p class="text-base font-semibold text-slate-900">{{ $project->project_name }}</p>
