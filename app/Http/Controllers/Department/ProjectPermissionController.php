@@ -32,7 +32,9 @@ class ProjectPermissionController extends Controller
             ->latest('created_at')
             ->get();
 
-        return view('department.project-permissions.index', compact('requests'));
+        return response()
+            ->view('department.project-permissions.index', compact('requests'))
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
     }
 
     public function approve(Request $request, $id)

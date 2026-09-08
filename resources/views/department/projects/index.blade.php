@@ -122,7 +122,7 @@
         gap: 12px;
         margin-bottom: 20px;
         padding: 16px;
-        background: var(--dp-surface);
+        background: #ffffff;
         border: 1px solid var(--dp-line);
         border-radius: var(--dp-radius-sm);
         box-shadow: var(--dp-shadow-sm);
@@ -151,7 +151,7 @@
         padding: 10px 14px 10px 42px;
         border: 1px solid var(--dp-line);
         border-radius: 100px;
-        background: var(--dp-bg);
+        background: #f4f4f5;
         color: var(--dp-ink);
         font-family: inherit;
         font-size: 0.875rem;
@@ -173,7 +173,7 @@
         padding: 8px 16px;
         border: 1px solid var(--dp-line);
         border-radius: 100px;
-        background: var(--dp-bg);
+        background: #f4f4f5;
         color: var(--dp-ink-secondary);
         font-family: inherit;
         font-size: 0.8125rem;
@@ -207,6 +207,52 @@
         color: #1e1b4b;
         border-color: #f8fafc;
         box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
+    }
+
+    html.dark-mode .dept-proj-toolbar,
+    .dark .dept-proj-toolbar {
+        background: #141321;
+    }
+
+    html.dark-mode .dept-proj-search input,
+    html.dark-mode .dept-proj-filter,
+    .dark .dept-proj-search input,
+    .dark .dept-proj-filter {
+        background: #0f0e1a;
+    }
+
+    html:not(.dark-mode) .dept-proj-toolbar {
+        background: #ffffff !important;
+    }
+
+    html:not(.dark-mode) .dept-proj-search input,
+    html:not(.dark-mode) .dept-proj-filter {
+        background: #f4f4f5 !important;
+    }
+
+    html:not(.dark-mode) .dept-proj-filter.active {
+        background: var(--dp-ink) !important;
+        color: #ffffff !important;
+        border-color: var(--dp-ink) !important;
+    }
+
+    html.dark-mode .dept-proj-toolbar,
+    .dark .dept-proj-toolbar {
+        background: #141321 !important;
+    }
+
+    html.dark-mode .dept-proj-search input,
+    html.dark-mode .dept-proj-filter,
+    .dark .dept-proj-search input,
+    .dark .dept-proj-filter {
+        background: #0f0e1a !important;
+    }
+
+    html.dark-mode .dept-proj-filter.active,
+    .dark .dept-proj-filter.active {
+        background: #f8fafc !important;
+        color: #1e1b4b !important;
+        border-color: #f8fafc !important;
     }
 
     /* Table card */

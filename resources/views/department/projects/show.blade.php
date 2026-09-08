@@ -504,19 +504,17 @@
         border-radius: 100px;
     }
     .dept-form-card {
-        flex: 0 0 min(100%, 360px);
+        flex: 0 0 100%;
         scroll-snap-align: start;
         display: flex;
         align-items: flex-start;
         gap: 14px;
+        min-height: 154px;
         padding: 18px;
         border-radius: var(--ds-radius-xs);
         border: 1px solid var(--ds-line);
         background: var(--ds-raised);
         transition: all 0.2s ease;
-    }
-    @media (min-width: 900px) {
-        .dept-form-card { flex-basis: calc((100% - 14px) / 2); }
     }
     .dept-form-card:hover {
         background: var(--ds-surface);
@@ -548,7 +546,13 @@
     }
     .dark .dept-form-icon.completed { background: rgba(16,185,129,0.15); color: #34d399; }
     .dark .dept-form-icon.pending { background: rgba(107,114,128,0.15); color: #9ca3af; }
-    .dept-form-info { flex: 1; min-width: 0; }
+    .dept-form-info {
+        align-self: stretch;
+        display: flex;
+        flex: 1;
+        min-width: 0;
+        flex-direction: column;
+    }
     .dept-form-title {
         font-size: 0.875rem;
         font-weight: 700;
@@ -569,7 +573,8 @@
     .dept-form-actions {
         display: flex;
         gap: 8px;
-        margin-top: 12px;
+        margin-top: auto;
+        padding-top: 12px;
     }
     .dept-form-btn {
         display: inline-flex;
@@ -735,7 +740,8 @@
                 formsNext.disabled = formsRail.scrollLeft + formsRail.clientWidth >= formsRail.scrollWidth - 2;
             };
             const moveForms = function(direction) {
-                formsRail.scrollBy({ left: direction * formsRail.clientWidth * 0.85, behavior: 'smooth' });
+                const formGap = parseFloat(getComputedStyle(formsRail).gap) || 0;
+                formsRail.scrollBy({ left: direction * (formsRail.clientWidth + formGap), behavior: 'smooth' });
             };
 
             formsPrevious.addEventListener('click', () => moveForms(-1));
@@ -1006,9 +1012,10 @@
                             @php
                                 $existingForm = $project->forms->firstWhere('form_type', $type);
                                 $isAvailable = in_array($type, ['form_1', 'form_2', 'form_3', 'form_4', 'form_5', 'form_6', 'form_7', 'form_8', 'form_9', 'form_10', 'form_11'], true);
+                                $formsEnabled = $project->hasReachedImplementationStage();
                                 $formNumber = (int) str_replace('form_', '', $type);
                             @endphp
-                            <div class="dept-form-card {{ $existingForm ? 'completed' : 'pending' }}">
+                            <div class="dept-form-card {{ $existingForm ? 'completed' : 'pending' }} {{ ! $formsEnabled ? 'opacity-60' : '' }}">
                                 <div class="dept-form-icon {{ $existingForm ? 'completed' : 'pending' }}">{{ $formNumber }}</div>
                                 <div class="dept-form-info">
                                     <div class="dept-form-title">{{ $label }}</div>
@@ -1018,10 +1025,10 @@
                                             Completed — {{ $existingForm->updated_at->format('M d, Y') }}
                                         @else
                                             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                            {{ $isAvailable ? 'Not filled out yet' : 'Coming soon' }}
+                                            {{ ! $formsEnabled ? 'Available at Implementation stage' : ($isAvailable ? 'Not filled out yet' : 'Coming soon') }}
                                         @endif
                                     </div>
-                                    @if ($isAvailable)
+                                    @if ($isAvailable && $formsEnabled)
                                         <div class="dept-form-actions">
                                             <a href="{{ route('department.projects.forms.edit', [$project->project_id, $type]) }}" class="dept-form-btn dept-form-btn-primary">{{ $existingForm ? 'View / Edit' : 'Fill Out' }}</a>
                                             @if ($existingForm)

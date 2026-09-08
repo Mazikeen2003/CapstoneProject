@@ -15,7 +15,7 @@
 <style>
 /* ===== BARANGAY PROJECT SHOW - RICH REDESIGN ===== */
 .bs-wrap {
-    --bs-bg: #f4f4f5;
+    --bs-bg: #f8f7f5;
     --bs-surface: #ffffff;
     --bs-raised: #fafaf9;
     --bs-ink: #0f0d1f;
@@ -472,7 +472,7 @@ html.dark-mode .bs-timeline-progress { background: rgba(251,191,36,0.15); color:
 .bs-progress-fill {
     height: 100%;
     border-radius: 100px;
-    background: linear-gradient(90deg, #6366f1 0%, #f59e0b 50%, #d97706 100%);
+    background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
     box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
     transition: width 1s ease;
 }

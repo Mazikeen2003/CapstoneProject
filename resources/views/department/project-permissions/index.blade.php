@@ -14,7 +14,7 @@
         --pp-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
         --pp-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
         --pp-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        --pp-radius: 16px;
+        --pp-radius: 12px;
         --pp-radius-sm: 12px;
     }
 
@@ -28,17 +28,17 @@
 
     html.dark-mode .perm-container,
     .dark .perm-container {
-        --pp-bg: #0f172a;
-        --pp-surface: #1e293b;
-        --pp-surface-hover: #243247;
-        --pp-ink: #f8fafc;
-        --pp-ink-secondary: #cbd5e1;
-        --pp-muted: #64748b;
-        --pp-line: rgba(148, 163, 184, 0.2);
-        --pp-line-hover: rgba(148, 163, 184, 0.35);
-        --pp-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-        --pp-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-        --pp-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+        --pp-bg: #111827;
+        --pp-surface: #1f2937;
+        --pp-surface-hover: #263445;
+        --pp-ink: #f9fafb;
+        --pp-ink-secondary: #d1d5db;
+        --pp-muted: #9ca3af;
+        --pp-line: rgba(255, 255, 255, 0.08);
+        --pp-line-hover: rgba(255, 255, 255, 0.14);
+        --pp-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.16);
+        --pp-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.2), 0 1px 2px -1px rgb(0 0 0 / 0.2);
+        --pp-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.24), 0 2px 4px -2px rgb(0 0 0 / 0.24);
     }
 
     .perm-container {
@@ -48,6 +48,25 @@
         background: var(--pp-bg);
         color: var(--pp-ink);
         transition: background 0.3s, color 0.3s;
+    }
+
+    @keyframes permFadeUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .perm-animate {
+        animation: permFadeUp 0.4s ease forwards;
+        opacity: 0;
+    }
+
+    .perm-animate:nth-child(1) { animation-delay: 0.03s; }
+    .perm-animate:nth-child(2) { animation-delay: 0.06s; }
+    .perm-animate:nth-child(3) { animation-delay: 0.09s; }
+    .perm-animate:nth-child(4) { animation-delay: 0.12s; }
+
+    @media (prefers-reduced-motion: reduce) {
+        .perm-animate { animation: none; opacity: 1; }
     }
 
     @media (min-width: 640px) {
@@ -82,7 +101,7 @@
     .perm-icon {
         width: 52px;
         height: 52px;
-        border-radius: 14px;
+        border-radius: 12px;
         background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         display: flex;
         align-items: center;
@@ -118,9 +137,9 @@
         gap: 12px;
         margin-bottom: 20px;
         padding: 16px;
-        background: var(--pp-surface);
+        background: #ffffff;
         border: 1px solid var(--pp-line);
-        border-radius: var(--pp-radius-sm);
+        border-radius: var(--pp-radius);
         box-shadow: var(--pp-shadow-sm);
     }
 
@@ -154,7 +173,7 @@
         padding: 10px 14px 10px 42px;
         border: 1px solid var(--pp-line);
         border-radius: 100px;
-        background: var(--pp-bg);
+        background: #f9fafb;
         color: var(--pp-ink);
         font-family: inherit;
         font-size: 0.875rem;
@@ -181,7 +200,7 @@
         padding: 8px 16px;
         border: 1px solid var(--pp-line);
         border-radius: 100px;
-        background: var(--pp-bg);
+        background: #f9fafb;
         color: var(--pp-ink-secondary);
         font-family: inherit;
         font-size: 0.8125rem;
@@ -217,6 +236,45 @@
         box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
     }
 
+    html.dark-mode .perm-toolbar,
+    .dark .perm-toolbar {
+        background: #1a1929;
+    }
+
+    html.dark-mode .perm-search input,
+    html.dark-mode .perm-filter,
+    .dark .perm-search input,
+    .dark .perm-filter {
+        background: #0f0e1a;
+    }
+
+    .perm-toolbar {
+        background: #ffffff;
+    }
+
+    .perm-search input,
+    .perm-filter {
+        background: #f4f4f5;
+    }
+
+    html.dark-mode .perm-toolbar,
+    .dark .perm-toolbar {
+        background: #141321;
+    }
+
+    html.dark-mode .perm-search input,
+    html.dark-mode .perm-filter,
+    .dark .perm-search input,
+    .dark .perm-filter {
+        background: #0f0e1a;
+    }
+
+    html.dark-mode .perm-filter:hover,
+    .dark .perm-filter:hover {
+        background: #222136;
+        border-color: rgba(255, 255, 255, 0.12);
+    }
+
     .perm-summary {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -225,11 +283,68 @@
     }
 
     .perm-stat {
+        position: relative;
         background: var(--pp-surface);
         border: 1px solid var(--pp-line);
-        border-radius: var(--pp-radius-sm);
+        border-radius: var(--pp-radius);
         padding: 16px 18px;
         box-shadow: var(--pp-shadow-sm);
+        overflow: hidden;
+    }
+
+    .perm-stat::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        height: 3px;
+        background: var(--perm-stat-accent, #d97706);
+    }
+
+    .perm-stat.pending { --perm-stat-accent: #f59e0b; }
+    .perm-stat.approved { --perm-stat-accent: #10b981; }
+    .perm-stat.used { --perm-stat-accent: #3b82f6; }
+    .perm-stat.rejected { --perm-stat-accent: #f43f5e; }
+
+    .perm-stat.pending { background: #fef3c7; }
+    .perm-stat.approved { background: #d1fae5; }
+    .perm-stat.used { background: #dbeafe; }
+    .perm-stat.rejected { background: #ffe4e6; }
+
+    html.dark-mode .perm-stat.pending,
+    .dark .perm-stat.pending { background: rgba(251, 191, 36, 0.15); }
+    html.dark-mode .perm-stat.approved,
+    .dark .perm-stat.approved { background: rgba(16, 185, 129, 0.15); }
+    html.dark-mode .perm-stat.used,
+    .dark .perm-stat.used { background: rgba(59, 130, 246, 0.15); }
+    html.dark-mode .perm-stat.rejected,
+    .dark .perm-stat.rejected { background: rgba(244, 63, 94, 0.15); }
+
+    .perm-stat.pending .perm-stat-label { color: #b45309; }
+    .perm-stat.approved .perm-stat-label { color: #047857; }
+    .perm-stat.used .perm-stat-label { color: #1d4ed8; }
+    .perm-stat.rejected .perm-stat-label { color: #be123c; }
+
+    html.dark-mode .perm-stat.pending .perm-stat-label,
+    .dark .perm-stat.pending .perm-stat-label { color: #fbbf24; }
+    html.dark-mode .perm-stat.approved .perm-stat-label,
+    .dark .perm-stat.approved .perm-stat-label { color: #34d399; }
+    html.dark-mode .perm-stat.used .perm-stat-label,
+    .dark .perm-stat.used .perm-stat-label { color: #60a5fa; }
+    html.dark-mode .perm-stat.rejected .perm-stat-label,
+    .dark .perm-stat.rejected .perm-stat-label { color: #fb7185; }
+
+    .perm-stat.pending::after,
+    .perm-stat.approved::after,
+    .perm-stat.rejected::after {
+        content: "";
+        position: absolute;
+        top: 16px;
+        right: 18px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--perm-stat-accent);
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--perm-stat-accent) 16%, transparent);
     }
 
     .perm-stat-label {
@@ -250,7 +365,7 @@
     .perm-card {
         background: var(--pp-surface);
         border: 1px solid var(--pp-line);
-        border-radius: var(--pp-radius-sm);
+        border-radius: var(--pp-radius);
         box-shadow: var(--pp-shadow-sm);
         overflow: hidden;
     }
@@ -294,7 +409,26 @@
     .perm-table tbody td:last-child { padding-right: 24px; }
 
     .perm-table tbody tr:hover {
-        background: var(--pp-surface-hover);
+        box-shadow: inset 3px 0 0 #f59e0b;
+    }
+
+    .perm-table tbody tr:hover td {
+        background: #f3f4f6 !important;
+    }
+
+    html:not(.dark-mode) .perm-table tbody tr:hover td {
+        background: #e5e7eb !important;
+        color: #1f2937;
+    }
+
+    html.dark-mode .perm-table tbody tr:hover,
+    .dark .perm-table tbody tr:hover {
+        box-shadow: none;
+    }
+
+    html.dark-mode .perm-table tbody tr:hover td,
+    .dark .perm-table tbody tr:hover td {
+        background: var(--pp-surface) !important;
     }
 
     .perm-table tbody tr:last-child td {
@@ -355,6 +489,11 @@
         color: #047857;
     }
 
+    .perm-status.used {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
     .perm-status.rejected {
         background: #ffe4e6;
         color: #be123c;
@@ -370,6 +509,12 @@
     .dark .perm-status.approved {
         background: rgba(16, 185, 129, 0.15);
         color: #34d399;
+    }
+
+    html.dark-mode .perm-status.used,
+    .dark .perm-status.used {
+        background: rgba(59, 130, 246, 0.15);
+        color: #60a5fa;
     }
 
     html.dark-mode .perm-status.rejected,
@@ -489,6 +634,26 @@
         margin-bottom: 14px;
     }
 
+    .perm-mcard:hover {
+        background: #f3f4f6 !important;
+        border-color: rgba(245, 158, 11, 0.35) !important;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08) !important;
+        transform: translateY(-2px);
+    }
+
+    html:not(.dark-mode) .perm-mcard:hover {
+        background: #e5e7eb !important;
+        border-color: #f59e0b !important;
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.14) !important;
+    }
+
+    html.dark-mode .perm-mcard:hover,
+    .dark .perm-mcard:hover {
+        background: var(--pp-surface) !important;
+        border-color: var(--pp-line) !important;
+        box-shadow: none !important;
+    }
+
     .perm-mheader {
         display: flex;
         align-items: flex-start;
@@ -551,7 +716,7 @@
 </style>
 
 <div class="perm-container">
-    <div class="perm-header">
+    <div class="perm-header perm-animate">
         <div class="perm-title-wrap">
             <div class="perm-icon">
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -565,7 +730,7 @@
         </div>
     </div>
 
-    <div class="perm-toolbar">
+    <div class="perm-toolbar perm-animate">
         <div class="perm-search">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
@@ -576,20 +741,25 @@
             <button class="perm-filter active" data-filter="all" type="button">All</button>
             <button class="perm-filter" data-filter="pending" type="button">Pending</button>
             <button class="perm-filter" data-filter="approved" type="button">Approved</button>
+            <button class="perm-filter" data-filter="used" type="button">Used</button>
             <button class="perm-filter" data-filter="rejected" type="button">Rejected</button>
         </div>
     </div>
 
-    <div class="perm-summary">
-        <div class="perm-stat">
+    <div class="perm-summary perm-animate">
+        <div class="perm-stat pending">
             <div class="perm-stat-label">Pending</div>
             <div class="perm-stat-value">{{ $requests->where('status', 'pending')->count() }}</div>
         </div>
-        <div class="perm-stat">
+        <div class="perm-stat approved">
             <div class="perm-stat-label">Approved</div>
             <div class="perm-stat-value">{{ $requests->where('status', 'approved')->count() }}</div>
         </div>
-        <div class="perm-stat">
+        <div class="perm-stat used">
+            <div class="perm-stat-label">Used</div>
+            <div class="perm-stat-value">{{ $requests->where('status', 'used')->count() }}</div>
+        </div>
+        <div class="perm-stat rejected">
             <div class="perm-stat-label">Rejected</div>
             <div class="perm-stat-value">{{ $requests->where('status', 'rejected')->count() }}</div>
         </div>
@@ -606,7 +776,7 @@
             <p>There are no project edit requests to review at the moment.</p>
         </div>
     @else
-        <div class="perm-card perm-desktop">
+        <div class="perm-card perm-desktop perm-animate">
             <div class="perm-table-wrap">
                 <table class="perm-table">
                     <thead>
@@ -683,7 +853,7 @@
             </div>
         </div>
 
-        <div class="perm-mobile">
+        <div class="perm-mobile perm-animate">
             @foreach ($requests as $request)
                 @php
                     $fields = $request->fields_requested;
@@ -790,6 +960,12 @@
                 });
             });
         });
+
+        setInterval(function () {
+            if (document.visibilityState === 'visible') {
+                window.location.reload();
+            }
+        }, 15000);
     });
 </script>
 @endsection

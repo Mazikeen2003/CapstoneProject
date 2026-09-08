@@ -51,6 +51,158 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+
+        .public-project-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .public-project-detail {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #f8fafc;
+            padding: 12px;
+        }
+
+        .public-project-detail-label {
+            color: #64748b;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .public-project-detail-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+
+        .public-project-detail-icon.blue { background: #dbeafe; color: #2563eb; }
+        .public-project-detail-icon.emerald { background: #d1fae5; color: #059669; }
+        .public-project-detail-icon.purple { background: #ede9fe; color: #7c3aed; }
+        .public-project-detail-icon.amber { background: #fef3c7; color: #b45309; }
+        .public-project-detail-icon.rose { background: #ffe4e6; color: #e11d48; }
+
+        .public-project-detail-value {
+            color: #0f172a;
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-top: 4px;
+            overflow-wrap: anywhere;
+        }
+
+        .public-project-detail-wide { grid-column: 1 / -1; }
+
+        .public-project-details-card {
+            border-color: #e2e8f0;
+            background: #ffffff;
+        }
+
+        html.dark-mode .public-project-details-card,
+        .dark .public-project-details-card {
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            background: #1a1929 !important;
+        }
+
+        html.dark-mode .public-project-detail,
+        .dark .public-project-detail {
+            border-color: rgba(255, 255, 255, 0.08);
+            background: #222136;
+        }
+
+        html.dark-mode .public-project-detail-label,
+        .dark .public-project-detail-label { color: #94a3b8; }
+
+        html.dark-mode .public-project-detail-icon.blue,
+        .dark .public-project-detail-icon.blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        html.dark-mode .public-project-detail-icon.emerald,
+        .dark .public-project-detail-icon.emerald { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        html.dark-mode .public-project-detail-icon.purple,
+        .dark .public-project-detail-icon.purple { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+        html.dark-mode .public-project-detail-icon.amber,
+        .dark .public-project-detail-icon.amber { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+        html.dark-mode .public-project-detail-icon.rose,
+        .dark .public-project-detail-icon.rose { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
+
+        html.dark-mode .public-project-detail-value,
+        .dark .public-project-detail-value { color: #f8fafc; }
+
+        .public-collapsed-project-card {
+            border-color: rgba(0, 0, 0, 0.06) !important;
+            background: #ffffff !important;
+            color: #1e1b4b;
+            transition: all 0.2s ease;
+        }
+
+        .public-collapsed-project-card:hover {
+            border-color: rgba(0, 0, 0, 0.12) !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+        }
+
+        .public-collapsed-project-card .public-project-details-card {
+            background: #fafaf9 !important;
+            border-color: rgba(0, 0, 0, 0.06) !important;
+        }
+
+        html.dark-mode .public-collapsed-project-card,
+        .dark .public-collapsed-project-card {
+            border-color: rgba(255, 255, 255, 0.06) !important;
+            background: #1a1929 !important;
+            color: #f8fafc;
+        }
+
+        html.dark-mode .public-collapsed-project-card:hover,
+        .dark .public-collapsed-project-card:hover {
+            border-color: rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4) !important;
+        }
+
+        html.dark-mode .public-collapsed-project-card .public-project-details-card,
+        .dark .public-collapsed-project-card .public-project-details-card {
+            background: #222136 !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+        }
+
+        .public-lifecycle-current {
+            background: #f59e0b;
+            border-color: #d97706;
+            color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18), 0 0 14px rgba(245, 158, 11, 0.35);
+        }
+        .public-lifecycle-complete {
+            background: #10b981;
+            border-color: #059669;
+            color: #ffffff;
+        }
+        .public-lifecycle-pending {
+            background: #ffffff;
+            border-color: #d1d5db;
+            color: #9ca3af;
+        }
+        .public-lifecycle-label-active { color: #b45309; }
+        .public-lifecycle-label-muted { color: #9ca3af; }
+        html.dark-mode .public-lifecycle-pending,
+        .dark .public-lifecycle-pending {
+            background: #1a1929;
+            border-color: #475569;
+            color: #94a3b8;
+        }
+        html.dark-mode .public-lifecycle-label-active,
+        .dark .public-lifecycle-label-active { color: #fbbf24; }
+
+        @media (max-width: 420px) {
+            .public-project-details-grid { grid-template-columns: 1fr; }
+        }
     </style>
 
     <style>
@@ -58,8 +210,8 @@
            doesn't expand to cover most of the viewport. Keep small-screen behavior unchanged. */
         @media (min-width: 1024px) {
             #projectSidebar {
-                width: 380px;
-                flex: 0 0 380px;
+                width: 460px;
+                flex: 0 0 460px;
             }
 
             /* Ensure project cards fill the sidebar width but don't force wider layout */
@@ -71,8 +223,8 @@
 
         @media (min-width: 1280px) {
             #projectSidebar {
-                width: 480px;
-                flex-basis: 480px;
+                width: 560px;
+                flex-basis: 560px;
             }
 
             #projectSidebar .public-map-project-card .text-xs {
@@ -246,9 +398,9 @@
                                 const complete = activeStep !== undefined && (index < activeStep || isCompleted);
                                 const current = activeStep !== undefined && index === activeStep && !isCompleted;
                                 const circleClass = complete
-                                    ? 'bg-emerald-600 border-emerald-600 text-white'
-                                    : (current ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-slate-400');
-                                const labelClass = complete || current ? 'text-slate-700' : 'text-slate-400';
+                                    ? 'public-lifecycle-complete'
+                                    : (current ? 'public-lifecycle-current' : 'public-lifecycle-pending');
+                                const labelClass = complete || current ? 'public-lifecycle-label-active' : 'public-lifecycle-label-muted';
                                 const lineClass = activeStep !== undefined && (index < activeStep || isCompleted) ? 'bg-emerald-600' : 'bg-slate-200';
 
                                 return `
@@ -292,21 +444,25 @@
                                 </div>
                                 <div class="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-2">${imageHtml}</div>
                                 ${lifecycleHtml}
-                                <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
-                                    <div class="grid gap-3 text-sm text-slate-600">
-                                        <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Barangay</span><span class="text-right font-semibold text-slate-900">${props.barangay || 'Not specified'}</span></div>
-                                        <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Allocated budget</span><span class="font-semibold text-slate-900">${formatCurrency(allocatedBudget)}</span></div>
-                                        <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Expenditure</span><span class="font-semibold text-slate-900">${formatCurrency(expenditure)}</span></div>
-                                        <div class="flex items-center justify-between gap-3"><span class="text-slate-500">Progress</span><span class="font-semibold text-slate-900">${progress.toFixed(1)}%</span></div>
+                                <div class="public-project-details-card rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                                    <div class="mb-3 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-[18px] text-blue-600">info</span>
+                                        <h4 class="text-sm font-bold text-slate-900">Project Details</h4>
                                     </div>
-                                    <div class="mt-3 border-t border-slate-300 pt-3"><div class="flex items-center justify-between text-xs text-slate-500"><span>Expenditure progress</span><span class="font-semibold text-slate-700">${expenditureProgress.toFixed(1)}%</span></div><div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full rounded-full bg-emerald-500" style="width: ${expenditureProgress}%"></div></div></div>
-                                    <div class="mt-3 pt-3 border-t border-slate-300">
+                                    <div class="public-project-details-grid">
+                                        <div class="public-project-detail"><span class="public-project-detail-icon purple material-symbols-outlined">location_on</span><div><div class="public-project-detail-label">Barangay</div><div class="public-project-detail-value">${props.barangay || 'Not specified'}</div></div></div>
+                                        <div class="public-project-detail"><span class="public-project-detail-icon emerald material-symbols-outlined">payments</span><div><div class="public-project-detail-label">Allocated Budget</div><div class="public-project-detail-value">${formatCurrency(allocatedBudget)}</div></div></div>
+                                        <div class="public-project-detail"><span class="public-project-detail-icon rose material-symbols-outlined">account_balance_wallet</span><div><div class="public-project-detail-label">Expenditure</div><div class="public-project-detail-value">${formatCurrency(expenditure)}</div></div></div>
+                                        <div class="public-project-detail"><span class="public-project-detail-icon amber material-symbols-outlined">trending_up</span><div><div class="public-project-detail-label">Progress</div><div class="public-project-detail-value">${progress.toFixed(1)}%</div></div></div>
+                                        </div>
+                                        <div class="mt-3 border-t border-slate-300 pt-3"><div class="flex items-center justify-between text-xs text-slate-500"><span>Expenditure progress</span><span class="font-semibold text-slate-700">${expenditureProgress.toFixed(1)}%</span></div><div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full rounded-full bg-emerald-500" style="width: ${expenditureProgress}%"></div></div></div>
+                                        <div class="mt-3 pt-3 border-t border-slate-300">
                                         <div class="flex justify-between items-center mb-1">
                                             <span class="text-xs font-semibold text-slate-600">Timeline</span>
                                             <span class="text-xs font-bold text-slate-700">${progress.toFixed(1)}%</span>
                                         </div>
                                         <div class="h-2 bg-gray-300 rounded-full overflow-hidden">
-                                            <div class="h-full transition-all duration-300" style="width: ${progress}%; background-color: #3b82f6;"></div>
+                                            <div class="h-full rounded-full transition-all duration-300" style="width: ${progress}%; background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);"></div>
                                         </div>
                                         <div class="flex justify-between text-xs text-slate-500 mt-1">
                                             <span>Start: ${startDate}</span>
@@ -315,22 +471,30 @@
                                     </div>
                                     <p class="mt-4 whitespace-pre-wrap break-words text-sm leading-6 text-slate-600" style="overflow-wrap:anywhere;">${description}</p>
                                 </div>
-                                <button type="button" data-barangay="${props.barangay || ''}" class="show-all-projects-btn mt-5 inline-flex w-full items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View all projects</button>
+                                <button type="button" data-barangay="${props.barangay || ''}" class="show-all-projects-btn mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><span class="material-symbols-outlined text-[17px]">grid_view</span>View all projects</button>
                             </div>
                         </div>
                     `;
                 }
 
                 return `
-                    <div class="public-map-project-card department-project-card cursor-pointer overflow-hidden rounded-3xl border-2 border-slate-300 bg-white shadow-md transition hover:shadow-md" data-index="${index}">
+                    <div class="public-map-project-card public-collapsed-project-card department-project-card cursor-pointer overflow-hidden rounded-3xl border-2 shadow-md transition hover:shadow-md" data-index="${index}">
                         <div class="overflow-hidden p-2">${imageHtml}</div>
                         <div class="p-4">
                             <h3 class="text-base font-semibold text-slate-900">${props.name}</h3>
-                            <p class="mt-2 text-xs text-slate-500">${props.barangay || 'Barangay not specified'}</p>
-                            <div class="mt-3 grid gap-2 text-xs text-slate-600">
-                                <div><span class="font-semibold">Status:</span> ${props.status || 'Unknown'}</div>
-                                <div><span class="font-semibold">Budget:</span> ${formatCurrency(props.budget)}</div>
-                                <div><span class="font-semibold">Progress:</span> ${progress.toFixed(1)}%</div>
+                            <div class="mt-2 flex flex-wrap items-center gap-2">
+                                <span class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-amber-700">${props.status || 'Unknown'}</span>
+                                <p class="text-xs text-slate-500">${props.barangay || 'Barangay not specified'}</p>
+                            </div>
+                            <div class="public-project-details-card mt-4 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                                <div class="mb-3 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[16px] text-blue-600">info</span>
+                                    <h4 class="text-xs font-bold text-slate-900">Project Details</h4>
+                                </div>
+                                <div class="public-project-details-grid">
+                                    <div class="public-project-detail"><div><div class="public-project-detail-label">Progress</div><div class="public-project-detail-value">${progress.toFixed(1)}%</div></div></div>
+                                    <div class="public-project-detail"><div><div class="public-project-detail-label">Budget</div><div class="public-project-detail-value">${formatCurrency(props.budget)}</div></div></div>
+                                </div>
                             </div>
                             <p class="mt-3 max-h-20 overflow-hidden break-words text-sm leading-relaxed text-slate-600" style="display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow-wrap:anywhere;">${description}</p>
                         </div>

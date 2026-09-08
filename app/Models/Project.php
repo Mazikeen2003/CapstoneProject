@@ -124,6 +124,11 @@ class Project extends Model
         return $this->hasMany(ProjectForm::class, 'project_id', 'project_id');
     }
 
+    public function hasReachedImplementationStage(): bool
+    {
+        return in_array($this->current_status, ['Implementation', 'On Going', 'Completed'], true);
+    }
+
     // Query Scopes
     public function scopeWithRelations($query)
     {

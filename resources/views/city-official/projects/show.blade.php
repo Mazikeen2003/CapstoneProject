@@ -15,7 +15,7 @@
 <style>
 /* ===== CITY PROJECT SHOW - RICH REDESIGN ===== */
 .cs-wrap {
-    --cs-bg: #f4f4f5;
+    --cs-bg: #f8f7f5;
     --cs-surface: #ffffff;
     --cs-raised: #fafaf9;
     --cs-ink: #0f172a;
@@ -35,9 +35,9 @@
     --font-body: 'Inter', system-ui, sans-serif;
 }
 .dark .cs-wrap {
-    --cs-bg: #0f172a;
-    --cs-surface: #1e293b;
-    --cs-raised: #243247;
+    --cs-bg: #0f0e1a;
+    --cs-surface: #1a1929;
+    --cs-raised: #222136;
     --cs-ink: #f8fafc;
     --cs-ink-secondary: #cbd5e1;
     --cs-muted: #64748b;
@@ -50,9 +50,9 @@
     --cs-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
 }
 html.dark-mode .cs-wrap {
-    --cs-bg: #0f172a;
-    --cs-surface: #1e293b;
-    --cs-raised: #243247;
+    --cs-bg: #0f0e1a;
+    --cs-surface: #1a1929;
+    --cs-raised: #222136;
     --cs-ink: #f8fafc;
     --cs-ink-secondary: #cbd5e1;
     --cs-muted: #64748b;
@@ -75,7 +75,7 @@ html.dark-mode .cs-wrap {
 }
 html:not(.dark-mode) body:has(.cs-wrap) { background: #f8f7f5 !important; }
 html:not(.dark-mode) .cs-wrap { background: #f8f7f5; }
-html.dark-mode body:has(.cs-wrap) { background: #0f172a !important; }
+html.dark-mode body:has(.cs-wrap) { background: #0f0e1a !important; }
 @media (min-width: 640px) { .cs-wrap { padding: 32px; } }
 @media (min-width: 1024px) { .cs-wrap { padding: 40px; } }
 
@@ -216,11 +216,11 @@ html:not(.dark-mode) .cs-detail-item,
 html:not(.dark-mode) .cs-timeline-content { background: #fafaf9; border-color: rgba(0,0,0,0.06); }
 html:not(.dark-mode) .cs-detail-item:hover,
 html:not(.dark-mode) .cs-timeline-content:hover { background: #fff; border-color: rgba(0,0,0,0.12); }
-html.dark-mode .cs-card { background: #1e293b; border-color: rgba(255,255,255,0.06); }
+html.dark-mode .cs-card { background: #1a1929; border-color: rgba(255,255,255,0.06); }
 html.dark-mode .cs-detail-item,
-html.dark-mode .cs-timeline-content { background: #243247; border-color: rgba(255,255,255,0.06); }
+html.dark-mode .cs-timeline-content { background: #222136; border-color: rgba(255,255,255,0.06); }
 html.dark-mode .cs-detail-item:hover,
-html.dark-mode .cs-timeline-content:hover { background: #2d3b52; border-color: rgba(255,255,255,0.12); }
+html.dark-mode .cs-timeline-content:hover { background: #29283b; border-color: rgba(255,255,255,0.12); }
 .cs-card-header {
     display: flex;
     align-items: center;
@@ -472,7 +472,7 @@ html.dark-mode .cs-timeline-progress { background: rgba(251,191,36,0.15); color:
 .cs-progress-fill {
     height: 100%;
     border-radius: 100px;
-    background: linear-gradient(90deg, #6366f1 0%, #f59e0b 50%, #d97706 100%);
+    background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
     box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
     transition: width 1s ease;
 }

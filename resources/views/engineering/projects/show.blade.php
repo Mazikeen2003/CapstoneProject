@@ -4,6 +4,97 @@
 @php
     $currentRole = auth()->user()?->role_slug ?? 'public';
 @endphp
+<style>
+    .engineering-project-details {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+        overflow: hidden;
+    }
+    .engineering-project-details-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+    .engineering-project-details-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #dbeafe;
+        color: #2563eb;
+        flex-shrink: 0;
+    }
+    .engineering-project-details-header h2 {
+        color: #0f172a;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+    .engineering-project-details-header p {
+        color: #6b7280;
+        font-size: 0.75rem;
+        margin-top: 2px;
+    }
+    .engineering-project-details-body { padding: 24px; }
+    .engineering-project-details-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+    .engineering-project-detail-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-radius: 10px;
+        background: #fafaf9;
+    }
+    .engineering-project-detail-item.full-width { grid-column: 1 / -1; }
+    .engineering-project-detail-label {
+        color: #9ca3af;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+    .engineering-project-detail-value {
+        color: #374151;
+        font-size: 0.9375rem;
+        font-weight: 700;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+    }
+    .dark .engineering-project-details,
+    html.dark-mode .engineering-project-details {
+        background: #1a1929;
+        border-color: rgba(255, 255, 255, 0.06);
+    }
+    .dark .engineering-project-details-header,
+    html.dark-mode .engineering-project-details-header {
+        border-color: rgba(255, 255, 255, 0.06);
+    }
+    .dark .engineering-project-details-header h2,
+    html.dark-mode .engineering-project-details-header h2 { color: #f8fafc; }
+    .dark .engineering-project-detail-item,
+    html.dark-mode .engineering-project-detail-item {
+        background: #222136;
+        border-color: rgba(255, 255, 255, 0.06);
+    }
+    .dark .engineering-project-detail-value,
+    html.dark-mode .engineering-project-detail-value { color: #cbd5e1; }
+    @media (min-width: 768px) {
+        .engineering-project-details-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+</style>
 <div class="space-y-6">
     <div>
         <h1 class="department-project-title text-3xl font-bold" style="color: black;">{{ $project->project_name }}</h1>
@@ -18,42 +109,37 @@
 
     @include('components.project-stepper', ['project' => $project])
 
-    <div class="project-details-grid bg-white rounded-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-4" style="border: 1px solid #B2BEB5;">
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
-            <p class="text-xs text-gray-500">Status</p>
-            <p class="text-black font-medium">{{ $project->current_status }}</p>
+    <div class="engineering-project-details">
+        <div class="engineering-project-details-header">
+            <div class="engineering-project-details-icon">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 00.063.853l.041.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+            </div>
+            <div>
+                <h2>Project Details</h2>
+                <p>Key information about this project.</p>
+            </div>
         </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
-            <p class="text-xs text-gray-500">Barangay</p>
-            <p class="text-black font-medium">{{ $project->barangay->barangay_name ?? 'Citywide' }}</p>
-        </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
-            <p class="text-xs text-gray-500">Approved Budget</p>
-            <p class="text-black font-medium">₱{{ number_format($project->approved_budget ?? 0, 2) }}</p>
-        </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
-            <p class="text-xs text-gray-500">Actual Budget</p>
-            <p class="text-black font-medium">₱{{ number_format($project->actual_budget ?? 0, 2) }}</p>
-        </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
-            <p class="text-xs text-gray-500">Start Date</p>
-            <p class="text-black font-medium">{{ $project->start_date?->format('M d, Y') ?? '—' }}</p>
-        </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
-            <p class="text-xs text-gray-500">Target Completion</p>
-            <p class="text-black font-medium">{{ $project->target_end_date?->format('M d, Y') ?? '—' }}</p>
-        </div>
-        <div class="md:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
-            <p class="text-xs text-gray-500">Location</p>
-            <p class="text-black font-medium">{{ $project->location_description ?? '—' }}</p>
-        </div>
-        <div class="md:col-span-2 max-w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
-            <p class="text-xs text-gray-500">Public Description</p>
-            <p class="max-w-full overflow-hidden text-black font-medium break-words whitespace-pre-wrap" style="overflow-wrap:anywhere; word-break:break-word;">{{ $project->public_description ?? 'No public description available.' }}</p>
-        </div>
-        <div class="md:col-span-2 max-w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
-            <p class="text-xs text-gray-500">Internal Remarks (Private)</p>
-            <p class="max-w-full overflow-hidden text-black font-medium break-words whitespace-pre-wrap" style="overflow-wrap:anywhere; word-break:break-word;">{{ $project->remarks ?? '—' }}</p>
+        <div class="engineering-project-details-body">
+            <div class="engineering-project-details-grid">
+                @foreach ([
+                    'Status' => $project->current_status,
+                    'Barangay' => $project->barangay->barangay_name ?? 'Citywide',
+                    'Approved Budget' => '₱' . number_format($project->approved_budget ?? 0, 2),
+                    'Actual Budget' => '₱' . number_format($project->actual_budget ?? 0, 2),
+                    'Start Date' => $project->start_date?->format('M d, Y') ?? '—',
+                    'Target Completion' => $project->target_end_date?->format('M d, Y') ?? '—',
+                    'Location' => $project->location_description ?? '—',
+                    'Public Description' => $project->public_description ?? 'No public description available.',
+                    'Internal Remarks (Private)' => $project->remarks ?? '—',
+                ] as $label => $value)
+                    <div class="engineering-project-detail-item {{ in_array($label, ['Location', 'Public Description', 'Internal Remarks (Private)'], true) ? 'full-width' : '' }}">
+                        <div>
+                            <div class="engineering-project-detail-label">{{ $label }}</div>
+                            <div class="engineering-project-detail-value">{{ $value }}</div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
     </div>
 
@@ -132,15 +218,16 @@
                 @php
                     $existingForm = $project->forms->firstWhere('form_type', $type);
                     $isAvailable = in_array($type, ['form_1', 'form_2', 'form_3', 'form_4', 'form_5', 'form_6', 'form_7', 'form_8', 'form_9', 'form_10', 'form_11'], true);
+                    $formsEnabled = $project->hasReachedImplementationStage();
                 @endphp
-                <div class="flex items-start gap-3 p-3 rounded border" style="border-color: #B2BEB5;">
+                <div class="flex items-start gap-3 p-3 rounded border {{ ! $formsEnabled ? 'opacity-60' : '' }}" style="border-color: #B2BEB5;">
                     <div class="min-w-0 flex-1">
                         <p class="text-sm font-medium text-black break-words">{{ $label }}</p>
                         <p class="text-xs {{ $existingForm ? 'text-green-600' : 'text-gray-400' }}">
-                            {{ $existingForm ? 'Available — last updated ' . $existingForm->updated_at->format('M d, Y') : ($isAvailable ? 'Not filled out yet' : 'Coming soon') }}
+                            {{ $existingForm ? 'Available — last updated ' . $existingForm->updated_at->format('M d, Y') : (! $formsEnabled ? 'Available at Implementation stage' : ($isAvailable ? 'Not filled out yet' : 'Coming soon')) }}
                         </p>
                     </div>
-                    @if ($isAvailable)
+                    @if ($isAvailable && $formsEnabled)
                         <div class="flex shrink-0 gap-2">
                             <a href="{{ route('engineering.projects.forms.edit', [$project->project_id, $type]) }}" class="px-3 py-1.5 text-xs font-semibold rounded" style="background-color: #c9a84c; color: #0f1e3d;">{{ $existingForm ? 'Edit' : 'Fill Out' }}</a>
                             @if ($existingForm)
