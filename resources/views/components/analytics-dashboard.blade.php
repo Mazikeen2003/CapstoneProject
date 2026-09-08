@@ -78,7 +78,7 @@
 /* ===== HERO ===== */
 .dept-analytics-hero {
     position: relative;
-    background: linear-gradient(135deg, #0f0d23 0%, #1e1b4b 30%, #4338ca 70%, #6366f1 100%);
+    background: linear-gradient(135deg, #10051f 0%, #24103f 30%, #4c1d95 70%, #6d28d9 100%);
     border-radius: var(--da-radius);
     padding: 36px 40px;
     margin-bottom: 28px;
@@ -112,7 +112,7 @@ html.dark-mode .dept-analytics-hero-red {
     right: -5%;
     width: 450px;
     height: 450px;
-    background: radial-gradient(circle, rgba(245,158,11,0.18) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(168,85,247,0.24) 0%, transparent 60%);
     pointer-events: none;
     animation: heroGlow 10s ease-in-out infinite;
 }
