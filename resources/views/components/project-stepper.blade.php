@@ -17,9 +17,16 @@
 
 <style>
     .dept-stepper-lifecycle {
+        --de-surface: var(--ds-surface, #ffffff);
+        --de-line: var(--ds-line, rgba(0, 0, 0, 0.06));
+        --de-line-strong: var(--ds-line-strong, rgba(0, 0, 0, 0.12));
+        --de-ink: var(--ds-ink, #1e1b4b);
+        --de-ink-secondary: var(--ds-ink-secondary, #374151);
+        --de-muted: var(--ds-muted, #9ca3af);
+        --de-shadow-sm: var(--ds-shadow-sm, 0 1px 2px 0 rgb(0 0 0 / 0.05));
         background: var(--de-surface);
         border: 1px solid var(--de-line);
-        border-radius: var(--de-radius-sm);
+        border-radius: var(--ds-radius-sm, 12px);
         box-shadow: var(--de-shadow-sm);
         padding: 24px 28px 28px;
         margin-bottom: 24px;
@@ -37,6 +44,14 @@
         color: var(--de-muted);
         margin: 0;
         font-weight: 500;
+    }
+    html.dark-mode .dept-stepper-lifecycle {
+        --de-surface: #141321;
+        --de-line: rgba(255, 255, 255, 0.06);
+        --de-line-strong: rgba(255, 255, 255, 0.12);
+        --de-ink: #f8f7f5;
+        --de-ink-secondary: #cbd5e1;
+        --de-muted: #94a3b8;
     }
     .dept-stepper-track {
         display: flex;
@@ -95,6 +110,8 @@
     html.dark-mode .dept-step-item.completed .dept-step-name { color: #34d399; }
     html.dark-mode .dept-step-item.current .dept-step-name { color: #60a5fa; }
     html.dark-mode .dept-step-connector.completed { background: #34d399; }
+    html.dark-mode .dept-stepper-title { color: #f8f7f5; }
+    html.dark-mode .dept-stepper-subtitle { color: #94a3b8; }
     @media (max-width: 640px) {
         .dept-stepper-track { overflow-x: auto; padding-bottom: 8px; }
         .dept-step-item { min-width: 80px; }

@@ -1502,3 +1502,95 @@ html.dark-mode .authenticated-layout .admin-audit-table tbody tr:hover {
     background-color: #1e293b !important;
     transition: background-color 0.2s ease;
 }
+
+/* Match Planning menu cards to the Admin card theme. */
+html:not(.dark-mode) .authenticated-layout .dept-stat,
+html:not(.dark-mode) .authenticated-layout .dept-card,
+html:not(.dark-mode) .authenticated-layout .dept-create-card,
+html:not(.dark-mode) .authenticated-layout .dept-edit-card,
+html:not(.dark-mode) .authenticated-layout .dept-show-card,
+html:not(.dark-mode) .authenticated-layout .dept-form-card,
+html:not(.dark-mode) .authenticated-layout .dept-proj-card,
+html:not(.dark-mode) .authenticated-layout .dept-proj-mcard,
+html:not(.dark-mode) .authenticated-layout .dept-report-card,
+html:not(.dark-mode) .authenticated-layout .dept-map-stats-bar,
+html:not(.dark-mode) .authenticated-layout .dept-map-card,
+html:not(.dark-mode) .authenticated-layout .dept-map-project-card,
+html:not(.dark-mode) .authenticated-layout .dept-map-detail-card,
+html:not(.dark-mode) .authenticated-layout .perm-card,
+html:not(.dark-mode) .authenticated-layout .perm-mcard {
+    background: #ffffff !important;
+    border-color: #dbe3ee !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.dark-mode .authenticated-layout .dept-stat,
+html.dark-mode .authenticated-layout .dept-card,
+html.dark-mode .authenticated-layout .dept-create-card,
+html.dark-mode .authenticated-layout .dept-edit-card,
+html.dark-mode .authenticated-layout .dept-show-card,
+html.dark-mode .authenticated-layout .dept-form-card,
+html.dark-mode .authenticated-layout .dept-proj-card,
+html.dark-mode .authenticated-layout .dept-proj-mcard,
+html.dark-mode .authenticated-layout .dept-report-card,
+html.dark-mode .authenticated-layout .dept-map-stats-bar,
+html.dark-mode .authenticated-layout .dept-map-card,
+html.dark-mode .authenticated-layout .dept-map-project-card,
+html.dark-mode .authenticated-layout .dept-map-detail-card,
+html.dark-mode .authenticated-layout .perm-card,
+html.dark-mode .authenticated-layout .perm-mcard {
+    background: #141321 !important;
+    border: 1px solid #020617 !important;
+    box-shadow: inset 0 0 0 1px #1e293b, 0 1px 3px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Keep long Planning card content inside its card boundaries. */
+.authenticated-layout .dept-stat > *,
+.authenticated-layout .dept-card > *,
+.authenticated-layout .dept-create-card > *,
+.authenticated-layout .dept-edit-card > *,
+.authenticated-layout .dept-show-card > *,
+.authenticated-layout .dept-form-card > *,
+.authenticated-layout .dept-proj-mcard > *,
+.authenticated-layout .dept-report-card > *,
+.authenticated-layout .dept-map-card > *,
+.authenticated-layout .dept-map-project-card > *,
+.authenticated-layout .dept-map-detail-card > *,
+.authenticated-layout .dept-kpi-card > *,
+.authenticated-layout .dept-insight-card > *,
+.authenticated-layout .dept-lifecycle-card > *,
+.authenticated-layout .dept-chart-card > *,
+.authenticated-layout .dept-barangay-card > *,
+.authenticated-layout .perm-card > *,
+.authenticated-layout .perm-mcard > * {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.authenticated-layout .dept-stat p,
+.authenticated-layout .dept-card p,
+.authenticated-layout .dept-create-card p,
+.authenticated-layout .dept-edit-card p,
+.authenticated-layout .dept-show-card p,
+.authenticated-layout .dept-form-card p,
+.authenticated-layout .dept-proj-mcard p,
+.authenticated-layout .dept-report-card p,
+.authenticated-layout .dept-map-project-card p,
+.authenticated-layout .dept-map-detail-card p,
+.authenticated-layout .dept-kpi-card p,
+.authenticated-layout .dept-insight-card p,
+.authenticated-layout .dept-lifecycle-card p,
+.authenticated-layout .dept-chart-card p,
+.authenticated-layout .dept-barangay-card p,
+.authenticated-layout .perm-card p,
+.authenticated-layout .perm-mcard p,
+.authenticated-layout .dept-detail-value,
+.authenticated-layout .dept-project-title,
+.authenticated-layout .dept-proj-mtitle,
+.authenticated-layout .perm-title,
+.authenticated-layout .perm-subtitle,
+.authenticated-layout .perm-mtitle,
+.authenticated-layout .perm-mvalue {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}

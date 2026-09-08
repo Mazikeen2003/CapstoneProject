@@ -523,6 +523,22 @@
         z-index: 2;
     }
     .dept-status-wrap select { padding-left: 32px; }
+    html.dark-mode .dept-status-wrap select,
+    html.dark-mode .dept-status-wrap optgroup,
+    html.dark-mode .dept-status-wrap option {
+        background: #141321 !important;
+        color: #f8f7f5 !important;
+    }
+    .dept-status-wrap option.dept-status-group-option {
+        color: #b45309 !important;
+        font-weight: 700;
+    }
+    html.dark-mode .dept-status-wrap option.dept-status-group-option {
+        color: #fbbf24 !important;
+    }
+    html.dark-mode .dept-status-wrap optgroup {
+        color: #fbbf24 !important;
+    }
 
     /* Alerts */
     .dept-alert {
@@ -1006,14 +1022,13 @@
                         <div class="dept-status-wrap">
                             <span class="dept-status-dot" style="background: #f59e0b;"></span>
                             <select name="current_status">
-                                <optgroup label="Project Lifecycle">
-                                    <option value="Proposed" @selected($status == 'Proposed')>Proposed</option>
-                                    <option value="For bidding" @selected($status == 'For bidding')>For bidding</option>
-                                    <option value="Bidding ongoing" @selected($status == 'Bidding ongoing')>Bidding ongoing</option>
-                                    <option value="Award of contract" @selected($status == 'Award of contract')>Award of contract</option>
-                                    <option value="Implementation" @selected($status == 'Implementation')>Implementation</option>
-                                    <option value="Completed" @selected($status == 'Completed')>Completed</option>
-                                </optgroup>
+                                <option class="dept-status-group-option" disabled>Project Lifecycle</option>
+                                <option value="Proposed" @selected($status == 'Proposed')>Proposed</option>
+                                <option value="For bidding" @selected($status == 'For bidding')>For bidding</option>
+                                <option value="Bidding ongoing" @selected($status == 'Bidding ongoing')>Bidding ongoing</option>
+                                <option value="Award of contract" @selected($status == 'Award of contract')>Award of contract</option>
+                                <option value="Implementation" @selected($status == 'Implementation')>Implementation</option>
+                                <option value="Completed" @selected($status == 'Completed')>Completed</option>
                                 <optgroup label="Other statuses">
                                     <option value="On Hold" @selected($status == 'On Hold')>On Hold</option>
                                     <option value="Cancelled" @selected($status == 'Cancelled')>Cancelled</option>

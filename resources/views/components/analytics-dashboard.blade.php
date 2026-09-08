@@ -683,9 +683,20 @@ html.dark-mode .dept-insight-card,
 html.dark-mode .dept-lifecycle-card,
 html.dark-mode .dept-chart-card,
 html.dark-mode .dept-barangay-card {
-    background: #0f172a !important;
-    border-color: #334155 !important;
-    color: #f8fafc !important;
+    background: #141321 !important;
+    border: 1px solid #020617 !important;
+    box-shadow: inset 0 0 0 1px #1e293b, 0 1px 3px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    color: #f8f7f5 !important;
+}
+
+html:not(.dark-mode) .dept-kpi-card,
+html:not(.dark-mode) .dept-insight-card,
+html:not(.dark-mode) .dept-lifecycle-card,
+html:not(.dark-mode) .dept-chart-card,
+html:not(.dark-mode) .dept-barangay-card {
+    background: #ffffff !important;
+    border-color: #dbe3ee !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
 }
 
 html.dark-mode .dept-lifecycle-item,

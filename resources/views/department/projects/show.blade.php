@@ -305,11 +305,18 @@
         font-weight: 500;
         line-height: 1.6;
     }
+    .dept-detail-value.public-description {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
 
     /* Timeline */
     .dept-timeline {
         position: relative;
         padding-left: 28px;
+        border-left: 3px solid #d97706;
     }
     .dept-timeline::before {
         content: "";
@@ -320,7 +327,17 @@
         width: 2px;
         background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
         border-radius: 2px;
-        opacity: 0.3;
+        opacity: 0.7;
+        z-index: 0;
+    }
+    html.dark-mode .dept-timeline::before,
+    .dark .dept-timeline::before {
+        background: linear-gradient(180deg, #fbbf24 0%, #475569 100%);
+        opacity: 0.9;
+    }
+    html.dark-mode .dept-timeline,
+    .dark .dept-timeline {
+        border-left-color: #475569;
     }
     .dept-timeline-item {
         position: relative;
@@ -337,6 +354,7 @@
         background: var(--ds-surface);
         border: 3px solid #f59e0b;
         box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+        z-index: 1;
     }
     .dept-timeline-item.completed .dept-timeline-dot {
         border-color: #10b981;
@@ -858,7 +876,7 @@
                             </div>
                             <div class="dept-detail-content">
                                 <div class="dept-detail-label">Public Description</div>
-                                <div class="dept-detail-value muted">{{ $project->public_description ?? 'No public description available.' }}</div>
+                                <div class="dept-detail-value muted public-description">{{ $project->public_description ?? 'No public description available.' }}</div>
                             </div>
                         </div>
                         <div class="dept-detail-item full-width">

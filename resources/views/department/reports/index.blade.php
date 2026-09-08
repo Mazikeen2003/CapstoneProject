@@ -73,6 +73,22 @@
 
     .dept-report-subtitle { margin-top: 4px; font-size: 0.875rem; color: var(--dr-muted); }
 
+    @keyframes deptReportFadeUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .dept-report-animate {
+        opacity: 0;
+        animation: deptReportFadeUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    .dept-report-animate:nth-child(1) { animation-delay: 0.05s; }
+    .dept-report-animate:nth-child(2) { animation-delay: 0.1s; }
+    .dept-report-animate:nth-child(3) { animation-delay: 0.15s; }
+    .dept-report-animate:nth-child(4) { animation-delay: 0.2s; }
+    @media (prefers-reduced-motion: reduce) {
+        .dept-report-animate { animation: none; opacity: 1; }
+    }
+
     .dept-report-grid {
         display: grid;
         grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -149,7 +165,7 @@
 </style>
 
 <div class="dept-report-container">
-    <div class="dept-report-header">
+    <div class="dept-report-header dept-report-animate">
         <div class="dept-report-icon">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 19.5V10.5M9.333 19.5V4.5M14.667 19.5v-7M20 19.5V7.5M2.5 19.5h19" />
@@ -162,18 +178,18 @@
     </div>
 
     @if (session('success'))
-        <div class="mb-18 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
+        <div class="dept-report-animate mb-18 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
             {{ session('success') }}
         </div>
     @endif
 
-    <div class="dept-report-grid">
-        <x-report-card eyebrow="Project overview" title="Projects Report" description="Complete list of all your projects with details and budget information." icon="document" :route="route('department.reports.projects-pdf')" />
-        <x-report-card eyebrow="Financial overview" title="Budget Analysis" description="Detailed budget breakdown by status and spending analysis." icon="budget" :route="route('department.reports.budget-pdf')" />
-        <x-report-card eyebrow="Compliance overview" title="SGLG Compliance" description="Documentation, transparency, and monitoring compliance summary for DILG SGLG assessment." icon="document" :route="route('department.reports.sglg-pdf')" />
+    <div class="dept-report-grid dept-report-animate">
+        <div class="dept-report-animate"><x-report-card eyebrow="Project overview" title="Projects Report" description="Complete list of all your projects with details and budget information." icon="document" :route="route('department.reports.projects-pdf')" /></div>
+        <div class="dept-report-animate"><x-report-card eyebrow="Financial overview" title="Budget Analysis" description="Detailed budget breakdown by status and spending analysis." icon="budget" :route="route('department.reports.budget-pdf')" /></div>
+        <div class="dept-report-animate"><x-report-card eyebrow="Compliance overview" title="SGLG Compliance" description="Documentation, transparency, and monitoring compliance summary for DILG SGLG assessment." icon="document" :route="route('department.reports.sglg-pdf')" /></div>
     </div>
 
-    <div class="dept-report-info">
+    <div class="dept-report-info dept-report-animate">
         <div class="dept-report-info-header">
             <span class="dept-report-info-icon">&#10003;</span>
             <h3>About These Reports</h3>
