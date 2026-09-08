@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+.engineering-page-enter {
+    animation: engineeringPageEnter 0.35s ease-out both;
+}
+
+@keyframes engineeringPageEnter {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .engineering-page-enter { animation: none; }
+}
+
 .dashboard-budget-value {
     max-width: 100%;
     font-size: clamp(1.1rem, 6vw, 2.25rem);

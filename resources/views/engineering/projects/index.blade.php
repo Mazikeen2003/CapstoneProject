@@ -2,120 +2,47 @@
 
 @section('content')
 <style>
-    .engineering-projects-page .engineering-projects-card,
-    .engineering-projects-page .engineering-projects-table {
-        background: #ffffff !important;
-        border: 1px solid rgba(0, 0, 0, 0.06) !important;
-        border-radius: 16px !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
-        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .engineering-projects-page .engineering-project-mobile-card,
-    .engineering-projects-page .engineering-projects-table thead {
-        background: #f4f4f5 !important;
-    }
-
-    .engineering-projects-page .engineering-project-mobile-card {
-        border: 1px solid rgba(0, 0, 0, 0.06) !important;
-        border-radius: 16px !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
-        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .engineering-projects-page .engineering-project-mobile-card:hover,
-    .engineering-projects-page .engineering-projects-table:hover {
-        border-color: rgba(0, 0, 0, 0.1) !important;
-        box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.08), 0 4px 8px -4px rgba(0, 0, 0, 0.04) !important;
-    }
-
-    html.dark-mode .engineering-projects-page .engineering-projects-card,
-    html.dark-mode .engineering-projects-page .engineering-projects-table,
-    .dark .engineering-projects-page .engineering-projects-card,
-    .dark .engineering-projects-page .engineering-projects-table {
-        background: #141321 !important;
-    }
-
-    html.dark-mode .engineering-projects-page .engineering-project-mobile-card,
-    html.dark-mode .engineering-projects-page .engineering-projects-table thead,
-    .dark .engineering-projects-page .engineering-project-mobile-card,
-    .dark .engineering-projects-page .engineering-projects-table thead {
-        background: #0f0e1a !important;
-    }
-
-    html.dark-mode .engineering-projects-page .engineering-projects-card,
-    html.dark-mode .engineering-projects-page .engineering-projects-table,
-    html.dark-mode .engineering-projects-page .engineering-project-mobile-card,
-    .dark .engineering-projects-page .engineering-projects-card,
-    .dark .engineering-projects-page .engineering-projects-table,
-    .dark .engineering-projects-page .engineering-project-mobile-card {
-        border: 1px solid #020617 !important;
-        box-shadow: inset 0 0 0 1px #1e293b, 0 1px 3px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-    }
-
-    html.dark-mode .engineering-projects-page .engineering-project-mobile-card:hover,
-    html.dark-mode .engineering-projects-page .engineering-projects-table:hover,
-    .dark .engineering-projects-page .engineering-project-mobile-card:hover,
-    .dark .engineering-projects-page .engineering-projects-table:hover {
-        border-color: rgba(255, 255, 255, 0.1) !important;
-        box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.2), 0 4px 8px -4px rgba(0, 0, 0, 0.15) !important;
-    }
+    .engineering-projects-page { --dp-bg:transparent; --dp-surface:#fff; --dp-hover:#fafaf9; --dp-ink:#1e1b4b; --dp-secondary:#374151; --dp-muted:#9ca3af; --dp-line:rgba(0,0,0,.06); max-width:1400px; margin:0 auto; padding:24px; background:transparent; color:var(--dp-ink); }
+    .dark .engineering-projects-page { --dp-bg:#0f0e1a; --dp-surface:#1a1929; --dp-hover:#222136; --dp-ink:#f8fafc; --dp-secondary:#cbd5e1; --dp-muted:#64748b; --dp-line:rgba(255,255,255,.06); }
+    @media (min-width:640px){.engineering-projects-page{padding:32px}} @media (min-width:1024px){.engineering-projects-page{padding:40px}}
+    .engineering-projects-header{display:flex;gap:16px;margin-bottom:28px}.engineering-projects-titlewrap{display:flex;align-items:flex-start;gap:16px}.engineering-projects-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}.engineering-projects-icon svg{width:26px;height:26px}.engineering-projects-title{font-family:"Plus Jakarta Sans",sans-serif;font-size:clamp(1.5rem,3vw,2rem);font-weight:800;line-height:1.2}.engineering-projects-subtitle{margin-top:4px;font-size:.875rem;color:var(--dp-muted)}
+    .engineering-projects-toolbar{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;padding:16px;background:var(--dp-surface);border:1px solid var(--dp-line);border-radius:12px;box-shadow:0 1px 2px rgb(0 0 0/.05)} @media (min-width:640px){.engineering-projects-toolbar{flex-direction:row;align-items:center;justify-content:space-between}}
+    .engineering-projects-search{position:relative;flex:1;max-width:400px}.engineering-projects-search svg{position:absolute;left:14px;top:50%;width:18px;height:18px;transform:translateY(-50%);color:var(--dp-muted)}.engineering-projects-search input{width:100%;padding:10px 14px 10px 42px;border:1px solid var(--dp-line);border-radius:100px;background:#f4f4f5;color:var(--dp-ink);font:inherit;font-size:.875rem;outline:none}.engineering-projects-search input:focus{border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.15)}.engineering-projects-filters{display:flex;flex-wrap:wrap;gap:8px}.engineering-projects-filter{padding:8px 16px;border:1px solid rgba(245,158,11,.28);border-radius:100px;background:#fff;color:#b45309;font:inherit;font-size:.8125rem;font-weight:600;cursor:pointer}.engineering-projects-filter:hover{border-color:#f59e0b;background:#fffbeb}.engineering-projects-filter.active{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-color:#d97706;box-shadow:0 4px 10px -4px rgba(217,119,6,.5)}
+    html.dark-mode .engineering-projects-search input, .dark .engineering-projects-search input { background:#0f0e1a; color:#f8fafc; border-color:rgba(148,163,184,.18); }
+    html.dark-mode .engineering-projects-filter, .dark .engineering-projects-filter { background:#1a1929; color:#f8fafc; border-color:rgba(245,158,11,.35); }
+    html.dark-mode .engineering-projects-filter:hover, .dark .engineering-projects-filter:hover { background:#332313; }
+    .engineering-projects-status-filter { min-width: 190px; padding: 10px 36px 10px 14px; border: 1px solid var(--dp-line); border-radius: 100px; background-color: #f4f4f5; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; appearance: none; color: var(--dp-secondary); font: inherit; font-size: .8125rem; font-weight: 600; cursor: pointer; outline: none; }
+    .engineering-projects-status-filter-wrap { position: relative; }
+    .engineering-projects-status-filter-wrap::after { content: ""; position: absolute; top: 50%; right: 15px; width: 7px; height: 7px; border-right: 2px solid #6b7280; border-bottom: 2px solid #6b7280; transform: translateY(-65%) rotate(45deg); pointer-events: none; }
+    .engineering-projects-status-filter:focus { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
+    .engineering-projects-toolbar { background: #fff; }
+    .engineering-projects-search input, .engineering-projects-status-filter { border-color: var(--dp-line); background: #f4f4f5; color: var(--dp-secondary); }
+    .engineering-projects-search input:focus, .engineering-projects-status-filter:focus { border-color: #f59e0b; }
+    html.dark-mode .engineering-projects-status-filter, .dark .engineering-projects-status-filter { background: #0f0e1a; color: #e5edf9; border-color: rgba(148,163,184,.18); }
+    html.dark-mode .engineering-projects-toolbar, .dark .engineering-projects-toolbar { background: #141321; }
+    html.dark-mode .engineering-projects-search input, .dark .engineering-projects-search input, html.dark-mode .engineering-projects-status-filter, .dark .engineering-projects-status-filter { background: #0f0e1a; color: #e5edf9; border-color: rgba(148,163,184,.18); }
+    .engineering-projects-card{overflow:hidden;background:var(--dp-bg);border:1px solid var(--dp-line);border-radius:12px;box-shadow:0 1px 2px rgb(0 0 0/.05)}.engineering-projects-tablewrap{overflow-x:auto}.engineering-projects-table{width:100%;min-width:800px;border-collapse:separate;border-spacing:0;font-size:.875rem}.engineering-projects-table th{padding:14px 20px;text-align:left;font-size:.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--dp-muted);background:var(--dp-hover);border-bottom:1px solid var(--dp-line);white-space:nowrap}.engineering-projects-table th:first-child{padding-left:24px}.engineering-projects-table th:last-child{padding-right:24px;text-align:right}.engineering-projects-table td{padding:16px 20px;color:var(--dp-secondary);border-bottom:1px solid var(--dp-line)}.engineering-projects-table td:first-child{padding-left:24px}.engineering-projects-table td:last-child{padding-right:24px}.engineering-projects-table tr:hover{background:var(--dp-hover)}.engineering-projects-table tr:last-child td{border-bottom:0}
+    .engineering-project-name{display:flex;align-items:center;gap:12px}.engineering-project-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;font-weight:800;flex-shrink:0}.engineering-project-name-text .name{color:var(--dp-ink);font-weight:700}.engineering-project-name-text .code{margin-top:2px;color:var(--dp-muted);font-size:.75rem;letter-spacing:.05em;text-transform:uppercase}.engineering-project-status{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:100px;font-size:.75rem;font-weight:700;text-transform:capitalize;white-space:nowrap}.engineering-project-status:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}.status-planning{background:#fef3c7;color:#b45309}.status-ongoing{background:#dbeafe;color:#1d4ed8}.status-hold{background:#fee2e2;color:#b91c1c}.status-completed{background:#d1fae5;color:#047857}.status-cancelled{background:#f3f4f6;color:#4b5563}.dark .status-planning{background:rgba(251,191,36,.15);color:#fbbf24}.dark .status-ongoing{background:rgba(59,130,246,.15);color:#60a5fa}.dark .status-hold{background:rgba(239,68,68,.15);color:#f87171}.dark .status-completed{background:rgba(16,185,129,.15);color:#34d399}.dark .status-cancelled{background:rgba(107,114,128,.15);color:#9ca3af}.engineering-project-barangay{display:inline-flex;align-items:center;gap:6px;font-size:.8125rem}.engineering-project-barangay svg{width:14px;height:14px;color:var(--dp-muted)}.engineering-project-budget{color:var(--dp-ink);font-weight:700;white-space:nowrap}.engineering-project-action{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 14px;border-radius:8px;background:#dbeafe;color:#1d4ed8;border:1px solid rgba(59,130,246,.2);font-size:.75rem;font-weight:700;text-decoration:none;transition:all .15s;font-family:inherit}.engineering-project-action:hover{background:#3b82f6;color:#fff}.dark .engineering-project-action{background:rgba(59,130,246,.15);color:#60a5fa}.dark .engineering-project-action:hover{background:#3b82f6;color:#fff}
+    .engineering-project-mobile{display:flex;flex-direction:column;gap:12px;padding:16px}.engineering-project-mobile-card{padding:20px;border:1px solid var(--dp-line);border-radius:12px;background:var(--dp-surface)}.engineering-project-mobile-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.engineering-project-mobile-title{color:var(--dp-ink);font-size:.9375rem;font-weight:700}.engineering-project-mobile-code{margin-top:4px;color:var(--dp-muted);font-size:.6875rem;text-transform:uppercase}.engineering-project-mobile-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}.engineering-project-mobile-label{display:block;margin-bottom:4px;color:var(--dp-muted);font-size:.6875rem;font-weight:700;text-transform:uppercase}.engineering-project-mobile-value{color:var(--dp-secondary);font-size:.8125rem;font-weight:600}.engineering-project-mobile-action{padding-top:14px;border-top:1px solid var(--dp-line)}.engineering-project-mobile-action .engineering-project-action{display:flex;justify-content:center}.engineering-project-empty{padding:64px 24px;text-align:center;color:var(--dp-muted)}
+    @media (min-width:768px){.engineering-project-mobile{display:none}} @media (max-width:767.98px){.engineering-projects-desktop{display:none}}
 </style>
-<div class="engineering-projects-page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-    <div>
-        <h1 class="text-3xl font-bold text-slate-900">Engineering Projects</h1>
-        <p class="mt-1 text-sm text-slate-500">View all active projects and monitor implementation progress.</p>
-    </div>
 
-    <div class="engineering-projects-card rounded-3xl border border-slate-200 p-6 shadow-sm">
-        @if ($projects->isEmpty())
-            <div class="text-sm text-slate-500">No projects have been added yet.</div>
-        @else
-            <div class="space-y-4 lg:hidden">
+<div class="engineering-projects-page engineering-page-enter">
+    <div class="engineering-projects-header"><div class="engineering-projects-titlewrap"><div class="engineering-projects-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.429-2.507a2.117 2.117 0 00-1.86-.22m-7.5 2.1l.22.22m6.44-2.22l-.22.22M3.75 6.75l7.5-4.5 7.5 4.5M3.75 6.75v10.5a2.25 2.25 0 002.25 2.25h10.5"/></svg></div><div><h1 class="engineering-projects-title">Engineering Projects</h1><p class="engineering-projects-subtitle">View and monitor all projects across Cabuyao City.</p></div></div></div>
+    <div class="engineering-projects-toolbar"><div class="engineering-projects-search"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg><input type="text" id="projectSearch" placeholder="Search projects by name or code..."></div><div class="engineering-projects-status-filter-wrap"><select id="projectStatusFilter" class="engineering-projects-status-filter" aria-label="Filter projects by status"><option value="all">All statuses</option><option value="Proposed">Proposed</option><option value="Planning">Planning</option><option value="For bidding">For bidding</option><option value="Procurement">Procurement</option><option value="Bidding ongoing">Bidding ongoing</option><option value="Bidding - Success">Bidding - Success</option><option value="Bidding - Failed">Bidding - Failed</option><option value="Award of contract">Award of contract</option><option value="Implementation">Implementation</option><option value="On Going">On Going</option><option value="On Hold">On Hold</option><option value="Completed">Completed</option><option value="Cancelled">Cancelled</option></select></div></div>
+    <div class="engineering-projects-card">
+        @if ($projects->isEmpty())<div class="engineering-project-empty">No projects have been added yet.</div>@else
+            <div class="engineering-projects-desktop"><div class="engineering-projects-tablewrap"><table class="engineering-projects-table"><thead><tr><th>Project</th><th>Status</th><th>Barangay</th><th>Budget</th><th style="text-align:right">Actions</th></tr></thead><tbody>
                 @foreach ($projects as $project)
-                    <div class="engineering-project-mobile-card rounded-3xl border border-slate-200 p-4 shadow-sm">
-                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                            <div>
-                                <p class="text-base font-semibold text-slate-900">{{ $project->project_name }}</p>
-                                <p class="mt-1 text-sm text-slate-600">{{ $project->current_status }}</p>
-                            </div>
-                            <a href="{{ route('engineering.projects.show', $project->project_id) }}" class="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-100">View</a>
-                        </div>
-                        <div class="mt-4 grid gap-3 sm:grid-cols-2 text-sm text-slate-600">
-                            <div><span class="block text-xs text-slate-500">Budget</span><span class="font-semibold text-slate-900">₱{{ number_format($project->approved_budget ?? 0, 2) }}</span></div>
-                            <div><span class="block text-xs text-slate-500">Barangay</span><span class="font-semibold text-slate-900">{{ $project->barangay?->barangay_name ?? 'Citywide' }}</span></div>
-                        </div>
-                    </div>
+                    @php $statusClass = match($project->current_status) { 'Proposed', 'Planning', 'For bidding', 'Procurement', 'Bidding ongoing', 'Bidding - Success', 'Bidding - Failed' => 'status-planning', 'Implementation', 'On Going' => 'status-ongoing', 'On Hold' => 'status-hold', 'Completed' => 'status-completed', 'Cancelled' => 'status-cancelled', default => 'status-planning' }; $words = explode(' ', $project->project_name); $initials = strtoupper(substr($words[0] ?? '', 0, 1) . substr($words[1] ?? '', 0, 1)); $avatarGradients = ['linear-gradient(135deg,#f59e0b,#d97706)','linear-gradient(135deg,#3b82f6,#1d4ed8)','linear-gradient(135deg,#10b981,#047857)','linear-gradient(135deg,#8b5cf6,#6d28d9)','linear-gradient(135deg,#f43f5e,#be123c)']; @endphp
+                    <tr class="project-row" data-status="{{ $project->current_status }}" data-name="{{ strtolower($project->project_name) }}" data-code="{{ strtolower($project->project_code) }}"><td><div class="engineering-project-name"><div class="engineering-project-avatar" style="background:{{ $avatarGradients[$loop->index % count($avatarGradients)] }}">{{ $initials }}</div><div class="engineering-project-name-text"><div class="name">{{ $project->project_name }}</div><div class="code">{{ $project->project_code }}</div></div></div></td><td><span class="engineering-project-status {{ $statusClass }}">{{ $project->current_status }}</span></td><td><span class="engineering-project-barangay"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>{{ $project->barangay?->barangay_name ?? 'N/A' }}</span></td><td class="engineering-project-budget">₱{{ number_format($project->approved_budget ?? 0, 2) }}</td><td style="text-align:right"><a href="{{ route('engineering.projects.show', $project->project_id) }}" class="engineering-project-action">View</a></td></tr>
                 @endforeach
-            </div>
-
-            <div class="engineering-projects-table hidden lg:block overflow-x-auto rounded-3xl border border-slate-200 shadow-sm ring-1 ring-slate-200">
-                <table class="w-full min-w-[720px] border-collapse text-sm">
-                    <thead class="admin-card-header bg-slate-100">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Project Name</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Status</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Barangay</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Budget</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200">
-                        @foreach ($projects as $project)
-                            <tr class="department-project-table-row hover:bg-slate-50">
-                                <td class="py-3 px-4 text-slate-900 font-medium">{{ $project->project_name }}</td>
-                                <td class="py-3 px-4 text-slate-900">{{ $project->current_status }}</td>
-                                <td class="py-3 px-4 text-slate-900">{{ $project->barangay?->barangay_name ?? 'Citywide' }}</td>
-                                <td class="py-3 px-4 text-slate-900">₱{{ number_format($project->approved_budget ?? 0, 2) }}</td>
-                                <td class="py-3 px-4">
-                                    <a href="{{ route('engineering.projects.show', $project->project_id) }}" class="text-blue-600 font-semibold hover:text-blue-800">View</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+            </tbody></table></div></div>
+            <div class="engineering-project-mobile">@foreach ($projects as $project) @php $statusClass = match($project->current_status) { 'Proposed', 'Planning', 'For bidding', 'Procurement', 'Bidding ongoing', 'Bidding - Success', 'Bidding - Failed' => 'status-planning', 'Implementation', 'On Going' => 'status-ongoing', 'On Hold' => 'status-hold', 'Completed' => 'status-completed', 'Cancelled' => 'status-cancelled', default => 'status-planning' }; @endphp<div class="engineering-project-mobile-card project-row" data-status="{{ $project->current_status }}" data-name="{{ strtolower($project->project_name) }}" data-code="{{ strtolower($project->project_code) }}"><div class="engineering-project-mobile-header"><div><div class="engineering-project-mobile-title">{{ $project->project_name }}</div><div class="engineering-project-mobile-code">{{ $project->project_code }}</div></div><span class="engineering-project-status {{ $statusClass }}">{{ $project->current_status }}</span></div><div class="engineering-project-mobile-meta"><div><span class="engineering-project-mobile-label">Barangay</span><span class="engineering-project-mobile-value">{{ $project->barangay?->barangay_name ?? 'N/A' }}</span></div><div><span class="engineering-project-mobile-label">Budget</span><span class="engineering-project-mobile-value">₱{{ number_format($project->approved_budget ?? 0, 2) }}</span></div></div><div class="engineering-project-mobile-action"><a href="{{ route('engineering.projects.show', $project->project_id) }}" class="engineering-project-action">View</a></div></div>@endforeach</div>
         @endif
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded',function(){const search=document.getElementById('projectSearch'),statusFilter=document.getElementById('projectStatusFilter'),rows=document.querySelectorAll('.project-row');function apply(){const query=(search?.value||'').toLowerCase(),filter=statusFilter?.value||'all';rows.forEach(row=>{row.style.display=((row.dataset.name||'').includes(query)||(row.dataset.code||'').includes(query))&&(filter==='all'||row.dataset.status===filter)?'':'none';});}search?.addEventListener('input',apply);statusFilter?.addEventListener('change',apply);});
+</script>
 @endsection

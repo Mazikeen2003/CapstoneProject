@@ -446,7 +446,6 @@
                                 ${lifecycleHtml}
                                 <div class="public-project-details-card rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                                     <div class="mb-3 flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-[18px] text-blue-600">info</span>
                                         <h4 class="text-sm font-bold text-slate-900">Project Details</h4>
                                     </div>
                                     <div class="public-project-details-grid">
@@ -488,7 +487,6 @@
                             </div>
                             <div class="public-project-details-card mt-4 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
                                 <div class="mb-3 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px] text-blue-600">info</span>
                                     <h4 class="text-xs font-bold text-slate-900">Project Details</h4>
                                 </div>
                                 <div class="public-project-details-grid">

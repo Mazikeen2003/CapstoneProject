@@ -1,7 +1,7 @@
 @extends('layouts.department')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="engineering-page-enter max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
     <div class="flex items-end justify-between border-b border-slate-200 pb-4">
         <div>
             <h1 class="text-3xl font-bold text-slate-900">Engineering Reports</h1>
