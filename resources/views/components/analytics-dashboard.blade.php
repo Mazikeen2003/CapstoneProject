@@ -95,6 +95,10 @@ html.dark-mode .dept-analytics-hero-gold {
 html.dark-mode .dept-analytics-hero-red {
     background: linear-gradient(135deg, #24070b 0%, #4c0d14 30%, #991b1b 70%, #dc2626 100%);
 }
+.dept-analytics-hero-teal,
+html.dark-mode .dept-analytics-hero-teal {
+    background: linear-gradient(135deg, #0a4353 0%, #0c5c70 30%, #11788a 70%, #22a6b8 100%);
+}
 @media (min-width: 640px) { .dept-analytics-hero { padding: 44px 52px; } }
 .dept-analytics-hero::before {
     content: "";
@@ -121,6 +125,9 @@ html.dark-mode .dept-analytics-hero-red {
 }
 .dept-analytics-hero-red::after {
     background: radial-gradient(circle, rgba(239,68,68,0.2) 0%, transparent 60%);
+}
+.dept-analytics-hero-teal::after {
+    background: radial-gradient(circle, rgba(158,230,247,0.22) 0%, transparent 60%);
 }
 @keyframes heroGlow {
     0%, 100% { transform: scale(1); opacity: 0.7; }
@@ -753,7 +760,7 @@ html.dark-mode .dept-analytics-empty {
 <div class="dept-analytics-container">
 
     <!-- HERO -->
-    <div class="dept-analytics-hero {{ ($heroTone ?? 'purple') === 'red' ? 'dept-analytics-hero-red' : (($heroTone ?? 'purple') === 'gold' ? 'dept-analytics-hero-gold' : '') }} dept-animate">
+    <div class="dept-analytics-hero {{ ($heroTone ?? 'purple') === 'red' ? 'dept-analytics-hero-red' : (($heroTone ?? 'purple') === 'gold' ? 'dept-analytics-hero-gold' : (($heroTone ?? 'purple') === 'teal' ? 'dept-analytics-hero-teal' : '')) }} dept-animate">
         <div class="dept-analytics-hero-inner">
             <div class="dept-analytics-hero-badge">
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
