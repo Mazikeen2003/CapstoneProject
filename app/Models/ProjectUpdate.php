@@ -16,12 +16,13 @@ class ProjectUpdate extends Model
         'status',
         'progress_percentage',
         'remarks',
+        'image_path',
         'user_id',
     ];
 
     protected $casts = [
         'update_date'         => 'date',
-        'progress_percentage' => 'integer',
+        'progress_percentage' => 'decimal:2',
     ];
 
     public function project()

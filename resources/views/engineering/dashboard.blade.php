@@ -247,11 +247,17 @@
             <div class="flex items-center justify-between gap-3"><p class="text-sm font-semibold text-slate-600">Completed Projects</p><span class="engineering-summary-icon emerald material-symbols-outlined">task_alt</span></div>
             <p class="mt-4 text-4xl font-bold text-slate-950">{{ $stats['completed'] }}</p>
         </div>
-        <div class="admin-dashboard-stat admin-dashboard-stat-rose rounded-2xl p-6 shadow-sm">
-            <div class="flex items-center justify-between gap-3"><p class="text-sm font-semibold text-slate-600">Budget Allocated</p><span class="engineering-summary-icon rose material-symbols-outlined">account_balance_wallet</span></div>
-            <p class="dashboard-budget-value mt-4 font-bold text-slate-950" title="₱{{ number_format($budgetAllocated, 0) }}">{{ $budgetDisplay }}</p>
+
+        <div class="ed-stat ed-animate" style="--stat-accent: #f59e0b; --stat-icon-bg: #fef3c7; --stat-icon-color: #d97706;">
+            <div class="ed-stat-header">
+                <div class="ed-stat-icon">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.412 15.655L9.75 21.75l3.745-4.012M9.257 13.5H3.75l2.659-2.849m2.048-2.194L6.75 3.75l8.586 8.986M12.75 3.75h5.695l-2.659 2.849m-2.048 2.194L17.25 12.75l-4.518 4.518"/></svg>
+                </div>
+            </div>
+            <div class="ed-stat-label">Ongoing Projects</div>
+            <div class="ed-stat-value">{{ $stats['ongoing'] ?? 0 }}</div>
+            <div class="ed-stat-footer">Currently active</div>
         </div>
-    </div>
 
     <div class="engineering-main-grid">
     <div class="engineering-panel-card">
@@ -295,10 +301,13 @@
                                 </div>
                                 <a href="{{ route('engineering.projects.show', $project->project_id) }}" class="inline-flex shrink-0 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100">View</a>
                             </div>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
+                        @endforeach
+                    </div>
+                    @if ($recentProjects->hasPages())
+                        <div class="ed-pagination">{{ $recentProjects->links('vendor.pagination.custom') }}</div>
+                    @endif
+                @endif
+            </div>
         </div>
     </div>
     </div>
@@ -341,22 +350,31 @@
                 map.fitBounds(cabuyaoBounds, { padding: [20, 20] });
                 map.setMinZoom(map.getZoom());
 
-                fetch('{{ route("api.projects.geojson") }}')
+                fetch('{{ route('api.projects.geojson') }}')
                     .then(r => r.json())
                     .then(function(data) {
                         L.geoJSON(data, {
                             pointToLayer: function(feature, latlng) {
                                 const statusColor = {
-                                    'Planning': '#fbbf24',
-                                    'On Going': '#3b82f6',
-                                    'On Hold': '#ef4444',
-                                    'Completed': '#10b981',
-                                    'Cancelled': '#6b7280'
+                                    proposed: '#fbbf24',
+                                    planning: '#fbbf24',
+                                    forbidding: '#f59e0b',
+                                    biddingongoing: '#3b82f6',
+                                    ongoing: '#3b82f6',
+                                    awardofcontract: '#8b5cf6',
+                                    implementation: '#0ea5e9',
+                                    completed: '#10b981',
+                                    onhold: '#ef4444',
+                                    cancelled: '#64748b'
                                 };
+                                const normalizedStatus = String(feature.properties.status || '')
+                                    .trim()
+                                    .toLowerCase()
+                                    .replace(/[\s_-]+/g, '');
 
                                 return L.circleMarker(latlng, {
                                     radius: 8,
-                                    fillColor: statusColor[feature.properties.status] || '#9CA3AF',
+                                    fillColor: statusColor[normalizedStatus] || '#64748b',
                                     color: '#000',
                                     weight: 2,
                                     opacity: 0.8,

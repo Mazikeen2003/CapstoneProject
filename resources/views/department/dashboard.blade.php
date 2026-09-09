@@ -165,7 +165,7 @@
     .dept-map-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
     /* Status Badges */
-    .dept-status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; text-transform: capitalize; }
+    .dept-status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; text-transform: capitalize; white-space: nowrap; }
     .dept-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
     .dept-status-planning { background: #fef3c7; color: #b45309; }
     .dept-status-ongoing { background: #dbeafe; color: #1d4ed8; }
@@ -180,7 +180,7 @@
         padding: 16px; border-radius: 8px; border: 1px solid var(--dept-line);
         background: #fafaf9; transition: all 0.2s ease;
     }
-    .dept-project:hover { background: var(--dept-surface); border-color: rgba(0,0,0,0.12); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); transform: translateY(-1px); }
+    .dept-project:hover { background: #ffffff; border-color: rgba(0,0,0,0.12); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); transform: translateY(-1px); }
     .dept-project-avatar {
         width: 40px; height: 40px; border-radius: 10px;
         display: flex; align-items: center; justify-content: center;
@@ -388,21 +388,14 @@
                         @foreach ($recentProjects as $project)
                             @php
                                 $statusClass = match($project->current_status) {
-                                    'Planning' => 'dept-status-planning',
-                                    'On Going' => 'dept-status-ongoing',
+                                    'Proposed', 'Planning', 'For bidding', 'Procurement', 'Bidding ongoing', 'Bidding - Success', 'Bidding - Failed' => 'dept-status-planning',
+                                    'Implementation', 'On Going' => 'dept-status-ongoing',
                                     'On Hold' => 'dept-status-on-hold',
                                     'Completed' => 'dept-status-completed',
                                     'Cancelled' => 'dept-status-cancelled',
                                     default => 'dept-status-planning',
                                 };
-                                $progress = match($project->current_status) {
-                                    'Planning' => 10,
-                                    'On Going' => 45,
-                                    'On Hold' => 30,
-                                    'Completed' => 100,
-                                    'Cancelled' => 0,
-                                    default => 0,
-                                };
+                                $progress = $project->latestUpdate?->progress_percentage ?? 0;
                                 $initials = collect(explode(' ', $project->project_name))->map(fn($w) => strtoupper($w[0] ?? ''))->take(2)->implode('');
                                 $avatarGradient = match($loop->index % 4) {
                                     0 => 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
@@ -419,7 +412,7 @@
                                         <span class="dept-status {{ $statusClass }}">{{ $project->current_status }}</span>
                                         <span class="dept-project-meta-item">
                                             <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-                                            {{ $project->barangay?->name ?? 'N/A' }}
+                                            {{ $project->barangay?->barangay_name ?? 'N/A' }}
                                         </span>
                                         <span class="dept-project-meta-item">
                                             <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>

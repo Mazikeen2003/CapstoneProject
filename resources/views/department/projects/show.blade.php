@@ -4,6 +4,7 @@
 
 @php
     $currentRole = auth()->user()?->role_slug ?? 'public';
+    $projectRoutePrefix = $projectRoutePrefix ?? 'department.projects';
 @endphp
 
 <style>
@@ -62,6 +63,9 @@
         box-shadow: var(--ds-shadow-xl);
         overflow: hidden;
     }
+    .engineering-project-show .dept-show-hero {
+        background: linear-gradient(135deg, #0a4353 0%, #0c5c70 30%, #11788a 70%, #22a6b8 100%);
+    }
     @media (min-width: 640px) { .dept-show-hero { padding: 40px; } }
     .dept-show-hero::before {
         content: "";
@@ -70,6 +74,10 @@
         background: radial-gradient(circle at 20% 50%, rgba(245,158,11,0.12) 0%, transparent 50%),
                     radial-gradient(circle at 80% 20%, rgba(139,92,246,0.1) 0%, transparent 40%);
         pointer-events: none;
+    }
+    .engineering-project-show .dept-show-hero::before {
+        background: radial-gradient(circle at 20% 50%, rgba(158,230,247,0.14) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(216,245,255,0.12) 0%, transparent 40%);
     }
     .dept-show-hero-content { position: relative; z-index: 1; }
     .dept-show-hero-meta {
@@ -234,6 +242,65 @@
         margin-top: 2px;
     }
     .dept-show-card-body { padding: 24px; }
+
+    .engineering-progress-form {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+        gap: 8px;
+        align-items: end;
+        margin-left: auto;
+        max-width: 620px;
+    }
+    .engineering-progress-field { min-width: 0; }
+    .engineering-progress-field.full-width { grid-column: 1 / -1; }
+    .engineering-progress-field label {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--ds-muted);
+        font-size: 0.6875rem;
+        font-weight: 700;
+    }
+    .engineering-progress-field input,
+    .engineering-progress-field select,
+    .engineering-progress-field textarea {
+        width: 100%;
+        border: 1px solid var(--ds-line-strong);
+        border-radius: 6px;
+        background: var(--ds-raised);
+        color: var(--ds-ink);
+        font: inherit;
+        font-size: 0.75rem;
+        padding: 8px 10px;
+    }
+    .engineering-progress-field textarea { resize: vertical; min-height: 46px; }
+    .engineering-progress-field input:focus,
+    .engineering-progress-field select:focus,
+    .engineering-progress-field textarea:focus { border-color: #f59e0b; outline: none; box-shadow: 0 0 0 2px rgba(245,158,11,.15); }
+    .engineering-progress-submit {
+        min-height: 34px;
+        padding: 8px 18px;
+        border: 0;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: #fff;
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+    .engineering-progress-form.is-disabled { opacity: 0.62; }
+    .engineering-progress-form input:disabled,
+    .engineering-progress-form textarea:disabled,
+    .engineering-progress-form button:disabled { cursor: not-allowed; }
+    .engineering-progress-disabled-note { grid-column: 1 / -1; color: var(--ds-muted); font-size: .6875rem; }
+    @media (max-width: 900px) {
+        .engineering-progress-form { grid-template-columns: 1fr 1fr; margin-left: 0; max-width: none; width: 100%; }
+        .engineering-progress-submit { width: 100%; }
+    }
+    @media (max-width: 639px) {
+        .engineering-progress-form { grid-template-columns: 1fr; }
+        .engineering-progress-field.full-width { grid-column: auto; }
+    }
 
     /* Detail grid */
     .dept-detail-grid {
@@ -403,6 +470,80 @@
         color: var(--ds-ink-secondary);
         line-height: 1.5;
     }
+    .dept-timeline-image {
+        display: block;
+        width: min(100%, 420px);
+        max-height: 240px;
+        margin-top: 12px;
+        border: 1px solid var(--ds-line);
+        border-radius: var(--ds-radius-xs);
+        object-fit: cover;
+        cursor: zoom-in;
+    }
+    .dept-timeline-evidence {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        margin-top: 12px;
+    }
+    .dept-timeline-evidence .dept-timeline-image { margin-top: 0; flex: 0 0 calc(50% - 8px); width: calc(50% - 8px); max-width: none; }
+    .dept-timeline-evidence-description {
+        flex: 0 0 calc(50% - 8px);
+        min-width: 0;
+        color: var(--ds-ink-secondary);
+        font-size: .875rem;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        white-space: pre-wrap;
+    }
+    @media (max-width: 639px) {
+        .dept-timeline-evidence { flex-direction: column; }
+        .dept-timeline-evidence .dept-timeline-image { flex-basis: auto; width: min(100%, 420px); }
+        .dept-timeline-evidence-description { flex-basis: auto; width: 100%; }
+    }
+    .dept-image-lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 100000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(2,6,23,.86);
+        backdrop-filter: blur(6px);
+    }
+    .dept-image-lightbox.is-open { display: flex; }
+    .dept-image-lightbox-image {
+        max-width: min(92vw, 1200px);
+        max-height: 84vh;
+        border-radius: 10px;
+        object-fit: contain;
+        transform: scale(1);
+        transition: transform .15s ease;
+        user-select: none;
+    }
+    .dept-image-lightbox-toolbar {
+        position: fixed;
+        top: 18px;
+        right: 18px;
+        display: flex;
+        gap: 8px;
+    }
+    .dept-image-lightbox-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border: 1px solid rgba(255,255,255,.2);
+        border-radius: 8px;
+        background: rgba(15,23,42,.8);
+        color: #fff;
+        cursor: pointer;
+        font-size: 1.1rem;
+    }
+    .dept-image-lightbox-button:hover { background: rgba(51,65,85,.95); }
     .dept-empty-state {
         text-align: center;
         padding: 40px 24px;
@@ -753,7 +894,7 @@
     });
 </script>
 
-<div class="dept-show-container">
+<div class="dept-show-container {{ $projectRoutePrefix === 'engineering.projects' ? 'engineering-project-show' : '' }}">
 
     <!-- HERO HEADER -->
     <div class="dept-show-hero dept-animate">
@@ -908,6 +1049,32 @@
                         <h2>Progress Updates</h2>
                         <p>Timeline of project milestones and progress reports.</p>
                     </div>
+                    @if ($projectRoutePrefix === 'engineering.projects')
+                        @php $progressUpdatesEnabled = $project->hasReachedImplementationStage(); @endphp
+                        <form method="POST" action="{{ route('engineering.projects.progress', $project->project_id) }}" enctype="multipart/form-data" class="engineering-progress-form {{ $progressUpdatesEnabled ? '' : 'is-disabled' }}">
+                            @csrf
+                            <div class="engineering-progress-field">
+                                <label for="engineering_update_date">Update date</label>
+                                <input id="engineering_update_date" type="date" name="update_date" value="{{ old('update_date', now()->format('Y-m-d')) }}" required @disabled(! $progressUpdatesEnabled)>
+                            </div>
+                            <div class="engineering-progress-field">
+                                <label for="engineering_progress_percentage">Progress %</label>
+                                <input id="engineering_progress_percentage" type="number" name="progress_percentage" min="0" max="100" step="0.01" value="{{ old('progress_percentage', $project->latestUpdate?->progress_percentage ?? 0) }}" required @disabled(! $progressUpdatesEnabled)>
+                            </div>
+                            <button type="submit" class="engineering-progress-submit" @disabled(! $progressUpdatesEnabled)>Update</button>
+                            <div class="engineering-progress-field full-width">
+                                <label for="engineering_remarks">Remarks</label>
+                                <textarea id="engineering_remarks" name="remarks" rows="2" maxlength="2000" placeholder="Add a progress note (optional)" @disabled(! $progressUpdatesEnabled)>{{ old('remarks') }}</textarea>
+                            </div>
+                            <div class="engineering-progress-field full-width">
+                                <label for="engineering_image">Progress image</label>
+                                <input id="engineering_image" type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" @disabled(! $progressUpdatesEnabled)>
+                            </div>
+                            @if (! $progressUpdatesEnabled)
+                                <div class="engineering-progress-disabled-note">Progress updates become available at the Implementation stage.</div>
+                            @endif
+                        </form>
+                    @endif
                 </div>
                 <div class="dept-show-card-body">
                     @if ($project->updates->isEmpty())
@@ -919,9 +1086,15 @@
                             <p>Progress updates will appear here once they are logged.</p>
                         </div>
                     @else
+                        @php
+                            $progressUpdates = $project->updates->sortBy([
+                                ['update_date', 'desc'],
+                                ['update_id', 'desc'],
+                            ])->values();
+                        @endphp
                         <div class="dept-timeline">
-                            @foreach ($project->updates as $update)
-                                <div class="dept-timeline-item {{ $loop->index < $project->updates->count() - 1 ? 'completed' : '' }}">
+                            @foreach ($progressUpdates as $update)
+                                <div class="dept-timeline-item {{ $loop->index > 0 ? 'completed' : '' }}">
                                     <div class="dept-timeline-dot"></div>
                                     <div class="dept-timeline-content">
                                         <div class="dept-timeline-date">
@@ -929,7 +1102,14 @@
                                             {{ $update->update_date?->format('M d, Y') ?? '—' }}
                                         </div>
                                         <div class="dept-timeline-progress">{{ $update->progress_percentage }}% Complete</div>
-                                        <div class="dept-timeline-remarks">{{ $update->remarks ?? '' }}</div>
+                                        @if ($update->image_path)
+                                            <div class="dept-timeline-evidence">
+                                                <img src="{{ asset('storage/' . $update->image_path) }}" alt="Progress update evidence" class="dept-timeline-image" data-full-image="{{ asset('storage/' . $update->image_path) }}">
+                                                <div class="dept-timeline-evidence-description">{{ $update->remarks ?? '' }}</div>
+                                            </div>
+                                        @else
+                                            <div class="dept-timeline-remarks">{{ $update->remarks ?? '' }}</div>
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach
@@ -1030,9 +1210,9 @@
                                     </div>
                                     @if ($isAvailable && $formsEnabled)
                                         <div class="dept-form-actions">
-                                            <a href="{{ route('department.projects.forms.edit', [$project->project_id, $type]) }}" class="dept-form-btn dept-form-btn-primary">{{ $existingForm ? 'View / Edit' : 'Fill Out' }}</a>
+                                            <a href="{{ route($projectRoutePrefix . '.forms.edit', [$project->project_id, $type]) }}" class="dept-form-btn dept-form-btn-primary">{{ $existingForm ? 'View / Edit' : 'Fill Out' }}</a>
                                             @if ($existingForm)
-                                                <a href="{{ route('department.projects.forms.pdf', [$project->project_id, $type]) }}" class="dept-form-btn dept-form-btn-secondary">PDF</a>
+                                                <a href="{{ route($projectRoutePrefix . '.forms.pdf', [$project->project_id, $type]) }}" class="dept-form-btn dept-form-btn-secondary">PDF</a>
                                             @endif
                                         </div>
                                     @endif
@@ -1047,16 +1227,72 @@
 
     <!-- PAGE ACTIONS -->
     <div class="dept-show-actions dept-animate">
-        <a href="{{ route('department.projects.index') }}" class="dept-show-btn dept-show-btn-secondary">
+        <a href="{{ route($projectRoutePrefix . '.index') }}" class="dept-show-btn dept-show-btn-secondary">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/></svg>
             Back to List
         </a>
-        <a href="{{ route('department.projects.edit', $project->project_id) }}" class="dept-show-btn dept-show-btn-primary">
-            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
-            Edit Project
-        </a>
+        @if ($projectRoutePrefix === 'department.projects')
+            <a href="{{ route($projectRoutePrefix . '.edit', $project->project_id) }}" class="dept-show-btn dept-show-btn-primary">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
+                Edit Project
+            </a>
+        @endif
     </div>
 
 </div>
+
+<div class="dept-image-lightbox" id="progressImageLightbox" aria-hidden="true">
+    <div class="dept-image-lightbox-toolbar">
+        <button type="button" class="dept-image-lightbox-button" id="progressImageZoomOut" aria-label="Zoom out" title="Zoom out">−</button>
+        <button type="button" class="dept-image-lightbox-button" id="progressImageZoomReset" aria-label="Reset zoom" title="Reset zoom">1:1</button>
+        <button type="button" class="dept-image-lightbox-button" id="progressImageZoomIn" aria-label="Zoom in" title="Zoom in">+</button>
+        <button type="button" class="dept-image-lightbox-button" id="progressImageLightboxClose" aria-label="Close image" title="Close">×</button>
+    </div>
+    <img class="dept-image-lightbox-image" id="progressImageLightboxImage" alt="Full-size progress evidence">
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const lightbox = document.getElementById('progressImageLightbox');
+        const lightboxImage = document.getElementById('progressImageLightboxImage');
+        const closeButton = document.getElementById('progressImageLightboxClose');
+        const zoomInButton = document.getElementById('progressImageZoomIn');
+        const zoomOutButton = document.getElementById('progressImageZoomOut');
+        const zoomResetButton = document.getElementById('progressImageZoomReset');
+        let zoom = 1;
+
+        function setZoom(value) {
+            zoom = Math.min(4, Math.max(0.5, value));
+            lightboxImage.style.transform = 'scale(' + zoom + ')';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('is-open');
+            lightbox.setAttribute('aria-hidden', 'true');
+            lightboxImage.removeAttribute('src');
+            setZoom(1);
+        }
+
+        document.querySelectorAll('.dept-timeline-image').forEach(function (image) {
+            image.addEventListener('click', function () {
+                lightboxImage.src = image.dataset.fullImage || image.src;
+                lightbox.classList.add('is-open');
+                lightbox.setAttribute('aria-hidden', 'false');
+                setZoom(1);
+            });
+        });
+
+        closeButton.addEventListener('click', closeLightbox);
+        zoomInButton.addEventListener('click', function () { setZoom(zoom + 0.25); });
+        zoomOutButton.addEventListener('click', function () { setZoom(zoom - 0.25); });
+        zoomResetButton.addEventListener('click', function () { setZoom(1); });
+        lightbox.addEventListener('click', function (event) { if (event.target === lightbox) closeLightbox(); });
+        lightboxImage.addEventListener('wheel', function (event) {
+            event.preventDefault();
+            setZoom(zoom + (event.deltaY < 0 ? 0.25 : -0.25));
+        }, { passive: false });
+        document.addEventListener('keydown', function (event) { if (event.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox(); });
+    });
+</script>
 
 @endsection

@@ -188,6 +188,38 @@
         border-color: var(--dp-ink);
     }
 
+    .dept-proj-status-filter-wrap { position: relative; }
+    .dept-proj-status-filter-wrap::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        width: 7px;
+        height: 7px;
+        border-right: 2px solid #6b7280;
+        border-bottom: 2px solid #6b7280;
+        transform: translateY(-65%) rotate(45deg);
+        pointer-events: none;
+    }
+    .dept-proj-status-filter {
+        min-width: 190px;
+        padding: 10px 36px 10px 14px;
+        border: 1px solid var(--dp-line);
+        border-radius: 100px;
+        background: #f4f4f5;
+        color: var(--dp-ink-secondary);
+        font-family: inherit;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        cursor: pointer;
+        outline: none;
+        appearance: none;
+    }
+    .dept-proj-status-filter:focus {
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+    }
+
     html.dark-mode .dept-proj-filter,
     .dark .dept-proj-filter {
         background: rgba(15, 23, 42, 0.72);
@@ -254,6 +286,9 @@
         color: #1e1b4b !important;
         border-color: #f8fafc !important;
     }
+
+    html.dark-mode .dept-proj-status-filter,
+    .dark .dept-proj-status-filter { background: #0f0e1a; color: #e5edf9; border-color: rgba(148,163,184,.18); }
 
     /* Table card */
     .dept-proj-card {
@@ -705,12 +740,23 @@
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
             <input type="text" id="projectSearch" placeholder="Search projects by name or code...">
         </div>
-        <div class="dept-proj-filters">
-            <button class="dept-proj-filter active" data-filter="all">All</button>
-            <button class="dept-proj-filter" data-filter="Planning">Planning</button>
-            <button class="dept-proj-filter" data-filter="On Going">On Going</button>
-            <button class="dept-proj-filter" data-filter="Completed">Completed</button>
-            <button class="dept-proj-filter" data-filter="On Hold">On Hold</button>
+        <div class="dept-proj-status-filter-wrap">
+            <select id="projectStatusFilter" class="dept-proj-status-filter" aria-label="Filter projects by status">
+                <option value="all">All statuses</option>
+                <option value="Proposed">Proposed</option>
+                <option value="Planning">Planning</option>
+                <option value="For bidding">For bidding</option>
+                <option value="Procurement">Procurement</option>
+                <option value="Bidding ongoing">Bidding ongoing</option>
+                <option value="Bidding - Success">Bidding - Success</option>
+                <option value="Bidding - Failed">Bidding - Failed</option>
+                <option value="Award of contract">Award of contract</option>
+                <option value="Implementation">Implementation</option>
+                <option value="On Going">On Going</option>
+                <option value="On Hold">On Hold</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
         </div>
     </div>
 
@@ -900,8 +946,19 @@
         const confirmBtn = document.getElementById('confirmDeleteBtn');
         const deleteForm = document.getElementById('deleteProjectForm');
         const searchInput = document.getElementById('projectSearch');
-        const filterBtns = document.querySelectorAll('.dept-proj-filter');
+        const statusFilter = document.getElementById('projectStatusFilter');
         const projectRows = document.querySelectorAll('.project-row');
+
+        function applyFilters() {
+            const query = (searchInput?.value || '').toLowerCase();
+            const filter = statusFilter?.value || 'all';
+
+            projectRows.forEach(row => {
+                const matchesSearch = (row.dataset.name || '').includes(query) || (row.dataset.code || '').includes(query);
+                const matchesStatus = filter === 'all' || row.dataset.status === filter;
+                row.style.display = matchesSearch && matchesStatus ? '' : 'none';
+            });
+        }
 
         // Delete modal logic
         document.querySelectorAll('.delete-trigger').forEach(function (button) {
@@ -942,32 +999,12 @@
 
         // Search functionality
         if (searchInput) {
-            searchInput.addEventListener('input', function () {
-                const query = this.value.toLowerCase();
-                projectRows.forEach(row => {
-                    const name = row.dataset.name || '';
-                    const code = row.dataset.code || '';
-                    row.style.display = (name.includes(query) || code.includes(query)) ? '' : 'none';
-                });
-            });
+            searchInput.addEventListener('input', applyFilters);
         }
 
-        // Filter functionality
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', function () {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                const filter = this.dataset.filter;
-
-                projectRows.forEach(row => {
-                    if (filter === 'all' || row.dataset.status === filter) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-        });
+        if (statusFilter) {
+            statusFilter.addEventListener('change', applyFilters);
+        }
     });
 </script>
 

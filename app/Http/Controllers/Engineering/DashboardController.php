@@ -11,7 +11,7 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $projects = Project::withoutRoleScope()->withBasicRelations()->get();
+        $projects = Project::withoutRoleScope()->withBasicRelations()->with('latestUpdate')->get();
 
         $stats = [
             'total_projects' => $projects->count(),
@@ -21,7 +21,11 @@ class DashboardController extends Controller
             'budget_used' => $projects->sum('actual_budget') ?? 0,
         ];
 
-        $recentProjects = $projects->sortByDesc('created_at')->take(5);
+        $recentProjects = Project::withoutRoleScope()
+            ->withBasicRelations()
+            ->with('latestUpdate')
+            ->latest('created_at')
+            ->paginate(10, ['*'], 'recent_page');
 
         return view('engineering.dashboard', compact('stats', 'recentProjects'));
     }

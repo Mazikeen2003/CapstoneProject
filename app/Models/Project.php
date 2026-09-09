@@ -112,7 +112,9 @@ class Project extends Model
 
     public function latestUpdate()
     {
-        return $this->hasOne(ProjectUpdate::class, 'project_id', 'project_id')->latest('update_date');
+        return $this->hasOne(ProjectUpdate::class, 'project_id', 'project_id')
+            ->latest('update_date')
+            ->latest('update_id');
     }
 
     public function budgetTransactions()

@@ -35,12 +35,15 @@ class ProjectController extends Controller
     public function show($id)
     {
         $project = Project::withoutRoleScope()
-            ->with(['barangay', 'updates', 'budgetTransactions', 'forms'])
+            ->with(['barangay', 'latestUpdate', 'updates', 'budgetTransactions', 'forms'])
             ->findOrFail($id);
 
         $this->authorize('view', $project);
 
-        return view('engineering.projects.show', compact('project'));
+        return view('department.projects.show', [
+            'project' => $project,
+            'projectRoutePrefix' => 'engineering.projects',
+        ]);
     }
 
     public function updateProgress(Request $request, $id)
@@ -48,12 +51,22 @@ class ProjectController extends Controller
         $project = Project::withoutRoleScope()->findOrFail($id);
         $this->authorize('updateForms', $project);
 
+        if (! $project->hasReachedImplementationStage()) {
+            return back()->with('error', 'Progress updates are available once the project reaches the Implementation stage.');
+        }
+
         $validated = $request->validate([
             'update_date' => ['required', 'date'],
-            'progress_percentage' => ['required', 'integer', 'between:0,100'],
+            'progress_percentage' => ['required', 'numeric', 'between:0,100'],
             'status' => ['nullable', 'string', 'in:Proposed,For bidding,Bidding ongoing,Award of contract,Implementation,Completed,Planning,On Going,On Hold,Cancelled,Bidding - Success,Bidding - Failed,Procurement'],
             'remarks' => ['nullable', 'string', 'max:2000'],
+            'image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
         ]);
+
+        if ($request->hasFile('image')) {
+            $validated['image_path'] = $request->file('image')->store('progress_updates', 'public');
+        }
+        unset($validated['image']);
 
         $update = ProjectUpdate::create([
             ...$validated,

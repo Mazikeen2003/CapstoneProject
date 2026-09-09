@@ -12,7 +12,7 @@ class DashboardController
         $user = Auth::user();
 
         // Use eager loading to avoid N+1 queries
-        $projects = Project::withBasicRelations()->get();
+        $projects = Project::withBasicRelations()->with('latestUpdate')->get();
 
         $stats = [
             'total_projects'   => $projects->count(),
