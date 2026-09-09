@@ -63,6 +63,9 @@
         box-shadow: var(--ds-shadow-xl);
         overflow: hidden;
     }
+    .engineering-project-show .dept-show-hero {
+        background: linear-gradient(135deg, #0a4353 0%, #0c5c70 30%, #11788a 70%, #22a6b8 100%);
+    }
     @media (min-width: 640px) { .dept-show-hero { padding: 40px; } }
     .dept-show-hero::before {
         content: "";
@@ -71,6 +74,10 @@
         background: radial-gradient(circle at 20% 50%, rgba(245,158,11,0.12) 0%, transparent 50%),
                     radial-gradient(circle at 80% 20%, rgba(139,92,246,0.1) 0%, transparent 40%);
         pointer-events: none;
+    }
+    .engineering-project-show .dept-show-hero::before {
+        background: radial-gradient(circle at 20% 50%, rgba(158,230,247,0.14) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(216,245,255,0.12) 0%, transparent 40%);
     }
     .dept-show-hero-content { position: relative; z-index: 1; }
     .dept-show-hero-meta {
@@ -887,7 +894,7 @@
     });
 </script>
 
-<div class="dept-show-container">
+<div class="dept-show-container {{ $projectRoutePrefix === 'engineering.projects' ? 'engineering-project-show' : '' }}">
 
     <!-- HERO HEADER -->
     <div class="dept-show-hero dept-animate">
