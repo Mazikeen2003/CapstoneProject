@@ -13,6 +13,7 @@ class MapController extends Controller
         return view('department.map.index', [
             'mapTitle' => 'Engineering Map',
             'projectsTitle' => 'Engineering Projects',
+            'mapTheme' => 'engineering',
         ]);
     }
 }
