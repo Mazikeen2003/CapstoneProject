@@ -7,245 +7,551 @@
         ? '₱' . number_format($budgetAllocated / 1000000000, 1) . 'B'
         : ($budgetAllocated >= 1000000 ? '₱' . number_format($budgetAllocated / 1000000, 1) . 'M' : '₱' . number_format($budgetAllocated, 0));
 @endphp
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
-<style>
-    .material-symbols-outlined {
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
 
-    .engineering-summary-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 42px;
-        height: 42px;
-        border-radius: 12px;
-        flex-shrink: 0;
-    }
-    .engineering-summary-icon.blue { background: #dbeafe; color: #2563eb; }
-    .engineering-summary-icon.amber { background: #fef3c7; color: #d97706; }
-    .engineering-summary-icon.emerald { background: #d1fae5; color: #059669; }
-    .engineering-summary-icon.rose { background: #ffe4e6; color: #e11d48; }
-    html.dark-mode .engineering-summary-icon.blue,
-    .dark .engineering-summary-icon.blue { background: rgba(59, 130, 246, 0.08); color: #60a5fa; }
-    html.dark-mode .engineering-summary-icon.amber,
-    .dark .engineering-summary-icon.amber { background: rgba(245, 158, 11, 0.08); color: #fbbf24; }
-    html.dark-mode .engineering-summary-icon.emerald,
-    .dark .engineering-summary-icon.emerald { background: rgba(16, 185, 129, 0.08); color: #34d399; }
-    html.dark-mode .engineering-summary-icon.rose,
-    .dark .engineering-summary-icon.rose { background: rgba(244, 63, 94, 0.08); color: #fb7185; }
-</style>
-<style>
-    .engineering-dashboard .admin-dashboard-stat,
-    .engineering-dashboard .admin-dashboard-activity {
-        background: #ffffff !important;
-    }
-
-    .engineering-dashboard .engineering-recent-card {
-        background: #f4f4f5 !important;
-    }
-
-    html.dark-mode .engineering-dashboard .admin-dashboard-stat,
-    html.dark-mode .engineering-dashboard .admin-dashboard-activity,
-    .dark .engineering-dashboard .admin-dashboard-stat,
-    .dark .engineering-dashboard .admin-dashboard-activity {
-        background: #141321 !important;
-        border: 1px solid #020617 !important;
-        box-shadow: inset 0 0 0 1px #1e293b, 0 1px 3px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-    }
-
-    html.dark-mode .engineering-dashboard .engineering-recent-card,
-    .dark .engineering-dashboard .engineering-recent-card {
-        background: #0f0e1a !important;
-    }
-
-    .engineering-dashboard {
-        max-width: 1400px;
-        padding: 24px;
-    }
-
-    @media (min-width: 640px) {
-        .engineering-dashboard { padding: 32px; }
-    }
-
-    @media (min-width: 1024px) {
-        .engineering-dashboard { padding: 40px; }
-    }
-
-    .engineering-hero {
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 24px;
-        border-radius: 20px;
-        padding: 36px 40px;
-        background: linear-gradient(135deg, #082f49 0%, #075985 48%, #0e7490 100%);
-        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    }
-
-    @media (min-width: 640px) {
-        .engineering-hero { padding: 44px 48px; }
-    }
-
-    .engineering-hero::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-        background-size: 24px 24px;
-        opacity: 0.5;
-        pointer-events: none;
-    }
-
-    .engineering-hero-content { position: relative; z-index: 1; }
-
-    .engineering-hero-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 24px;
-    }
-
-    .engineering-hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 999px;
-        padding: 6px 14px;
-        background: rgba(255,255,255,0.1);
-        color: rgba(255,255,255,0.9);
-        font-size: 0.75rem;
-        font-weight: 600;
-    }
-
-    .engineering-quick-actions {
-        display: flex;
-        gap: 12px;
-        margin-bottom: 24px;
-        overflow-x: auto;
-        padding-bottom: 4px;
-        scrollbar-width: none;
-    }
-
-    .engineering-quick-actions::-webkit-scrollbar { display: none; }
-
-    .engineering-quick-action {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        flex-shrink: 0;
-        border: 1px solid rgba(15, 23, 42, 0.08);
-        border-radius: 999px;
-        padding: 10px 18px;
-        background: #fff;
-        color: #0f172a;
-        font-size: 0.8125rem;
-        font-weight: 600;
-        box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .engineering-quick-action:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
-    }
-
-    .engineering-main-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
-
-    @media (min-width: 1024px) {
-        .engineering-main-grid { grid-template-columns: 1.2fr 0.8fr; }
-    }
-
-    .engineering-panel-card {
-        overflow: hidden;
-        border: 1px solid rgba(15, 23, 42, 0.08);
-        border-radius: 12px;
-        background: #fff;
-        box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
-    }
-
-    .engineering-panel-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-        padding: 20px 24px;
-    }
-
-    .engineering-panel-body { padding: 20px 24px; }
-
-    .engineering-map-frame {
-        overflow: hidden;
-        border: 1px solid rgba(15, 23, 42, 0.08);
-        border-radius: 8px;
-    }
-
-    .engineering-map-frame #engineering-map {
-        height: 420px;
-        width: 100%;
-    }
-
-    html.dark-mode .engineering-quick-action,
-    .dark .engineering-quick-action,
-    html.dark-mode .engineering-panel-card,
-    .dark .engineering-panel-card {
-        border-color: #1e293b;
-        background: #141321;
-        color: #e2e8f0;
-    }
-</style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-<div class="engineering-dashboard max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-    <div class="engineering-hero">
-        <div class="engineering-hero-content">
-            <p class="text-xs font-bold uppercase tracking-[0.24em] text-amber-300">Engineering workspace</p>
-            <h1 class="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">Engineering Dashboard</h1>
-            <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Review project delivery, track field progress, and monitor citywide implementation health.</p>
-            <div class="engineering-hero-meta">
-                <span class="engineering-hero-badge"><span aria-hidden="true">●</span> Live project monitoring</span>
-                <span class="engineering-hero-badge"><span aria-hidden="true">✓</span> Progress updates enabled</span>
+<style>
+/* ===== ENGINEERING DASHBOARD - DEPT STYLE ===== */
+.ed-wrap {
+    --ed-bg: #f8f7f5;
+    --ed-surface: #ffffff;
+    --ed-raised: #fafaf9;
+    --ed-hero-start: #0a4353;
+    --ed-hero-mid: #11788a;
+    --ed-hero-end: #22a6b8;
+    --ed-action: #0f6a7c;
+    --ed-action-hover: #084c5b;
+    --ed-ink: #1e1b4b;
+    --ed-ink-secondary: #374151;
+    --ed-muted: #9ca3af;
+    --ed-line: rgba(0,0,0,0.06);
+    --ed-line-strong: rgba(0,0,0,0.12);
+    --ed-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    --ed-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --ed-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --ed-radius-sm: 12px;
+    --ed-radius: 16px;
+    --ed-radius-xl: 20px;
+    --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+    background: var(--ed-bg);
+    color: var(--ed-ink);
+    transition: background 0.3s, color 0.3s;
+}
+@media (min-width: 640px) { .ed-wrap { padding: 32px; } }
+@media (min-width: 1024px) { .ed-wrap { padding: 40px; } }
+
+html:not(.dark-mode) body:has(.ed-wrap) { background: #f8f7f5 !important; }
+html.dark-mode body:has(.ed-wrap) { background: #0f172a !important; }
+
+.dark .ed-wrap,
+html.dark-mode .ed-wrap {
+    --ed-bg: #0f172a;
+    --ed-surface: #1e293b;
+    --ed-raised: #243247;
+    --ed-ink: #f8fafc;
+    --ed-ink-secondary: #cbd5e1;
+    --ed-muted: #64748b;
+    --ed-action: #9ee6f7;
+    --ed-action-hover: #d8f5ff;
+    --ed-line: rgba(148,163,184,0.2);
+    --ed-line-strong: rgba(148,163,184,0.35);
+    --ed-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.3);
+    --ed-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    --ed-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+}
+
+/* ===== HERO ===== */
+.ed-hero {
+    position: relative;
+    border-radius: var(--ed-radius-xl);
+    padding: 36px 40px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--ed-hero-start) 0%, #0c5c70 26%, var(--ed-hero-mid) 62%, var(--ed-hero-end) 100%);
+    box-shadow: var(--ed-shadow-lg);
+}
+@media (min-width: 640px) { .ed-hero { padding: 44px 48px; } }
+.ed-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+    opacity: 0.5;
+    pointer-events: none;
+}
+.ed-hero::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(125,211,252,0.22) 0%, transparent 60%);
+    pointer-events: none;
+}
+.ed-hero-content { position: relative; z-index: 1; }
+.ed-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #d8f5ff;
+    margin-bottom: 12px;
+}
+.ed-hero-eyebrow::before {
+    content: "";
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #9ee6f7;
+    box-shadow: 0 0 0 4px rgba(158,230,247,0.22);
+}
+.ed-hero-title {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-weight: 800;
+    color: white;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.ed-hero-subtitle {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.65);
+    max-width: 620px;
+    line-height: 1.6;
+}
+.ed-hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+.ed-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+}
+.ed-hero-badge svg { width: 14px; height: 14px; }
+
+/* ===== STATS ===== */
+.ed-stats {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+@media (min-width: 640px) { .ed-stats { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .ed-stats { grid-template-columns: repeat(4, 1fr); } }
+
+.ed-stat {
+    position: relative;
+    background: var(--ed-surface);
+    border-radius: var(--ed-radius-sm);
+    padding: 24px;
+    border: 1px solid var(--ed-line);
+    box-shadow: var(--ed-shadow-sm);
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+.ed-stat::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--stat-accent, #d97706);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.ed-stat:hover { transform: translateY(-2px); box-shadow: var(--ed-shadow-md); }
+.ed-stat:hover::before { opacity: 1; }
+.ed-stat-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+.ed-stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--stat-icon-bg, #fef3c7);
+    color: var(--stat-icon-color, #d97706);
+}
+.ed-stat-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--ed-muted);
+    margin-bottom: 8px;
+}
+.ed-stat-value {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: var(--ed-ink);
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+.ed-stat-footer {
+    margin-top: 12px;
+    font-size: 0.75rem;
+    color: var(--ed-muted);
+}
+
+/* ===== MAIN GRID ===== */
+.ed-main {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+@media (min-width: 1024px) { .ed-main { grid-template-columns: 1.2fr 0.8fr; } }
+
+/* ===== CARD ===== */
+.ed-card {
+    background: var(--ed-surface);
+    border-radius: var(--ed-radius-sm);
+    border: 1px solid var(--ed-line);
+    box-shadow: var(--ed-shadow-sm);
+    overflow: hidden;
+    transition: background 0.3s, border-color 0.3s;
+}
+.ed-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--ed-line);
+}
+.ed-card-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.ed-card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dff9ff;
+    color: #0f6a7c;
+}
+.ed-card-icon.green { background: #dff9ff; color: #0f6a7c; }
+.ed-card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ed-ink);
+    line-height: 1.3;
+}
+.ed-card-subtitle {
+    font-size: 0.75rem;
+    color: var(--ed-muted);
+    margin-top: 2px;
+}
+.ed-card-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--ed-action);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: gap 0.2s;
+}
+.ed-card-action:hover { gap: 8px; color: var(--ed-action-hover); }
+.ed-card-body { padding: 20px 24px; }
+
+/* ===== MAP ===== */
+.ed-map-wrap {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--ed-line);
+}
+#engineering-map {
+    height: 420px;
+    width: 100%;
+    background: #e5e7eb;
+}
+.ed-map-legend {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--ed-line);
+    box-shadow: var(--ed-shadow-md);
+    z-index: 400;
+}
+.ed-map-legend-title {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #4b5563;
+    margin-bottom: 8px;
+}
+.ed-map-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: #4b5563;
+    margin-bottom: 6px;
+}
+.ed-map-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ===== STATUS BADGES ===== */
+.ed-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+.ed-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+.ed-status-planning { background: #fef3c7; color: #b45309; }
+.ed-status-ongoing { background: #dbeafe; color: #1d4ed8; }
+.ed-status-hold { background: #fee2e2; color: #b91c1c; }
+.ed-status-completed { background: #d1fae5; color: #047857; }
+.ed-status-cancelled { background: #f3f4f6; color: #4b5563; }
+
+/* ===== PROJECT LIST ===== */
+.ed-projects { display: flex; flex-direction: column; gap: 12px; }
+.ed-project {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--ed-line);
+    background: var(--ed-raised);
+    transition: all 0.2s ease;
+}
+.ed-project:hover {
+    background: var(--ed-surface);
+    border-color: var(--ed-line-strong);
+    box-shadow: var(--ed-shadow-md);
+    transform: translateY(-1px);
+}
+.ed-project-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+}
+.ed-project-info { flex: 1; min-width: 0; }
+.ed-project-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--ed-ink);
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ed-project-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.ed-project-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--ed-muted);
+}
+.ed-project-meta-item svg { width: 13px; height: 13px; }
+.ed-project-progress { margin-top: 10px; }
+.ed-progress-bg {
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 100px;
+    overflow: hidden;
+}
+.ed-progress-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ed-project-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--ed-line);
+    background: var(--ed-surface);
+    color: #4b5563;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+.ed-project-action:hover {
+    background: #d97706;
+    color: white;
+    border-color: #d97706;
+}
+
+/* ===== EMPTY STATE ===== */
+.ed-empty {
+    text-align: center;
+    padding: 48px 24px;
+}
+.ed-empty-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    border-radius: 16px;
+    background: #fef3c7;
+    color: #d97706;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ed-empty h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ed-ink);
+    margin-bottom: 4px;
+}
+.ed-empty p {
+    font-size: 0.875rem;
+    color: var(--ed-muted);
+}
+
+/* ===== PAGINATION ===== */
+.ed-pagination {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--ed-line);
+}
+
+/* ===== DARK MODE OVERRIDES ===== */
+html.dark-mode .ed-status-planning,
+.dark .ed-status-planning { background: rgba(251,191,36,0.15); color: #fbbf24; }
+html.dark-mode .ed-status-ongoing,
+.dark .ed-status-ongoing { background: rgba(59,130,246,0.15); color: #60a5fa; }
+html.dark-mode .ed-status-hold,
+.dark .ed-status-hold { background: rgba(239,68,68,0.15); color: #f87171; }
+html.dark-mode .ed-status-completed,
+.dark .ed-status-completed { background: rgba(16,185,129,0.15); color: #34d399; }
+html.dark-mode .ed-status-cancelled,
+.dark .ed-status-cancelled { background: rgba(107,114,128,0.15); color: #9ca3af; }
+
+html.dark-mode .ed-map-legend,
+.dark .ed-map-legend {
+    background: rgba(15,23,42,0.95);
+    border-color: #475569;
+}
+html.dark-mode .ed-map-legend-title,
+html.dark-mode .ed-map-legend-item,
+.dark .ed-map-legend-title,
+.dark .ed-map-legend-item { color: #cbd5e1; }
+
+html.dark-mode .ed-progress-bg,
+.dark .ed-progress-bg { background: #334155; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes edFadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.ed-animate {
+    animation: edFadeUp 0.5s ease forwards;
+    opacity: 0;
+}
+.ed-animate:nth-child(1) { animation-delay: 0.05s; }
+.ed-animate:nth-child(2) { animation-delay: 0.1s; }
+.ed-animate:nth-child(3) { animation-delay: 0.15s; }
+.ed-animate:nth-child(4) { animation-delay: 0.2s; }
+
+@media (prefers-reduced-motion: reduce) {
+    .ed-animate { animation: none; opacity: 1; }
+}
+</style>
+
+<div class="ed-wrap">
+    <!-- HERO -->
+    <div class="ed-hero ed-animate">
+        <div class="ed-hero-content">
+            <div class="ed-hero-eyebrow">Engineering Workspace</div>
+            <h1 class="ed-hero-title">Engineering Dashboard</h1>
+            <p class="ed-hero-subtitle">Review project delivery, track field progress, and monitor citywide implementation health.</p>
+            <div class="ed-hero-meta">
+                <span class="ed-hero-badge">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                    Cabuyao City
+                </span>
+                <span class="ed-hero-badge">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    {{ $stats['ongoing'] ?? 0 }} Active
+                </span>
             </div>
         </div>
     </div>
 
-    <div class="engineering-quick-actions">
-        <a href="{{ route('engineering.projects.index') }}" class="engineering-quick-action">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5A2.5 2.5 0 015.5 5h4l2 2h7A2.5 2.5 0 0121 9.5v9a2.5 2.5 0 01-2.5 2.5h-13A2.5 2.5 0 013 18.5v-11z"/></svg>
-            View Projects
-        </a>
-        <a href="{{ route('engineering.map.index') }}" class="engineering-quick-action">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-            Open Full Map
-        </a>
-        <a href="{{ route('engineering.analytics.index') }}" class="engineering-quick-action">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 19V9m7 10V5m7 14v-7"/></svg>
-            View Analytics
-        </a>
-        <a href="{{ route('engineering.reports.index') }}" class="engineering-quick-action">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 3h8l4 4v14H6a2 2 0 01-2-2V5a2 2 0 012-2zm8 0v5h5"/></svg>
-            Generate Report
-        </a>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="admin-dashboard-stat admin-dashboard-stat-blue rounded-2xl p-6 shadow-sm">
-            <div class="flex items-center justify-between gap-3"><p class="text-sm font-semibold text-slate-600">Total Projects</p><span class="engineering-summary-icon blue material-symbols-outlined">folder_open</span></div>
-            <p class="mt-4 text-4xl font-bold text-slate-950">{{ $stats['total_projects'] }}</p>
-        </div>
-        <div class="admin-dashboard-stat admin-dashboard-stat-amber rounded-2xl p-6 shadow-sm">
-            <div class="flex items-center justify-between gap-3"><p class="text-sm font-semibold text-slate-600">Ongoing Projects</p><span class="engineering-summary-icon amber material-symbols-outlined">pending_actions</span></div>
-            <p class="mt-4 text-4xl font-bold text-slate-950">{{ $stats['ongoing'] }}</p>
-        </div>
-        <div class="admin-dashboard-stat admin-dashboard-stat-emerald rounded-2xl p-6 shadow-sm">
-            <div class="flex items-center justify-between gap-3"><p class="text-sm font-semibold text-slate-600">Completed Projects</p><span class="engineering-summary-icon emerald material-symbols-outlined">task_alt</span></div>
-            <p class="mt-4 text-4xl font-bold text-slate-950">{{ $stats['completed'] }}</p>
+    <!-- STATS -->
+    <div class="ed-stats">
+        <div class="ed-stat ed-animate" style="--stat-accent: #3b82f6; --stat-icon-bg: #dbeafe; --stat-icon-color: #2563eb;">
+            <div class="ed-stat-header">
+                <div class="ed-stat-icon">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.429-2.507a2.117 2.117 0 00-1.86-.22m-7.5 2.1l.22.22m6.44-2.22l-.22.22m-6.44 2.1l.22.22m6.44-2.22l-.22.22m-6.44 2.1l.22.22m6.44-2.22l-.22.22M3.75 6.75l7.5-4.5 7.5 4.5M3.75 6.75v10.5a2.25 2.25 0 002.25 2.25h10.5"/></svg>
+                </div>
+            </div>
+            <div class="ed-stat-label">Total Projects</div>
+            <div class="ed-stat-value">{{ $stats['total_projects'] ?? 0 }}</div>
+            <div class="ed-stat-footer">Across all barangays</div>
         </div>
 
         <div class="ed-stat ed-animate" style="--stat-accent: #f59e0b; --stat-icon-bg: #fef3c7; --stat-icon-color: #d97706;">
@@ -259,47 +565,130 @@
             <div class="ed-stat-footer">Currently active</div>
         </div>
 
-    <div class="engineering-main-grid">
-    <div class="engineering-panel-card">
-        <div class="engineering-panel-header">
-            <div>
-                <h2 class="text-lg font-bold text-slate-900">Project Locations</h2>
-                <p class="mt-1 text-xs text-slate-500">Geographic distribution across Cabuyao</p>
+        <div class="ed-stat ed-animate" style="--stat-accent: #10b981; --stat-icon-bg: #d1fae5; --stat-icon-color: #047857;">
+            <div class="ed-stat-header">
+                <div class="ed-stat-icon">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
             </div>
-            <a href="{{ route('engineering.map.index') }}" class="text-sm font-semibold text-cyan-700 hover:text-cyan-900">Full Map →</a>
+            <div class="ed-stat-label">Completed Projects</div>
+            <div class="ed-stat-value">{{ $stats['completed'] ?? 0 }}</div>
+            <div class="ed-stat-footer">Successfully delivered</div>
         </div>
-        <div class="engineering-panel-body">
-            <div class="engineering-map-frame">
-            <div id="engineering-map" class="relative z-0 h-[42vh] overflow-hidden rounded-3xl border border-slate-200 sm:h-[48vh] md:h-[56vh]"></div>
+
+        <div class="ed-stat ed-animate" style="--stat-accent: #f43f5e; --stat-icon-bg: #ffe4e6; --stat-icon-color: #be123c;">
+            <div class="ed-stat-header">
+                <div class="ed-stat-icon">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
             </div>
+            <div class="ed-stat-label">Budget Allocated</div>
+            <div class="ed-stat-value" title="₱{{ number_format($budgetAllocated, 0) }}">{{ $budgetDisplay }}</div>
+            <div class="ed-stat-footer">Engineering budget</div>
         </div>
     </div>
 
-    <div class="engineering-panel-card">
-        <div class="engineering-panel-header">
-            <div>
-                <h2 class="text-lg font-bold text-slate-900">Recent Projects</h2>
-                <p class="mt-1 text-xs text-slate-500">Latest engineering review activity</p>
+    <!-- MAIN GRID -->
+    <div class="ed-main">
+        <!-- MAP -->
+        <div class="ed-card ed-animate">
+            <div class="ed-card-header">
+                <div class="ed-card-title-wrap">
+                    <div class="ed-card-icon">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                    </div>
+                    <div>
+                        <div class="ed-card-title">Project Locations</div>
+                        <div class="ed-card-subtitle">Geographic distribution across Cabuyao</div>
+                    </div>
+                </div>
+                <a href="{{ route('engineering.map.index') }}" class="ed-card-action">
+                    Full Map
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                </a>
             </div>
-            <a href="{{ route('engineering.projects.index') }}" class="text-sm font-semibold text-cyan-700 hover:text-cyan-900">View All →</a>
+            <div class="ed-card-body">
+                <div class="ed-map-wrap">
+                    <div id="engineering-map"></div>
+                    <div class="ed-map-legend">
+                        <div class="ed-map-legend-title">Project Status</div>
+                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#fbbf24"></span> Planning</div>
+                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#3b82f6"></span> On Going</div>
+                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#ef4444"></span> On Hold</div>
+                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#10b981"></span> Completed</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="engineering-panel-body">
-            @if ($recentProjects->isEmpty())
-                <p class="mt-4 text-sm text-slate-500">No projects yet.</p>
-            @else
-                <div class="mt-4 grid gap-4">
-                    @foreach ($recentProjects as $project)
-                        <div class="engineering-recent-card rounded-2xl border border-slate-200 p-4 shadow-sm">
-                            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                <div class="min-w-0">
-                                    <p class="text-base font-semibold text-slate-900">{{ $project->project_name }}</p>
-                                    <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                                        <span class="rounded-full bg-cyan-50 px-3 py-1 font-semibold text-cyan-700">{{ $project->current_status }}</span>
-                                        <span>{{ $project->barangay?->barangay_name ?? 'Citywide' }}</span>
+        <!-- RECENT PROJECTS -->
+        <div class="ed-card ed-animate">
+            <div class="ed-card-header">
+                <div class="ed-card-title-wrap">
+                    <div class="ed-card-icon green">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.429-2.507a2.117 2.117 0 00-1.86-.22m-7.5 2.1l.22.22m6.44-2.22l-.22.22m-6.44 2.1l.22.22m6.44-2.22l-.22.22m-6.44 2.1l.22.22m6.44-2.22l-.22.22M3.75 6.75l7.5-4.5 7.5 4.5M3.75 6.75v10.5a2.25 2.25 0 002.25 2.25h10.5"/></svg>
+                    </div>
+                    <div>
+                        <div class="ed-card-title">Recent Projects</div>
+                        <div class="ed-card-subtitle">Latest engineering project activity</div>
+                    </div>
+                </div>
+                <a href="{{ route('engineering.projects.index') }}" class="ed-card-action">
+                    View All
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                </a>
+            </div>
+            <div class="ed-card-body">
+                @if ($recentProjects->isEmpty())
+                    <div class="ed-empty">
+                        <div class="ed-empty-icon">
+                            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+                        </div>
+                        <h4>No projects yet</h4>
+                        <p>No engineering projects have been recorded.</p>
+                    </div>
+                @else
+                    <div class="ed-projects">
+                        @foreach ($recentProjects as $project)
+                            @php
+                                $statusClass = match($project->current_status) {
+                                    'Planning' => 'ed-status-planning',
+                                    'On Going' => 'ed-status-ongoing',
+                                    'On Hold' => 'ed-status-hold',
+                                    'Completed' => 'ed-status-completed',
+                                    'Cancelled' => 'ed-status-cancelled',
+                                    default => 'ed-status-planning',
+                                };
+                                $progress = $project->latestUpdate?->progress_percentage ?? 0;
+                                $initials = collect(explode(' ', $project->project_name))->map(fn($word) => strtoupper($word[0] ?? ''))->take(2)->implode('');
+                                $avatarGradient = match($loop->index % 4) {
+                                    0 => 'linear-gradient(135deg, #0a4353 0%, #0c5c70 30%, #11788a 70%, #22a6b8 100%)',
+                                    1 => 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                                    2 => 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
+                                    3 => 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
+                                };
+                            @endphp
+                            <div class="ed-project">
+                                <div class="ed-project-avatar" style="background: {{ $avatarGradient }}">{{ $initials }}</div>
+                                <div class="ed-project-info">
+                                    <div class="ed-project-title">{{ $project->project_name }}</div>
+                                    <div class="ed-project-meta">
+                                        <span class="ed-status {{ $statusClass }}">{{ $project->current_status }}</span>
+                                        <span class="ed-project-meta-item">
+                                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                                            {{ $project->barangay?->barangay_name ?? 'N/A' }}
+                                        </span>
+                                        <span class="ed-project-meta-item">₱{{ number_format($project->approved_budget ?? 0) }}</span>
+                                    </div>
+                                    <div class="ed-project-progress">
+                                        <div class="ed-progress-bg">
+                                            <div class="ed-progress-fill" style="width: {{ $progress }}%"></div>
+                                        </div>
                                     </div>
                                 </div>
-                                <a href="{{ route('engineering.projects.show', $project->project_id) }}" class="inline-flex shrink-0 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100">View</a>
+                                <a href="{{ route('engineering.projects.show', $project->project_id) }}" class="ed-project-action" title="View project">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                                </a>
                             </div>
                         @endforeach
                     </div>
@@ -309,7 +698,6 @@
                 @endif
             </div>
         </div>
-    </div>
     </div>
 </div>
 
