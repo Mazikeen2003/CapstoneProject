@@ -123,6 +123,17 @@ html:not(.dark-mode) .dept-map-container {
     border-color: rgba(245,158,11,0.3);
     color: #fcd34d;
 }
+.engineering-map-theme .dept-map-hero {
+    background: linear-gradient(135deg, #0a4353 0%, #0c5c70 30%, #11788a 70%, #22a6b8 100%);
+}
+.engineering-map-theme .dept-map-hero::after {
+    background: radial-gradient(circle, rgba(158,230,247,0.22) 0%, transparent 60%);
+}
+.engineering-map-theme .dept-map-hero-badge.gold {
+    background: rgba(15,106,124,0.32);
+    border-color: rgba(158,230,247,0.38);
+    color: #d8f5ff;
+}
 .dept-map-hero-title {
     font-family: "Plus Jakarta Sans", "Inter", sans-serif;
     font-size: clamp(1.75rem, 4vw, 2.75rem);
@@ -956,7 +967,7 @@ html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1;
 }
 </style>
 
-<div class="dept-map-container">
+<div class="dept-map-container {{ ($mapTheme ?? null) === 'engineering' ? 'engineering-map-theme' : '' }}">
 
     <!-- HERO HEADER -->
     <div class="dept-map-hero dept-animate">
