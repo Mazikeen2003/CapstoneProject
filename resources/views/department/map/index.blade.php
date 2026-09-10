@@ -260,9 +260,16 @@ html:not(.dark-mode) .dept-map-container {
     left: 20px;
     z-index: 500;
     display: flex;
-    gap: 8px;
+    gap: 6px;
+    padding: 6px;
+    border-radius: 14px;
+    background: rgba(15, 13, 31, 0.92);
+    border: 1px solid rgba(255,255,255,0.14);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.24);
+    backdrop-filter: blur(14px);
 }
 .dept-map-overlay-btn {
+    min-height: 38px;
     padding: 10px 16px;
     border-radius: 10px;
     font-size: 0.75rem;
@@ -270,24 +277,22 @@ html:not(.dark-mode) .dept-map-container {
     border: none;
     cursor: pointer;
     font-family: inherit;
-    backdrop-filter: blur(12px);
-    background: rgba(15, 13, 31, 0.85);
-    color: white;
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: all 0.15s;
+    background: transparent;
+    color: rgba(255,255,255,0.72);
+    transition: background 0.18s, color 0.18s, transform 0.18s;
     display: inline-flex;
     align-items: center;
     gap: 6px;
 }
 .dept-map-overlay-btn:hover {
-    background: rgba(15, 13, 31, 0.95);
-    transform: translateY(-1px);
+    background: rgba(255,255,255,0.1);
+    color: #ffffff;
 }
-.dept-map-overlay-btn svg { width: 14px; height: 14px; }
+.dept-map-overlay-btn svg { width: 15px; height: 15px; }
 .dept-map-overlay-btn.active {
     background: linear-gradient(135deg, #f59e0b, #d97706);
     color: white;
-    border-color: transparent;
+    box-shadow: 0 3px 8px rgba(217,119,6,0.4);
 }
 
 /* ===== SIDEBAR ===== */
@@ -899,6 +904,13 @@ html.dark-mode .dept-map-overlay-btn {
 
 html.dark-mode .dept-map-overlay-btn:hover {
     background: #1e293b;
+}
+
+html.dark-mode .dept-map-overlay-btn.active {
+    background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+    box-shadow: 0 3px 8px rgba(217,119,6,0.4);
 }
 
 html.dark-mode .dept-map-project-name,

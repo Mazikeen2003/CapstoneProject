@@ -161,12 +161,14 @@ html.dark-mode .ep-wrap {
 }
 .ep-icon svg { width: 26px; height: 26px; }
 .ep-title {
+    font-family: "Plus Jakarta Sans", "Inter", sans-serif;
     font-size: clamp(1.5rem, 3vw, 2rem);
     font-weight: 800;
     line-height: 1.2;
     color: var(--ep-ink);
 }
 .ep-subtitle {
+    font-family: "Inter", system-ui, sans-serif;
     margin-top: 4px;
     font-size: 0.875rem;
     color: var(--ep-muted);

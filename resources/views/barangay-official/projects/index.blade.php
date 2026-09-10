@@ -28,8 +28,8 @@
     .barangay-projects-titlewrap { display: flex; align-items: flex-start; gap: 16px; }
     .barangay-projects-icon { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; flex-shrink: 0; border-radius: 14px; background: linear-gradient(135deg,#991b1b,#dc2626); color: #fff; box-shadow: 0 4px 14px -4px rgba(220,38,38,0.5); }
     .barangay-projects-icon svg { width: 26px; height: 26px; }
-    .barangay-projects-title { color: var(--bp-ink); font-size: clamp(1.5rem,3vw,2rem); font-weight: 800; line-height: 1.2; }
-    .barangay-projects-subtitle { margin-top: 4px; color: var(--bp-muted); font-size: 0.875rem; }
+    .barangay-projects-title { font-family: "Plus Jakarta Sans", "Inter", sans-serif; color: var(--bp-ink); font-size: clamp(1.5rem,3vw,2rem); font-weight: 800; line-height: 1.2; }
+    .barangay-projects-subtitle { font-family: "Inter", system-ui, sans-serif; margin-top: 4px; color: var(--bp-muted); font-size: 0.875rem; }
     .barangay-projects-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; padding: 16px; border: 1px solid var(--bp-line); border-radius: 12px; background: var(--bp-surface); }
     .barangay-projects-search { position: relative; flex: 1; max-width: 400px; }
     .barangay-projects-search svg { position: absolute; left: 14px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%); color: var(--bp-muted); }

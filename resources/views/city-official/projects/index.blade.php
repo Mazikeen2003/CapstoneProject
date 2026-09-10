@@ -39,8 +39,8 @@
     .city-projects-titlewrap { display: flex; align-items: flex-start; gap: 16px; }
     .city-projects-icon { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; flex-shrink: 0; border-radius: 14px; background: linear-gradient(135deg,#4c1d95,#6d28d9); color: #fff; box-shadow: 0 4px 14px -4px rgba(109,40,217,0.5); }
     .city-projects-icon svg { width: 26px; height: 26px; }
-    .city-projects-title { color: var(--cp-ink); font-size: clamp(1.5rem,3vw,2rem); font-weight: 800; line-height: 1.2; }
-    .city-projects-subtitle { margin-top: 4px; color: var(--cp-muted); font-size: 0.875rem; }
+    .city-projects-title { font-family: "Plus Jakarta Sans", "Inter", sans-serif; color: var(--cp-ink); font-size: clamp(1.5rem,3vw,2rem); font-weight: 800; line-height: 1.2; }
+    .city-projects-subtitle { font-family: "Inter", system-ui, sans-serif; margin-top: 4px; color: var(--cp-muted); font-size: 0.875rem; }
 
     /* Toolbar */
     .city-projects-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; padding: 16px; border: 1px solid var(--cp-line); border-radius: 12px; background: var(--cp-surface); }
@@ -52,6 +52,11 @@
     .city-projects-filter { padding: 8px 16px; border: 1px solid var(--cp-line); border-radius: 100px; background: var(--cp-bg); color: var(--cp-ink); font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: all 0.15s ease; }
     .city-projects-filter.active { background: var(--cp-ink); color: var(--cp-surface); }
     .city-projects-filter:hover:not(.active) { background: var(--cp-surface-hover); }
+    .city-projects-status-wrap { position: relative; }
+    .city-projects-status-wrap::after { content: ""; position: absolute; top: 50%; right: 15px; width: 7px; height: 7px; border-right: 2px solid var(--cp-muted); border-bottom: 2px solid var(--cp-muted); transform: translateY(-65%) rotate(45deg); pointer-events: none; }
+    .city-projects-status-filter { min-width: 190px; padding: 10px 36px 10px 14px; border: 1px solid var(--cp-line); border-radius: 100px; outline: none; appearance: none; background: var(--cp-bg); color: var(--cp-ink); font-size: 0.8125rem; font-weight: 600; cursor: pointer; }
+    .city-projects-status-filter:focus { border-color: #6d28d9; box-shadow: 0 0 0 3px rgba(109,40,217,0.12); }
+    html.dark-mode .city-projects-status-filter { background: #0f172a; color: #e5edf9; border-color: rgba(148,163,184,0.18); }
 
     /* Card & Table */
     .city-projects-card { overflow: hidden; border: 1px solid var(--cp-line); border-radius: 16px; background: var(--cp-surface); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
@@ -146,12 +151,23 @@
             </svg>
             <input type="text" id="cityProjectSearch" placeholder="Search projects by name or code...">
         </div>
-        <div class="city-projects-filters">
-            <button type="button" class="city-projects-filter active" data-filter="all">All</button>
-            <button type="button" class="city-projects-filter" data-filter="Planning">Planning</button>
-            <button type="button" class="city-projects-filter" data-filter="On Going">On Going</button>
-            <button type="button" class="city-projects-filter" data-filter="Completed">Completed</button>
-            <button type="button" class="city-projects-filter" data-filter="On Hold">On Hold</button>
+        <div class="city-projects-status-wrap">
+            <select id="cityProjectStatusFilter" class="city-projects-status-filter" aria-label="Filter projects by status">
+                <option value="all">All statuses</option>
+                <option value="Proposed">Proposed</option>
+                <option value="Planning">Planning</option>
+                <option value="For bidding">For bidding</option>
+                <option value="Procurement">Procurement</option>
+                <option value="Bidding ongoing">Bidding ongoing</option>
+                <option value="Bidding - Success">Bidding - Success</option>
+                <option value="Bidding - Failed">Bidding - Failed</option>
+                <option value="Award of contract">Award of contract</option>
+                <option value="Implementation">Implementation</option>
+                <option value="On Going">On Going</option>
+                <option value="On Hold">On Hold</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
         </div>
     </div>
 
@@ -272,12 +288,12 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const search = document.getElementById('cityProjectSearch');
-    const filters = document.querySelectorAll('.city-projects-filter');
+    const statusFilter = document.getElementById('cityProjectStatusFilter');
     const rows = document.querySelectorAll('.city-project-row');
-    let activeFilter = 'all';
 
     function updateProjects() {
         const query = (search?.value || '').toLowerCase().trim();
+        const activeFilter = statusFilter?.value || 'all';
         rows.forEach(row => {
             const matchesFilter = activeFilter === 'all' || row.dataset.status === activeFilter;
             const matchesSearch = !query || row.dataset.search.includes(query);
@@ -286,15 +302,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     search?.addEventListener('input', updateProjects);
-
-    filters.forEach(filter => {
-        filter.addEventListener('click', function () {
-            filters.forEach(item => item.classList.remove('active'));
-            this.classList.add('active');
-            activeFilter = this.dataset.filter;
-            updateProjects();
-        });
-    });
+    statusFilter?.addEventListener('change', updateProjects);
 });
 </script>
 @endsection
