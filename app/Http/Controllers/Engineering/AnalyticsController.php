@@ -25,7 +25,7 @@ class AnalyticsController extends Controller
         $stats = [
             'total_projects' => $projects->count(),
             'completed' => $projects->where('current_status', 'Completed')->count(),
-            'ongoing' => $projects->whereIn('current_status', ['Implementation', 'On Going'])->count(),
+            'ongoing' => $projects->whereNotIn('current_status', ['Completed', 'Cancelled', 'On Hold'])->count(),
             'on_hold' => $projects->where('current_status', 'On Hold')->count(),
             'planning' => $projects->whereIn('current_status', ['Proposed', 'Planning'])->count(),
             'total_budget' => $projects->sum('approved_budget') ?? 0,

@@ -12,7 +12,7 @@ class ProjectController extends Controller
         $projects = Project::withoutRoleScope()
             ->withBasicRelations()
             ->latest('created_at')
-            ->paginate(15);
+            ->paginate(10);
 
         return view('city-official.projects.index', compact('projects'));
     }

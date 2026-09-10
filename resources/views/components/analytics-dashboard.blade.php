@@ -780,15 +780,56 @@ html.dark-mode .dept-analytics-empty {
         </div>
     </div>
 
+    @php
+        $currentRole = Auth::user()?->role_slug ?? 'public';
+        $budgetUsedDisplay = ($budgetStats['total_spent'] ?? 0) >= 1000000000
+            ? '₱' . number_format(($budgetStats['total_spent'] ?? 0) / 1000000000, 1) . 'B'
+            : (($budgetStats['total_spent'] ?? 0) >= 1000000
+                ? '₱' . number_format(($budgetStats['total_spent'] ?? 0) / 1000000, 1) . 'M'
+                : '₱' . number_format($budgetStats['total_spent'] ?? 0, 0));
+
+        $roleKpis = match ($currentRole) {
+            'department' => [
+                ['label' => 'Total Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark'],
+                ['label' => 'Active Projects', 'value' => $stats['ongoing'] ?? 0, 'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info'],
+                ['label' => 'Completed', 'value' => $stats['completed'] ?? 0, 'color' => '#059669', 'icon' => 'emerald', 'type' => 'success'],
+                ['label' => 'On Hold', 'value' => $stats['on_hold'] ?? 0, 'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger'],
+                ['label' => 'Allocated Budget', 'value' => $totalBudgetDisplay, 'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent'],
+            ],
+            'city' => [
+                ['label' => 'Citywide Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark'],
+                ['label' => 'Active Projects', 'value' => $stats['ongoing'] ?? 0, 'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info'],
+                ['label' => 'Completed', 'value' => $stats['completed'] ?? 0, 'color' => '#059669', 'icon' => 'emerald', 'type' => 'success'],
+                ['label' => 'On Hold', 'value' => $stats['on_hold'] ?? 0, 'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger'],
+                ['label' => 'Allocated Budget', 'value' => $totalBudgetDisplay, 'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent'],
+            ],
+            'barangay' => [
+                ['label' => 'Barangay Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark'],
+                ['label' => 'Active Projects', 'value' => $stats['ongoing'] ?? 0, 'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info'],
+                ['label' => 'Completed', 'value' => $stats['completed'] ?? 0, 'color' => '#059669', 'icon' => 'emerald', 'type' => 'success'],
+                ['label' => 'On Hold', 'value' => $stats['on_hold'] ?? 0, 'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger'],
+                ['label' => 'Barangay Budget', 'value' => $totalBudgetDisplay, 'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent'],
+            ],
+            'engineering' => [
+                ['label' => 'Tracked Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark'],
+                ['label' => 'Projects in Progress', 'value' => $stats['ongoing'] ?? 0, 'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info'],
+                ['label' => 'Completed', 'value' => $stats['completed'] ?? 0, 'color' => '#059669', 'icon' => 'emerald', 'type' => 'success'],
+                ['label' => 'Pending Updates', 'value' => $insights['without_updates'] ?? 0, 'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger'],
+                ['label' => 'Budget Used', 'value' => $budgetUsedDisplay, 'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent'],
+            ],
+            default => [
+                ['label' => 'Total Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark'],
+                ['label' => 'Completed', 'value' => $stats['completed'] ?? 0, 'color' => '#059669', 'icon' => 'emerald', 'type' => 'success'],
+                ['label' => 'Ongoing', 'value' => $stats['ongoing'] ?? 0, 'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info'],
+                ['label' => 'On Hold', 'value' => $stats['on_hold'] ?? 0, 'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger'],
+                ['label' => 'Total Budget', 'value' => $totalBudgetDisplay, 'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent'],
+            ],
+        };
+    @endphp
+
     <!-- KPI CARDS -->
     <div class="dept-kpi-grid">
-        @foreach ([
-            ['label' => 'Total Projects', 'value' => $stats['total_projects'], 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark'],
-            ['label' => 'Completed',      'value' => $stats['completed'],      'color' => '#059669', 'icon' => 'emerald', 'type' => 'success'],
-            ['label' => 'Ongoing',        'value' => $stats['ongoing'],        'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info'],
-            ['label' => 'On Hold',        'value' => $stats['on_hold'],       'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger'],
-            ['label' => 'Total Budget',   'value' => $totalBudgetDisplay,     'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent'],
-        ] as $kpi)
+        @foreach ($roleKpis as $kpi)
             <div class="dept-kpi-card {{ $kpi['type'] }} dept-animate">
                 <div class="dept-kpi-header">
                     <div class="dept-kpi-icon {{ $kpi['icon'] }}">

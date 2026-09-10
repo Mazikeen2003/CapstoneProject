@@ -483,30 +483,30 @@ html.dark-mode .bm-wrap {
     height: 6px;
     border-radius: 50%;
 }
-.bm-status-proposed { background: rgba(251,191,36,0.06); color: #d97706; border: 1px solid rgba(251,191,36,0.08); }
-.bm-status-proposed .bm-status-dot { background: #f59e0b; box-shadow: 0 0 0 2px rgba(245,158,11,0.12); }
-.bm-status-bidding { background: rgba(250,204,21,0.06); color: #a16207; border: 1px solid rgba(250,204,21,0.08); }
-.bm-status-bidding .bm-status-dot { background: #eab308; }
-.bm-status-ongoing { background: rgba(59,130,246,0.06); color: #2563eb; border: 1px solid rgba(59,130,246,0.08); }
-.bm-status-ongoing .bm-status-dot { background: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.12); }
-.bm-status-award { background: rgba(139,92,246,0.06); color: #7c3aed; border: 1px solid rgba(139,92,246,0.08); }
+.bm-status-proposed { background: rgba(37,99,235,0.10); color: #2563eb; border: 1px solid rgba(37,99,235,0.20); }
+.bm-status-proposed .bm-status-dot { background: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,0.12); }
+.bm-status-bidding { background: rgba(245,158,11,0.10); color: #f59e0b; border: 1px solid rgba(245,158,11,0.20); }
+.bm-status-bidding .bm-status-dot { background: #f59e0b; }
+.bm-status-ongoing { background: rgba(6,182,212,0.10); color: #06b6d4; border: 1px solid rgba(6,182,212,0.20); }
+.bm-status-ongoing .bm-status-dot { background: #06b6d4; box-shadow: 0 0 0 2px rgba(6,182,212,0.12); }
+.bm-status-award { background: rgba(139,92,246,0.10); color: #8b5cf6; border: 1px solid rgba(139,92,246,0.20); }
 .bm-status-award .bm-status-dot { background: #8b5cf6; }
-.bm-status-implementation { background: rgba(14,165,233,0.06); color: #0284c7; border: 1px solid rgba(14,165,233,0.08); }
-.bm-status-implementation .bm-status-dot { background: #0ea5e9; }
-.bm-status-completed { background: rgba(16,185,129,0.06); color: #059669; border: 1px solid rgba(16,185,129,0.08); }
-.bm-status-completed .bm-status-dot { background: #10b981; box-shadow: 0 0 0 2px rgba(16,185,129,0.12); }
-.bm-status-hold { background: rgba(239,68,68,0.06); color: #dc2626; border: 1px solid rgba(239,68,68,0.08); }
-.bm-status-hold .bm-status-dot { background: #ef4444; }
-.bm-status-cancelled { background: rgba(107,114,128,0.06); color: #6b7280; border: 1px solid rgba(107,114,128,0.08); }
-.bm-status-cancelled .bm-status-dot { background: #9ca3af; }
-.dark .bm-status-proposed { background: rgba(251,191,36,0.05); color: #fbbf24; }
-.dark .bm-status-bidding { background: rgba(250,204,21,0.05); color: #facc15; }
-.dark .bm-status-ongoing { background: rgba(59,130,246,0.05); color: #60a5fa; }
-.dark .bm-status-award { background: rgba(139,92,246,0.05); color: #a78bfa; }
-.dark .bm-status-implementation { background: rgba(14,165,233,0.05); color: #38bdf8; }
-.dark .bm-status-completed { background: rgba(16,185,129,0.05); color: #34d399; }
-.dark .bm-status-hold { background: rgba(239,68,68,0.05); color: #f87171; }
-.dark .bm-status-cancelled { background: rgba(148,163,184,0.05); color: #94a3b8; }
+.bm-status-implementation { background: rgba(15,118,110,0.10); color: #0f766e; border: 1px solid rgba(15,118,110,0.20); }
+.bm-status-implementation .bm-status-dot { background: #0f766e; }
+.bm-status-completed { background: rgba(22,163,74,0.10); color: #16a34a; border: 1px solid rgba(22,163,74,0.20); }
+.bm-status-completed .bm-status-dot { background: #16a34a; box-shadow: 0 0 0 2px rgba(22,163,74,0.12); }
+.bm-status-hold { background: rgba(220,38,38,0.10); color: #dc2626; border: 1px solid rgba(220,38,38,0.20); }
+.bm-status-hold .bm-status-dot { background: #dc2626; }
+.bm-status-cancelled { background: rgba(100,116,139,0.10); color: #64748b; border: 1px solid rgba(100,116,139,0.20); }
+.bm-status-cancelled .bm-status-dot { background: #64748b; }
+.dark .bm-status-proposed { background: rgba(37,99,235,0.12); color: #60a5fa; }
+.dark .bm-status-bidding { background: rgba(245,158,11,0.12); color: #fbbf24; }
+.dark .bm-status-ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
+.dark .bm-status-award { background: rgba(139,92,246,0.12); color: #a78bfa; }
+.dark .bm-status-implementation { background: rgba(15,118,110,0.12); color: #5eead4; }
+.dark .bm-status-completed { background: rgba(22,163,74,0.12); color: #4ade80; }
+.dark .bm-status-hold { background: rgba(220,38,38,0.12); color: #f87171; }
+.dark .bm-status-cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
 
 .bm-project-stats {
     display: grid;
@@ -605,100 +605,129 @@ html.dark-mode .bm-wrap {
 .bm-selected-body { padding: 24px; }
 
 /* Lifecycle stepper */
-.bm-lifecycle {
-    padding: 20px;
-    border-radius: var(--bm-radius-xs);
-    background: linear-gradient(135deg, var(--bm-raised), var(--bm-surface));
-    border: 1px solid var(--bm-line);
+.dept-stepper-lifecycle {
+    --de-surface: #ffffff;
+    --de-line: rgba(0, 0, 0, 0.06);
+    --de-line-strong: rgba(0, 0, 0, 0.12);
+    --de-ink: #1e1b4b;
+    --de-ink-secondary: #374151;
+    --de-muted: #9ca3af;
+    --de-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    background: var(--de-surface);
+    border: 1px solid var(--de-line);
+    border-radius: 12px;
+    box-shadow: var(--de-shadow-sm);
+    padding: 20px 20px 22px;
     margin-bottom: 20px;
 }
-.bm-lifecycle-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
+.dept-stepper-header { margin-bottom: 20px; }
+.dept-stepper-title {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--de-ink);
+    margin: 0 0 4px;
 }
-.bm-lifecycle-title {
-    font-family: var(--font-body);
-    font-size: 0.6875rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--bm-muted);
+.dept-stepper-subtitle {
+    font-size: 0.75rem;
+    color: var(--de-muted);
+    margin: 0;
+    font-weight: 500;
 }
-.bm-lifecycle-status {
-    padding: 6px 14px;
-    border-radius: 100px;
-    background: var(--bm-raised);
-    border: 1px solid var(--bm-line);
-    font-family: var(--font-body);
-    font-size: 0.6875rem;
-    font-weight: 800;
-    color: var(--bm-ink);
-}
-.bm-lifecycle-track {
+.dept-stepper-track {
     display: flex;
     align-items: flex-start;
+    justify-content: space-between;
+    gap: 4px;
 }
-.bm-step {
-    position: relative;
-    z-index: 1;
+.dept-step-item {
     display: flex;
-    flex: 1;
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    text-align: center;
+    flex: 1 1 0;
+    position: relative;
+    z-index: 2;
+    min-width: 0;
 }
-.bm-step-dot {
-    width: 34px;
-    height: 34px;
+.dept-step-node {
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-display);
-    font-size: 0.75rem;
-    font-weight: 800;
-    border: 3px solid var(--bm-line-strong);
-    background: var(--bm-surface);
-    color: var(--bm-muted);
-    transition: var(--bm-transition);
-}
-.bm-step.complete .bm-step-dot {
-    border-color: #10b981;
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: #ffffff;
-    box-shadow: 0 4px 12px -2px rgba(16,185,129,0.3);
-}
-.bm-step.current .bm-step-dot {
-    border-color: #3b82f6;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: #ffffff;
-    box-shadow: 0 4px 12px -2px rgba(59,130,246,0.3);
-    animation: bmStepPulse 2s ease-in-out infinite;
-}
-@keyframes bmStepPulse {
-    0%, 100% { box-shadow: 0 4px 12px -2px rgba(59,130,246,0.3); }
-    50% { box-shadow: 0 4px 20px 2px rgba(59,130,246,0.4); }
-}
-.bm-step-label {
-    font-family: var(--font-body);
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
     font-weight: 700;
-    color: var(--bm-muted);
+    flex-shrink: 0;
+}
+.dept-step-item.completed .dept-step-node { background: #10b981; color: #fff; }
+.dept-step-item.current .dept-step-node { background: #3b82f6; color: #fff; }
+.dept-step-item.pending .dept-step-node {
+    background: transparent;
+    color: var(--de-muted);
+    border: 2px solid var(--de-line-strong);
+}
+.dept-step-name {
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: var(--de-ink-secondary);
+    text-align: center;
     line-height: 1.2;
+    white-space: normal;
+    max-width: 72px;
 }
-.bm-step.complete .bm-step-label { color: #059669; }
-.bm-step.current .bm-step-label { color: var(--bm-indigo); }
-.bm-step-line {
+.dept-step-item.completed .dept-step-name { color: #059669; font-weight: 700; }
+.dept-step-item.current .dept-step-name { color: #2563eb; font-weight: 700; }
+.dept-step-item.pending .dept-step-name { color: var(--de-muted); font-weight: 500; }
+.dept-step-connector {
     flex: 1;
-    height: 3px;
-    margin-top: 15px;
-    background: var(--bm-line-strong);
-    border-radius: 2px;
+    height: 2px;
+    background: var(--de-line-strong);
+    margin-top: 14px;
+    min-width: 12px;
+    position: relative;
+    z-index: 1;
 }
-.bm-step-line.complete { background: linear-gradient(90deg, #10b981, #059669); }
+.dept-step-connector.completed { background: #10b981; }
+html.dark-mode .dept-stepper-lifecycle,
+.dark .dept-stepper-lifecycle {
+    --de-surface: #1a1929;
+    --de-line: rgba(255, 255, 255, 0.06);
+    --de-line-strong: rgba(255, 255, 255, 0.12);
+    --de-ink: #f8fafc;
+    --de-ink-secondary: #cbd5e1;
+    --de-muted: #94a3b8;
+    --de-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    background: var(--de-surface);
+    border-color: var(--de-line);
+    box-shadow: var(--de-shadow-sm);
+}
+html.dark-mode .dept-stepper-title,
+.dark .dept-stepper-title { color: #f8f7f5; }
+html.dark-mode .dept-stepper-subtitle,
+.dark .dept-stepper-subtitle { color: #94a3b8; }
+html.dark-mode .dept-step-item.completed .dept-step-node,
+.dark .dept-step-item.completed .dept-step-node { background: #34d399; color: #064e3b; }
+html.dark-mode .dept-step-item.current .dept-step-node,
+.dark .dept-step-item.current .dept-step-node { background: #60a5fa; color: #0f172a; }
+html.dark-mode .dept-step-item.pending .dept-step-node,
+.dark .dept-step-item.pending .dept-step-node {
+    background: #1a1929;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #94a3b8;
+}
+html.dark-mode .dept-step-item.completed .dept-step-name,
+.dark .dept-step-item.completed .dept-step-name { color: #34d399; }
+html.dark-mode .dept-step-item.current .dept-step-name,
+.dark .dept-step-item.current .dept-step-name { color: #60a5fa; }
+html.dark-mode .dept-step-connector.completed,
+.dark .dept-step-connector.completed { background: #34d399; }
+@media (max-width: 640px) {
+    .dept-stepper-track { overflow-x: auto; padding-bottom: 8px; }
+    .dept-step-item { min-width: 70px; }
+    .dept-step-name { max-width: 70px; }
+}
 
 /* Detail grid */
 .bm-detail-grid {
@@ -969,7 +998,9 @@ html.dark-mode .bm-wrap {
     <div class="bm-layout">
         <!-- MAP -->
         <div class="bm-map-card">
-            <div id="map"></div>
+            <div id="map">
+                @include('components.map-status-legend')
+            </div>
             <div class="bm-map-overlay">
                 <button type="button" id="btnLightTiles" class="bm-map-overlay-btn active">
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
@@ -1027,6 +1058,13 @@ html.dark-mode .bm-wrap {
             return totalDays > 0 ? Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100)) : 0;
         }
 
+        function calculateReportedProgress(project) {
+            const reportedProgress = project.properties.progress_percentage;
+            return reportedProgress !== null && reportedProgress !== undefined && reportedProgress !== ''
+                ? Math.min(100, Math.max(0, Number(reportedProgress)))
+                : null;
+        }
+
         function updateMapStats() {
             const total = projectFeatures.length;
             const progress = total ? projectFeatures.reduce((sum, project) => sum + calculateProgress(project), 0) / total : 0;
@@ -1058,17 +1096,42 @@ html.dark-mode .bm-wrap {
         }
 
         function renderLifecycleStepper(status) {
-            const steps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation'];
-            const stageByStatus = { Proposed: 0, 'For bidding': 1, 'Bidding ongoing': 2, 'Award of contract': 3, Implementation: 4, Completed: 4, Planning: 0, Procurement: 1, 'Bidding - Success': 3, 'On Going': 4 };
+            const steps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation', 'Completed'];
+            const stageByStatus = { Proposed: 0, 'For bidding': 1, 'Bidding ongoing': 2, 'Award of contract': 3, Implementation: 4, Completed: 5, Planning: 0, Procurement: 1, 'Bidding - Success': 3, 'On Going': 4 };
             const activeStep = stageByStatus[status];
-            const completedProject = status === 'Completed';
 
-            return `<div class="bm-lifecycle"><div class="bm-lifecycle-head"><span class="bm-lifecycle-title">Project lifecycle</span><span class="bm-lifecycle-status">${status || 'Unknown'}</span></div><div class="bm-lifecycle-track">${steps.map((step, stepIndex) => { const complete = activeStep !== undefined && (stepIndex < activeStep || completedProject); const current = activeStep !== undefined && stepIndex === activeStep && !completedProject; const state = complete ? 'complete' : (current ? 'current' : ''); const line = stepIndex < steps.length - 1 ? `<div class="bm-step-line ${complete ? 'complete' : ''}"></div>` : ''; return `<div class="bm-step ${state}"><div class="bm-step-dot">${complete ? '&#10003;' : stepIndex + 1}</div><span class="bm-step-label">${step}</span></div>${line}`; }).join('')}</div></div>`;
+            return `
+                <div class="dept-stepper-lifecycle">
+                    <div class="dept-stepper-header">
+                        <h3 class="dept-stepper-title">Project Lifecycle</h3>
+                        <p class="dept-stepper-subtitle">Current stage: ${status || 'Unknown'}</p>
+                    </div>
+                    <div class="dept-stepper-track">
+                        ${steps.map((step, index) => {
+                            const isComplete = activeStep !== null && activeStep !== undefined && index < activeStep;
+                            const isCurrent = activeStep !== null && activeStep !== undefined && index === activeStep;
+                            const state = isComplete ? 'completed' : (isCurrent ? 'current' : 'pending');
+
+                            return `
+                                <div class="dept-step-item ${state}">
+                                    <div class="dept-step-node">
+                                        ${isComplete ? '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' : index + 1}
+                                    </div>
+                                    <span class="dept-step-name">${step}</span>
+                                </div>
+                                ${index < steps.length - 1 ? `<div class="dept-step-connector ${isComplete ? 'completed' : ''}"></div>` : ''}
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
         }
 
         function renderProjectCard(project, index, isSingle = false) {
             const props = project.properties;
-            const progress = calculateProgress(project);
+            const timelineProgress = calculateProgress(project);
+            const reportedProgress = calculateReportedProgress(project);
+            const progress = reportedProgress ?? timelineProgress;
             const imageHtml = props.image
                 ? `<div class="bm-project-image-wrap"><img src="${props.image}" alt="${props.name}" class="bm-project-image"><div class="bm-project-image-overlay"></div></div>`
                 : '<div class="bm-project-noimage">No image</div>';
@@ -1077,7 +1140,7 @@ html.dark-mode .bm-wrap {
                 const expenditure = Number(props.actual_budget || 0);
                 const budget = Number(props.budget || 0);
                 const expenditureProgress = budget > 0 ? Math.min(100, (expenditure / budget) * 100) : 0;
-                return `<div class="bm-selected" data-index="${index}"><div class="bm-selected-header"><div class="bm-selected-label">Selected project</div><div class="bm-selected-title">${props.name}</div><span class="bm-selected-status">${props.status || 'Unknown'}</span></div>${props.image ? `<img src="${props.image}" alt="${props.name}" class="bm-selected-image">` : '<div class="bm-project-noimage" style="height:220px">No image</div>'}<div class="bm-selected-body">${renderLifecycleStepper(props.status)}<div class="bm-detail-grid"><div class="bm-detail-item"><div class="bm-detail-icon purple"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg></div><div><div class="bm-detail-label">Barangay</div><div class="bm-detail-value">${props.barangay || 'Not specified'}</div></div></div><div class="bm-detail-item"><div class="bm-detail-icon green"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div><div class="bm-detail-label">Budget</div><div class="bm-detail-value">${formatCurrency(budget)}</div></div></div><div class="bm-detail-item"><div class="bm-detail-icon rose"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div><div class="bm-detail-label">Expenditure</div><div class="bm-detail-value">${formatCurrency(expenditure)}</div></div></div><div class="bm-detail-item"><div class="bm-detail-icon blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div><div><div class="bm-detail-label">Progress</div><div class="bm-detail-value">${progress.toFixed(1)}%</div></div></div></div><div class="bm-progress-wrap"><div class="bm-progress-head"><span class="bm-progress-label">Expenditure progress</span><span class="bm-progress-value">${expenditureProgress.toFixed(1)}%</span></div><div class="bm-progress-track"><div class="bm-progress-fill" style="width:${expenditureProgress}%;background:linear-gradient(90deg,#10b981,#059669)"></div></div></div><div class="bm-progress-wrap"><div class="bm-progress-head"><span class="bm-progress-label">Timeline progress</span><span class="bm-progress-value">${progress.toFixed(1)}%</span></div><div class="bm-progress-track"><div class="bm-progress-fill" style="width:${progress}%;background:linear-gradient(90deg,#6366f1,#f59e0b,#d97706)"></div></div></div><p style="font-family:var(--font-body);font-size:0.875rem;color:var(--bm-ink-secondary);line-height:1.6;margin:0 0 16px;">${props.description || 'No description available.'}</p><button type="button" class="bm-viewall show-all-projects-btn"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>View all projects</button></div></div>`;
+                return `<div class="bm-selected" data-index="${index}"><div class="bm-selected-header"><div class="bm-selected-label">Selected project</div><div class="bm-selected-title">${props.name}</div><span class="bm-selected-status">${props.status || 'Unknown'}</span></div>${props.image ? `<img src="${props.image}" alt="${props.name}" class="bm-selected-image">` : '<div class="bm-project-noimage" style="height:220px">No image</div>'}<div class="bm-selected-body">${renderLifecycleStepper(props.status)}<div class="bm-detail-grid"><div class="bm-detail-item"><div class="bm-detail-icon purple"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg></div><div><div class="bm-detail-label">Barangay</div><div class="bm-detail-value">${props.barangay || 'Not specified'}</div></div></div><div class="bm-detail-item"><div class="bm-detail-icon green"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div><div class="bm-detail-label">Budget</div><div class="bm-detail-value">${formatCurrency(budget)}</div></div></div><div class="bm-detail-item"><div class="bm-detail-icon rose"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div><div class="bm-detail-label">Expenditure</div><div class="bm-detail-value">${formatCurrency(expenditure)}</div></div></div><div class="bm-detail-item"><div class="bm-detail-icon blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div><div><div class="bm-detail-label">Progress</div><div class="bm-detail-value">${progress.toFixed(1)}%</div></div></div></div><div class="bm-progress-wrap"><div class="bm-progress-head"><span class="bm-progress-label">Expenditure progress</span><span class="bm-progress-value">${expenditureProgress.toFixed(1)}%</span></div><div class="bm-progress-track"><div class="bm-progress-fill" style="width:${expenditureProgress}%;background:linear-gradient(90deg,#10b981,#059669)"></div></div></div><div class="bm-progress-wrap"><div class="bm-progress-head"><span class="bm-progress-label">Timeline progress</span><span class="bm-progress-value">${timelineProgress.toFixed(1)}%</span></div><div class="bm-progress-track"><div class="bm-progress-fill" style="width:${timelineProgress}%;background:linear-gradient(90deg,#6366f1,#f59e0b,#d97706)"></div></div></div><div style="margin-top:12px;padding:12px 14px;border:1px solid var(--bm-line);border-radius:12px;background:var(--bm-raised);"><p style="font-family:var(--font-body);font-size:0.875rem;color:var(--bm-ink-secondary);line-height:1.6;margin:0;white-space:pre-wrap;word-break:break-word;">${props.description || 'No description available.'}</p></div><button type="button" class="bm-viewall show-all-projects-btn" style="margin-top:16px;"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>View all projects</button></div></div>`;
             }
 
             return `<div class="bm-project-card ${selectedProjectIndex === index ? 'selected' : ''}" data-index="${index}">${imageHtml}<div class="bm-project-body"><div class="bm-project-name">${props.name}</div><div class="bm-project-meta"><span class="bm-status ${getStatusClass(props.status)}"><span class="bm-status-dot"></span>${props.status || 'Unknown'}</span><span class="bm-status" style="background:var(--bm-raised);color:var(--bm-muted);border:1px solid var(--bm-line);">${props.barangay || 'Barangay not specified'}</span></div><div class="bm-project-stats"><div class="bm-project-stat"><div class="bm-project-stat-label">Budget</div><div class="bm-project-stat-value">${formatCurrency(props.budget)}</div></div><div class="bm-project-stat"><div class="bm-project-stat-label">Progress</div><div class="bm-project-stat-value">${progress.toFixed(1)}%</div></div></div><p class="bm-project-desc">${props.description || 'No description available.'}</p></div></div>`;
@@ -1091,6 +1154,14 @@ html.dark-mode .bm-wrap {
             } else {
                 departmentSidebarAction.innerHTML = '';
             }
+        }
+
+        function decorateProgressDetails(project) {
+            const selected = projectList.querySelector('.bm-selected');
+            if (!selected) return;
+            selected.querySelectorAll('.bm-detail-label').forEach(label => {
+                if (label.textContent.trim() === 'Progress') label.textContent = 'Reported Progress';
+            });
         }
 
         function clearSelection() {
@@ -1114,6 +1185,7 @@ html.dark-mode .bm-wrap {
                 return;
             }
             projectList.innerHTML = projects.map(project => renderProjectCard(project, project.originalIndex, projects.length === 1)).join('');
+            if (projects.length === 1) decorateProgressDetails(projects[0]);
             document.querySelectorAll('.show-all-projects-btn').forEach(btn => btn.addEventListener('click', resetToAllBarangays));
             document.querySelectorAll('.bm-project-card').forEach(card => {
                 card.addEventListener('click', function() {
@@ -1198,7 +1270,8 @@ html.dark-mode .bm-wrap {
                 }).addTo(map);
 
                 function getMarkerColor(status) {
-                    return ({ 'Proposed': '#fbbf24', 'Planning': '#fbbf24', 'For bidding': '#f59e0b', 'Procurement': '#f59e0b', 'Bidding ongoing': '#3b82f6', 'Award of contract': '#8b5cf6', 'Bidding - Success': '#8b5cf6', 'Implementation': '#0ea5e9', 'On Going': '#0ea5e9', 'Completed': '#10b981', 'On Hold': '#ef4444', 'Cancelled': '#64748b' })[status] || '#64748b';
+                    const colors = { 'Proposed': '#2563eb', 'For bidding': '#f59e0b', 'Bidding ongoing': '#06b6d4', 'Award of contract': '#8b5cf6', 'Implementation': '#0f766e', 'Completed': '#16a34a', 'On Hold': '#dc2626', 'Cancelled': '#64748b' };
+                    return colors[String(status ?? '').trim()] || '#64748b';
                 }
 
                 allMarkers = L.featureGroup();

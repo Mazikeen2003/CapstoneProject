@@ -15,7 +15,7 @@ class DashboardController extends Controller
 
         $stats = [
             'total_projects' => $projects->count(),
-            'ongoing' => $projects->whereIn('current_status', ['Implementation', 'On Going'])->count(),
+            'ongoing' => $projects->whereNotIn('current_status', ['Completed', 'Cancelled', 'On Hold'])->count(),
             'completed' => $projects->where('current_status', 'Completed')->count(),
             'budget_allocated' => $projects->sum('approved_budget') ?? 0,
             'budget_used' => $projects->sum('actual_budget') ?? 0,

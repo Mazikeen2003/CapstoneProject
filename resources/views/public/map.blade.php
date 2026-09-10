@@ -108,6 +108,114 @@
             background: #ffffff;
         }
 
+        .public-project-description-card {
+            margin-top: 18px;
+            padding: 16px 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #f8fafc;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+        }
+
+        .public-project-description-card p {
+            margin: 0;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: #475569;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .public-map-viewall {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 18px;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            color: #475569;
+            font-size: 0.875rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .public-map-viewall:hover {
+            background: #f8fafc;
+            border-color: #f59e0b;
+            color: #d97706;
+            transform: translateY(-1px);
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        }
+
+        .public-project-image-wrap {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .public-project-image {
+            display: block;
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            transition: transform 0.25s ease;
+        }
+
+        .public-project-image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.08) 0%, rgba(15, 23, 42, 0.18) 100%);
+        }
+
+        .public-collapsed-project-card:hover .public-project-image {
+            transform: scale(1.04);
+        }
+
+        .public-status-badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 9999px;
+            border: 1px solid transparent;
+            padding: 0.125rem 0.5rem;
+            font-size: 0.625rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .public-status-proposed { background: rgba(37, 99, 235, 0.10); color: #2563eb; border-color: rgba(37, 99, 235, 0.25); }
+        .public-status-bidding { background: rgba(245, 158, 11, 0.10); color: #f59e0b; border-color: rgba(245, 158, 11, 0.25); }
+        .public-status-ongoing { background: rgba(6, 182, 212, 0.10); color: #06b6d4; border-color: rgba(6, 182, 212, 0.25); }
+        .public-status-award { background: rgba(139, 92, 246, 0.10); color: #8b5cf6; border-color: rgba(139, 92, 246, 0.25); }
+        .public-status-implementation { background: rgba(15, 118, 110, 0.10); color: #0f766e; border-color: rgba(15, 118, 110, 0.25); }
+        .public-status-completed { background: rgba(22, 163, 74, 0.10); color: #16a34a; border-color: rgba(22, 163, 74, 0.25); }
+        .public-status-hold { background: rgba(220, 38, 38, 0.10); color: #dc2626; border-color: rgba(220, 38, 38, 0.25); }
+        .public-status-cancelled { background: rgba(100, 116, 139, 0.10); color: #64748b; border-color: rgba(100, 116, 139, 0.25); }
+
+        html.dark-mode .public-status-proposed,
+        .dark .public-status-proposed { background: rgba(37, 99, 235, 0.12); color: #60a5fa; border-color: rgba(37, 99, 235, 0.25); }
+        html.dark-mode .public-status-bidding,
+        .dark .public-status-bidding { background: rgba(245, 158, 11, 0.12); color: #fbbf24; border-color: rgba(245, 158, 11, 0.25); }
+        html.dark-mode .public-status-ongoing,
+        .dark .public-status-ongoing { background: rgba(6, 182, 212, 0.12); color: #67e8f9; border-color: rgba(6, 182, 212, 0.25); }
+        html.dark-mode .public-status-award,
+        .dark .public-status-award { background: rgba(139, 92, 246, 0.12); color: #a78bfa; border-color: rgba(139, 92, 246, 0.25); }
+        html.dark-mode .public-status-implementation,
+        .dark .public-status-implementation { background: rgba(15, 118, 110, 0.12); color: #5eead4; border-color: rgba(15, 118, 110, 0.25); }
+        html.dark-mode .public-status-completed,
+        .dark .public-status-completed { background: rgba(22, 163, 74, 0.12); color: #4ade80; border-color: rgba(22, 163, 74, 0.25); }
+        html.dark-mode .public-status-hold,
+        .dark .public-status-hold { background: rgba(220, 38, 38, 0.12); color: #f87171; border-color: rgba(220, 38, 38, 0.25); }
+        html.dark-mode .public-status-cancelled,
+        .dark .public-status-cancelled { background: rgba(100, 116, 139, 0.12); color: #cbd5e1; border-color: rgba(100, 116, 139, 0.25); }
+
         html.dark-mode .public-project-details-card,
         .dark .public-project-details-card {
             border-color: rgba(255, 255, 255, 0.08) !important;
@@ -136,6 +244,30 @@
 
         html.dark-mode .public-project-detail-value,
         .dark .public-project-detail-value { color: #f8fafc; }
+
+        html.dark-mode .public-project-description-card,
+        .dark .public-project-description-card {
+            border-color: rgba(255,255,255,0.08);
+            background: #222136;
+        }
+
+        html.dark-mode .public-project-description-card p,
+        .dark .public-project-description-card p {
+            color: #cbd5e1;
+        }
+
+        html.dark-mode .public-map-viewall,
+        .dark .public-map-viewall {
+            border-color: rgba(255,255,255,0.08);
+            background: linear-gradient(135deg, #1a1929, #222136);
+            color: #cbd5e1;
+        }
+
+        html.dark-mode .public-map-viewall:hover,
+        .dark .public-map-viewall:hover {
+            border-color: #fbbf24;
+            color: #fbbf24;
+        }
 
         .public-collapsed-project-card {
             border-color: rgba(0, 0, 0, 0.06) !important;
@@ -200,6 +332,129 @@
         html.dark-mode .public-lifecycle-label-active,
         .dark .public-lifecycle-label-active { color: #fbbf24; }
 
+        .dept-stepper-lifecycle {
+            --de-surface: #ffffff;
+            --de-line: rgba(0, 0, 0, 0.06);
+            --de-line-strong: rgba(0, 0, 0, 0.12);
+            --de-ink: #1e1b4b;
+            --de-ink-secondary: #374151;
+            --de-muted: #9ca3af;
+            --de-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            background: var(--de-surface);
+            border: 1px solid var(--de-line);
+            border-radius: 12px;
+            box-shadow: var(--de-shadow-sm);
+            padding: 20px 20px 22px;
+            margin-bottom: 20px;
+        }
+        .dept-stepper-header { margin-bottom: 20px; }
+        .dept-stepper-title {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 700;
+            color: var(--de-ink);
+            margin: 0 0 4px;
+        }
+        .dept-stepper-subtitle {
+            font-size: 0.75rem;
+            color: var(--de-muted);
+            margin: 0;
+            font-weight: 500;
+        }
+        .dept-stepper-track {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 4px;
+        }
+        .dept-step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1 1 0;
+            position: relative;
+            z-index: 2;
+            min-width: 0;
+        }
+        .dept-step-node {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .dept-step-item.completed .dept-step-node { background: #10b981; color: #fff; }
+        .dept-step-item.current .dept-step-node { background: #3b82f6; color: #fff; }
+        .dept-step-item.pending .dept-step-node {
+            background: transparent;
+            color: var(--de-muted);
+            border: 2px solid var(--de-line-strong);
+        }
+        .dept-step-name {
+            font-size: 0.625rem;
+            font-weight: 600;
+            color: var(--de-ink-secondary);
+            text-align: center;
+            line-height: 1.2;
+            white-space: normal;
+            max-width: 72px;
+        }
+        .dept-step-item.completed .dept-step-name { color: #059669; font-weight: 700; }
+        .dept-step-item.current .dept-step-name { color: #2563eb; font-weight: 700; }
+        .dept-step-item.pending .dept-step-name { color: var(--de-muted); font-weight: 500; }
+        .dept-step-connector {
+            flex: 1;
+            height: 2px;
+            background: var(--de-line-strong);
+            margin-top: 14px;
+            min-width: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        .dept-step-connector.completed { background: #10b981; }
+        html.dark-mode .dept-stepper-lifecycle,
+        .dark .dept-stepper-lifecycle {
+            --de-surface: #1a1929;
+            --de-line: rgba(255, 255, 255, 0.06);
+            --de-line-strong: rgba(255, 255, 255, 0.12);
+            --de-ink: #f8fafc;
+            --de-ink-secondary: #cbd5e1;
+            --de-muted: #94a3b8;
+            --de-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            background: var(--de-surface);
+            border-color: var(--de-line);
+            box-shadow: var(--de-shadow-sm);
+        }
+        html.dark-mode .dept-stepper-title,
+        .dark .dept-stepper-title { color: #f8f7f5; }
+        html.dark-mode .dept-stepper-subtitle,
+        .dark .dept-stepper-subtitle { color: #94a3b8; }
+        html.dark-mode .dept-step-item.completed .dept-step-node,
+        .dark .dept-step-item.completed .dept-step-node { background: #34d399; color: #064e3b; }
+        html.dark-mode .dept-step-item.current .dept-step-node,
+        .dark .dept-step-item.current .dept-step-node { background: #60a5fa; color: #0f172a; }
+        html.dark-mode .dept-step-item.pending .dept-step-node,
+        .dark .dept-step-item.pending .dept-step-node {
+            background: #1a1929;
+            border-color: rgba(255, 255, 255, 0.12);
+            color: #94a3b8;
+        }
+        html.dark-mode .dept-step-item.completed .dept-step-name,
+        .dark .dept-step-item.completed .dept-step-name { color: #34d399; }
+        html.dark-mode .dept-step-item.current .dept-step-name,
+        .dark .dept-step-item.current .dept-step-name { color: #60a5fa; }
+        html.dark-mode .dept-step-connector.completed,
+        .dark .dept-step-connector.completed { background: #34d399; }
+        @media (max-width: 640px) {
+            .dept-stepper-track { overflow-x: auto; padding-bottom: 8px; }
+            .dept-step-item { min-width: 70px; }
+            .dept-step-name { max-width: 70px; }
+        }
         @media (max-width: 420px) {
             .public-project-details-grid { grid-template-columns: 1fr; }
         }
@@ -275,7 +530,9 @@
     {{-- ============ MAP CONTENT ============ --}}
     <main class="px-4 py-5 md:px-6 md:py-6 lg:px-8">
         <div class="flex flex-col lg:flex-row gap-4 overflow-hidden rounded-3xl border border-gray-300 shadow-sm">
-            <div class="flex-1 min-w-0 w-full relative z-0" id="map" style="background-color: #f0f0f0;"></div>
+            <div class="flex-1 min-w-0 w-full relative z-0" id="map" style="background-color: #f0f0f0;">
+                @include('components.map-status-legend')
+            </div>
 
             <div id="projectSidebar" class="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden order-3 md:order-2 flex flex-col" style="max-height: calc(100vh - 18rem);">
                 <div class="p-6 border-b border-gray-200 bg-white">
@@ -350,12 +607,6 @@
             }
 
             function calculateProgress(project) {
-                const reportedProgress = project.properties.progress_percentage;
-
-                if (reportedProgress !== null && reportedProgress !== undefined && reportedProgress !== '') {
-                    return Math.min(100, Math.max(0, Number(reportedProgress)));
-                }
-
                 if (!project.properties.start_date || !project.properties.target_end_date) {
                     return 0;
                 }
@@ -370,45 +621,68 @@
                 return totalDays > 0 ? Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100)) : 0;
             }
 
+            function calculateReportedProgress(project) {
+                const reportedProgress = project.properties.progress_percentage;
+                return reportedProgress !== null && reportedProgress !== undefined && reportedProgress !== ''
+                    ? Math.min(100, Math.max(0, Number(reportedProgress)))
+                    : null;
+            }
+
+            function getStatusClass(status) {
+                const map = {
+                    'Proposed': 'public-status-proposed',
+                    'Planning': 'public-status-proposed',
+                    'For bidding': 'public-status-bidding',
+                    'Procurement': 'public-status-bidding',
+                    'Bidding ongoing': 'public-status-ongoing',
+                    'Bidding - Success': 'public-status-award',
+                    'Award of contract': 'public-status-award',
+                    'Implementation': 'public-status-implementation',
+                    'On Going': 'public-status-implementation',
+                    'Completed': 'public-status-completed',
+                    'On Hold': 'public-status-hold',
+                    'Cancelled': 'public-status-cancelled'
+                };
+
+                return map[status] || 'public-status-proposed';
+            }
+
             function renderLifecycleStepper(status) {
-                const steps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation'];
+                const steps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation', 'Completed'];
                 const stageByStatus = {
                     Proposed: 0,
                     'For bidding': 1,
                     'Bidding ongoing': 2,
                     'Award of contract': 3,
                     Implementation: 4,
-                    Completed: 4,
+                    Completed: 5,
                     Planning: 0,
                     Procurement: 1,
                     'Bidding - Success': 3,
                     'On Going': 4
                 };
                 const activeStep = stageByStatus[status];
-                const isCompleted = status === 'Completed';
 
                 return `
-                    <div class="mt-4 mb-4 rounded-2xl border border-slate-200 bg-white p-4">
-                        <div class="flex items-center justify-between gap-3">
-                            <span class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Project lifecycle</span>
-                            <span class="text-xs font-semibold text-slate-700">${status || 'Unknown'}</span>
+                    <div class="dept-stepper-lifecycle">
+                        <div class="dept-stepper-header">
+                            <h3 class="dept-stepper-title">Project Lifecycle</h3>
+                            <p class="dept-stepper-subtitle">Current stage: ${status || 'Unknown'}</p>
                         </div>
-                        <div class="mt-4 grid grid-cols-5 gap-1 sm:gap-2">
+                        <div class="dept-stepper-track">
                             ${steps.map((step, index) => {
-                                const complete = activeStep !== undefined && (index < activeStep || isCompleted);
-                                const current = activeStep !== undefined && index === activeStep && !isCompleted;
-                                const circleClass = complete
-                                    ? 'public-lifecycle-complete'
-                                    : (current ? 'public-lifecycle-current' : 'public-lifecycle-pending');
-                                const labelClass = complete || current ? 'public-lifecycle-label-active' : 'public-lifecycle-label-muted';
-                                const lineClass = activeStep !== undefined && (index < activeStep || isCompleted) ? 'bg-emerald-600' : 'bg-slate-200';
+                                const isComplete = activeStep !== null && activeStep !== undefined && index < activeStep;
+                                const isCurrent = activeStep !== null && activeStep !== undefined && index === activeStep;
+                                const state = isComplete ? 'completed' : (isCurrent ? 'current' : 'pending');
 
                                 return `
-                                    <div class="relative text-center">
-                                        ${index < steps.length - 1 ? `<div class="absolute left-1/2 top-3.5 h-0.5 w-full ${lineClass}"></div>` : ''}
-                                        <div class="relative z-10 mx-auto flex h-7 w-7 items-center justify-center rounded-full border-2 text-[10px] font-bold ${circleClass}">${complete ? '&#10003;' : index + 1}</div>
-                                        <p class="mt-2 text-[9px] font-semibold leading-tight sm:text-[10px] ${labelClass}">${step}</p>
+                                    <div class="dept-step-item ${state}">
+                                        <div class="dept-step-node">
+                                            ${isComplete ? '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' : index + 1}
+                                        </div>
+                                        <span class="dept-step-name">${step}</span>
                                     </div>
+                                    ${index < steps.length - 1 ? `<div class="dept-step-connector ${isComplete ? 'completed' : ''}"></div>` : ''}
                                 `;
                             }).join('')}
                         </div>
@@ -418,17 +692,23 @@
 
             function renderProjectCard(project, index, isSingle = false) {
                 const props = project.properties;
-                const progress = calculateProgress(project);
+                const timelineProgress = calculateProgress(project);
+                const reportedProgress = calculateReportedProgress(project);
+                const progress = reportedProgress ?? timelineProgress;
                 const allocatedBudget = Number(props.budget || 0);
                 const expenditure = Number(props.actual_budget || 0);
                 const expenditureProgress = allocatedBudget > 0 ? Math.min(100, Math.max(0, (expenditure / allocatedBudget) * 100)) : 0;
                 const startDate = props.start_date ? new Date(props.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
                 const targetDate = props.target_end_date ? new Date(props.target_end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
                 const lifecycleHtml = renderLifecycleStepper(props.status);
+                const statusClass = getStatusClass(props.status);
                 const description = escapeHtml(props.description || 'No description available.');
 
                 const imageHtml = props.image
                     ? `<img src="${props.image}" alt="${props.name}" class="h-40 w-full rounded-2xl object-cover bg-slate-100">`
+                    : '<div class="h-40 w-full rounded-2xl bg-gray-100 flex items-center justify-center text-xs text-gray-500">No image</div>';
+                const collapsedImageHtml = props.image
+                    ? `<div class="public-project-image-wrap"><img src="${props.image}" alt="${props.name}" class="public-project-image"><div class="public-project-image-overlay"></div></div>`
                     : '<div class="h-40 w-full rounded-2xl bg-gray-100 flex items-center justify-center text-xs text-gray-500">No image</div>';
 
                 if (isSingle) {
@@ -440,7 +720,7 @@
                                         <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">Selected project</p>
                                         <h3 class="mt-2 text-xl font-semibold text-slate-900">${props.name}</h3>
                                     </div>
-                                    <span class="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-700">${props.status || 'Unknown'}</span>
+                                    <span class="public-status-badge ${statusClass}">${props.status || 'Unknown'}</span>
                                 </div>
                                 <div class="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-2">${imageHtml}</div>
                                 ${lifecycleHtml}
@@ -452,25 +732,27 @@
                                         <div class="public-project-detail"><span class="public-project-detail-icon purple material-symbols-outlined">location_on</span><div><div class="public-project-detail-label">Barangay</div><div class="public-project-detail-value">${props.barangay || 'Not specified'}</div></div></div>
                                         <div class="public-project-detail"><span class="public-project-detail-icon emerald material-symbols-outlined">payments</span><div><div class="public-project-detail-label">Allocated Budget</div><div class="public-project-detail-value">${formatCurrency(allocatedBudget)}</div></div></div>
                                         <div class="public-project-detail"><span class="public-project-detail-icon rose material-symbols-outlined">account_balance_wallet</span><div><div class="public-project-detail-label">Expenditure</div><div class="public-project-detail-value">${formatCurrency(expenditure)}</div></div></div>
-                                        <div class="public-project-detail"><span class="public-project-detail-icon amber material-symbols-outlined">trending_up</span><div><div class="public-project-detail-label">Progress</div><div class="public-project-detail-value">${progress.toFixed(1)}%</div></div></div>
+                                        <div class="public-project-detail"><span class="public-project-detail-icon amber material-symbols-outlined">trending_up</span><div><div class="public-project-detail-label">Reported Progress</div><div class="public-project-detail-value">${reportedProgress === null ? 'Not reported' : reportedProgress.toFixed(1) + '%'}</div></div></div>
                                         </div>
                                         <div class="mt-3 border-t border-slate-300 pt-3"><div class="flex items-center justify-between text-xs text-slate-500"><span>Expenditure progress</span><span class="font-semibold text-slate-700">${expenditureProgress.toFixed(1)}%</span></div><div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full rounded-full bg-emerald-500" style="width: ${expenditureProgress}%"></div></div></div>
                                         <div class="mt-3 pt-3 border-t border-slate-300">
                                         <div class="flex justify-between items-center mb-1">
                                             <span class="text-xs font-semibold text-slate-600">Timeline</span>
-                                            <span class="text-xs font-bold text-slate-700">${progress.toFixed(1)}%</span>
+                                            <span class="text-xs font-bold text-slate-700">${timelineProgress.toFixed(1)}%</span>
                                         </div>
                                         <div class="h-2 bg-gray-300 rounded-full overflow-hidden">
-                                            <div class="h-full rounded-full transition-all duration-300" style="width: ${progress}%; background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);"></div>
+                                            <div class="h-full rounded-full transition-all duration-300" style="width: ${timelineProgress}%; background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);"></div>
                                         </div>
                                         <div class="flex justify-between text-xs text-slate-500 mt-1">
                                             <span>Start: ${startDate}</span>
                                             <span>Target: ${targetDate}</span>
                                         </div>
                                     </div>
-                                    <p class="mt-4 whitespace-pre-wrap break-words text-sm leading-6 text-slate-600" style="overflow-wrap:anywhere;">${description}</p>
                                 </div>
-                                <button type="button" data-barangay="${props.barangay || ''}" class="show-all-projects-btn mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><span class="material-symbols-outlined text-[17px]">grid_view</span>View all projects</button>
+                                <div class="public-project-description-card">
+                                    <p>${description}</p>
+                                </div>
+                                <button type="button" data-barangay="${props.barangay || ''}" class="public-map-viewall show-all-projects-btn"><span class="material-symbols-outlined text-[17px]">grid_view</span>View all projects</button>
                             </div>
                         </div>
                     `;
@@ -478,11 +760,11 @@
 
                 return `
                     <div class="public-map-project-card public-collapsed-project-card department-project-card cursor-pointer overflow-hidden rounded-3xl border-2 shadow-md transition hover:shadow-md" data-index="${index}">
-                        <div class="overflow-hidden p-2">${imageHtml}</div>
+                        <div class="overflow-hidden p-2">${collapsedImageHtml}</div>
                         <div class="p-4">
                             <h3 class="text-base font-semibold text-slate-900">${props.name}</h3>
                             <div class="mt-2 flex flex-wrap items-center gap-2">
-                                <span class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-amber-700">${props.status || 'Unknown'}</span>
+                                <span class="public-status-badge ${statusClass}">${props.status || 'Unknown'}</span>
                                 <p class="text-xs text-slate-500">${props.barangay || 'Barangay not specified'}</p>
                             </div>
                             <div class="public-project-details-card mt-4 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
@@ -490,11 +772,13 @@
                                     <h4 class="text-xs font-bold text-slate-900">Project Details</h4>
                                 </div>
                                 <div class="public-project-details-grid">
-                                    <div class="public-project-detail"><div><div class="public-project-detail-label">Progress</div><div class="public-project-detail-value">${progress.toFixed(1)}%</div></div></div>
+                                    <div class="public-project-detail"><div><div class="public-project-detail-label">Reported Progress</div><div class="public-project-detail-value">${reportedProgress === null ? 'Not reported' : reportedProgress.toFixed(1) + '%'}</div></div></div>
                                     <div class="public-project-detail"><div><div class="public-project-detail-label">Budget</div><div class="public-project-detail-value">${formatCurrency(props.budget)}</div></div></div>
                                 </div>
                             </div>
-                            <p class="mt-3 max-h-20 overflow-hidden break-words text-sm leading-relaxed text-slate-600" style="display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow-wrap:anywhere;">${description}</p>
+                            <div class="public-project-description-card mt-3">
+                                <p class="max-h-20 overflow-hidden break-words" style="display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow-wrap:anywhere;">${description}</p>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -697,20 +981,17 @@
                     }).addTo(map);
 
                     function getMarkerColor(status) {
-                        return ({
-                            'Proposed': '#fbbf24',
-                            'Planning': '#fbbf24',
+                        const colors = {
+                            'Proposed': '#2563eb',
                             'For bidding': '#f59e0b',
-                            'Procurement': '#f59e0b',
-                            'Bidding ongoing': '#3b82f6',
+                            'Bidding ongoing': '#06b6d4',
                             'Award of contract': '#8b5cf6',
-                            'Bidding - Success': '#8b5cf6',
-                            'Implementation': '#0ea5e9',
-                            'On Going': '#0ea5e9',
-                            'Completed': '#10b981',
-                            'On Hold': '#ef4444',
+                            'Implementation': '#0f766e',
+                            'Completed': '#16a34a',
+                            'On Hold': '#dc2626',
                             'Cancelled': '#64748b'
-                        })[status] || '#64748b';
+                        };
+                        return colors[String(status ?? '').trim()] || '#64748b';
                     }
 
                     allMarkers = L.featureGroup();

@@ -125,6 +125,9 @@ public function store(StoreUserRequest $request): RedirectResponse
             unset($data['password_hash']);
 
             $data['is_disabled'] = $request->boolean('is_disabled');
+            $data['barangay_id'] = $this->roleSlugForId((int) $data['role_id']) === 'barangay'
+                ? ($data['barangay_id'] ?? null)
+                : null;
             $data['is_department_head'] = $this->roleSlugForId((int) $data['role_id']) === 'department'
                 ? (bool) $request->boolean('is_department_head')
                 : false;

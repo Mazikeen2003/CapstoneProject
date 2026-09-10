@@ -22,7 +22,7 @@ class StoreUserRequest extends FormRequest
             'is_disabled' => ['nullable', 'boolean'],
             'is_department_head' => ['nullable', 'boolean'],
             'role_id' => ['required', 'exists:roles,role_id'],
-            'barangay_id' => ['nullable', 'exists:barangays,barangay_id'],
+            'barangay_id' => ['nullable', 'required_if:role_id,4', 'exists:barangays,barangay_id'],
             'permissions' => ['nullable', 'array'],
             'permissions.can_create_project' => ['nullable', 'boolean'],
             'permissions.can_edit_project' => ['nullable', 'boolean'],
@@ -48,6 +48,7 @@ class StoreUserRequest extends FormRequest
             'role_id.required' => 'Role is required.',
             'role_id.exists' => 'Selected role does not exist.',
             'barangay_id.exists' => 'Selected barangay does not exist.',
+            'barangay_id.required_if' => 'A barangay is required for Barangay Official roles.',
         ];
     }
 }

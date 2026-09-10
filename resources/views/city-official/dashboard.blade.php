@@ -174,11 +174,37 @@ html.dark-mode .cd-progress-bg { background: #334155; }
 /* Status Badges */
 .cd-status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; text-transform: capitalize; }
 .cd-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.cd-status-planning { background: #fef3c7; color: #b45309; }
-.cd-status-ongoing { background: #dbeafe; color: #1d4ed8; }
-.cd-status-on-hold { background: #fee2e2; color: #b91c1c; }
-.cd-status-completed { background: #d1fae5; color: #047857; }
-.cd-status-cancelled { background: #f3f4f6; color: #4b5563; }
+.cd-status-planning,
+.cd-status-proposed { background: rgba(37,99,235,0.10); color: #2563eb; }
+.cd-status-bidding { background: rgba(245,158,11,0.10); color: #f59e0b; }
+.cd-status-bidding-ongoing { background: rgba(6,182,212,0.10); color: #06b6d4; }
+.cd-status-award { background: rgba(139,92,246,0.10); color: #8b5cf6; }
+.cd-status-ongoing,
+.cd-status-implementation { background: rgba(15,118,110,0.10); color: #0f766e; }
+.cd-status-on-hold { background: rgba(220,38,38,0.10); color: #dc2626; }
+.cd-status-completed { background: rgba(22,163,74,0.10); color: #16a34a; }
+.cd-status-cancelled { background: rgba(100,116,139,0.10); color: #64748b; }
+
+html.dark-mode .cd-status-planning,
+html.dark-mode .cd-status-proposed,
+.dark .cd-status-planning,
+.dark .cd-status-proposed { background: rgba(37,99,235,0.12); color: #60a5fa; }
+html.dark-mode .cd-status-bidding,
+.dark .cd-status-bidding { background: rgba(245,158,11,0.12); color: #fbbf24; }
+html.dark-mode .cd-status-bidding-ongoing,
+.dark .cd-status-bidding-ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
+html.dark-mode .cd-status-award,
+.dark .cd-status-award { background: rgba(139,92,246,0.12); color: #a78bfa; }
+html.dark-mode .cd-status-ongoing,
+html.dark-mode .cd-status-implementation,
+.dark .cd-status-ongoing,
+.dark .cd-status-implementation { background: rgba(15,118,110,0.12); color: #5eead4; }
+html.dark-mode .cd-status-on-hold,
+.dark .cd-status-on-hold { background: rgba(220,38,38,0.12); color: #f87171; }
+html.dark-mode .cd-status-completed,
+.dark .cd-status-completed { background: rgba(22,163,74,0.12); color: #4ade80; }
+html.dark-mode .cd-status-cancelled,
+.dark .cd-status-cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
 
 /* Project List */
 .cd-projects { display: flex; flex-direction: column; gap: 12px; }
@@ -314,10 +340,14 @@ html.dark-mode .cd-progress-bg { background: #334155; }
                     <div id="city-map"></div>
                     <div class="cd-map-legend">
                         <div class="cd-map-legend-title">Project Status</div>
-                        <div class="cd-map-legend-item"><span class="cd-map-legend-dot" style="background:#fbbf24"></span> Planning</div>
-                        <div class="cd-map-legend-item"><span class="cd-map-legend-dot" style="background:#3b82f6"></span> On Going</div>
-                        <div class="cd-map-legend-item"><span class="cd-map-legend-dot" style="background:#ef4444"></span> On Hold</div>
-                        <div class="cd-map-legend-item"><span class="cd-map-legend-dot" style="background:#10b981"></span> Completed</div>
+                        <div class="cd-map-legend-item"><span class="cd-map-legend-dot" style="background:#2563eb"></span> Proposed</div>
+                        <div class="cd-map-legend-item"><span class="cd-map-legend-dot" style="background:#f59e0b"></span> For bidding</div>
+                        <div class="cd-map-legend-item"><span class="cd-map-legend-dot" style="background:#06b6d4"></span> Bidding ongoing</div>
+                        <div class="cd-map-legend-item"><span class="cd-map-legend-dot" style="background:#8b5cf6"></span> Award of contract</div>
+                        <div class="cd-map-legend-item"><span class="cd-map-legend-dot" style="background:#0f766e"></span> Implementation</div>
+                        <div class="cd-map-legend-item"><span class="cd-map-legend-dot" style="background:#16a34a"></span> Completed</div>
+                        <div class="cd-map-legend-item"><span class="cd-map-legend-dot" style="background:#dc2626"></span> On Hold</div>
+                        <div class="cd-map-legend-item"><span class="cd-map-legend-dot" style="background:#64748b"></span> Cancelled</div>
                     </div>
                 </div>
             </div>
@@ -354,8 +384,11 @@ html.dark-mode .cd-progress-bg { background: #334155; }
                         @foreach ($recentProjects as $project)
                             @php
                                 $statusClass = match($project->current_status) {
-                                    'Planning' => 'cd-status-planning',
-                                    'On Going' => 'cd-status-ongoing',
+                                    'Planning', 'Proposed' => 'cd-status-planning',
+                                    'For bidding', 'Procurement' => 'cd-status-bidding',
+                                    'Bidding ongoing' => 'cd-status-bidding-ongoing',
+                                    'Award of contract', 'Bidding - Success' => 'cd-status-award',
+                                    'On Going', 'Implementation' => 'cd-status-implementation',
                                     'On Hold' => 'cd-status-on-hold',
                                     'Completed' => 'cd-status-completed',
                                     'Cancelled' => 'cd-status-cancelled',
@@ -446,16 +479,20 @@ html.dark-mode .cd-progress-bg { background: #334155; }
                         L.geoJSON(data, {
                             pointToLayer: function(feature, latlng) {
                                 const statusColor = {
-                                    'Planning': '#fbbf24',
-                                    'On Going': '#3b82f6',
-                                    'On Hold': '#ef4444',
-                                    'Completed': '#10b981',
-                                    'Cancelled': '#6b7280'
+                                    'Proposed': '#2563eb',
+                                    'For bidding': '#f59e0b',
+                                    'Bidding ongoing': '#06b6d4',
+                                    'Award of contract': '#8b5cf6',
+                                    'Implementation': '#0f766e',
+                                    'Completed': '#16a34a',
+                                    'On Hold': '#dc2626',
+                                    'Cancelled': '#64748b'
                                 };
+                                const normalizedStatus = String(feature.properties.status || '').trim();
 
                                 return L.circleMarker(latlng, {
                                     radius: 8,
-                                    fillColor: statusColor[feature.properties.status] || '#9CA3AF',
+                                    fillColor: statusColor[normalizedStatus] || '#64748b',
                                     color: '#000',
                                     weight: 2,
                                     opacity: 0.8,

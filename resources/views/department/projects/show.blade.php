@@ -5,6 +5,17 @@
 @php
     $currentRole = auth()->user()?->role_slug ?? 'public';
     $projectRoutePrefix = $projectRoutePrefix ?? 'department.projects';
+    $statusClass = match($project->current_status) {
+        'Planning', 'Proposed' => 'dept-show-status-planning',
+        'For bidding', 'Procurement' => 'dept-show-status-bidding',
+        'Bidding ongoing' => 'dept-show-status-bidding-ongoing',
+        'Award of contract', 'Bidding - Success' => 'dept-show-status-award',
+        'On Going', 'Implementation' => 'dept-show-status-implementation',
+        'On Hold' => 'dept-show-status-on-hold',
+        'Completed' => 'dept-show-status-completed',
+        'Cancelled' => 'dept-show-status-cancelled',
+        default => 'dept-show-status-planning',
+    };
 @endphp
 
 <style>
@@ -147,6 +158,80 @@
         border-radius: 50%;
         background: #60a5fa;
         box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+    }
+    .dept-show-status-planning,
+    .dept-show-status-proposed {
+        background: rgba(37, 99, 235, 0.18);
+        color: #dbeafe;
+        border-color: rgba(37, 99, 235, 0.35);
+    }
+    .dept-show-status-planning::before,
+    .dept-show-status-proposed::before {
+        background: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+    }
+    .dept-show-status-bidding {
+        background: rgba(245, 158, 11, 0.18);
+        color: #fef3c7;
+        border-color: rgba(245, 158, 11, 0.35);
+    }
+    .dept-show-status-bidding::before {
+        background: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+    }
+    .dept-show-status-bidding-ongoing {
+        background: rgba(6, 182, 212, 0.18);
+        color: #cffafe;
+        border-color: rgba(6, 182, 212, 0.35);
+    }
+    .dept-show-status-bidding-ongoing::before {
+        background: #06b6d4;
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25);
+    }
+    .dept-show-status-award {
+        background: rgba(139, 92, 246, 0.18);
+        color: #ede9fe;
+        border-color: rgba(139, 92, 246, 0.35);
+    }
+    .dept-show-status-award::before {
+        background: #8b5cf6;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+    }
+    .dept-show-status-implementation {
+        background: rgba(15, 118, 110, 0.18);
+        color: #d1fae5;
+        border-color: rgba(15, 118, 110, 0.35);
+    }
+    .dept-show-status-implementation::before {
+        background: #0f766e;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.25);
+    }
+    .dept-show-status-on-hold {
+        background: rgba(220, 38, 38, 0.18);
+        color: #fee2e2;
+        border-color: rgba(220, 38, 38, 0.35);
+    }
+    .dept-show-status-on-hold::before {
+        background: #dc2626;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
+    }
+    .dept-show-status-completed {
+        background: rgba(22, 163, 74, 0.18);
+        color: #dcfce7;
+        border-color: rgba(22, 163, 74, 0.35);
+    }
+    .dept-show-status-completed::before {
+        background: #16a34a;
+        box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25);
+    }
+    .dept-show-status-cancelled {
+        background: rgba(100, 116, 139, 0.18);
+        color: #e2e8f0;
+        border-color: rgba(100, 116, 139, 0.35);
+    }
+    .dept-show-status-cancelled::before {
+        background: #64748b;
+        box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.25);
     }
 
     /* Stepper */
@@ -481,26 +566,29 @@
         cursor: zoom-in;
     }
     .dept-timeline-evidence {
-        display: flex;
-        align-items: flex-start;
-        gap: 16px;
+        display: grid;
+        gap: 10px;
         margin-top: 12px;
     }
-    .dept-timeline-evidence .dept-timeline-image { margin-top: 0; flex: 0 0 calc(50% - 8px); width: calc(50% - 8px); max-width: none; }
+    .dept-timeline-evidence-image,
     .dept-timeline-evidence-description {
-        flex: 0 0 calc(50% - 8px);
-        min-width: 0;
+        padding: 10px;
+        border: 1px solid var(--ds-line);
+        border-radius: var(--ds-radius-xs);
+        background: var(--ds-surface);
+    }
+    .dept-timeline-evidence .dept-timeline-image {
+        margin-top: 0;
+        width: 100%;
+        max-width: none;
+    }
+    .dept-timeline-evidence-description {
         color: var(--ds-ink-secondary);
         font-size: .875rem;
         line-height: 1.5;
         overflow-wrap: anywhere;
         word-break: break-word;
         white-space: pre-wrap;
-    }
-    @media (max-width: 639px) {
-        .dept-timeline-evidence { flex-direction: column; }
-        .dept-timeline-evidence .dept-timeline-image { flex-basis: auto; width: min(100%, 420px); }
-        .dept-timeline-evidence-description { flex-basis: auto; width: 100%; }
     }
     .dept-image-lightbox {
         position: fixed;
@@ -586,6 +674,7 @@
     .dept-progress-mini {
         padding: 20px 24px;
     }
+    .dept-progress-mini-block { margin-top: 18px; }
     .dept-progress-mini-header {
         display: flex;
         align-items: center;
@@ -785,15 +874,13 @@
     /* Page actions */
     .dept-show-actions {
         display: flex;
-        flex-direction: column-reverse;
+        flex-direction: column;
         gap: 12px;
         margin-top: 8px;
     }
-    @media (min-width: 480px) {
-        .dept-show-actions { flex-direction: row; justify-content: flex-end; }
-    }
     .dept-show-btn {
         display: inline-flex;
+        width: 100%;
         align-items: center;
         justify-content: center;
         gap: 8px;
@@ -908,7 +995,7 @@
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.429-2.507a2.117 2.117 0 00-1.86-.22m-7.5 2.1l.22.22m6.44-2.22l-.22.22m-6.44 2.1l.22.22m6.44-2.22l-.22.22m-6.44 2.1l.22.22m6.44-2.22l-.22.22M3.75 6.75l7.5-4.5 7.5 4.5M3.75 6.75v10.5a2.25 2.25 0 002.25 2.25h10.5"/></svg>
                     {{ $project->project_type }}
                 </span>
-                <span class="dept-show-status">{{ $project->current_status }}</span>
+                <span class="dept-show-status {{ $statusClass }}">{{ $project->current_status }}</span>
             </div>
             <h1 class="dept-show-hero-title">{{ $project->project_name }}</h1>
             <div class="dept-show-hero-subtitle">
@@ -977,7 +1064,7 @@
                                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </div>
                             <div class="dept-detail-content">
-                                <div class="dept-detail-label">Approved Budget</div>
+                                <div class="dept-detail-label">{{ in_array($project->current_status, ['Award of contract', 'Implementation', 'Completed'], true) ? 'Approved Budget' : 'Proposed Budget' }}</div>
                                 <div class="dept-detail-value">₱{{ number_format($project->approved_budget ?? 0, 2) }}</div>
                             </div>
                         </div>
@@ -1104,8 +1191,10 @@
                                         <div class="dept-timeline-progress">{{ $update->progress_percentage }}% Complete</div>
                                         @if ($update->image_path)
                                             <div class="dept-timeline-evidence">
-                                                <img src="{{ asset('storage/' . $update->image_path) }}" alt="Progress update evidence" class="dept-timeline-image" data-full-image="{{ asset('storage/' . $update->image_path) }}">
-                                                <div class="dept-timeline-evidence-description">{{ $update->remarks ?? '' }}</div>
+                                                <div class="dept-timeline-evidence-image">
+                                                    <img src="{{ asset('storage/' . $update->image_path) }}" alt="Progress update evidence" class="dept-timeline-image" data-full-image="{{ asset('storage/' . $update->image_path) }}">
+                                                </div>
+                                                <div class="dept-timeline-evidence-description">{{ $update->remarks ?? 'No remarks provided.' }}</div>
                                             </div>
                                         @else
                                             <div class="dept-timeline-remarks">{{ $update->remarks ?? '' }}</div>
@@ -1130,18 +1219,27 @@
                 $daysElapsed = $startDate->diffInDays($today);
                 $timelineProgress = ($totalDays > 0) ? min(100, max(0, ($daysElapsed / $totalDays) * 100)) : 0;
                 $reportedProgress = $project->latestUpdate?->progress_percentage;
-                $progress = $reportedProgress !== null ? $reportedProgress : $timelineProgress;
+                $reportedProgress = $reportedProgress !== null ? min(100, max(0, (float) $reportedProgress)) : null;
             @endphp
 
             <!-- Progress Mini Card -->
             <div class="dept-show-card dept-animate">
                 <div class="dept-progress-mini">
                     <div class="dept-progress-mini-header">
-                        <span class="dept-progress-mini-label">Overall Progress</span>
-                        <span class="dept-progress-mini-value">{{ number_format($progress, 1) }}%</span>
+                        <span class="dept-progress-mini-label">Timeline Progress</span>
+                        <span class="dept-progress-mini-value">{{ number_format($timelineProgress, 1) }}%</span>
                     </div>
                     <div class="dept-progress-mini-track">
-                        <div class="dept-progress-mini-fill" style="width: {{ $progress }}%"></div>
+                        <div class="dept-progress-mini-fill" style="width: {{ $timelineProgress }}%"></div>
+                    </div>
+                    <div class="dept-progress-mini-block">
+                        <div class="dept-progress-mini-header">
+                            <span class="dept-progress-mini-label">Reported Progress</span>
+                            <span class="dept-progress-mini-value">{{ $reportedProgress !== null ? number_format($reportedProgress, 1) . '%' : 'Not reported' }}</span>
+                        </div>
+                        <div class="dept-progress-mini-track">
+                            <div class="dept-progress-mini-fill" style="width: {{ $reportedProgress ?? 0 }}%"></div>
+                        </div>
                     </div>
                     <div class="dept-progress-mini-footer">
                         <span>Started {{ $project->start_date?->format('M d, Y') ?? '—' }}</span>
@@ -1222,21 +1320,21 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- PAGE ACTIONS -->
-    <div class="dept-show-actions dept-animate">
-        <a href="{{ route($projectRoutePrefix . '.index') }}" class="dept-show-btn dept-show-btn-secondary">
-            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/></svg>
-            Back to List
-        </a>
-        @if ($projectRoutePrefix === 'department.projects')
-            <a href="{{ route($projectRoutePrefix . '.edit', $project->project_id) }}" class="dept-show-btn dept-show-btn-primary">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
-                Edit Project
-            </a>
-        @endif
+            <!-- PAGE ACTIONS -->
+            <div class="dept-show-actions dept-animate">
+                <a href="{{ route($projectRoutePrefix . '.index') }}" class="dept-show-btn dept-show-btn-secondary">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/></svg>
+                    Back to List
+                </a>
+                @if ($projectRoutePrefix === 'department.projects')
+                    <a href="{{ route($projectRoutePrefix . '.edit', $project->project_id) }}" class="dept-show-btn dept-show-btn-primary">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
+                        Edit Project
+                    </a>
+                @endif
+            </div>
+        </div>
     </div>
 
 </div>

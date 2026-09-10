@@ -51,13 +51,13 @@
     .barangay-project-avatar { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: 10px; color: #fff; font-size: 0.75rem; font-weight: 800; }
     .barangay-project-status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
     .barangay-project-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-    .status-planning { background: #fef3c7; color: #b45309; }
-    .status-bidding { background: #fef3c7; color: #b45309; }
-    .status-award { background: #ede9fe; color: #6d28d9; }
-    .status-ongoing { background: #dbeafe; color: #1d4ed8; }
-    .status-hold { background: #fee2e2; color: #b91c1c; }
-    .status-completed { background: #d1fae5; color: #047857; }
-    .status-cancelled { background: #f3f4f6; color: #4b5563; }
+    .status-planning { background: rgba(37,99,235,0.10); color: #2563eb; }
+    .status-bidding { background: rgba(245,158,11,0.10); color: #f59e0b; }
+    .status-award { background: rgba(139,92,246,0.10); color: #8b5cf6; }
+    .status-ongoing { background: rgba(6,182,212,0.10); color: #06b6d4; }
+    .status-hold { background: rgba(220,38,38,0.10); color: #dc2626; }
+    .status-completed { background: rgba(22,163,74,0.10); color: #16a34a; }
+    .status-cancelled { background: rgba(100,116,139,0.10); color: #64748b; }
     .barangay-project-view { display: inline-flex; align-items: center; justify-content: center; padding: 7px 14px; border: 1px solid rgba(59,130,246,0.3); border-radius: 8px; background: #dbeafe; color: #1d4ed8; font-size: 0.75rem; font-weight: 700; text-decoration: none; transition: all 0.15s; }
     .barangay-project-view:hover { background: #3b82f6; color: #fff; }
     html.dark-mode .barangay-project-view { background: rgba(59,130,246,0.16); border-color: rgba(59,130,246,0.35); color: #60a5fa; }
@@ -75,8 +75,13 @@
     html.dark-mode .barangay-projects-table td { background: #1e293b; border-bottom-color: #334155; color: #cbd5e1; }
     html.dark-mode .barangay-projects-table tr:hover td { background: #243247; }
     html.dark-mode .barangay-project-code { color: #94a3b8; }
-    html.dark-mode .status-bidding { background: rgba(245,158,11,0.16); color: #fbbf24; }
-    html.dark-mode .status-award { background: rgba(139,92,246,0.16); color: #a78bfa; }
+    html.dark-mode .status-planning { background: rgba(37,99,235,0.12); color: #60a5fa; }
+    html.dark-mode .status-bidding { background: rgba(245,158,11,0.12); color: #fbbf24; }
+    html.dark-mode .status-award { background: rgba(139,92,246,0.12); color: #a78bfa; }
+    html.dark-mode .status-ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
+    html.dark-mode .status-hold { background: rgba(220,38,38,0.12); color: #f87171; }
+    html.dark-mode .status-completed { background: rgba(22,163,74,0.12); color: #4ade80; }
+    html.dark-mode .status-cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
     @media (max-width: 767px) {
         .barangay-projects-page { padding: 24px 16px; }
         .barangay-projects-header { display: block; }
@@ -154,7 +159,13 @@
                 @endforeach
             </div>
         @endif
-        @if($projects->hasPages())<div class="p-6">{{ $projects->links() }}</div>@endif
+        @if(method_exists($projects, 'links'))
+            <div class="p-6">
+                @if($projects->hasPages())
+                    <div class="barangay-project-pagebtns">{{ $projects->links() }}</div>
+                @endif
+            </div>
+        @endif
     </div>
 </div>
 

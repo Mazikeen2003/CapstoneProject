@@ -461,31 +461,31 @@ html:not(.dark-mode) .dept-map-container {
     box-shadow: 0 0 0 2px currentColor;
     opacity: 0.4;
 }
-.dept-map-status-badge.proposed { background: #fef3c7; color: #92400e; }
-.dept-map-status-badge.proposed .dot { background: #92400e; }
-.dept-map-status-badge.bidding { background: #fef9c3; color: #a16207; }
-.dept-map-status-badge.bidding .dot { background: #a16207; }
-.dept-map-status-badge.bidding_ongoing { background: #dbeafe; color: #1e40af; }
-.dept-map-status-badge.bidding_ongoing .dot { background: #1e40af; }
-.dept-map-status-badge.award { background: #ede9fe; color: #5b21b6; }
-.dept-map-status-badge.award .dot { background: #5b21b6; }
-.dept-map-status-badge.implementation { background: #dbeafe; color: #1e40af; }
-.dept-map-status-badge.implementation .dot { background: #1e40af; }
-.dept-map-status-badge.completed { background: #d1fae5; color: #065f46; }
-.dept-map-status-badge.completed .dot { background: #065f46; }
-.dept-map-status-badge.onhold { background: #ffe4e6; color: #9f1239; }
-.dept-map-status-badge.onhold .dot { background: #9f1239; }
-.dept-map-status-badge.cancelled { background: #f3f4f6; color: #4b5563; }
-.dept-map-status-badge.cancelled .dot { background: #4b5563; }
+.dept-map-status-badge.proposed { background: rgba(37,99,235,0.10); color: #2563eb; }
+.dept-map-status-badge.proposed .dot { background: #2563eb; }
+.dept-map-status-badge.bidding { background: rgba(245,158,11,0.10); color: #f59e0b; }
+.dept-map-status-badge.bidding .dot { background: #f59e0b; }
+.dept-map-status-badge.bidding_ongoing { background: rgba(6,182,212,0.10); color: #06b6d4; }
+.dept-map-status-badge.bidding_ongoing .dot { background: #06b6d4; }
+.dept-map-status-badge.award { background: rgba(139,92,246,0.10); color: #8b5cf6; }
+.dept-map-status-badge.award .dot { background: #8b5cf6; }
+.dept-map-status-badge.implementation { background: rgba(15,118,110,0.10); color: #0f766e; }
+.dept-map-status-badge.implementation .dot { background: #0f766e; }
+.dept-map-status-badge.completed { background: rgba(22,163,74,0.10); color: #16a34a; }
+.dept-map-status-badge.completed .dot { background: #16a34a; }
+.dept-map-status-badge.onhold { background: rgba(220,38,38,0.10); color: #dc2626; }
+.dept-map-status-badge.onhold .dot { background: #dc2626; }
+.dept-map-status-badge.cancelled { background: rgba(100,116,139,0.10); color: #64748b; }
+.dept-map-status-badge.cancelled .dot { background: #64748b; }
 
-.dark .dept-map-status-badge.proposed { background: rgba(251,191,36,0.12); color: #fbbf24; }
-.dark .dept-map-status-badge.bidding { background: rgba(250,204,21,0.12); color: #facc15; }
-.dark .dept-map-status-badge.bidding_ongoing { background: rgba(59,130,246,0.12); color: #60a5fa; }
+.dark .dept-map-status-badge.proposed { background: rgba(37,99,235,0.12); color: #60a5fa; }
+.dark .dept-map-status-badge.bidding { background: rgba(245,158,11,0.12); color: #fbbf24; }
+.dark .dept-map-status-badge.bidding_ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
 .dark .dept-map-status-badge.award { background: rgba(139,92,246,0.12); color: #a78bfa; }
-.dark .dept-map-status-badge.implementation { background: rgba(59,130,246,0.12); color: #60a5fa; }
-.dark .dept-map-status-badge.completed { background: rgba(16,185,129,0.12); color: #34d399; }
-.dark .dept-map-status-badge.onhold { background: rgba(244,63,94,0.12); color: #fb7185; }
-.dark .dept-map-status-badge.cancelled { background: rgba(107,114,128,0.12); color: #9ca3af; }
+.dark .dept-map-status-badge.implementation { background: rgba(15,118,110,0.12); color: #5eead4; }
+.dark .dept-map-status-badge.completed { background: rgba(22,163,74,0.12); color: #4ade80; }
+.dark .dept-map-status-badge.onhold { background: rgba(220,38,38,0.12); color: #f87171; }
+.dark .dept-map-status-badge.cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
 
 .dept-map-project-stats {
     display: grid;
@@ -602,7 +602,7 @@ html:not(.dark-mode) .dept-map-container {
 }
 .dept-map-stepper-track {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 6px;
 }
 .dept-map-step {
@@ -612,9 +612,9 @@ html:not(.dark-mode) .dept-map-container {
 .dept-map-step:not(:last-child)::after {
     content: "";
     position: absolute;
-    top: 16px;
-    left: 55%;
-    width: 90%;
+    top: 14px;
+    left: 56%;
+    width: 82%;
     height: 3px;
     background: var(--dm-line-strong);
     z-index: 0;
@@ -626,14 +626,14 @@ html:not(.dark-mode) .dept-map-container {
 .dept-map-step-dot {
     position: relative;
     z-index: 1;
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     font-weight: 800;
     font-family: "Plus Jakarta Sans", sans-serif;
     border: 3px solid var(--dm-line-strong);
@@ -659,11 +659,12 @@ html:not(.dark-mode) .dept-map-container {
     50% { box-shadow: 0 4px 20px 2px rgba(59, 130, 246, 0.5); }
 }
 .dept-map-step-label {
-    font-size: 0.625rem;
+    font-size: 0.5625rem;
     font-weight: 700;
     color: var(--dm-muted);
     margin-top: 8px;
-    line-height: 1.2;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
 }
 .dept-map-step.completed .dept-map-step-label { color: #059669; font-weight: 800; }
 .dept-map-step.active .dept-map-step-label { color: var(--dm-ink); font-weight: 800; }
@@ -731,6 +732,22 @@ html:not(.dark-mode) .dept-map-container {
     border: 1px solid var(--dm-line);
     border-radius: 12px;
 }
+.dept-map-description-card {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border: 1px solid var(--dm-line);
+    border-radius: 12px;
+    background: var(--dm-raised);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+.dept-map-description-card p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--dm-ink-secondary);
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
 .dept-map-progress-header {
     display: flex;
     align-items: center;
@@ -778,10 +795,10 @@ html:not(.dark-mode) .dept-map-container {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 18px;
     gap: 8px;
     width: 100%;
     padding: 14px;
-    margin-top: 6px;
     border-radius: 12px;
     font-size: 0.875rem;
     font-weight: 800;
@@ -916,14 +933,14 @@ html.dark-mode .dept-map-stat-label {
     color: #94a3b8 !important;
 }
 
-html.dark-mode .dept-map-status-badge.proposed { background: rgba(251,191,36,0.12); color: #fbbf24; }
-html.dark-mode .dept-map-status-badge.bidding { background: rgba(250,204,21,0.12); color: #facc15; }
-html.dark-mode .dept-map-status-badge.bidding_ongoing { background: rgba(59,130,246,0.12); color: #60a5fa; }
+html.dark-mode .dept-map-status-badge.proposed { background: rgba(37,99,235,0.12); color: #60a5fa; }
+html.dark-mode .dept-map-status-badge.bidding { background: rgba(245,158,11,0.12); color: #fbbf24; }
+html.dark-mode .dept-map-status-badge.bidding_ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
 html.dark-mode .dept-map-status-badge.award { background: rgba(139,92,246,0.12); color: #a78bfa; }
-html.dark-mode .dept-map-status-badge.implementation { background: rgba(59,130,246,0.12); color: #60a5fa; }
-html.dark-mode .dept-map-status-badge.completed { background: rgba(16,185,129,0.12); color: #34d399; }
-html.dark-mode .dept-map-status-badge.onhold { background: rgba(244,63,94,0.12); color: #fb7185; }
-html.dark-mode .dept-map-status-badge.cancelled { background: rgba(107,114,128,0.12); color: #9ca3af; }
+html.dark-mode .dept-map-status-badge.implementation { background: rgba(15,118,110,0.12); color: #5eead4; }
+html.dark-mode .dept-map-status-badge.completed { background: rgba(22,163,74,0.12); color: #4ade80; }
+html.dark-mode .dept-map-status-badge.onhold { background: rgba(220,38,38,0.12); color: #f87171; }
+html.dark-mode .dept-map-status-badge.cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
 
 html.dark-mode .leaflet-container { background: #0f172a; }
 html.dark-mode .leaflet-popup-content-wrapper,
@@ -1041,7 +1058,9 @@ html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1;
 
         <!-- MAP -->
         <div class="dept-map-card dept-animate">
-            <div class="dept-map-wrap" id="map"></div>
+            <div class="dept-map-wrap" id="map">
+                @include('components.map-status-legend')
+            </div>
             <div class="dept-map-overlay">
                 <button type="button" class="dept-map-overlay-btn active" id="btnLightTiles" title="Light map">
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
@@ -1098,29 +1117,45 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function calculateProgress(project) {
-        const reportedProgress = project.properties.progress_percentage;
-        if (reportedProgress !== null && reportedProgress !== undefined && reportedProgress !== '') {
-            return Math.min(100, Math.max(0, Number(reportedProgress)));
-        }
         if (!project.properties.start_date || !project.properties.target_end_date) {
             return 0;
         }
+
         const startDate = new Date(project.properties.start_date);
         const endDate = new Date(project.properties.target_end_date);
         const today = new Date();
+
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || endDate <= startDate) {
+            return 0;
+        }
+
         const totalDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
-        const daysElapsed = (today - startDate) / (1000 * 60 * 60 * 24);
-        return totalDays > 0 ? Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100)) : 0;
+
+        if (today < startDate) {
+            return 0;
+        }
+
+        if (today >= endDate) {
+            return 100;
+        }
+
+        const daysElapsed = Math.max(0, (today - startDate) / (1000 * 60 * 60 * 24));
+        return Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100));
+    }
+
+    function calculateReportedProgress(project) {
+        const reportedProgress = project.properties.progress_percentage;
+        return reportedProgress !== null && reportedProgress !== undefined && reportedProgress !== ''
+            ? Math.min(100, Math.max(0, Number(reportedProgress)))
+            : null;
     }
 
     function getStatusColor(status) {
         const map = {
-            'Proposed': '#fbbf24', 'Planning': '#fbbf24',
-            'For bidding': '#f59e0b', 'Procurement': '#f59e0b',
-            'Bidding ongoing': '#3b82f6', 'Award of contract': '#8b5cf6',
-            'Bidding - Success': '#8b5cf6', 'Implementation': '#0ea5e9',
-            'On Going': '#0ea5e9', 'Completed': '#10b981',
-            'On Hold': '#ef4444', 'Cancelled': '#64748b'
+            'Proposed': '#2563eb', 'For bidding': '#f59e0b',
+            'Bidding ongoing': '#06b6d4', 'Award of contract': '#8b5cf6',
+            'Implementation': '#0f766e', 'Completed': '#16a34a',
+            'On Hold': '#dc2626', 'Cancelled': '#64748b'
         };
         return map[status] || '#64748b';
     }
@@ -1150,20 +1185,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderLifecycleStepper(status) {
-        const steps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation'];
+        const steps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation', 'Completed'];
         const stageByStatus = {
             Proposed: 0, 'For bidding': 1, 'Bidding ongoing': 2,
-            'Award of contract': 3, Implementation: 4, Completed: 4,
+            'Award of contract': 3, Implementation: 4, Completed: 5,
             Planning: 0, Procurement: 1, 'Bidding - Success': 3, 'On Going': 4
         };
         const activeStep = stageByStatus[status];
-        const completedProject = status === 'Completed';
 
         let html = '<div class="dept-map-stepper"><div class="dept-map-stepper-header"><span class="dept-map-stepper-title">Project lifecycle</span><span class="dept-map-stepper-status">' + (status || 'Unknown') + '</span></div><div class="dept-map-stepper-track">';
 
         steps.forEach((step, stepIndex) => {
-            const complete = activeStep !== undefined && (stepIndex < activeStep || completedProject);
-            const current = activeStep !== undefined && stepIndex === activeStep && !completedProject;
+            const complete = activeStep !== undefined && stepIndex < activeStep;
+            const current = activeStep !== undefined && stepIndex === activeStep;
             let dotClass = '';
             if (complete) dotClass = 'completed';
             else if (current) dotClass = 'active';
@@ -1179,7 +1213,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderProjectCard(project, index, isSingle = false) {
         const props = project.properties;
-        const progress = calculateProgress(project);
+        const timelineProgress = calculateProgress(project);
+        const reportedProgress = calculateReportedProgress(project);
+        const progress = reportedProgress ?? timelineProgress;
         const allocatedBudget = Number(props.budget || 0);
         const expenditure = Number(props.actual_budget || 0);
         const expenditureProgress = allocatedBudget > 0 ? Math.min(100, Math.max(0, (expenditure / allocatedBudget) * 100)) : 0;
@@ -1220,7 +1256,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                             <div class="dept-map-detail-item">
                                 <div class="dept-map-detail-icon blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div>
-                                <div><div class="dept-map-detail-label">Progress</div><div class="dept-map-detail-value">${progress.toFixed(1)}%</div></div>
+                                <div><div class="dept-map-detail-label">Reported Progress</div><div class="dept-map-detail-value">${reportedProgress === null ? 'Not reported' : reportedProgress.toFixed(1) + '%'}</div></div>
                             </div>
                         </div>
 
@@ -1230,12 +1266,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
 
                         <div class="dept-map-progress-wrap">
-                            <div class="dept-map-progress-header"><span class="dept-map-progress-label">Timeline progress</span><span class="dept-map-progress-value">${progress.toFixed(1)}%</span></div>
-                            <div class="dept-map-progress-track"><div class="dept-map-progress-fill" style="width:${progress}%; background:linear-gradient(90deg,#3b82f6,#2563eb);"></div></div>
+                            <div class="dept-map-progress-header"><span class="dept-map-progress-label">Timeline progress</span><span class="dept-map-progress-value">${timelineProgress.toFixed(1)}%</span></div>
+                            <div class="dept-map-progress-track"><div class="dept-map-progress-fill" style="width:${timelineProgress}%; background:linear-gradient(90deg,#3b82f6,#2563eb);"></div></div>
                             <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:0.6875rem;font-weight:600;color:var(--dm-muted);"><span>Start: ${startDate}</span><span>Target: ${targetDate}</span></div>
                         </div>
 
-                        <p style="font-size:0.875rem;color:var(--dm-ink-secondary);line-height:1.6;white-space:pre-wrap;word-break:break-word;">${props.description || 'No description available.'}</p>
+                        <div class="dept-map-description-card">
+                            <p>${props.description || 'No description available.'}</p>
+                        </div>
 
                         <button type="button" class="dept-map-viewall show-all-projects-btn">
                             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/></svg>

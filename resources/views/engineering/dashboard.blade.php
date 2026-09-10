@@ -351,11 +351,16 @@ html.dark-mode .ed-wrap {
     border-radius: 50%;
     background: currentColor;
 }
-.ed-status-planning { background: #fef3c7; color: #b45309; }
-.ed-status-ongoing { background: #dbeafe; color: #1d4ed8; }
-.ed-status-hold { background: #fee2e2; color: #b91c1c; }
-.ed-status-completed { background: #d1fae5; color: #047857; }
-.ed-status-cancelled { background: #f3f4f6; color: #4b5563; }
+.ed-status-planning,
+.ed-status-proposed { background: rgba(37,99,235,0.10); color: #2563eb; }
+.ed-status-bidding { background: rgba(245,158,11,0.10); color: #f59e0b; }
+.ed-status-bidding-ongoing { background: rgba(6,182,212,0.10); color: #06b6d4; }
+.ed-status-award { background: rgba(139,92,246,0.10); color: #8b5cf6; }
+.ed-status-ongoing,
+.ed-status-implementation { background: rgba(15,118,110,0.10); color: #0f766e; }
+.ed-status-hold { background: rgba(220,38,38,0.10); color: #dc2626; }
+.ed-status-completed { background: rgba(22,163,74,0.10); color: #16a34a; }
+.ed-status-cancelled { background: rgba(100,116,139,0.10); color: #64748b; }
 
 /* ===== PROJECT LIST ===== */
 .ed-projects { display: flex; flex-direction: column; gap: 12px; }
@@ -479,15 +484,25 @@ html.dark-mode .ed-wrap {
 
 /* ===== DARK MODE OVERRIDES ===== */
 html.dark-mode .ed-status-planning,
-.dark .ed-status-planning { background: rgba(251,191,36,0.15); color: #fbbf24; }
+html.dark-mode .ed-status-proposed,
+.dark .ed-status-planning,
+.dark .ed-status-proposed { background: rgba(37,99,235,0.12); color: #60a5fa; }
+html.dark-mode .ed-status-bidding,
+.dark .ed-status-bidding { background: rgba(245,158,11,0.12); color: #fbbf24; }
+html.dark-mode .ed-status-bidding-ongoing,
+.dark .ed-status-bidding-ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
+html.dark-mode .ed-status-award,
+.dark .ed-status-award { background: rgba(139,92,246,0.12); color: #a78bfa; }
 html.dark-mode .ed-status-ongoing,
-.dark .ed-status-ongoing { background: rgba(59,130,246,0.15); color: #60a5fa; }
+html.dark-mode .ed-status-implementation,
+.dark .ed-status-ongoing,
+.dark .ed-status-implementation { background: rgba(15,118,110,0.12); color: #5eead4; }
 html.dark-mode .ed-status-hold,
-.dark .ed-status-hold { background: rgba(239,68,68,0.15); color: #f87171; }
+.dark .ed-status-hold { background: rgba(220,38,38,0.12); color: #f87171; }
 html.dark-mode .ed-status-completed,
-.dark .ed-status-completed { background: rgba(16,185,129,0.15); color: #34d399; }
+.dark .ed-status-completed { background: rgba(22,163,74,0.12); color: #4ade80; }
 html.dark-mode .ed-status-cancelled,
-.dark .ed-status-cancelled { background: rgba(107,114,128,0.15); color: #9ca3af; }
+.dark .ed-status-cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
 
 html.dark-mode .ed-map-legend,
 .dark .ed-map-legend {
@@ -612,10 +627,14 @@ html.dark-mode .ed-progress-bg,
                     <div id="engineering-map"></div>
                     <div class="ed-map-legend">
                         <div class="ed-map-legend-title">Project Status</div>
-                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#fbbf24"></span> Planning</div>
-                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#3b82f6"></span> On Going</div>
-                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#ef4444"></span> On Hold</div>
-                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#10b981"></span> Completed</div>
+                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#2563eb"></span> Proposed</div>
+                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#f59e0b"></span> For bidding</div>
+                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#06b6d4"></span> Bidding ongoing</div>
+                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#8b5cf6"></span> Award of contract</div>
+                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#0f766e"></span> Implementation</div>
+                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#16a34a"></span> Completed</div>
+                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#dc2626"></span> On Hold</div>
+                        <div class="ed-map-legend-item"><span class="ed-map-legend-dot" style="background:#64748b"></span> Cancelled</div>
                     </div>
                 </div>
             </div>
@@ -652,8 +671,11 @@ html.dark-mode .ed-progress-bg,
                         @foreach ($recentProjects as $project)
                             @php
                                 $statusClass = match($project->current_status) {
-                                    'Planning' => 'ed-status-planning',
-                                    'On Going' => 'ed-status-ongoing',
+                                    'Planning', 'Proposed' => 'ed-status-planning',
+                                    'For bidding', 'Procurement' => 'ed-status-bidding',
+                                    'Bidding ongoing' => 'ed-status-bidding-ongoing',
+                                    'Award of contract', 'Bidding - Success' => 'ed-status-award',
+                                    'On Going', 'Implementation' => 'ed-status-implementation',
                                     'On Hold' => 'ed-status-hold',
                                     'Completed' => 'ed-status-completed',
                                     'Cancelled' => 'ed-status-cancelled',
@@ -693,7 +715,7 @@ html.dark-mode .ed-progress-bg,
                         @endforeach
                     </div>
                     @if ($recentProjects->hasPages())
-                        <div class="ed-pagination">{{ $recentProjects->links('vendor.pagination.custom') }}</div>
+                        <div class="ed-pagination">{{ $recentProjects->links() }}</div>
                     @endif
                 @endif
             </div>
@@ -744,15 +766,13 @@ html.dark-mode .ed-progress-bg,
                         L.geoJSON(data, {
                             pointToLayer: function(feature, latlng) {
                                 const statusColor = {
-                                    proposed: '#fbbf24',
-                                    planning: '#fbbf24',
+                                    proposed: '#2563eb',
                                     forbidding: '#f59e0b',
-                                    biddingongoing: '#3b82f6',
-                                    ongoing: '#3b82f6',
+                                    biddingongoing: '#06b6d4',
                                     awardofcontract: '#8b5cf6',
-                                    implementation: '#0ea5e9',
-                                    completed: '#10b981',
-                                    onhold: '#ef4444',
+                                    implementation: '#0f766e',
+                                    completed: '#16a34a',
+                                    onhold: '#dc2626',
                                     cancelled: '#64748b'
                                 };
                                 const normalizedStatus = String(feature.properties.status || '')

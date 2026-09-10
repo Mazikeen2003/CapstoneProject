@@ -390,17 +390,27 @@
         border-radius: 50%;
         background: currentColor;
     }
-    .dept-proj-status-planning { background: #fef3c7; color: #b45309; }
-    .dept-proj-status-ongoing { background: #dbeafe; color: #1d4ed8; }
-    .dept-proj-status-on-hold { background: #fee2e2; color: #b91c1c; }
-    .dept-proj-status-completed { background: #d1fae5; color: #047857; }
-    .dept-proj-status-cancelled { background: #f3f4f6; color: #4b5563; }
+    .dept-proj-status-planning,
+    .dept-proj-status-proposed { background: rgba(37,99,235,0.10); color: #2563eb; }
+    .dept-proj-status-bidding { background: rgba(245,158,11,0.10); color: #f59e0b; }
+    .dept-proj-status-bidding-ongoing { background: rgba(6,182,212,0.10); color: #06b6d4; }
+    .dept-proj-status-award { background: rgba(139,92,246,0.10); color: #8b5cf6; }
+    .dept-proj-status-ongoing,
+    .dept-proj-status-implementation { background: rgba(15,118,110,0.10); color: #0f766e; }
+    .dept-proj-status-on-hold { background: rgba(220,38,38,0.10); color: #dc2626; }
+    .dept-proj-status-completed { background: rgba(22,163,74,0.10); color: #16a34a; }
+    .dept-proj-status-cancelled { background: rgba(100,116,139,0.10); color: #64748b; }
 
-    .dark .dept-proj-status-planning { background: rgba(251,191,36,0.15); color: #fbbf24; }
-    .dark .dept-proj-status-ongoing { background: rgba(59,130,246,0.15); color: #60a5fa; }
-    .dark .dept-proj-status-on-hold { background: rgba(239,68,68,0.15); color: #f87171; }
-    .dark .dept-proj-status-completed { background: rgba(16,185,129,0.15); color: #34d399; }
-    .dark .dept-proj-status-cancelled { background: rgba(107,114,128,0.15); color: #9ca3af; }
+    .dark .dept-proj-status-planning,
+    .dark .dept-proj-status-proposed { background: rgba(37,99,235,0.12); color: #60a5fa; }
+    .dark .dept-proj-status-bidding { background: rgba(245,158,11,0.12); color: #fbbf24; }
+    .dark .dept-proj-status-bidding-ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
+    .dark .dept-proj-status-award { background: rgba(139,92,246,0.12); color: #a78bfa; }
+    .dark .dept-proj-status-ongoing,
+    .dark .dept-proj-status-implementation { background: rgba(15,118,110,0.12); color: #5eead4; }
+    .dark .dept-proj-status-on-hold { background: rgba(220,38,38,0.12); color: #f87171; }
+    .dark .dept-proj-status-completed { background: rgba(22,163,74,0.12); color: #4ade80; }
+    .dark .dept-proj-status-cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
 
     .dept-proj-budget {
         font-family: "Plus Jakarta Sans", sans-serif;
@@ -744,17 +754,12 @@
             <select id="projectStatusFilter" class="dept-proj-status-filter" aria-label="Filter projects by status">
                 <option value="all">All statuses</option>
                 <option value="Proposed">Proposed</option>
-                <option value="Planning">Planning</option>
                 <option value="For bidding">For bidding</option>
-                <option value="Procurement">Procurement</option>
                 <option value="Bidding ongoing">Bidding ongoing</option>
-                <option value="Bidding - Success">Bidding - Success</option>
-                <option value="Bidding - Failed">Bidding - Failed</option>
                 <option value="Award of contract">Award of contract</option>
                 <option value="Implementation">Implementation</option>
-                <option value="On Going">On Going</option>
-                <option value="On Hold">On Hold</option>
                 <option value="Completed">Completed</option>
+                <option value="On Hold">On Hold</option>
                 <option value="Cancelled">Cancelled</option>
             </select>
         </div>
@@ -794,8 +799,11 @@
                             @foreach ($projects as $project)
                                 @php
                                     $statusClass = match($project->current_status) {
-                                        'Planning' => 'dept-proj-status-planning',
-                                        'On Going' => 'dept-proj-status-ongoing',
+                                        'Planning', 'Proposed' => 'dept-proj-status-planning',
+                                        'For bidding', 'Procurement' => 'dept-proj-status-bidding',
+                                        'Bidding ongoing' => 'dept-proj-status-bidding-ongoing',
+                                        'Award of contract', 'Bidding - Success' => 'dept-proj-status-award',
+                                        'On Going', 'Implementation' => 'dept-proj-status-implementation',
                                         'On Hold' => 'dept-proj-status-on-hold',
                                         'Completed' => 'dept-proj-status-completed',
                                         'Cancelled' => 'dept-proj-status-cancelled',
@@ -851,9 +859,8 @@
 
                 @if(method_exists($projects, 'links'))
                 <div class="dept-proj-pagination">
-                    <div class="dept-proj-pageinfo">Showing <strong>{{ $projects->firstItem() ?? 1 }}-{{ $projects->lastItem() ?? $projects->count() }}</strong> of <strong>{{ $projects->total() ?? $projects->count() }}</strong> projects</div>
                     <div class="dept-proj-pagebtns">
-                        {{ $projects->links('vendor.pagination.custom') }}
+                        {{ $projects->links() }}
                     </div>
                 </div>
                 @endif
@@ -864,8 +871,11 @@
                 @foreach ($projects as $project)
                     @php
                         $statusClass = match($project->current_status) {
-                            'Planning' => 'dept-proj-status-planning',
-                            'On Going' => 'dept-proj-status-ongoing',
+                            'Planning', 'Proposed' => 'dept-proj-status-planning',
+                            'For bidding', 'Procurement' => 'dept-proj-status-bidding',
+                            'Bidding ongoing' => 'dept-proj-status-bidding-ongoing',
+                            'Award of contract', 'Bidding - Success' => 'dept-proj-status-award',
+                            'On Going', 'Implementation' => 'dept-proj-status-implementation',
                             'On Hold' => 'dept-proj-status-on-hold',
                             'Completed' => 'dept-proj-status-completed',
                             'Cancelled' => 'dept-proj-status-cancelled',

@@ -11,7 +11,9 @@
             <p class="mt-1 text-sm text-slate-500">Review project locations and field implementation coverage.</p>
         </div>
         <div class="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm" style="height: calc(100vh - 13.5rem);">
-            <div class="min-w-0 w-full h-full relative" id="engineering-map" style="background-color: #f0f0f0;"></div>
+            <div class="min-w-0 w-full h-full relative" id="engineering-map" style="background-color: #f0f0f0;">
+                @include('components.map-status-legend')
+            </div>
         </div>
     </div>
 </div>
@@ -59,16 +61,20 @@
                         L.geoJSON(data, {
                             pointToLayer: function(feature, latlng) {
                                 const statusColor = {
-                                    'Planning': '#fbbf24',
-                                    'On Going': '#3b82f6',
-                                    'On Hold': '#ef4444',
-                                    'Completed': '#10b981',
-                                    'Cancelled': '#6b7280'
+                                    'Proposed': '#2563eb',
+                                    'For bidding': '#f59e0b',
+                                    'Bidding ongoing': '#06b6d4',
+                                    'Award of contract': '#8b5cf6',
+                                    'Implementation': '#0f766e',
+                                    'Completed': '#16a34a',
+                                    'On Hold': '#dc2626',
+                                    'Cancelled': '#64748b'
                                 };
+                                const normalizedStatus = String(feature.properties.status || '').trim();
 
                                 return L.circleMarker(latlng, {
                                     radius: 8,
-                                    fillColor: statusColor[feature.properties.status] || '#9CA3AF',
+                                    fillColor: statusColor[normalizedStatus] || '#64748b',
                                     color: '#000',
                                     weight: 2,
                                     opacity: 0.8,
@@ -77,6 +83,10 @@
                             },
                             onEachFeature: function(feature, layer) {
                                 const props = feature.properties;
+                                const description = props.description && props.description !== 'No description available.'
+                                    ? `<p class="text-xs mt-2"><strong>Description:</strong> ${props.description}</p>`
+                                    : '';
+
                                 layer.bindPopup(`
                                     <div class="text-sm">
                                         <h4 class="font-bold">${props.name}</h4>
@@ -84,7 +94,8 @@
                                         <p class="text-xs"><strong>Status:</strong> ${props.status}</p>
                                         <p class="text-xs"><strong>Barangay:</strong> ${props.barangay}</p>
                                         <p class="text-xs"><strong>Budget:</strong> ₱${parseInt(props.budget).toLocaleString()}</p>
-                                        <a href="${props.url}" class="text-blue-600 text-xs">View Details</a>
+                                        ${description}
+                                        <a href="${props.url}" class="text-blue-600 text-xs mt-2 inline-block">View Details</a>
                                     </div>
                                 `);
                             }

@@ -19,17 +19,9 @@ class ProjectController extends Controller
         $projects = Project::withoutRoleScope()
             ->withBasicRelations()
             ->latest('created_at')
-            ->paginate(15);
+            ->paginate(10);
 
-        return view('city-official.projects.index', [
-            'projects' => $projects,
-            'projectsLayout' => 'layouts.department',
-            'projectsRoutePrefix' => 'engineering',
-            'projectsTitle' => 'Engineering Projects',
-            'projectsSubtitle' => 'Browse all projects and monitor implementation progress.',
-            'projectsEmptyMessage' => 'No projects have been recorded yet.',
-            'projectsTheme' => 'engineering',
-        ]);
+        return view('engineering.projects.index', compact('projects'));
     }
 
     public function show($id)

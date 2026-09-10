@@ -27,7 +27,7 @@ class ProjectController extends Controller
 
         // No need to call ->forUser() anymore — the global scope on
         // the Project model filters this automatically by role.
-        $projects = Project::latest('created_at')->get();
+        $projects = Project::latest('created_at')->paginate(10);
 
         return view('department.projects.index', compact('projects'));
     }

@@ -14,7 +14,7 @@ class ProjectController extends Controller
         // Paginate results with eager loading (read-only view)
         $projects = Project::withBasicRelations()
             ->latest('created_at')
-            ->paginate(15);
+            ->paginate(10);
 
         return view('barangay-official.projects.index', compact('projects'));
     }

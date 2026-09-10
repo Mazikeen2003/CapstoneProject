@@ -56,7 +56,23 @@
         border-radius: 10px;
         background: #fafaf9;
     }
-    .engineering-project-detail-item.full-width { grid-column: 1 / -1; }
+    .engineering-project-detail-item.full-width {
+        grid-column: 1 / -1;
+        display: block;
+        padding: 18px;
+        border-radius: 12px;
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+    }
+    .engineering-project-detail-item.description-card {
+        display: block;
+        padding: 18px;
+        border-radius: 12px;
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+    }
     .engineering-project-detail-label {
         color: #9ca3af;
         font-size: 0.6875rem;
@@ -76,6 +92,13 @@
     .dark .engineering-project-details,
     html.dark-mode .engineering-project-details {
         background: #1a1929;
+        border-color: rgba(255, 255, 255, 0.06);
+    }
+    .dark .engineering-project-detail-item.full-width,
+    html.dark-mode .engineering-project-detail-item.full-width,
+    .dark .engineering-project-detail-item.description-card,
+    html.dark-mode .engineering-project-detail-item.description-card {
+        background: #222136;
         border-color: rgba(255, 255, 255, 0.06);
     }
     .dark .engineering-project-details-header,
@@ -124,7 +147,7 @@
                 @foreach ([
                     'Status' => $project->current_status,
                     'Barangay' => $project->barangay->barangay_name ?? 'Citywide',
-                    'Approved Budget' => '₱' . number_format($project->approved_budget ?? 0, 2),
+                    (in_array($project->current_status, ['Award of contract', 'Implementation', 'Completed'], true) ? 'Approved Budget' : 'Proposed Budget') => '₱' . number_format($project->approved_budget ?? 0, 2),
                     'Actual Budget' => '₱' . number_format($project->actual_budget ?? 0, 2),
                     'Start Date' => $project->start_date?->format('M d, Y') ?? '—',
                     'Target Completion' => $project->target_end_date?->format('M d, Y') ?? '—',
@@ -132,7 +155,7 @@
                     'Public Description' => $project->public_description ?? 'No public description available.',
                     'Internal Remarks (Private)' => $project->remarks ?? '—',
                 ] as $label => $value)
-                    <div class="engineering-project-detail-item {{ in_array($label, ['Location', 'Public Description', 'Internal Remarks (Private)'], true) ? 'full-width' : '' }}">
+                    <div class="engineering-project-detail-item {{ in_array($label, ['Location', 'Public Description', 'Internal Remarks (Private)'], true) ? 'full-width' : '' }} {{ $label === 'Public Description' ? 'description-card' : '' }}">
                         <div>
                             <div class="engineering-project-detail-label">{{ $label }}</div>
                             <div class="engineering-project-detail-value">{{ $value }}</div>

@@ -788,8 +788,8 @@ html.dark-mode .eu3-disable-box:hover {
                             @enderror
                         </div>
                         <div class="eu3-field">
-                            <label for="barangay_id">Barangay (Optional)</label>
-                            <select id="barangay_id" name="barangay_id" class="eu3-input">
+                            <label for="barangay_id">Barangay <span id="barangayRequiredMarker" class="hidden eu3-required">*</span></label>
+                            <select id="barangay_id" name="barangay_id" class="eu3-input" disabled>
                                 <option value="">-- Select Barangay --</option>
                                 @foreach ($barangays as $barangay)
                                     <option value="{{ $barangay->barangay_id }}" {{ old('barangay_id', $user->barangay_id) == $barangay->barangay_id ? 'selected' : '' }}>{{ $barangay->barangay_name }}</option>
@@ -888,12 +888,35 @@ html.dark-mode .eu3-disable-box:hover {
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const roleSelect = document.getElementById('role_id');
+        const barangaySelect = document.getElementById('barangay_id');
         const departmentPermissionsSection = document.getElementById('departmentPermissionsSection');
         const adminPermissionsSection = document.getElementById('adminPermissionsSection');
         const form = document.getElementById('editUserForm');
         const submitBtn = document.getElementById('submitBtn');
         const submitSpinner = document.getElementById('submitSpinner');
         const submitLabel = document.getElementById('submitLabel');
+
+        function updateBarangaySelectState() {
+            if (!roleSelect || !barangaySelect) return;
+
+            const selectedOption = roleSelect.options[roleSelect.selectedIndex];
+            const selectedRoleText = (selectedOption?.text || '').toLowerCase();
+            const isBarangayRole = selectedRoleText.includes('barangay');
+            const requiredMarker = document.getElementById('barangayRequiredMarker');
+
+            barangaySelect.disabled = !isBarangayRole;
+            barangaySelect.required = isBarangayRole;
+            barangaySelect.style.opacity = isBarangayRole ? '1' : '0.6';
+            barangaySelect.style.cursor = isBarangayRole ? 'pointer' : 'not-allowed';
+
+            if (requiredMarker) {
+                requiredMarker.classList.toggle('hidden', !isBarangayRole);
+            }
+
+            if (!isBarangayRole) {
+                barangaySelect.value = '';
+            }
+        }
 
         function updatePermissionsVisibility() {
             const selectedOption = roleSelect.options[roleSelect.selectedIndex];
@@ -911,10 +934,18 @@ html.dark-mode .eu3-disable-box:hover {
             adminPermissionsSection.style.display = selectedRoleText.includes('admin') ? 'block' : 'none';
         }
 
-        roleSelect.addEventListener('change', updatePermissionsVisibility);
+        roleSelect.addEventListener('change', function() {
+            updateBarangaySelectState();
+            updatePermissionsVisibility();
+        });
+        updateBarangaySelectState();
         updatePermissionsVisibility();
 
         form.addEventListener('submit', function() {
+            updateBarangaySelectState();
+            if (barangaySelect && !barangaySelect.disabled) {
+                barangaySelect.disabled = false;
+            }
             submitBtn.disabled = true;
             submitBtn.style.opacity = '0.7';
             submitBtn.style.cursor = 'not-allowed';

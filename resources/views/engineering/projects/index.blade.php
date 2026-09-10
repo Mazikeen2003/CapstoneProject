@@ -360,23 +360,23 @@ html.dark-mode .ep-status-filter,
     border-radius: 50%;
     background: currentColor;
 }
-.status-planning { background: #fef3c7; color: #b45309; }
-.status-ongoing { background: #dbeafe; color: #1d4ed8; }
-.status-hold { background: #fee2e2; color: #b91c1c; }
-.status-completed { background: #d1fae5; color: #047857; }
-.status-cancelled { background: #f3f4f6; color: #4b5563; }
+.status-planning { background: rgba(37,99,235,0.10); color: #2563eb; }
+.status-ongoing { background: rgba(6,182,212,0.10); color: #06b6d4; }
+.status-hold { background: rgba(220,38,38,0.10); color: #dc2626; }
+.status-completed { background: rgba(22,163,74,0.10); color: #16a34a; }
+.status-cancelled { background: rgba(100,116,139,0.10); color: #64748b; }
 
 /* Dark mode status overrides */
 .dark .status-planning,
-html.dark-mode .status-planning { background: rgba(251,191,36,0.15); color: #fbbf24; }
+html.dark-mode .status-planning { background: rgba(37,99,235,0.12); color: #60a5fa; }
 .dark .status-ongoing,
-html.dark-mode .status-ongoing { background: rgba(59,130,246,0.15); color: #60a5fa; }
+html.dark-mode .status-ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
 .dark .status-hold,
-html.dark-mode .status-hold { background: rgba(239,68,68,0.15); color: #f87171; }
+html.dark-mode .status-hold { background: rgba(220,38,38,0.12); color: #f87171; }
 .dark .status-completed,
-html.dark-mode .status-completed { background: rgba(16,185,129,0.15); color: #34d399; }
+html.dark-mode .status-completed { background: rgba(22,163,74,0.12); color: #4ade80; }
 .dark .status-cancelled,
-html.dark-mode .status-cancelled { background: rgba(107,114,128,0.15); color: #9ca3af; }
+html.dark-mode .status-cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
 
 .ep-project-barangay {
     display: inline-flex;
@@ -571,17 +571,12 @@ html.dark-mode .ep-empty-icon {
             <select id="projectStatusFilter" class="ep-status-filter" aria-label="Filter projects by status">
                 <option value="all">All statuses</option>
                 <option value="Proposed">Proposed</option>
-                <option value="Planning">Planning</option>
                 <option value="For bidding">For bidding</option>
-                <option value="Procurement">Procurement</option>
                 <option value="Bidding ongoing">Bidding ongoing</option>
-                <option value="Bidding - Success">Bidding - Success</option>
-                <option value="Bidding - Failed">Bidding - Failed</option>
                 <option value="Award of contract">Award of contract</option>
                 <option value="Implementation">Implementation</option>
-                <option value="On Going">On Going</option>
-                <option value="On Hold">On Hold</option>
                 <option value="Completed">Completed</option>
+                <option value="On Hold">On Hold</option>
                 <option value="Cancelled">Cancelled</option>
             </select>
         </div>
@@ -704,6 +699,14 @@ html.dark-mode .ep-empty-icon {
                         </div>
                     </div>
                 @endforeach
+            </div>
+        @endif
+
+        @if(method_exists($projects, 'links'))
+            <div class="ep-pagination" style="padding: 20px 24px 24px;">
+                @if($projects->hasPages())
+                    <div class="ep-pagebtns">{{ $projects->links() }}</div>
+                @endif
             </div>
         @endif
     </div>

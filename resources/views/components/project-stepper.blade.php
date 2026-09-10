@@ -28,19 +28,19 @@
         border: 1px solid var(--de-line);
         border-radius: var(--ds-radius-sm, 12px);
         box-shadow: var(--de-shadow-sm);
-        padding: 24px 28px 28px;
+        padding: 20px 20px 22px;
         margin-bottom: 24px;
     }
-    .dept-stepper-header { margin-bottom: 28px; }
+    .dept-stepper-header { margin-bottom: 20px; }
     .dept-stepper-title {
         font-family: "Plus Jakarta Sans", sans-serif;
-        font-size: 1.0625rem;
+        font-size: 0.9375rem;
         font-weight: 700;
         color: var(--de-ink);
         margin: 0 0 4px;
     }
     .dept-stepper-subtitle {
-        font-size: 0.8125rem;
+        font-size: 0.75rem;
         color: var(--de-muted);
         margin: 0;
         font-weight: 500;
@@ -57,24 +57,26 @@
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
+        gap: 4px;
     }
     .dept-step-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
-        flex: 1;
+        gap: 8px;
+        flex: 1 1 0;
         position: relative;
         z-index: 2;
+        min-width: 0;
     }
     .dept-step-node {
-        width: 36px;
-        height: 36px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.8125rem;
+        font-size: 0.6875rem;
         font-weight: 700;
         flex-shrink: 0;
     }
@@ -86,11 +88,13 @@
         border: 2px solid var(--de-line-strong);
     }
     .dept-step-name {
-        font-size: 0.75rem;
+        font-size: 0.625rem;
         font-weight: 600;
         color: var(--de-ink-secondary);
         text-align: center;
-        white-space: nowrap;
+        line-height: 1.2;
+        white-space: normal;
+        max-width: 72px;
     }
     .dept-step-item.completed .dept-step-name { color: #059669; font-weight: 700; }
     .dept-step-item.current .dept-step-name { color: #2563eb; font-weight: 700; }
@@ -99,8 +103,8 @@
         flex: 1;
         height: 2px;
         background: var(--de-line-strong);
-        margin-top: 17px;
-        min-width: 20px;
+        margin-top: 14px;
+        min-width: 12px;
         position: relative;
         z-index: 1;
     }
@@ -114,8 +118,8 @@
     html.dark-mode .dept-stepper-subtitle { color: #94a3b8; }
     @media (max-width: 640px) {
         .dept-stepper-track { overflow-x: auto; padding-bottom: 8px; }
-        .dept-step-item { min-width: 80px; }
-        .dept-step-name { white-space: normal; max-width: 80px; }
+        .dept-step-item { min-width: 70px; }
+        .dept-step-name { max-width: 70px; }
     }
 </style>
 

@@ -167,11 +167,11 @@
     /* Status Badges */
     .dept-status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; text-transform: capitalize; white-space: nowrap; }
     .dept-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-    .dept-status-planning { background: #fef3c7; color: #b45309; }
-    .dept-status-ongoing { background: #dbeafe; color: #1d4ed8; }
-    .dept-status-on-hold { background: #fee2e2; color: #b91c1c; }
-    .dept-status-completed { background: #d1fae5; color: #047857; }
-    .dept-status-cancelled { background: #f3f4f6; color: #4b5563; }
+    .dept-status-planning { background: rgba(37,99,235,0.10); color: #2563eb; }
+    .dept-status-ongoing { background: rgba(6,182,212,0.10); color: #06b6d4; }
+    .dept-status-on-hold { background: rgba(220,38,38,0.10); color: #dc2626; }
+    .dept-status-completed { background: rgba(22,163,74,0.10); color: #16a34a; }
+    .dept-status-cancelled { background: rgba(100,116,139,0.10); color: #64748b; }
 
     /* Project List */
     .dept-projects { display: flex; flex-direction: column; gap: 12px; }
@@ -348,10 +348,14 @@
                     <div id="department-map"></div>
                     <div class="dept-map-legend">
                         <div class="dept-map-legend-title">Project Status</div>
-                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#fbbf24"></span> Planning</div>
-                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#3b82f6"></span> On Going</div>
-                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#ef4444"></span> On Hold</div>
-                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#10b981"></span> Completed</div>
+                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#2563eb"></span> Proposed</div>
+                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#f59e0b"></span> For bidding</div>
+                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#06b6d4"></span> Bidding ongoing</div>
+                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#8b5cf6"></span> Award of contract</div>
+                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#0f766e"></span> Implementation</div>
+                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#16a34a"></span> Completed</div>
+                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#dc2626"></span> On Hold</div>
+                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#64748b"></span> Cancelled</div>
                     </div>
                 </div>
             </div>
@@ -481,23 +485,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     L.geoJSON(data, {
                         pointToLayer: function(feature, latlng) {
                             const statusColor = {
-                                'Proposed': '#fbbf24',
-                                'Planning': '#fbbf24',
-                                'For bidding': '#3b82f6',
-                                'Bidding ongoing': '#3b82f6',
-                                'Bidding - Success': '#3b82f6',
-                                'Award of contract': '#3b82f6',
-                                'Implementation': '#3b82f6',
-                                'On Going': '#3b82f6',
-                                'On Hold': '#ef4444',
-                                'Completed': '#10b981',
-                                'Cancelled': '#6b7280',
-                                'Bidding - Failed': '#ef4444',
-                                'Procurement': '#3b82f6'
+                                'Proposed': '#2563eb',
+                                'For bidding': '#f59e0b',
+                                'Bidding ongoing': '#06b6d4',
+                                'Award of contract': '#8b5cf6',
+                                'Implementation': '#0f766e',
+                                'Completed': '#16a34a',
+                                'On Hold': '#dc2626',
+                                'Cancelled': '#64748b'
                             };
+                            const normalizedStatus = String(feature.properties.status || '').trim();
                             return L.circleMarker(latlng, {
                                 radius: 8,
-                                fillColor: statusColor[feature.properties.status] || '#9CA3AF',
+                                fillColor: statusColor[normalizedStatus] || '#64748b',
                                 color: '#fff',
                                 weight: 2,
                                 opacity: 1,
