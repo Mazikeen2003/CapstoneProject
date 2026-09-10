@@ -578,7 +578,7 @@
     .dept-proj-pagination {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-end;
         padding: 16px 24px;
         border-top: 1px solid var(--dp-line);
     }
@@ -857,7 +857,7 @@
                     </table>
                 </div>
 
-                @if(method_exists($projects, 'links'))
+                @if($projects->hasPages())
                 <div class="dept-proj-pagination">
                     <div class="dept-proj-pagebtns">
                         {{ $projects->links() }}

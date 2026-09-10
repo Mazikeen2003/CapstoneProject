@@ -702,11 +702,9 @@ html.dark-mode .ep-empty-icon {
             </div>
         @endif
 
-        @if(method_exists($projects, 'links'))
-            <div class="ep-pagination" style="padding: 20px 24px 24px;">
-                @if($projects->hasPages())
-                    <div class="ep-pagebtns">{{ $projects->links() }}</div>
-                @endif
+        @if($projects->hasPages())
+            <div class="ep-pagination" style="padding: 20px 24px 24px; display:flex; justify-content:flex-end;">
+                <div class="ep-pagebtns">{{ $projects->links() }}</div>
             </div>
         @endif
     </div>

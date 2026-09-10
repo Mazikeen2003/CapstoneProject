@@ -159,11 +159,9 @@
                 @endforeach
             </div>
         @endif
-        @if(method_exists($projects, 'links'))
-            <div class="p-6">
-                @if($projects->hasPages())
-                    <div class="barangay-project-pagebtns">{{ $projects->links() }}</div>
-                @endif
+        @if($projects->hasPages())
+            <div class="p-6 flex justify-end">
+                <div class="barangay-project-pagebtns">{{ $projects->links() }}</div>
             </div>
         @endif
     </div>

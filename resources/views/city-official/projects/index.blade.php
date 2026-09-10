@@ -132,7 +132,11 @@
     .city-projects-empty p { font-size: 0.875rem; color: var(--cp-muted); }
 
     /* Pagination */
-    .city-projects-pagination { padding: 20px 24px; }
+    .city-projects-pagination {
+        display: flex;
+        justify-content: flex-end;
+        padding: 20px 24px;
+    }
 
     /* Dark mode overrides */
     html.dark-mode .city-projects-card { border-color: #475569; background: #1e293b; }
@@ -304,11 +308,9 @@
             </div>
         @endif
 
-        @if(method_exists($projects, 'links'))
+        @if($projects->hasPages())
             <div class="city-projects-pagination">
-                @if($projects->hasPages())
-                    <div class="city-project-pagebtns">{{ $projects->links() }}</div>
-                @endif
+                <div class="city-project-pagebtns">{{ $projects->links() }}</div>
             </div>
         @endif
     </div>
