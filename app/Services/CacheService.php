@@ -63,6 +63,12 @@ class CacheService
     {
         Cache::forget('geojson_projects_all');
         Cache::forget('geojson_projects');
+        Cache::forget('geojson_projects_public');
+        Cache::forget('geojson_projects_admin');
+        Cache::forget('geojson_projects_city');
+        Cache::forget('geojson_projects_department');
+        Cache::forget('geojson_projects_engineering');
+        Cache::forget('geojson_projects_barangay');
     }
 
     /**
@@ -71,29 +77,29 @@ class CacheService
     public static function getGeoJsonData($user = null, $forcePublic = false)
     {
         $user = $user ?? auth()->user();
+        $role = $user?->role_slug ?? 'public';
 
         if ($forcePublic) {
-            $cacheKey = 'geojson_projects_all';
+            $cacheKey = 'geojson_projects_public';
 
             return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($user) {
                 return self::buildGeoJsonData($user, true);
             });
         }
 
-        $role = $user?->role_slug ?? 'public';
-
         $cacheKey = match ($role) {
-            'admin', 'city', 'public' => 'geojson_projects_all',
-            default => null,
+            'admin' => 'geojson_projects_admin',
+            'city' => 'geojson_projects_city',
+            'department' => 'geojson_projects_department',
+            'engineering' => 'geojson_projects_engineering',
+            'barangay' => 'geojson_projects_barangay',
+            'public' => 'geojson_projects_public',
+            default => 'geojson_projects_public',
         };
 
-        if ($cacheKey) {
-            return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($user) {
-                return self::buildGeoJsonData($user);
-            });
-        }
-
-        return self::buildGeoJsonData($user);
+        return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($user) {
+            return self::buildGeoJsonData($user);
+        });
     }
 
     protected static function buildGeoJsonData($user = null, $ignoreRoleScope = false)
@@ -122,6 +128,10 @@ class CacheService
                     'barangay' => route('barangay.projects.show', $project->project_id, false),
                     default => route('public.map', [], false),
                 };
+
+                if ($user === null || $user?->role_slug === 'public') {
+                    $projectUrl = route('public.map', [], false);
+                }
 
                 return [
                     'type'       => 'Feature',
