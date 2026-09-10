@@ -159,14 +159,14 @@
                     <div class="group bg-white p-8 rounded-xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden">
                         <div class="relative z-10">
                             <div class="w-14 h-14 rounded-lg bg-emerald-100 flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
-                                <span class="material-symbols-outlined text-emerald-700 text-3xl" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+                                <span class="material-symbols-outlined text-emerald-700 text-3xl" style="font-variation-settings: 'FILL' 1;">bar_chart</span>
                             </div>
-                            <h3 class="text-2xl font-bold mb-3 text-slate-900" style="font-family:'Manrope',sans-serif;">Financial Oversight</h3>
+                            <h3 class="text-2xl font-bold mb-3 text-slate-900" style="font-family:'Manrope',sans-serif;">Project Analytics</h3>
                             <p class="text-slate-600 leading-relaxed">
-                                Accessible budget data including granular expense tracking, tax allocations, and community fund distributions.
+                                Explore project status distribution, completion trends, and barangay-level activity without exposing budget or expense details.
                             </p>
-                            <a href="{{ route('login') }}" class="mt-6 inline-flex items-center gap-2 text-emerald-700 font-semibold text-sm group/link">
-                                Audit Transparency
+                            <a href="{{ route('public.analytics') }}" class="mt-6 inline-flex items-center gap-2 text-emerald-700 font-semibold text-sm group/link">
+                                Analytics Dashboard
                                 <span class="material-symbols-outlined text-lg transition-transform group-hover/link:translate-x-1">arrow_forward</span>
                             </a>
                         </div>
@@ -178,12 +178,12 @@
                             <div class="w-14 h-14 rounded-lg bg-slate-900/10 flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                                 <span class="material-symbols-outlined text-slate-900 text-3xl" style="font-variation-settings: 'FILL' 1;">description</span>
                             </div>
-                            <h3 class="text-2xl font-bold mb-3 text-slate-900" style="font-family:'Manrope',sans-serif;">Official Reports</h3>
+                            <h3 class="text-2xl font-bold mb-3 text-slate-900" style="font-family:'Manrope',sans-serif;">Transparency Report</h3>
                             <p class="text-slate-600 leading-relaxed">
-                                Verified institutional documents, meeting minutes, and legal resolutions available for public review and download.
+                                See how Cabuyao City tracks project documentation, timeliness, and public transparency.
                             </p>
-                            <a href="{{ route('login') }}" class="mt-6 inline-flex items-center gap-2 text-emerald-700 font-semibold text-sm group/link">
-                                Document Library
+                            <a href="{{ route('public.transparency') }}" class="mt-6 inline-flex items-center gap-2 text-emerald-700 font-semibold text-sm group/link">
+                                Transparency Report
                                 <span class="material-symbols-outlined text-lg transition-transform group-hover/link:translate-x-1">arrow_forward</span>
                             </a>
                         </div>

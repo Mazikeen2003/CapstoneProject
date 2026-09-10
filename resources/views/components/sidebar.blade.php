@@ -8,7 +8,7 @@
 @endphp
 
 <!-- Mobile backdrop overlay -->
-<div id="sidebarBackdrop" class="fixed inset-0 bg-black bg-opacity-50 z-[9998] hidden xl:hidden" style="display: none;"></div>
+<div id="sidebarBackdrop" class="fixed inset-0 bg-black bg-opacity-50 z-[9998] hidden xl:hidden"></div>
 
 <script>
     try {
@@ -248,6 +248,24 @@
 </aside>
 
 <style>
+    #sidebarBackdrop {
+        display: none;
+    }
+
+    #sidebarBackdrop.show {
+        display: block;
+    }
+
+    @media (max-width: 1279px) {
+        #sidebar {
+            transform: translateX(-100%);
+        }
+
+        #sidebar.open {
+            transform: translateX(0);
+        }
+    }
+
     #sidebar nav a > span {
         border: 1px solid rgba(244, 201, 93, 0.16);
         background: linear-gradient(145deg, #1D2B45 0%, #141F33 100%) !important;

@@ -91,6 +91,7 @@ Route::get('/ProjectTracker/public/analytics', [PublicAnalyticsController::class
 Route::prefix('public')->name('public.')->group(function () {
     Route::get('/map',       [PublicMapController::class,       'index'])->name('map');
     Route::get('/analytics', [PublicAnalyticsController::class, 'index'])->name('analytics');
+    Route::get('/transparency', [\App\Http\Controllers\Public\TransparencyController::class, 'index'])->name('transparency');
 });
 
 Route::prefix('api/public')->name('api.public.')->group(function () {
