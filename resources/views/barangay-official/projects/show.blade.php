@@ -9,7 +9,7 @@
     $daysElapsed = $startDate->diffInDays($today);
     $timelineProgress = ($totalDays > 0) ? min(100, max(0, ($daysElapsed / $totalDays) * 100)) : 0;
     $reportedProgress = $project->latestUpdate?->progress_percentage;
-    $progress = $reportedProgress !== null ? $reportedProgress : $timelineProgress;
+    $reportedProgress = $reportedProgress !== null ? min(100, max(0, (float) $reportedProgress)) : null;
 @endphp
 
 <style>
@@ -151,6 +151,7 @@ html.dark-mode body:has(.bs-wrap) { background: #0f0e1a !important; }
     line-height: 1.2;
     letter-spacing: -0.02em;
     margin-bottom: 8px;
+    overflow-wrap: anywhere;
 }
 .bs-hero-subtitle {
     font-family: var(--font-body);
@@ -196,6 +197,11 @@ html.dark-mode body:has(.bs-wrap) { background: #0f0e1a !important; }
     grid-template-columns: 1fr;
     gap: 24px;
     margin-bottom: 24px;
+}
+.bs-main,
+.bs-sidebar,
+.bs-card {
+    min-width: 0;
 }
 @media (min-width: 1024px) {
     .bs-grid { grid-template-columns: 1fr 360px; align-items: start; }
@@ -267,6 +273,7 @@ html.dark-mode .bs-card-icon.gray { background: rgba(107,114,128,0.15); color: #
     color: var(--bs-muted);
     margin-top: 2px;
 }
+.bs-card-header > div:last-child { min-width: 0; overflow-wrap: anywhere; }
 .bs-card-body { padding: 24px; }
 
 /* ===== DETAIL GRID ===== */
@@ -323,7 +330,10 @@ html.dark-mode .bs-detail-icon.amber { background: rgba(251,191,36,0.15); color:
 html.dark-mode .bs-detail-icon.rose { background: rgba(244,63,94,0.15); color: #fb7185; }
 html.dark-mode .bs-detail-icon.purple { background: rgba(139,92,246,0.15); color: #a78bfa; }
 html.dark-mode .bs-detail-icon.gray { background: rgba(107,114,128,0.15); color: #9ca3af; }
-.bs-detail-content { min-width: 0; }
+.bs-detail-content {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
 .bs-detail-label {
     font-family: var(--font-body);
     font-size: 0.6875rem;
@@ -339,6 +349,9 @@ html.dark-mode .bs-detail-icon.gray { background: rgba(107,114,128,0.15); color:
     font-weight: 700;
     color: var(--bs-ink);
     line-height: 1.4;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal;
 }
 .bs-detail-value.muted {
     color: var(--bs-ink-secondary);
@@ -428,7 +441,113 @@ html.dark-mode .bs-timeline-progress { background: rgba(251,191,36,0.15); color:
     font-size: 0.875rem;
     color: var(--bs-ink-secondary);
     line-height: 1.5;
+    overflow-wrap: anywhere;
 }
+.bs-timeline-evidence {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+}
+.bs-timeline-evidence-image,
+.bs-timeline-evidence-remarks {
+    padding: 10px;
+    border: 1px solid var(--bs-line);
+    border-radius: var(--bs-radius-xs);
+    background: var(--bs-surface);
+}
+.bs-timeline-evidence-remarks {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--bs-ink-secondary);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+.bs-timeline-image {
+    display: block;
+    width: 100%;
+    max-height: 360px;
+    border-radius: var(--bs-radius-xs);
+    object-fit: cover;
+    cursor: zoom-in;
+}
+.bs-image-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(2, 6, 23, .86);
+    backdrop-filter: blur(6px);
+}
+.bs-image-lightbox.is-open { display: flex; }
+.bs-image-lightbox-image {
+    max-width: min(92vw, 1200px);
+    max-height: 84vh;
+    border-radius: 10px;
+    object-fit: contain;
+    transform: scale(1);
+    transition: transform .15s ease;
+    user-select: none;
+}
+.bs-image-lightbox-toolbar {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    display: flex;
+    gap: 8px;
+}
+.bs-image-lightbox-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 8px;
+    background: rgba(15,23,42,.8);
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+.bs-image-lightbox-button:hover { background: rgba(51,65,85,.95); }
+.bs-project-back-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 16px;
+    border: 1px solid #b91c1c;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: .8125rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 12px -6px rgba(153,27,27,.45);
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.bs-project-back-wrap {
+    position: sticky;
+    top: 24px;
+    z-index: 5;
+    width: 100%;
+    align-self: stretch;
+}
+.bs-project-back-button:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    box-shadow: 0 8px 18px -8px rgba(153,27,27,.7);
+    transform: translateY(-1px);
+}
+.bs-project-back-button:focus-visible {
+    outline: 3px solid rgba(220,38,38,.28);
+    outline-offset: 2px;
+}
+.bs-project-back-button svg { width: 16px; height: 16px; }
 
 /* ===== SIDEBAR ===== */
 .bs-sidebar {
@@ -444,6 +563,7 @@ html.dark-mode .bs-timeline-progress { background: rgba(251,191,36,0.15); color:
 .bs-progress-mini {
     padding: 20px 24px;
 }
+.bs-progress-block + .bs-progress-block { margin-top: 18px; }
 .bs-progress-header {
     display: flex;
     align-items: center;
@@ -530,32 +650,6 @@ html.dark-mode .bs-empty-icon { background: rgba(251,191,36,0.15); }
     color: var(--bs-muted);
 }
 
-/* ===== BACK LINK ===== */
-.bs-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border-radius: 12px;
-    background: var(--bs-raised);
-    border: 1px solid var(--bs-line);
-    color: var(--bs-muted);
-    font-family: var(--font-body);
-    font-size: 0.8125rem;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    margin-bottom: 16px;
-}
-.bs-back:hover {
-    background: var(--bs-surface);
-    border-color: var(--bs-line-strong);
-    color: var(--bs-ink);
-    transform: translateY(-1px);
-    box-shadow: var(--bs-shadow-sm);
-}
-.bs-back svg { width: 16px; height: 16px; }
-
 /* ===== ANIMATIONS ===== */
 @keyframes bsFadeUp {
     from { opacity: 0; transform: translateY(12px); }
@@ -577,11 +671,7 @@ html.dark-mode .bs-empty-icon { background: rgba(251,191,36,0.15); }
 </style>
 
 <div class="bs-wrap">
-    <!-- Back Link -->
-    <a href="{{ route('barangay.projects.index') }}" class="bs-back bs-animate">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-        Back to Projects
-    </a>
+    @include('components.project-stepper', ['project' => $project])
 
     <!-- HERO -->
     <div class="bs-hero bs-animate">
@@ -652,7 +742,7 @@ html.dark-mode .bs-empty-icon { background: rgba(251,191,36,0.15); }
                                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </div>
                             <div class="bs-detail-content">
-                                <div class="bs-detail-label">Approved Budget</div>
+                                <div class="bs-detail-label">{{ in_array($project->current_status, ['Award of contract', 'Implementation', 'Completed'], true) ? 'Approved Budget' : 'Proposed Budget' }}</div>
                                 <div class="bs-detail-value">₱{{ number_format($project->approved_budget ?? 0, 2) }}</div>
                             </div>
                         </div>
@@ -736,8 +826,14 @@ html.dark-mode .bs-empty-icon { background: rgba(251,191,36,0.15); }
                         </div>
                     @else
                         <div class="bs-timeline">
-                            @foreach ($project->updates as $update)
-                                <div class="bs-timeline-item {{ $loop->index < $project->updates->count() - 1 ? 'completed' : '' }}">
+                            @php
+                                $progressUpdates = $project->updates->sortBy([
+                                    ['update_date', 'desc'],
+                                    ['update_id', 'desc'],
+                                ])->values();
+                            @endphp
+                            @foreach ($progressUpdates as $update)
+                                <div class="bs-timeline-item {{ $loop->index > 0 ? 'completed' : '' }}">
                                     <div class="bs-timeline-dot"></div>
                                     <div class="bs-timeline-content">
                                         <div class="bs-timeline-date">
@@ -745,7 +841,16 @@ html.dark-mode .bs-empty-icon { background: rgba(251,191,36,0.15); }
                                             {{ $update->update_date?->format('M d, Y') ?? '—' }}
                                         </div>
                                         <div class="bs-timeline-progress">{{ $update->progress_percentage }}% Complete</div>
-                                        <div class="bs-timeline-remarks">{{ $update->remarks ?? '' }}</div>
+                                        @if ($update->image_path)
+                                            <div class="bs-timeline-evidence">
+                                                <div class="bs-timeline-evidence-image">
+                                                    <img src="{{ asset('storage/' . $update->image_path) }}" alt="Progress update evidence" class="bs-timeline-image" data-full-image="{{ asset('storage/' . $update->image_path) }}">
+                                                </div>
+                                                <div class="bs-timeline-evidence-remarks">{{ $update->remarks ?? 'No remarks provided.' }}</div>
+                                            </div>
+                                        @else
+                                            <div class="bs-timeline-remarks">{{ $update->remarks ?? '' }}</div>
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach
@@ -761,11 +866,20 @@ html.dark-mode .bs-empty-icon { background: rgba(251,191,36,0.15); }
             <div class="bs-card bs-animate">
                 <div class="bs-progress-mini">
                     <div class="bs-progress-header">
-                        <span class="bs-progress-label">Overall Progress</span>
-                        <span class="bs-progress-value">{{ number_format($progress, 1) }}%</span>
+                        <span class="bs-progress-label">Timeline Progress</span>
+                        <span class="bs-progress-value">{{ number_format($timelineProgress, 1) }}%</span>
                     </div>
                     <div class="bs-progress-track">
-                        <div class="bs-progress-fill" style="width: {{ $progress }}%"></div>
+                        <div class="bs-progress-fill" style="width: {{ $timelineProgress }}%"></div>
+                    </div>
+                    <div class="bs-progress-block">
+                        <div class="bs-progress-header">
+                            <span class="bs-progress-label">Reported Progress</span>
+                            <span class="bs-progress-value">{{ $reportedProgress !== null ? number_format($reportedProgress, 1) . '%' : 'Not reported' }}</span>
+                        </div>
+                        <div class="bs-progress-track">
+                            <div class="bs-progress-fill" style="width: {{ $reportedProgress ?? 0 }}%"></div>
+                        </div>
                     </div>
                     <div class="bs-progress-footer">
                         <span>Started {{ $project->start_date?->format('M d, Y') ?? '—' }}</span>
@@ -793,7 +907,70 @@ html.dark-mode .bs-empty-icon { background: rgba(251,191,36,0.15); }
                     </div>
                 </div>
             @endif
+
+            <div class="bs-project-back-wrap">
+                <a href="{{ route('barangay.projects.index') }}" class="bs-project-back-button">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                    Back to List
+                </a>
+            </div>
         </div>
     </div>
 </div>
+
+<div class="bs-image-lightbox" id="barangayProgressImageLightbox" aria-hidden="true">
+    <div class="bs-image-lightbox-toolbar">
+        <button type="button" class="bs-image-lightbox-button" id="barangayProgressImageZoomOut" aria-label="Zoom out" title="Zoom out">-</button>
+        <button type="button" class="bs-image-lightbox-button" id="barangayProgressImageZoomReset" aria-label="Reset zoom" title="Reset zoom">1:1</button>
+        <button type="button" class="bs-image-lightbox-button" id="barangayProgressImageZoomIn" aria-label="Zoom in" title="Zoom in">+</button>
+        <button type="button" class="bs-image-lightbox-button" id="barangayProgressImageLightboxClose" aria-label="Close image" title="Close">x</button>
+    </div>
+    <img class="bs-image-lightbox-image" id="barangayProgressImageLightboxImage" alt="Full-size progress evidence">
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const lightbox = document.getElementById('barangayProgressImageLightbox');
+        const lightboxImage = document.getElementById('barangayProgressImageLightboxImage');
+        const closeButton = document.getElementById('barangayProgressImageLightboxClose');
+        const zoomInButton = document.getElementById('barangayProgressImageZoomIn');
+        const zoomOutButton = document.getElementById('barangayProgressImageZoomOut');
+        const zoomResetButton = document.getElementById('barangayProgressImageZoomReset');
+        let zoom = 1;
+
+        function setZoom(value) {
+            zoom = Math.min(4, Math.max(0.5, value));
+            lightboxImage.style.transform = 'scale(' + zoom + ')';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('is-open');
+            lightbox.setAttribute('aria-hidden', 'true');
+            lightboxImage.removeAttribute('src');
+            setZoom(1);
+        }
+
+        document.querySelectorAll('.bs-timeline-image').forEach(function (image) {
+            image.addEventListener('click', function () {
+                lightboxImage.src = image.dataset.fullImage || image.src;
+                lightbox.classList.add('is-open');
+                lightbox.setAttribute('aria-hidden', 'false');
+                setZoom(1);
+            });
+        });
+
+        closeButton.addEventListener('click', closeLightbox);
+        zoomInButton.addEventListener('click', function () { setZoom(zoom + 0.25); });
+        zoomOutButton.addEventListener('click', function () { setZoom(zoom - 0.25); });
+        zoomResetButton.addEventListener('click', function () { setZoom(1); });
+        lightbox.addEventListener('click', function (event) { if (event.target === lightbox) closeLightbox(); });
+        lightboxImage.addEventListener('wheel', function (event) {
+            event.preventDefault();
+            setZoom(zoom + (event.deltaY < 0 ? 0.25 : -0.25));
+        }, { passive: false });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
+        });
+    });
+</script>
 @endsection

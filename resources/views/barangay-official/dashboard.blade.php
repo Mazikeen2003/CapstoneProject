@@ -173,11 +173,37 @@ html.dark-mode .bd-progress-bg { background: #334155; }
 /* Status Badges */
 .bd-status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; text-transform: capitalize; }
 .bd-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.bd-status-planning { background: #fef3c7; color: #b45309; }
-.bd-status-ongoing { background: #dbeafe; color: #1d4ed8; }
-.bd-status-on-hold { background: #fee2e2; color: #b91c1c; }
-.bd-status-completed { background: #d1fae5; color: #047857; }
-.bd-status-cancelled { background: #f3f4f6; color: #4b5563; }
+.bd-status-planning,
+.bd-status-proposed { background: rgba(37,99,235,0.10); color: #2563eb; }
+.bd-status-bidding { background: rgba(245,158,11,0.10); color: #f59e0b; }
+.bd-status-bidding-ongoing { background: rgba(6,182,212,0.10); color: #06b6d4; }
+.bd-status-award { background: rgba(139,92,246,0.10); color: #8b5cf6; }
+.bd-status-ongoing,
+.bd-status-implementation { background: rgba(15,118,110,0.10); color: #0f766e; }
+.bd-status-on-hold { background: rgba(220,38,38,0.10); color: #dc2626; }
+.bd-status-completed { background: rgba(22,163,74,0.10); color: #16a34a; }
+.bd-status-cancelled { background: rgba(100,116,139,0.10); color: #64748b; }
+
+html.dark-mode .bd-status-planning,
+html.dark-mode .bd-status-proposed,
+.dark .bd-status-planning,
+.dark .bd-status-proposed { background: rgba(37,99,235,0.12); color: #60a5fa; }
+html.dark-mode .bd-status-bidding,
+.dark .bd-status-bidding { background: rgba(245,158,11,0.12); color: #fbbf24; }
+html.dark-mode .bd-status-bidding-ongoing,
+.dark .bd-status-bidding-ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
+html.dark-mode .bd-status-award,
+.dark .bd-status-award { background: rgba(139,92,246,0.12); color: #a78bfa; }
+html.dark-mode .bd-status-ongoing,
+html.dark-mode .bd-status-implementation,
+.dark .bd-status-ongoing,
+.dark .bd-status-implementation { background: rgba(15,118,110,0.12); color: #5eead4; }
+html.dark-mode .bd-status-on-hold,
+.dark .bd-status-on-hold { background: rgba(220,38,38,0.12); color: #f87171; }
+html.dark-mode .bd-status-completed,
+.dark .bd-status-completed { background: rgba(22,163,74,0.12); color: #4ade80; }
+html.dark-mode .bd-status-cancelled,
+.dark .bd-status-cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
 
 /* Project List */
 .bd-projects { display: flex; flex-direction: column; gap: 12px; }
@@ -313,10 +339,14 @@ html.dark-mode .bd-progress-bg { background: #334155; }
                     <div id="barangay-map"></div>
                     <div class="bd-map-legend">
                         <div class="bd-map-legend-title">Project Status</div>
-                        <div class="bd-map-legend-item"><span class="bd-map-legend-dot" style="background:#fbbf24"></span> Planning</div>
-                        <div class="bd-map-legend-item"><span class="bd-map-legend-dot" style="background:#3b82f6"></span> On Going</div>
-                        <div class="bd-map-legend-item"><span class="bd-map-legend-dot" style="background:#ef4444"></span> On Hold</div>
-                        <div class="bd-map-legend-item"><span class="bd-map-legend-dot" style="background:#10b981"></span> Completed</div>
+                        <div class="bd-map-legend-item"><span class="bd-map-legend-dot" style="background:#2563eb"></span> Proposed</div>
+                        <div class="bd-map-legend-item"><span class="bd-map-legend-dot" style="background:#f59e0b"></span> For bidding</div>
+                        <div class="bd-map-legend-item"><span class="bd-map-legend-dot" style="background:#06b6d4"></span> Bidding ongoing</div>
+                        <div class="bd-map-legend-item"><span class="bd-map-legend-dot" style="background:#8b5cf6"></span> Award of contract</div>
+                        <div class="bd-map-legend-item"><span class="bd-map-legend-dot" style="background:#0f766e"></span> Implementation</div>
+                        <div class="bd-map-legend-item"><span class="bd-map-legend-dot" style="background:#16a34a"></span> Completed</div>
+                        <div class="bd-map-legend-item"><span class="bd-map-legend-dot" style="background:#dc2626"></span> On Hold</div>
+                        <div class="bd-map-legend-item"><span class="bd-map-legend-dot" style="background:#64748b"></span> Cancelled</div>
                     </div>
                 </div>
             </div>
@@ -353,8 +383,11 @@ html.dark-mode .bd-progress-bg { background: #334155; }
                         @foreach ($recentProjects as $project)
                             @php
                                 $statusClass = match($project->current_status) {
-                                    'Planning' => 'bd-status-planning',
-                                    'On Going' => 'bd-status-ongoing',
+                                    'Planning', 'Proposed' => 'bd-status-planning',
+                                    'For bidding', 'Procurement' => 'bd-status-bidding',
+                                    'Bidding ongoing' => 'bd-status-bidding-ongoing',
+                                    'Award of contract', 'Bidding - Success' => 'bd-status-award',
+                                    'On Going', 'Implementation' => 'bd-status-implementation',
                                     'On Hold' => 'bd-status-on-hold',
                                     'Completed' => 'bd-status-completed',
                                     'Cancelled' => 'bd-status-cancelled',
@@ -445,17 +478,13 @@ html.dark-mode .bd-progress-bg { background: #334155; }
                         L.geoJSON(data, {
                             pointToLayer: function(feature, latlng) {
                                 const statusColor = {
-                                    'Proposed': '#fbbf24',
-                                    'Planning': '#fbbf24',
+                                    'Proposed': '#2563eb',
                                     'For bidding': '#f59e0b',
-                                    'Procurement': '#f59e0b',
-                                    'Bidding ongoing': '#3b82f6',
+                                    'Bidding ongoing': '#06b6d4',
                                     'Award of contract': '#8b5cf6',
-                                    'Bidding - Success': '#8b5cf6',
-                                    'Implementation': '#0ea5e9',
-                                    'On Going': '#0ea5e9',
-                                    'Completed': '#10b981',
-                                    'On Hold': '#ef4444',
+                                    'Implementation': '#0f766e',
+                                    'Completed': '#16a34a',
+                                    'On Hold': '#dc2626',
                                     'Cancelled': '#64748b'
                                 };
                                 const projectStatus = String(feature.properties.status || '').trim();

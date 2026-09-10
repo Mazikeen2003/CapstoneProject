@@ -1,6 +1,9 @@
 @extends('layouts.city')
 
 @section('content')
+@php
+    $projectsRoutePrefix = $projectsRoutePrefix ?? 'city';
+@endphp
 <style>
     .city-projects-page {
         --cp-bg: #f8f7f5;
@@ -48,10 +51,37 @@
     .city-projects-search svg { position: absolute; left: 14px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%); color: var(--cp-muted); }
     .city-projects-search input { width: 100%; padding: 10px 14px 10px 42px; border: 1px solid var(--cp-line); border-radius: 100px; outline: none; background: var(--cp-bg); color: var(--cp-ink); font-size: 0.875rem; }
     .city-projects-search input:focus { border-color: #6d28d9; box-shadow: 0 0 0 3px rgba(109,40,217,0.12); }
-    .city-projects-filters { display: flex; flex-wrap: wrap; gap: 8px; }
-    .city-projects-filter { padding: 8px 16px; border: 1px solid var(--cp-line); border-radius: 100px; background: var(--cp-bg); color: var(--cp-ink); font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: all 0.15s ease; }
-    .city-projects-filter.active { background: var(--cp-ink); color: var(--cp-surface); }
-    .city-projects-filter:hover:not(.active) { background: var(--cp-surface-hover); }
+    .city-projects-status-filter-wrap { position: relative; }
+    .city-projects-status-filter-wrap::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        width: 7px;
+        height: 7px;
+        border-right: 2px solid var(--cp-muted);
+        border-bottom: 2px solid var(--cp-muted);
+        transform: translateY(-65%) rotate(45deg);
+        pointer-events: none;
+    }
+    .city-projects-status-filter {
+        min-width: 190px;
+        padding: 10px 36px 10px 14px;
+        border: 1px solid var(--cp-line);
+        border-radius: 100px;
+        background: var(--cp-bg);
+        color: var(--cp-ink);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        cursor: pointer;
+        outline: none;
+        appearance: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .city-projects-status-filter:focus {
+        border-color: #6d28d9;
+        box-shadow: 0 0 0 3px rgba(109,40,217,0.12);
+    }
 
     /* Card & Table */
     .city-projects-card { overflow: hidden; border: 1px solid var(--cp-line); border-radius: 16px; background: var(--cp-surface); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
@@ -72,13 +102,13 @@
     /* Status badges */
     .city-project-status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
     .city-project-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-    .status-planning { background: #fef3c7; color: #b45309; }
-    .status-bidding { background: #fef3c7; color: #b45309; }
-    .status-award { background: #ede9fe; color: #6d28d9; }
-    .status-ongoing { background: #dbeafe; color: #1d4ed8; }
-    .status-hold { background: #fee2e2; color: #b91c1c; }
-    .status-completed { background: #d1fae5; color: #047857; }
-    .status-cancelled { background: #f3f4f6; color: #4b5563; }
+    .status-planning { background: rgba(37,99,235,0.10); color: #2563eb; }
+    .status-bidding { background: rgba(245,158,11,0.10); color: #f59e0b; }
+    .status-award { background: rgba(139,92,246,0.10); color: #8b5cf6; }
+    .status-ongoing { background: rgba(6,182,212,0.10); color: #06b6d4; }
+    .status-hold { background: rgba(220,38,38,0.10); color: #dc2626; }
+    .status-completed { background: rgba(22,163,74,0.10); color: #16a34a; }
+    .status-cancelled { background: rgba(100,116,139,0.10); color: #64748b; }
 
     /* View button */
     .city-project-view { display: inline-flex; align-items: center; justify-content: center; padding: 7px 14px; border: 1px solid rgba(59,130,246,0.3); border-radius: 8px; background: #dbeafe; color: #1d4ed8; font-size: 0.75rem; font-weight: 700; text-decoration: none; transition: all 0.15s; }
@@ -102,7 +132,11 @@
     .city-projects-empty p { font-size: 0.875rem; color: var(--cp-muted); }
 
     /* Pagination */
-    .city-projects-pagination { padding: 20px 24px; }
+    .city-projects-pagination {
+        display: flex;
+        justify-content: flex-end;
+        padding: 20px 24px;
+    }
 
     /* Dark mode overrides */
     html.dark-mode .city-projects-card { border-color: #475569; background: #1e293b; }
@@ -111,8 +145,13 @@
     html.dark-mode .city-projects-table td { background: #1e293b; border-bottom-color: #334155; color: #cbd5e1; }
     html.dark-mode .city-projects-table tr:hover td { background: #243247; }
     html.dark-mode .city-project-code { color: #94a3b8; }
-    html.dark-mode .status-bidding { background: rgba(245,158,11,0.16); color: #fbbf24; }
-    html.dark-mode .status-award { background: rgba(139,92,246,0.16); color: #a78bfa; }
+    html.dark-mode .status-planning { background: rgba(37,99,235,0.12); color: #60a5fa; }
+    html.dark-mode .status-bidding { background: rgba(245,158,11,0.12); color: #fbbf24; }
+    html.dark-mode .status-award { background: rgba(139,92,246,0.12); color: #a78bfa; }
+    html.dark-mode .status-ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
+    html.dark-mode .status-hold { background: rgba(220,38,38,0.12); color: #f87171; }
+    html.dark-mode .status-completed { background: rgba(22,163,74,0.12); color: #4ade80; }
+    html.dark-mode .status-cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
 
     @media (max-width: 767px) {
         .city-projects-page { padding: 24px 16px; }
@@ -146,12 +185,18 @@
             </svg>
             <input type="text" id="cityProjectSearch" placeholder="Search projects by name or code...">
         </div>
-        <div class="city-projects-filters">
-            <button type="button" class="city-projects-filter active" data-filter="all">All</button>
-            <button type="button" class="city-projects-filter" data-filter="Planning">Planning</button>
-            <button type="button" class="city-projects-filter" data-filter="On Going">On Going</button>
-            <button type="button" class="city-projects-filter" data-filter="Completed">Completed</button>
-            <button type="button" class="city-projects-filter" data-filter="On Hold">On Hold</button>
+        <div class="city-projects-status-filter-wrap">
+            <select id="cityProjectStatusFilter" class="city-projects-status-filter" aria-label="Filter projects by status">
+                <option value="all">All statuses</option>
+                <option value="Proposed">Proposed</option>
+                <option value="For bidding">For bidding</option>
+                <option value="Bidding ongoing">Bidding ongoing</option>
+                <option value="Award of contract">Award of contract</option>
+                <option value="Implementation">Implementation</option>
+                <option value="Completed">Completed</option>
+                <option value="On Hold">On Hold</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
         </div>
     </div>
 
@@ -213,7 +258,7 @@
                                 <td>{{ $project->barangay?->barangay_name ?? 'Citywide' }}</td>
                                 <td>₱{{ number_format($project->approved_budget ?? 0, 2) }}</td>
                                 <td>
-                                    <a class="city-project-view" href="{{ route('city.projects.show', $project->project_id) }}">View</a>
+                                    <a class="city-project-view" href="{{ route($projectsRoutePrefix . '.projects.show', $project->project_id) }}">View</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -256,7 +301,7 @@
                         <div class="city-project-mobile-meta">
                             <div>Barangay<strong>{{ $project->barangay?->barangay_name ?? 'Citywide' }}</strong></div>
                             <div>Budget<strong>₱{{ number_format($project->approved_budget ?? 0, 2) }}</strong></div>
-                            <div>Action<strong><a class="city-project-view" href="{{ route('city.projects.show', $project->project_id) }}">View</a></strong></div>
+                            <div>Action<strong><a class="city-project-view" href="{{ route($projectsRoutePrefix . '.projects.show', $project->project_id) }}">View</a></strong></div>
                         </div>
                     </div>
                 @endforeach
@@ -264,7 +309,9 @@
         @endif
 
         @if($projects->hasPages())
-            <div class="city-projects-pagination">{{ $projects->links() }}</div>
+            <div class="city-projects-pagination">
+                <div class="city-project-pagebtns">{{ $projects->links() }}</div>
+            </div>
         @endif
     </div>
 </div>
@@ -272,12 +319,12 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const search = document.getElementById('cityProjectSearch');
-    const filters = document.querySelectorAll('.city-projects-filter');
+    const statusFilter = document.getElementById('cityProjectStatusFilter');
     const rows = document.querySelectorAll('.city-project-row');
-    let activeFilter = 'all';
 
     function updateProjects() {
         const query = (search?.value || '').toLowerCase().trim();
+        const activeFilter = statusFilter?.value || 'all';
         rows.forEach(row => {
             const matchesFilter = activeFilter === 'all' || row.dataset.status === activeFilter;
             const matchesSearch = !query || row.dataset.search.includes(query);
@@ -286,15 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     search?.addEventListener('input', updateProjects);
-
-    filters.forEach(filter => {
-        filter.addEventListener('click', function () {
-            filters.forEach(item => item.classList.remove('active'));
-            this.classList.add('active');
-            activeFilter = this.dataset.filter;
-            updateProjects();
-        });
-    });
+    statusFilter?.addEventListener('change', updateProjects);
 });
 </script>
 @endsection

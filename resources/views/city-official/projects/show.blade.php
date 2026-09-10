@@ -7,9 +7,8 @@
     $today = \Carbon\Carbon::today();
     $totalDays = $startDate->diffInDays($endDate);
     $daysElapsed = $startDate->diffInDays($today);
-    $timelineProgress = ($totalDays > 0) ? min(100, max(0, ($daysElapsed / $totalDays) * 100)) : 0;
     $reportedProgress = $project->latestUpdate?->progress_percentage;
-    $progress = $reportedProgress !== null ? $reportedProgress : $timelineProgress;
+    $reportedProgress = $reportedProgress !== null ? min(100, max(0, (float) $reportedProgress)) : null;
 @endphp
 
 <style>
@@ -151,6 +150,7 @@ html.dark-mode body:has(.cs-wrap) { background: #0f0e1a !important; }
     line-height: 1.2;
     letter-spacing: -0.02em;
     margin-bottom: 8px;
+    overflow-wrap: anywhere;
 }
 .cs-hero-subtitle {
     font-family: var(--font-body);
@@ -196,6 +196,11 @@ html.dark-mode body:has(.cs-wrap) { background: #0f0e1a !important; }
     grid-template-columns: 1fr;
     gap: 24px;
     margin-bottom: 24px;
+}
+.cs-main,
+.cs-sidebar,
+.cs-card {
+    min-width: 0;
 }
 @media (min-width: 1024px) {
     .cs-grid { grid-template-columns: 1fr 360px; align-items: start; }
@@ -267,6 +272,7 @@ html.dark-mode .cs-card-icon.gray { background: rgba(107,114,128,0.15); color: #
     color: var(--cs-muted);
     margin-top: 2px;
 }
+.cs-card-header > div:last-child { min-width: 0; overflow-wrap: anywhere; }
 .cs-card-body { padding: 24px; }
 
 /* ===== DETAIL GRID ===== */
@@ -323,7 +329,10 @@ html.dark-mode .cs-detail-icon.amber { background: rgba(251,191,36,0.15); color:
 html.dark-mode .cs-detail-icon.rose { background: rgba(244,63,94,0.15); color: #fb7185; }
 html.dark-mode .cs-detail-icon.purple { background: rgba(139,92,246,0.15); color: #a78bfa; }
 html.dark-mode .cs-detail-icon.gray { background: rgba(107,114,128,0.15); color: #9ca3af; }
-.cs-detail-content { min-width: 0; }
+.cs-detail-content {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
 .cs-detail-label {
     font-family: var(--font-body);
     font-size: 0.6875rem;
@@ -339,6 +348,9 @@ html.dark-mode .cs-detail-icon.gray { background: rgba(107,114,128,0.15); color:
     font-weight: 700;
     color: var(--cs-ink);
     line-height: 1.4;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal;
 }
 .cs-detail-value.muted {
     color: var(--cs-ink-secondary);
@@ -428,7 +440,112 @@ html.dark-mode .cs-timeline-progress { background: rgba(251,191,36,0.15); color:
     font-size: 0.875rem;
     color: var(--cs-ink-secondary);
     line-height: 1.5;
+    overflow-wrap: anywhere;
 }
+.cs-timeline-evidence {
+    display: grid;
+    gap: 10px;
+}
+.cs-timeline-evidence-image,
+.cs-timeline-evidence-remarks {
+    padding: 10px;
+    border: 1px solid var(--cs-line);
+    border-radius: var(--cs-radius-xs);
+    background: var(--cs-surface);
+}
+.cs-timeline-evidence-remarks {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--cs-ink-secondary);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+.cs-timeline-image {
+    display: block;
+    width: 100%;
+    max-height: 360px;
+    border-radius: var(--cs-radius-xs);
+    object-fit: cover;
+    cursor: zoom-in;
+}
+.cs-image-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(2, 6, 23, .86);
+    backdrop-filter: blur(6px);
+}
+.cs-image-lightbox.is-open { display: flex; }
+.cs-image-lightbox-image {
+    max-width: min(92vw, 1200px);
+    max-height: 84vh;
+    border-radius: 10px;
+    object-fit: contain;
+    transform: scale(1);
+    transition: transform .15s ease;
+    user-select: none;
+}
+.cs-image-lightbox-toolbar {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    display: flex;
+    gap: 8px;
+}
+.cs-image-lightbox-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 8px;
+    background: rgba(15,23,42,.8);
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+.cs-image-lightbox-button:hover { background: rgba(51,65,85,.95); }
+.cs-project-back-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 16px;
+    border: 1px solid rgba(99,102,241,.24);
+    border-radius: 10px;
+    background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+    color: #3730a3;
+    font-family: var(--font-body);
+    font-size: .8125rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 12px -6px rgba(79,70,229,.45);
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.cs-project-back-wrap {
+    position: sticky;
+    top: 24px;
+    z-index: 5;
+    width: 100%;
+    align-self: stretch;
+}
+.cs-project-back-button:hover {
+    background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+    box-shadow: 0 8px 18px -8px rgba(79,70,229,.55);
+    transform: translateY(-1px);
+}
+.cs-project-back-button:focus-visible {
+    outline: 3px solid rgba(99,102,241,.28);
+    outline-offset: 2px;
+}
+.cs-project-back-button svg { width: 16px; height: 16px; }
 
 /* ===== SIDEBAR ===== */
 .cs-sidebar {
@@ -444,6 +561,7 @@ html.dark-mode .cs-timeline-progress { background: rgba(251,191,36,0.15); color:
 .cs-progress-mini {
     padding: 20px 24px;
 }
+.cs-progress-block + .cs-progress-block { margin-top: 18px; }
 .cs-progress-header {
     display: flex;
     align-items: center;
@@ -530,32 +648,6 @@ html.dark-mode .cs-empty-icon { background: rgba(251,191,36,0.15); }
     color: var(--cs-muted);
 }
 
-/* ===== BACK LINK ===== */
-.cs-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border-radius: 12px;
-    background: var(--cs-raised);
-    border: 1px solid var(--cs-line);
-    color: var(--cs-muted);
-    font-family: var(--font-body);
-    font-size: 0.8125rem;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    margin-bottom: 16px;
-}
-.cs-back:hover {
-    background: var(--cs-surface);
-    border-color: var(--cs-line-strong);
-    color: var(--cs-ink);
-    transform: translateY(-1px);
-    box-shadow: var(--cs-shadow-sm);
-}
-.cs-back svg { width: 16px; height: 16px; }
-
 /* ===== ANIMATIONS ===== */
 @keyframes csFadeUp {
     from { opacity: 0; transform: translateY(12px); }
@@ -577,11 +669,7 @@ html.dark-mode .cs-empty-icon { background: rgba(251,191,36,0.15); }
 </style>
 
 <div class="cs-wrap">
-    <!-- Back Link -->
-    <a href="{{ route('city.projects.index') }}" class="cs-back cs-animate">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-        Back to Projects
-    </a>
+    @include('components.project-stepper', ['project' => $project])
 
     <!-- HERO -->
     <div class="cs-hero cs-animate">
@@ -652,7 +740,7 @@ html.dark-mode .cs-empty-icon { background: rgba(251,191,36,0.15); }
                                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </div>
                             <div class="cs-detail-content">
-                                <div class="cs-detail-label">Approved Budget</div>
+                                <div class="cs-detail-label">{{ in_array($project->current_status, ['Award of contract', 'Implementation', 'Completed'], true) ? 'Approved Budget' : 'Proposed Budget' }}</div>
                                 <div class="cs-detail-value">₱{{ number_format($project->approved_budget ?? 0, 2) }}</div>
                             </div>
                         </div>
@@ -712,7 +800,7 @@ html.dark-mode .cs-empty-icon { background: rgba(251,191,36,0.15); }
                         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
                     </div>
                     <div>
-                        <h2>Project Updates</h2>
+                        <h2>Progress Updates</h2>
                         <p>Timeline of project milestones and progress reports.</p>
                     </div>
                 </div>
@@ -727,8 +815,14 @@ html.dark-mode .cs-empty-icon { background: rgba(251,191,36,0.15); }
                         </div>
                     @else
                         <div class="cs-timeline">
-                            @foreach ($project->updates as $update)
-                                <div class="cs-timeline-item {{ $loop->index < $project->updates->count() - 1 ? 'completed' : '' }}">
+                            @php
+                                $progressUpdates = $project->updates->sortBy([
+                                    ['update_date', 'desc'],
+                                    ['update_id', 'desc'],
+                                ])->values();
+                            @endphp
+                            @foreach ($progressUpdates as $update)
+                                    <div class="cs-timeline-item {{ $loop->index > 0 ? 'completed' : '' }}">
                                     <div class="cs-timeline-dot"></div>
                                     <div class="cs-timeline-content">
                                         <div class="cs-timeline-date">
@@ -736,7 +830,16 @@ html.dark-mode .cs-empty-icon { background: rgba(251,191,36,0.15); }
                                             {{ $update->update_date?->format('M d, Y') ?? '—' }}
                                         </div>
                                         <div class="cs-timeline-progress">{{ $update->progress_percentage ?? '0' }}% Complete</div>
-                                        <div class="cs-timeline-remarks">{{ $update->remarks ?? '' }}</div>
+                                        @if ($update->image_path)
+                                            <div class="cs-timeline-evidence">
+                                                <div class="cs-timeline-evidence-image">
+                                                    <img src="{{ asset('storage/' . $update->image_path) }}" alt="Progress update evidence" class="cs-timeline-image" data-full-image="{{ asset('storage/' . $update->image_path) }}">
+                                                </div>
+                                                <div class="cs-timeline-evidence-remarks">{{ $update->remarks ?? 'No remarks provided.' }}</div>
+                                            </div>
+                                        @else
+                                            <div class="cs-timeline-remarks">{{ $update->remarks ?? '' }}</div>
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach
@@ -751,12 +854,14 @@ html.dark-mode .cs-empty-icon { background: rgba(251,191,36,0.15); }
             <!-- Progress Mini Card -->
             <div class="cs-card cs-animate">
                 <div class="cs-progress-mini">
-                    <div class="cs-progress-header">
-                        <span class="cs-progress-label">Overall Progress</span>
-                        <span class="cs-progress-value">{{ number_format($progress, 1) }}%</span>
-                    </div>
-                    <div class="cs-progress-track">
-                        <div class="cs-progress-fill" style="width: {{ $progress }}%"></div>
+                    <div class="cs-progress-block">
+                        <div class="cs-progress-header">
+                            <span class="cs-progress-label">Reported Progress</span>
+                            <span class="cs-progress-value">{{ $reportedProgress !== null ? number_format($reportedProgress, 1) . '%' : 'Not reported' }}</span>
+                        </div>
+                        <div class="cs-progress-track">
+                            <div class="cs-progress-fill" style="width: {{ $reportedProgress ?? 0 }}%"></div>
+                        </div>
                     </div>
                     <div class="cs-progress-footer">
                         <span>Started {{ $project->start_date?->format('M d, Y') ?? '—' }}</span>
@@ -784,7 +889,70 @@ html.dark-mode .cs-empty-icon { background: rgba(251,191,36,0.15); }
                     </div>
                 </div>
             @endif
+
+            <div class="cs-project-back-wrap">
+                <a href="{{ route('city.projects.index') }}" class="cs-project-back-button">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                    Back to List
+                </a>
+            </div>
         </div>
     </div>
 </div>
+
+<div class="cs-image-lightbox" id="cityProgressImageLightbox" aria-hidden="true">
+    <div class="cs-image-lightbox-toolbar">
+        <button type="button" class="cs-image-lightbox-button" id="cityProgressImageZoomOut" aria-label="Zoom out" title="Zoom out">-</button>
+        <button type="button" class="cs-image-lightbox-button" id="cityProgressImageZoomReset" aria-label="Reset zoom" title="Reset zoom">1:1</button>
+        <button type="button" class="cs-image-lightbox-button" id="cityProgressImageZoomIn" aria-label="Zoom in" title="Zoom in">+</button>
+        <button type="button" class="cs-image-lightbox-button" id="cityProgressImageLightboxClose" aria-label="Close image" title="Close">x</button>
+    </div>
+    <img class="cs-image-lightbox-image" id="cityProgressImageLightboxImage" alt="Full-size progress evidence">
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const lightbox = document.getElementById('cityProgressImageLightbox');
+        const lightboxImage = document.getElementById('cityProgressImageLightboxImage');
+        const closeButton = document.getElementById('cityProgressImageLightboxClose');
+        const zoomInButton = document.getElementById('cityProgressImageZoomIn');
+        const zoomOutButton = document.getElementById('cityProgressImageZoomOut');
+        const zoomResetButton = document.getElementById('cityProgressImageZoomReset');
+        let zoom = 1;
+
+        function setZoom(value) {
+            zoom = Math.min(4, Math.max(0.5, value));
+            lightboxImage.style.transform = 'scale(' + zoom + ')';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('is-open');
+            lightbox.setAttribute('aria-hidden', 'true');
+            lightboxImage.removeAttribute('src');
+            setZoom(1);
+        }
+
+        document.querySelectorAll('.cs-timeline-image').forEach(function (image) {
+            image.addEventListener('click', function () {
+                lightboxImage.src = image.dataset.fullImage || image.src;
+                lightbox.classList.add('is-open');
+                lightbox.setAttribute('aria-hidden', 'false');
+                setZoom(1);
+            });
+        });
+
+        closeButton.addEventListener('click', closeLightbox);
+        zoomInButton.addEventListener('click', function () { setZoom(zoom + 0.25); });
+        zoomOutButton.addEventListener('click', function () { setZoom(zoom - 0.25); });
+        zoomResetButton.addEventListener('click', function () { setZoom(1); });
+        lightbox.addEventListener('click', function (event) { if (event.target === lightbox) closeLightbox(); });
+        lightboxImage.addEventListener('wheel', function (event) {
+            event.preventDefault();
+            setZoom(zoom + (event.deltaY < 0 ? 0.25 : -0.25));
+        }, { passive: false });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
+        });
+    });
+</script>
 @endsection

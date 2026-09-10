@@ -192,7 +192,7 @@ html.dark-mode .admin-create-user .admin-create-card {
                 </div>
 
                 <div>
-                    <label for="barangay_id" class="block text-sm font-semibold text-gray-700 mb-2">Barangay (Optional)</label>
+                    <label for="barangay_id" class="block text-sm font-semibold text-gray-700 mb-2">Barangay <span id="barangayRequiredMarker" class="hidden text-red-600">*</span></label>
                     <select id="barangay_id" name="barangay_id" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled>
                         <option value="">-- Select Barangay --</option>
                         @foreach ($barangays as $barangay)
@@ -284,10 +284,16 @@ html.dark-mode .admin-create-user .admin-create-card {
             const selectedOption = roleSelect.options[roleSelect.selectedIndex];
             const selectedRoleText = (selectedOption?.text || '').toLowerCase();
             const isBarangayRole = selectedRoleText.includes('barangay');
+            const requiredMarker = document.getElementById('barangayRequiredMarker');
 
             barangaySelect.disabled = !isBarangayRole;
+            barangaySelect.required = isBarangayRole;
             barangaySelect.style.opacity = isBarangayRole ? '1' : '0.6';
             barangaySelect.style.cursor = isBarangayRole ? 'pointer' : 'not-allowed';
+
+            if (requiredMarker) {
+                requiredMarker.classList.toggle('hidden', !isBarangayRole);
+            }
 
             if (!isBarangayRole) {
                 barangaySelect.value = '';
