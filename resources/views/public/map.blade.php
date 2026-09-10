@@ -30,21 +30,21 @@
         }
 
         #map {
-            min-height: 55vh;
-            height: 55vh;
+            min-height: 58vh;
+            height: 58vh;
         }
 
         @media (min-width: 640px) {
             #map {
-                min-height: 62vh;
-                height: 62vh;
+                min-height: 64vh;
+                height: 64vh;
             }
         }
 
         @media (min-width: 1024px) {
             #map {
-                min-height: calc(100vh - 18rem);
-                height: calc(100vh - 18rem);
+                min-height: 86vh;
+                height: 86vh;
             }
         }
 
@@ -625,7 +625,7 @@
                 @include('components.map-status-legend')
             </div>
 
-            <div id="projectSidebar" class="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden order-3 md:order-2 flex flex-col" style="max-height: calc(100vh - 18rem);">
+            <div id="projectSidebar" class="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden order-3 md:order-2 flex flex-col" style="max-height: 86vh;">
                 <div class="p-6 border-b border-gray-200 bg-white">
                     <div>
                         <h2 class="text-lg font-bold text-black">Projects Overview</h2>
