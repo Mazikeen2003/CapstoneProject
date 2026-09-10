@@ -62,9 +62,9 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #dbe4f0;
             border-radius: 10px;
-            background: #f8fafc;
+            background: #edf3ff;
             padding: 12px;
         }
 
@@ -104,17 +104,19 @@
         .public-project-detail-wide { grid-column: 1 / -1; }
 
         .public-project-details-card {
-            border-color: #e2e8f0;
-            background: #ffffff;
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            border-radius: 12px;
+            background: #edf3ff;
+            box-shadow: 0 10px 20px -16px rgba(15, 23, 42, 0.22);
         }
 
         .public-project-description-card {
             margin-top: 18px;
             padding: 16px 18px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid rgba(15, 23, 42, 0.12);
             border-radius: 12px;
-            background: #f8fafc;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+            background: #edf3ff;
+            box-shadow: 0 10px 20px -16px rgba(15, 23, 42, 0.22);
         }
 
         .public-project-description-card p {
@@ -126,6 +128,62 @@
             word-break: break-word;
         }
 
+        .public-project-lightbox-trigger {
+            cursor: zoom-in;
+        }
+
+        .public-image-lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 100000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(2, 6, 23, 0.86);
+            backdrop-filter: blur(6px);
+        }
+
+        .public-image-lightbox.is-open {
+            display: flex;
+        }
+
+        .public-image-lightbox-image {
+            max-width: min(92vw, 1200px);
+            max-height: 84vh;
+            border-radius: 10px;
+            object-fit: contain;
+            transform: scale(1);
+            transition: transform 0.15s ease;
+            user-select: none;
+        }
+
+        .public-image-lightbox-toolbar {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .public-image-lightbox-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #fff;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .public-image-lightbox-button:hover {
+            background: rgba(51, 65, 85, 0.95);
+        }
+
         .public-map-viewall {
             display: flex;
             align-items: center;
@@ -135,8 +193,8 @@
             width: 100%;
             padding: 14px;
             border-radius: 12px;
-            border: 1px solid #cbd5e1;
-            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            border: 1px solid #dbe4f0;
+            background: #edf3ff;
             color: #475569;
             font-size: 0.875rem;
             font-weight: 800;
@@ -156,8 +214,7 @@
         .public-project-image-wrap {
             position: relative;
             overflow: hidden;
-            border-radius: 1rem;
-            border: 1px solid #e2e8f0;
+            border-radius: 0;
             background: #f8fafc;
         }
 
@@ -219,13 +276,13 @@
         html.dark-mode .public-project-details-card,
         .dark .public-project-details-card {
             border-color: rgba(255, 255, 255, 0.08) !important;
-            background: #1a1929 !important;
+            background: #0f172a !important;
         }
 
         html.dark-mode .public-project-detail,
         .dark .public-project-detail {
             border-color: rgba(255, 255, 255, 0.08);
-            background: #222136;
+            background: #0f172a;
         }
 
         html.dark-mode .public-project-detail-label,
@@ -248,7 +305,7 @@
         html.dark-mode .public-project-description-card,
         .dark .public-project-description-card {
             border-color: rgba(255,255,255,0.08);
-            background: #222136;
+            background: #0f172a;
         }
 
         html.dark-mode .public-project-description-card p,
@@ -259,7 +316,7 @@
         html.dark-mode .public-map-viewall,
         .dark .public-map-viewall {
             border-color: rgba(255,255,255,0.08);
-            background: linear-gradient(135deg, #1a1929, #222136);
+            background: #0f172a;
             color: #cbd5e1;
         }
 
@@ -269,40 +326,74 @@
             color: #fbbf24;
         }
 
+        .public-map-project-card {
+            position: relative;
+        }
+
         .public-collapsed-project-card {
-            border-color: rgba(0, 0, 0, 0.06) !important;
-            background: #ffffff !important;
+            position: relative;
+            border-color: rgba(15, 23, 42, 0.2) !important;
+            background: #edf3ff !important;
             color: #1e1b4b;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .public-collapsed-project-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            bottom: 0;
+            background: linear-gradient(180deg, #f59e0b, #d97706);
+            opacity: 0;
+            transition: opacity 0.25s ease;
         }
 
         .public-collapsed-project-card:hover {
-            border-color: rgba(0, 0, 0, 0.12) !important;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+            border-color: rgba(15, 23, 42, 0.28) !important;
+            box-shadow: 0 14px 30px -18px rgba(15, 23, 42, 0.28) !important;
+            transform: translateY(-3px);
+        }
+
+        .public-collapsed-project-card:hover::before {
+            opacity: 1;
         }
 
         .public-collapsed-project-card .public-project-details-card {
-            background: #fafaf9 !important;
-            border-color: rgba(0, 0, 0, 0.06) !important;
+            background: #edf3ff !important;
+            border-color: rgba(15, 23, 42, 0.2) !important;
+        }
+
+        .public-collapsed-project-card .public-collapsed-barangay {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.4;
         }
 
         html.dark-mode .public-collapsed-project-card,
         .dark .public-collapsed-project-card {
-            border-color: rgba(255, 255, 255, 0.06) !important;
-            background: #1a1929 !important;
+            border-color: rgba(255, 255, 255, 0.18) !important;
+            background: #0f172a !important;
             color: #f8fafc;
         }
 
         html.dark-mode .public-collapsed-project-card:hover,
         .dark .public-collapsed-project-card:hover {
-            border-color: rgba(255, 255, 255, 0.12) !important;
+            border-color: rgba(255, 255, 255, 0.24) !important;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4) !important;
         }
 
         html.dark-mode .public-collapsed-project-card .public-project-details-card,
         .dark .public-collapsed-project-card .public-project-details-card {
-            background: #222136 !important;
-            border-color: rgba(255, 255, 255, 0.06) !important;
+            background: #0f172a !important;
+            border-color: rgba(255, 255, 255, 0.18) !important;
+        }
+
+        html.dark-mode .public-collapsed-project-card .public-collapsed-barangay,
+        .dark .public-collapsed-project-card .public-collapsed-barangay {
+            color: #f8fafc;
         }
 
         .public-lifecycle-current {
@@ -567,6 +658,16 @@
         </div>
     </footer>
 
+    <div class="public-image-lightbox" id="publicMapProjectLightbox" aria-hidden="true">
+        <div class="public-image-lightbox-toolbar">
+            <button type="button" class="public-image-lightbox-button" id="publicMapProjectZoomOut" aria-label="Zoom out" title="Zoom out">−</button>
+            <button type="button" class="public-image-lightbox-button" id="publicMapProjectZoomReset" aria-label="Reset zoom" title="Reset zoom">1:1</button>
+            <button type="button" class="public-image-lightbox-button" id="publicMapProjectZoomIn" aria-label="Zoom in" title="Zoom in">+</button>
+            <button type="button" class="public-image-lightbox-button" id="publicMapProjectLightboxClose" aria-label="Close image" title="Close">×</button>
+        </div>
+        <img class="public-image-lightbox-image" id="publicMapProjectLightboxImage" alt="Full-size project image">
+    </div>
+
     {{-- Leaflet JS --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
@@ -574,6 +675,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             const projectList = document.getElementById('departmentProjectList');
             const selectedClass = 'bg-slate-50 border border-slate-200';
+            const lightbox = document.getElementById('publicMapProjectLightbox');
+            const lightboxImage = document.getElementById('publicMapProjectLightboxImage');
+            const closeButton = document.getElementById('publicMapProjectLightboxClose');
+            const zoomInButton = document.getElementById('publicMapProjectZoomIn');
+            const zoomOutButton = document.getElementById('publicMapProjectZoomOut');
+            const zoomResetButton = document.getElementById('publicMapProjectZoomReset');
             let selectedProjectIndex = null;
             let map = null;
             let boundedArea = null;
@@ -583,6 +690,7 @@
             let selectedBarangayName = null;
             const markersByBarangay = {}; // barangay name -> array of Leaflet markers
             let allMarkers = null; // featureGroup holding every marker
+            let publicProjectZoom = 1;
 
             function barangayColor(name) {
                 let hash = 0;
@@ -604,6 +712,30 @@
                     .replace(/>/g, '&gt;')
                     .replace(/"/g, '&quot;')
                     .replace(/'/g, '&#039;');
+            }
+
+            function setPublicProjectZoom(value) {
+                publicProjectZoom = Math.min(4, Math.max(0.5, value));
+                lightboxImage.style.transform = 'scale(' + publicProjectZoom + ')';
+            }
+
+            function closePublicProjectLightbox() {
+                lightbox.classList.remove('is-open');
+                lightbox.setAttribute('aria-hidden', 'true');
+                lightboxImage.removeAttribute('src');
+                setPublicProjectZoom(1);
+            }
+
+            function bindPublicProjectImageLightboxTriggers() {
+                document.querySelectorAll('.public-project-lightbox-trigger').forEach(function (image) {
+                    image.addEventListener('click', function (event) {
+                        event.stopPropagation();
+                        lightboxImage.src = image.dataset.fullImage || image.src;
+                        lightbox.classList.add('is-open');
+                        lightbox.setAttribute('aria-hidden', 'false');
+                        setPublicProjectZoom(1);
+                    });
+                });
             }
 
             function calculateProgress(project) {
@@ -705,7 +837,7 @@
                 const description = escapeHtml(props.description || 'No description available.');
 
                 const imageHtml = props.image
-                    ? `<img src="${props.image}" alt="${props.name}" class="h-40 w-full rounded-2xl object-cover bg-slate-100">`
+                    ? `<img src="${props.image}" alt="${props.name}" class="public-project-lightbox-trigger h-40 w-full rounded-2xl object-cover bg-slate-100" data-full-image="${props.image}">`
                     : '<div class="h-40 w-full rounded-2xl bg-gray-100 flex items-center justify-center text-xs text-gray-500">No image</div>';
                 const collapsedImageHtml = props.image
                     ? `<div class="public-project-image-wrap"><img src="${props.image}" alt="${props.name}" class="public-project-image"><div class="public-project-image-overlay"></div></div>`
@@ -722,17 +854,17 @@
                                     </div>
                                     <span class="public-status-badge ${statusClass}">${props.status || 'Unknown'}</span>
                                 </div>
-                                <div class="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-2">${imageHtml}</div>
+                                <div class="mb-4 overflow-hidden rounded-2xl bg-slate-50">${imageHtml}</div>
                                 ${lifecycleHtml}
-                                <div class="public-project-details-card rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                                <div class="public-project-details-card rounded-2xl p-4">
                                     <div class="mb-3 flex items-center gap-2">
                                         <h4 class="text-sm font-bold text-slate-900">Project Details</h4>
                                     </div>
                                     <div class="public-project-details-grid">
                                         <div class="public-project-detail"><span class="public-project-detail-icon purple material-symbols-outlined">location_on</span><div><div class="public-project-detail-label">Barangay</div><div class="public-project-detail-value">${props.barangay || 'Not specified'}</div></div></div>
                                         <div class="public-project-detail"><span class="public-project-detail-icon emerald material-symbols-outlined">payments</span><div><div class="public-project-detail-label">Allocated Budget</div><div class="public-project-detail-value">${formatCurrency(allocatedBudget)}</div></div></div>
-                                        <div class="public-project-detail"><span class="public-project-detail-icon rose material-symbols-outlined">account_balance_wallet</span><div><div class="public-project-detail-label">Expenditure</div><div class="public-project-detail-value">${formatCurrency(expenditure)}</div></div></div>
                                         <div class="public-project-detail"><span class="public-project-detail-icon amber material-symbols-outlined">trending_up</span><div><div class="public-project-detail-label">Reported Progress</div><div class="public-project-detail-value">${reportedProgress === null ? 'Not reported' : reportedProgress.toFixed(1) + '%'}</div></div></div>
+                                        <div class="public-project-detail"><span class="public-project-detail-icon rose material-symbols-outlined">account_balance_wallet</span><div><div class="public-project-detail-label">Expenditure</div><div class="public-project-detail-value">${formatCurrency(expenditure)}</div></div></div>
                                         </div>
                                         <div class="mt-3 border-t border-slate-300 pt-3"><div class="flex items-center justify-between text-xs text-slate-500"><span>Expenditure progress</span><span class="font-semibold text-slate-700">${expenditureProgress.toFixed(1)}%</span></div><div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full rounded-full bg-emerald-500" style="width: ${expenditureProgress}%"></div></div></div>
                                         <div class="mt-3 pt-3 border-t border-slate-300">
@@ -760,20 +892,20 @@
 
                 return `
                     <div class="public-map-project-card public-collapsed-project-card department-project-card cursor-pointer overflow-hidden rounded-3xl border-2 shadow-md transition hover:shadow-md" data-index="${index}">
-                        <div class="overflow-hidden p-2">${collapsedImageHtml}</div>
+                        <div class="overflow-hidden">${collapsedImageHtml}</div>
                         <div class="p-4">
                             <h3 class="text-base font-semibold text-slate-900">${props.name}</h3>
                             <div class="mt-2 flex flex-wrap items-center gap-2">
                                 <span class="public-status-badge ${statusClass}">${props.status || 'Unknown'}</span>
-                                <p class="text-xs text-slate-500">${props.barangay || 'Barangay not specified'}</p>
+                                <p class="public-collapsed-barangay">${props.barangay || 'Barangay not specified'}</p>
                             </div>
-                            <div class="public-project-details-card mt-4 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                            <div class="public-project-details-card mt-4 rounded-2xl p-3">
                                 <div class="mb-3 flex items-center gap-2">
                                     <h4 class="text-xs font-bold text-slate-900">Project Details</h4>
                                 </div>
                                 <div class="public-project-details-grid">
-                                    <div class="public-project-detail"><div><div class="public-project-detail-label">Reported Progress</div><div class="public-project-detail-value">${reportedProgress === null ? 'Not reported' : reportedProgress.toFixed(1) + '%'}</div></div></div>
-                                    <div class="public-project-detail"><div><div class="public-project-detail-label">Budget</div><div class="public-project-detail-value">${formatCurrency(props.budget)}</div></div></div>
+                                    <div class="public-project-detail"><span class="public-project-detail-icon amber material-symbols-outlined">trending_up</span><div><div class="public-project-detail-label">Reported Progress</div><div class="public-project-detail-value">${reportedProgress === null ? 'Not reported' : reportedProgress.toFixed(1) + '%'}</div></div></div>
+                                    <div class="public-project-detail"><span class="public-project-detail-icon emerald material-symbols-outlined">payments</span><div><div class="public-project-detail-label">Budget</div><div class="public-project-detail-value">${formatCurrency(props.budget)}</div></div></div>
                                 </div>
                             </div>
                             <div class="public-project-description-card mt-3">
@@ -818,6 +950,21 @@
                 }
             }
 
+            closeButton.addEventListener('click', closePublicProjectLightbox);
+            zoomInButton.addEventListener('click', function () { setPublicProjectZoom(publicProjectZoom + 0.25); });
+            zoomOutButton.addEventListener('click', function () { setPublicProjectZoom(publicProjectZoom - 0.25); });
+            zoomResetButton.addEventListener('click', function () { setPublicProjectZoom(1); });
+            lightbox.addEventListener('click', function (event) { if (event.target === lightbox) closePublicProjectLightbox(); });
+            lightboxImage.addEventListener('wheel', function (event) {
+                event.preventDefault();
+                setPublicProjectZoom(publicProjectZoom + (event.deltaY < 0 ? 0.25 : -0.25));
+            }, { passive: false });
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape' && lightbox.classList.contains('is-open')) {
+                    closePublicProjectLightbox();
+                }
+            });
+
             function renderProjectList(projects) {
                 const isSingle = projects.length === 1;
                 updateSidebarAction();
@@ -830,6 +977,8 @@
                 projectList.innerHTML = projects.map(function(project) {
                     return renderProjectCard(project, project.originalIndex, isSingle);
                 }).join('');
+
+                bindPublicProjectImageLightboxTriggers();
 
                 const cards = document.querySelectorAll('.department-project-card');
                 cards.forEach(function(card) {
