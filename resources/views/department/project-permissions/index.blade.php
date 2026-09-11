@@ -277,9 +277,15 @@
 
     .perm-summary {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 14px;
         margin-bottom: 18px;
+    }
+
+    @media (min-width: 960px) {
+        .perm-summary {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
     }
 
     .perm-stat {
