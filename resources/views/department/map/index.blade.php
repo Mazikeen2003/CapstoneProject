@@ -608,6 +608,7 @@ html:not(.dark-mode) .dept-map-container {
 .dept-map-step {
     text-align: center;
     position: relative;
+    min-width: 0;
 }
 .dept-map-step:not(:last-child)::after {
     content: "";
@@ -669,10 +670,31 @@ html:not(.dark-mode) .dept-map-container {
 .dept-map-step.completed .dept-map-step-label { color: #059669; font-weight: 800; }
 .dept-map-step.active .dept-map-step-label { color: var(--dm-ink); font-weight: 800; }
 
+@media (max-width: 640px) {
+    .dept-map-stepper-track {
+        display: flex;
+        overflow-x: auto;
+        gap: 12px;
+        padding-bottom: 8px;
+        scrollbar-width: thin;
+        -ms-overflow-style: auto;
+    }
+
+    .dept-map-step {
+        min-width: 72px;
+        flex: 0 0 72px;
+    }
+
+    .dept-map-step:not(:last-child)::after {
+        left: 58%;
+        width: 70%;
+    }
+}
+
 /* ===== DETAIL STATS GRID ===== */
 .dept-map-detail-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 12px;
     margin-bottom: 20px;
 }
