@@ -299,7 +299,14 @@
                 .then(data => {
                     if (data.features && data.features.length > 0) {
                         const completed = data.features.filter(f => f.properties.status === 'Completed').length;
-                        const ongoing = data.features.filter(f => f.properties.status === 'On Going').length;
+                        const ongoingStatuses = new Set([
+                            'Proposed',
+                            'For bidding',
+                            'Bidding ongoing',
+                            'Award of contract',
+                            'Implementation'
+                        ]);
+                        const ongoing = data.features.filter(f => ongoingStatuses.has(f.properties.status)).length;
                         const totalBudget = data.features.reduce((sum, f) => {
                             const budget = Number(f.properties.budget);
                             return sum + (isNaN(budget) ? 0 : budget);
