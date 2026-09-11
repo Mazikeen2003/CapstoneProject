@@ -6,6 +6,10 @@
 
 <style>
 /* ===== CITY MAP - RICH REDESIGN ===== */
+main {
+    overflow: hidden !important;
+}
+
 .cm-wrap {
     --cm-bg: #f4f4f5;
     --cm-surface: #ffffff;
@@ -279,26 +283,31 @@ html.dark-mode body:has(.cm-wrap) { background: #0f172a !important; }
     z-index: 500;
     display: flex;
     gap: 6px;
+    flex-wrap: wrap;
     padding: 6px;
     border-radius: 14px;
-    background: rgba(15, 23, 42, 0.9);
+    background: rgba(15, 23, 42, 0.88);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.08);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 12px 20px -10px rgba(2,6,23,0.65);
 }
 .cm-map-overlay-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     padding: 10px 16px;
     border-radius: 10px;
     border: none;
     background: transparent;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.7);
     font-family: var(--font-body);
     font-size: 0.75rem;
     font-weight: 700;
     cursor: pointer;
     transition: var(--cm-transition);
+    white-space: nowrap;
 }
 .cm-map-overlay-btn:hover { color: rgba(255,255,255,0.8); }
 .cm-map-overlay-btn.active {
@@ -319,6 +328,7 @@ html.dark-mode body:has(.cm-wrap) { background: #0f172a !important; }
     flex-direction: column;
     max-height: calc(100vh - 20rem);
     min-height: 520px;
+    height: calc(100vh - 16rem);
     animation: cmFadeUp 0.5s ease 0.15s forwards;
     opacity: 0;
     position: relative;
@@ -355,8 +365,11 @@ html.dark-mode body:has(.cm-wrap) { background: #0f172a !important; }
 .cm-sidebar-body {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 20px;
     background: var(--cm-raised);
+    max-height: calc(100vh - 23rem);
+    overscroll-behavior: contain;
 }
 
 /* Back button */
@@ -461,8 +474,23 @@ html.dark-mode body:has(.cm-wrap) { background: #0f172a !important; }
     display: flex;
     align-items: center;
     gap: 8px;
+    row-gap: 8px;
     margin-bottom: 14px;
     flex-wrap: wrap;
+}
+
+.cm-project-meta .cm-status {
+    min-width: fit-content;
+}
+
+.cm-project-meta .cm-status:last-child {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cm-project-card .cm-project-body {
+    min-width: 0;
 }
 
 /* Status badges */
@@ -477,6 +505,8 @@ html.dark-mode body:has(.cm-wrap) { background: #0f172a !important; }
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.06em;
+    white-space: nowrap;
+    max-width: 100%;
 }
 .cm-status-dot {
     width: 6px;

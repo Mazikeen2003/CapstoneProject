@@ -14,11 +14,13 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="authenticated-layout font-sans antialiased" style="background-color: #F7F9FB; color: #0F172A;">
-        <div class="flex min-h-screen">
+        <div class="flex min-h-screen flex-col xl:h-screen xl:flex-row">
             @include('components.sidebar')
-            <div class="flex-1 flex flex-col">
-                @include('components.navbar')
-                <main class="flex-1 p-6">
+            <div class="flex min-h-0 flex-1 flex-col xl:overflow-hidden">
+                <div class="sticky top-0 z-40">
+                    @include('components.navbar')
+                </div>
+                <main class="min-h-0 flex-1 overflow-y-auto p-6">
                     @yield('content')
                 </main>
             </div>
