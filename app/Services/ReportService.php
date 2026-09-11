@@ -212,11 +212,12 @@ class ReportService
         ];
     }
 
-    public static function generateSglgComplianceReport(): array
+    public static function generateSglgComplianceReport(?string $generatedBy = null): array
     {
         $user = Auth::user();
+        $generatedByLabel = $generatedBy ?? ($user?->username ?? 'Public Portal');
 
-        $projects = Project::with(['barangay', 'forms', 'updates'])->get();
+        $projects = Project::withoutRoleScope()->with(['barangay', 'forms', 'updates'])->get();
 
         $totalProjects = $projects->count();
 
@@ -238,12 +239,6 @@ class ReportService
             ? round(($projectsPublished / $totalProjects) * 100, 1)
             : 0;
 
-        $totalApprovedBudget = $projects->sum('approved_budget');
-        $totalActualBudget = $projects->sum('actual_budget');
-        $budgetUtilizationRate = $totalApprovedBudget > 0
-            ? round(($totalActualBudget / $totalApprovedBudget) * 100, 1)
-            : 0;
-
         $completedProjects = $projects->where('current_status', 'Completed')->count();
         $completionRate = $totalProjects > 0
             ? round(($completedProjects / $totalProjects) * 100, 1)
@@ -261,7 +256,7 @@ class ReportService
 
         return [
             'title' => 'SGLG Compliance Report',
-            'generated_by' => $user->username,
+            'generated_by' => $generatedByLabel,
             'generated_date' => now()->format('M d, Y H:i A'),
             'summary' => [
                 'total_projects' => $totalProjects,
@@ -271,7 +266,6 @@ class ReportService
                 'projects_recently_updated' => $projectsRecentlyUpdated,
                 'transparency_rate' => $transparencyRate,
                 'projects_published' => $projectsPublished,
-                'budget_utilization_rate' => $budgetUtilizationRate,
                 'completion_rate' => $completionRate,
             ],
             'by_barangay' => $byBarangay,
