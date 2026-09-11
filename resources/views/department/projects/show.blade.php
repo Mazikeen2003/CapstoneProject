@@ -396,6 +396,53 @@
     @media (min-width: 640px) {
         .dept-detail-grid { grid-template-columns: 1fr 1fr; }
     }
+    @media (max-width: 767px) {
+        .dept-detail-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .dept-detail-item {
+            min-height: 122px;
+            padding: 12px 10px;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+        }
+        .dept-detail-item.full-width {
+            grid-column: 1 / -1;
+        }
+        .dept-detail-icon {
+            width: 30px;
+            height: 30px;
+            margin: 0 auto 8px;
+        }
+        .dept-detail-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .dept-detail-label {
+            font-size: 0.58rem;
+            letter-spacing: 0.06em;
+            margin-bottom: 4px;
+            line-height: 1.2;
+            white-space: normal;
+        }
+        .dept-detail-value {
+            font-size: 0.8rem;
+            line-height: 1.2;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+            white-space: normal;
+        }
+        .dept-detail-value.muted {
+            font-size: 0.78rem;
+        }
+    }
     .dept-detail-item {
         display: flex;
         align-items: flex-start;
@@ -929,6 +976,119 @@
     .dept-animate:nth-child(5) { animation-delay: 0.15s; }
     .dept-animate:nth-child(6) { animation-delay: 0.18s; }
 
+    @media (max-width: 767px) {
+        .dept-show-container {
+            padding: 16px;
+        }
+        .dept-show-hero {
+            padding: 20px 18px;
+        }
+        .dept-show-hero-meta {
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .dept-show-hero-badge {
+            padding: 5px 10px;
+            font-size: 0.675rem;
+        }
+        .dept-show-hero-title {
+            font-size: 1.55rem;
+            line-height: 1.25;
+        }
+        .dept-show-hero-subtitle {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .dept-show-status {
+            font-size: 0.75rem;
+            padding: 7px 14px;
+        }
+        .dept-show-grid {
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+        .dept-show-card-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 16px 18px;
+            gap: 10px;
+        }
+        .dept-show-card-header h2 {
+            font-size: 0.95rem;
+        }
+        .dept-show-card-header p {
+            margin-top: 0;
+        }
+        .dept-show-card-body {
+            padding: 16px 18px;
+        }
+        .dept-detail-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .dept-detail-item {
+            padding: 14px;
+        }
+        .dept-detail-item.full-width {
+            grid-column: 1 / -1;
+        }
+        .dept-timeline {
+            padding-left: 20px;
+        }
+        .dept-timeline-dot {
+            left: -20px;
+            width: 14px;
+            height: 14px;
+        }
+        .dept-timeline-content {
+            padding: 14px;
+        }
+        .dept-progress-mini {
+            padding: 16px 18px;
+        }
+        .dept-forms-header-tools {
+            width: 100%;
+            justify-content: space-between;
+            margin-left: 0;
+        }
+        .dept-forms-count {
+            display: none;
+        }
+        .dept-forms-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            overflow: visible;
+            padding: 0;
+        }
+        .dept-form-card {
+            flex: 1 1 0;
+            flex-direction: column;
+            align-items: flex-start;
+            min-height: 0;
+            width: 100%;
+            padding: 14px;
+        }
+        .dept-form-actions {
+            flex-direction: column;
+            width: 100%;
+            gap: 8px;
+        }
+        .dept-form-btn {
+            width: 100%;
+            justify-content: center;
+        }
+        .dept-show-btn {
+            padding: 11px 18px;
+        }
+        .dept-show-actions {
+            gap: 10px;
+        }
+        .dept-show-sidebar {
+            gap: 16px;
+        }
+    }
+
     @media (prefers-reduced-motion: reduce) {
         .dept-animate { animation: none; opacity: 1; }
     }
@@ -1065,7 +1225,13 @@
                             </div>
                             <div class="dept-detail-content">
                                 <div class="dept-detail-label">{{ in_array($project->current_status, ['Award of contract', 'Implementation', 'Completed'], true) ? 'Approved Budget' : 'Proposed Budget' }}</div>
-                                <div class="dept-detail-value">₱{{ number_format($project->approved_budget ?? 0, 2) }}</div>
+                                @php
+                                    $approvedBudgetShort = $project->approved_budget ?? 0;
+                                    $approvedBudgetShort = $approvedBudgetShort >= 1000000
+                                        ? '₱' . number_format($approvedBudgetShort / 1000000, 1) . 'M'
+                                        : '₱' . number_format($approvedBudgetShort, 0);
+                                @endphp
+                                <div class="dept-detail-value">{{ $approvedBudgetShort }}</div>
                             </div>
                         </div>
                         <div class="dept-detail-item">
@@ -1074,7 +1240,13 @@
                             </div>
                             <div class="dept-detail-content">
                                 <div class="dept-detail-label">Actual Budget</div>
-                                <div class="dept-detail-value">₱{{ number_format($project->actual_budget ?? 0, 2) }}</div>
+                                @php
+                                    $actualBudgetShort = $project->actual_budget ?? 0;
+                                    $actualBudgetShort = $actualBudgetShort >= 1000000
+                                        ? '₱' . number_format($actualBudgetShort / 1000000, 1) . 'M'
+                                        : '₱' . number_format($actualBudgetShort, 0);
+                                @endphp
+                                <div class="dept-detail-value">{{ $actualBudgetShort }}</div>
                             </div>
                         </div>
                         <div class="dept-detail-item">
