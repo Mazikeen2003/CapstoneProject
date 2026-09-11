@@ -25,12 +25,12 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-slate-900 antialiased bg-slate-50">
-        <header class="guest-glass-nav sticky top-0 z-50 w-full border-b border-slate-200/50">
+        <header class="guest-glass-nav sticky top-0 z-50 w-full border-b border-slate-300/30">
             <nav class="relative mx-auto flex w-full items-center justify-between px-4 py-4 sm:px-8 lg:px-12">
                 <div class="flex items-center gap-3 sm:gap-4">
                     <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-10 w-10 shrink-0 rounded-lg object-contain" width="40" height="40" decoding="async" />
                     <div class="flex flex-col">
-                        <span class="text-base font-bold tracking-tight text-slate-900 sm:text-xl" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
+                        <span class="whitespace-nowrap text-sm font-bold tracking-tight text-slate-900 sm:text-xl" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
                         <span class="text-[9px] uppercase tracking-widest text-slate-500 opacity-70 sm:text-[10px]" style="font-family:'Public Sans',sans-serif;">Cabuyao Municipal Office</span>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                 </div>
             </nav>
 
-            <div class="guest-public-nav-mobile border-t border-slate-200/50 px-4 py-3 md:hidden">
+            <div class="guest-public-nav-mobile border-t border-slate-300/30 px-4 py-3 md:hidden">
                 <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-semibold uppercase tracking-widest" style="font-family:'Public Sans',sans-serif;">
                     <a href="{{ url('/') }}" class="transition-colors {{ request()->is('/') ? 'text-emerald-700' : 'text-slate-500 hover:text-emerald-700' }}">Home</a>
                     <a href="{{ route('public.map') }}" class="transition-colors {{ request()->routeIs('public.map') ? 'text-emerald-700' : 'text-slate-500 hover:text-emerald-700' }}">Public Map</a>
