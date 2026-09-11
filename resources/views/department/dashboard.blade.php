@@ -156,13 +156,79 @@
     #department-map { height: 420px; width: 100%; background: #e5e7eb; }
     .dept-map-legend {
         position: absolute; bottom: 16px; right: 16px;
-        background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);
-        padding: 12px 16px; border-radius: 8px;
-        border: 1px solid var(--dept-line); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); z-index: 400;
+        width: 180px;
+        background: rgba(255, 255, 255, 0.96);
+        color: #1f2937;
+        padding: 12px 14px 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+        z-index: 400;
     }
-    .dept-map-legend-title { font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #4b5563; margin-bottom: 8px; }
-    .dept-map-legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: #4b5563; margin-bottom: 6px; }
+    .dept-map-legend-toggle {
+        display: none;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        border: none;
+        background: transparent;
+        color: #1f2937;
+        padding: 0;
+        font: inherit;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+    }
+    .dept-map-legend-chevron {
+        font-size: 15px;
+        line-height: 1;
+        transition: transform 0.2s ease;
+    }
+    .dept-map-legend.is-collapsed .dept-map-legend-chevron {
+        transform: rotate(180deg);
+    }
+    .dept-map-legend-title { font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #374151; margin-bottom: 8px; }
+    .dept-map-legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: #374151; margin-bottom: 6px; }
     .dept-map-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    html.dark-mode .dept-map-legend,
+    .dark .dept-map-legend {
+        background: rgba(15, 23, 42, 0.94);
+        color: #e2e8f0;
+        border-color: rgba(148, 163, 184, 0.35);
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.28);
+    }
+    html.dark-mode .dept-map-legend-toggle,
+    .dark .dept-map-legend-toggle {
+        color: #e2e8f0;
+    }
+    html.dark-mode .dept-map-legend-title,
+    .dark .dept-map-legend-title {
+        color: #cbd5e1;
+    }
+    html.dark-mode .dept-map-legend-item,
+    .dark .dept-map-legend-item {
+        color: #e2e8f0;
+    }
+    @media (max-width: 640px) {
+        .dept-map-legend {
+            right: 10px;
+            bottom: 10px;
+            width: 156px;
+            padding: 10px 11px;
+        }
+        .dept-map-legend-toggle {
+            display: flex;
+        }
+        .dept-map-legend.is-collapsed .dept-map-legend-content {
+            display: none;
+        }
+        .dept-map-legend .dept-map-legend-title {
+            display: none;
+        }
+    }
 
     /* Status Badges */
     .dept-status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; text-transform: capitalize; white-space: nowrap; }
@@ -346,16 +412,22 @@
             <div class="dept-card-body">
                 <div class="dept-map-wrap">
                     <div id="department-map"></div>
-                    <div class="dept-map-legend">
-                        <div class="dept-map-legend-title">Project Status</div>
-                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#2563eb"></span> Proposed</div>
-                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#f59e0b"></span> For bidding</div>
-                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#06b6d4"></span> Bidding ongoing</div>
-                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#8b5cf6"></span> Award of contract</div>
-                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#0f766e"></span> Implementation</div>
-                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#16a34a"></span> Completed</div>
-                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#dc2626"></span> On Hold</div>
-                        <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#64748b"></span> Cancelled</div>
+                    <div class="dept-map-legend" aria-label="Project status legend">
+                        <button type="button" class="dept-map-legend-toggle" aria-expanded="true" aria-controls="deptMapLegendContent">
+                            <span class="dept-map-legend-toggle-text">Project Status</span>
+                            <span class="dept-map-legend-chevron">▾</span>
+                        </button>
+                        <div class="dept-map-legend-content" id="deptMapLegendContent">
+                            <div class="dept-map-legend-title">Project Status</div>
+                            <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#2563eb"></span> Proposed</div>
+                            <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#f59e0b"></span> For bidding</div>
+                            <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#06b6d4"></span> Bidding ongoing</div>
+                            <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#8b5cf6"></span> Award of contract</div>
+                            <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#0f766e"></span> Implementation</div>
+                            <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#16a34a"></span> Completed</div>
+                            <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#dc2626"></span> On Hold</div>
+                            <div class="dept-map-legend-item"><span class="dept-map-legend-dot" style="background:#64748b"></span> Cancelled</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -443,6 +515,38 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const legends = document.querySelectorAll('.dept-map-legend');
+
+    legends.forEach(function (legend) {
+        const toggle = legend.querySelector('.dept-map-legend-toggle');
+        const content = legend.querySelector('.dept-map-legend-content');
+
+        if (!toggle || !content) return;
+
+        function syncState(forceClosed) {
+            const shouldCollapse = forceClosed ?? legend.classList.contains('is-collapsed');
+            legend.classList.toggle('is-collapsed', shouldCollapse);
+            toggle.setAttribute('aria-expanded', String(!shouldCollapse));
+        }
+
+        toggle.addEventListener('click', function () {
+            const collapsed = legend.classList.contains('is-collapsed');
+            syncState(!collapsed);
+        });
+
+        const mediaQuery = window.matchMedia('(max-width: 640px)');
+        function applyMobileState() {
+            syncState(mediaQuery.matches);
+        }
+
+        applyMobileState();
+        if (mediaQuery.addEventListener) {
+            mediaQuery.addEventListener('change', applyMobileState);
+        } else {
+            mediaQuery.addListener(applyMobileState);
+        }
+    });
+
     fetch('{{ asset('data/cabuyao-map.geojson') }}')
         .then(response => response.json())
         .then(function(geojson) {

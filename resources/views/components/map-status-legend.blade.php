@@ -1,7 +1,7 @@
 <div class="map-status-legend" aria-label="Project status legend">
     <button type="button" class="map-status-legend-toggle" aria-expanded="true" aria-controls="mapStatusLegendContent">
         <span class="map-status-legend-toggle-text">Project Status</span>
-        <span class="material-symbols-outlined">expand_less</span>
+        <span class="map-status-legend-chevron" aria-hidden="true">▾</span>
     </button>
 
     <div class="map-status-legend-content" id="mapStatusLegendContent">
@@ -24,7 +24,7 @@
         legends.forEach(function (legend) {
             const toggle = legend.querySelector('.map-status-legend-toggle');
             const content = legend.querySelector('.map-status-legend-content');
-            const icon = toggle ? toggle.querySelector('.material-symbols-outlined') : null;
+            const icon = toggle ? toggle.querySelector('.map-status-legend-chevron') : null;
 
             if (!toggle || !content || !icon) return;
 
@@ -32,7 +32,7 @@
                 const shouldCollapse = forceClosed ?? legend.classList.contains('is-collapsed');
                 legend.classList.toggle('is-collapsed', shouldCollapse);
                 toggle.setAttribute('aria-expanded', String(!shouldCollapse));
-                icon.textContent = shouldCollapse ? 'expand_more' : 'expand_less';
+                icon.textContent = shouldCollapse ? '▾' : '▴';
             }
 
             toggle.addEventListener('click', function () {
@@ -65,35 +65,45 @@
         padding: 14px 14px 12px;
         border: 1px solid rgba(148, 163, 184, .35);
         border-radius: 10px;
-        background: rgba(15, 23, 42, .94);
-        box-shadow: 0 12px 24px rgba(15, 23, 42, .28);
-        color: #e2e8f0;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 12px 24px rgba(15, 23, 42, .12);
+        color: #1f2937;
         font: 500 12px/1.25 Inter, system-ui, sans-serif;
         pointer-events: auto;
     }
     .map-status-legend-toggle {
         display: none;
-        width: 100%;
+        width: auto;
+        max-width: 100%;
         align-items: center;
         justify-content: space-between;
         gap: 8px;
         border: none;
         background: transparent;
-        color: #e2e8f0;
+        color: #1f2937;
         font: inherit;
         font-weight: 700;
         letter-spacing: .04em;
         text-transform: uppercase;
         padding: 0;
         cursor: pointer;
+        white-space: nowrap;
     }
-    .map-status-legend-toggle .material-symbols-outlined {
-        font-size: 18px;
+    .map-status-legend-toggle-text {
+        white-space: nowrap;
+    }
+    .map-status-legend-chevron {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
         line-height: 1;
+        font-weight: 700;
+        flex-shrink: 0;
     }
     .map-status-legend-title {
         margin-bottom: 10px;
-        color: #cbd5e1;
+        color: #374151;
         font-size: 11px;
         font-weight: 800;
         letter-spacing: .04em;
@@ -108,6 +118,7 @@
         gap: 9px;
         min-height: 21px;
         white-space: nowrap;
+        color: #374151;
     }
     .map-status-legend-item span {
         width: 10px;
@@ -116,15 +127,37 @@
         border-radius: 50%;
         box-shadow: 0 0 0 1px rgba(255,255,255,.14);
     }
+    html.dark-mode .map-status-legend,
+    .dark .map-status-legend {
+        background: rgba(15, 23, 42, .94);
+        box-shadow: 0 12px 24px rgba(15, 23, 42, .28);
+        color: #e2e8f0;
+    }
+    html.dark-mode .map-status-legend-toggle,
+    .dark .map-status-legend-toggle {
+        color: #e2e8f0;
+    }
+    html.dark-mode .map-status-legend-title,
+    .dark .map-status-legend-title {
+        color: #cbd5e1;
+    }
+    html.dark-mode .map-status-legend-item,
+    .dark .map-status-legend-item {
+        color: #e2e8f0;
+    }
     @media (max-width: 640px) {
         .map-status-legend {
             right: 10px;
             bottom: 10px;
-            width: 156px;
+            width: auto;
+            min-width: 150px;
+            max-width: calc(100vw - 20px);
             padding: 10px 11px;
         }
         .map-status-legend-toggle {
             display: flex;
+            width: fit-content;
+            min-width: 0;
         }
         .map-status-legend.is-collapsed .map-status-legend-content {
             display: none;

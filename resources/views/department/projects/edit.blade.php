@@ -228,8 +228,52 @@
         font-size: 0.9375rem;
         font-weight: 700;
         color: white;
+        line-height: 1.3;
+        word-break: break-word;
+        overflow-wrap: anywhere;
     }
     .dept-progress-stat-value.accent { color: #fbbf24; }
+
+    @media (max-width: 767px) {
+        .dept-progress-hero {
+            padding: 20px 18px;
+        }
+        .dept-progress-meta {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .dept-progress-value {
+            font-size: 1.1rem;
+        }
+        .dept-progress-track {
+            height: 8px;
+            margin-bottom: 18px;
+        }
+        .dept-progress-stats {
+            gap: 10px;
+        }
+        .dept-progress-stat {
+            padding: 10px 8px;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .dept-progress-stat-label {
+            font-size: 0.55rem;
+            line-height: 1.2;
+            letter-spacing: 0.06em;
+            margin-bottom: 6px;
+        }
+        .dept-progress-stat-value {
+            font-size: 0.77rem;
+            line-height: 1.2;
+        }
+        .dept-progress-stat-value.accent {
+            font-size: 0.8rem;
+        }
+    }
 
     /* Card */
     .dept-edit-card {
