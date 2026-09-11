@@ -31,12 +31,12 @@
 
     {{-- ============ TOP NAV ============ --}}
     <header class="sticky top-0 z-50 glass-nav w-full border-b border-slate-200/50">
-        <nav class="relative flex items-center py-4 w-full mx-auto px-12 justify-between">
-            <div class="flex items-center gap-4">
-                <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-10 w-10 shrink-0 rounded-lg object-contain" width="40" height="40" decoding="async" />
-                <div class="flex flex-col">
-                    <span class="text-xl font-bold tracking-tighter text-slate-900" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
-                    <span class="text-[10px] uppercase tracking-widest text-slate-500 opacity-70" style="font-family:'Public Sans',sans-serif;">Cabuyao Municipal Office</span>
+        <nav class="relative flex items-center justify-between w-full mx-auto px-4 py-3 sm:px-6 sm:py-4 lg:px-12">
+            <div class="flex items-center gap-2 sm:gap-4 min-w-0">
+                <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-9 w-9 sm:h-10 sm:w-10 shrink-0 rounded-lg object-contain" width="40" height="40" decoding="async" />
+                <div class="flex flex-col min-w-0">
+                    <span class="text-base sm:text-lg md:text-xl font-bold tracking-tighter text-slate-900 leading-tight" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
+                    <span class="text-[9px] sm:text-[10px] uppercase tracking-widest text-slate-500 opacity-70 truncate" style="font-family:'Public Sans',sans-serif;">Cabuyao Municipal Office</span>
                 </div>
             </div>
 
@@ -46,10 +46,10 @@
                 <a href="{{ route('public.analytics') }}" class="text-slate-500 hover:text-emerald-700 transition-colors py-2 font-semibold">Analytics</a>
             </div>
 
-                    <div class="flex items-center gap-2">
-                        @include('components.public-theme-toggle')
-                        <a href="{{ route('login') }}" class="public-login-button bg-slate-900 text-white px-5 py-2.5 rounded-md font-semibold text-sm hover:opacity-90 transition-all duration-200 shrink-0">Login</a>
-                    </div>
+            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                @include('components.public-theme-toggle')
+                <a href="{{ route('login') }}" class="public-login-button bg-slate-900 text-white px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-md font-semibold text-xs sm:text-sm hover:opacity-90 transition-all duration-200 shrink-0">Login</a>
+            </div>
         </nav>
     </header>
 
