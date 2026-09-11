@@ -178,21 +178,21 @@ html.dark-mode .dept-analytics-hero-teal {
 /* ===== KPI CARDS ===== */
 .dept-kpi-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
     margin-bottom: 24px;
 }
 @media (min-width: 640px) {
-    .dept-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .dept-kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
-@media (min-width: 1280px) {
-    .dept-kpi-grid { grid-template-columns: repeat(5, 1fr); }
+@media (min-width: 1024px) {
+    .dept-kpi-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }
 .dept-kpi-card {
     background: var(--da-surface);
     border: 1px solid var(--da-line);
     border-radius: var(--da-radius-sm);
-    padding: 24px;
+    padding: 20px 16px;
     box-shadow: var(--da-shadow-sm);
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -253,10 +253,11 @@ html.dark-mode .dept-analytics-hero-teal {
 }
 .dept-kpi-value {
     font-family: "Plus Jakarta Sans", sans-serif;
-    font-size: 2rem;
+    font-size: clamp(1.45rem, 3.5vw, 2rem);
     font-weight: 800;
     line-height: 1.1;
     letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
 }
 .dept-kpi-value.dark { color: #1e1b4b; }
 .dark .dept-kpi-value.dark { color: #f8f7f5; }
@@ -268,21 +269,21 @@ html.dark-mode .dept-kpi-card.accent .dept-kpi-value,
 /* ===== INSIGHT CARDS ===== */
 .dept-insight-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
     margin-bottom: 28px;
 }
 @media (min-width: 640px) {
-    .dept-insight-grid { grid-template-columns: repeat(2, 1fr); }
+    .dept-insight-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (min-width: 1024px) {
-    .dept-insight-grid { grid-template-columns: repeat(4, 1fr); }
+    .dept-insight-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 .dept-insight-card {
     background: var(--da-surface);
     border: 1px solid var(--da-line);
     border-radius: var(--da-radius-sm);
-    padding: 24px;
+    padding: 18px 16px;
     box-shadow: var(--da-shadow-sm);
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -750,6 +751,54 @@ html.dark-mode .dept-analytics-empty {
 .dept-animate:nth-child(3) { animation-delay: 0.12s; }
 .dept-animate:nth-child(4) { animation-delay: 0.16s; }
 .dept-animate:nth-child(5) { animation-delay: 0.20s; }
+
+@media (max-width: 767px) {
+    .dept-analytics-container {
+        padding: 24px 16px !important;
+    }
+
+    .dept-analytics-hero {
+        padding: 28px 24px !important;
+        border-radius: 16px !important;
+    }
+
+    .dept-analytics-hero-title {
+        font-size: clamp(1.65rem, 8vw, 2.3rem);
+    }
+
+    .dept-analytics-hero-subtitle {
+        display: grid;
+        gap: 8px;
+        font-size: 0.875rem;
+    }
+
+    .dept-kpi-card,
+    .dept-insight-card,
+    .dept-lifecycle-card,
+    .dept-chart-card,
+    .dept-barangay-card {
+        padding: 16px !important;
+        border-radius: 14px !important;
+    }
+
+    .dept-kpi-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .dept-insight-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .dept-insight-value {
+        font-size: 1.45rem;
+    }
+
+    .dept-kpi-value {
+        font-size: 1.55rem;
+    }
+}
 
 @media (prefers-reduced-motion: reduce) {
     .dept-animate { animation: none; opacity: 1; }
