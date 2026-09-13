@@ -205,7 +205,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-black">18. Date</label>
-                    <input type="date" name="submitted_date" value="{{ old('submitted_date', $data['submitted_date'] ?? '') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
+                    <input type="date" name="submitted_date" value="{{ old('submitted_date', $data['submitted_date'] ?? now()->format('Y-m-d')) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100" style="border-color: #B2BEB5; color: black; opacity: 0.7;" readonly>
                 </div>
             </div>
 
@@ -221,7 +221,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-black">21. Date</label>
-                    <input type="date" name="approved_date" value="{{ old('approved_date', $data['approved_date'] ?? '') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
+                    <input type="date" name="approved_date" value="{{ old('approved_date', $data['approved_date'] ?? now()->format('Y-m-d')) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100" style="border-color: #B2BEB5; color: black; opacity: 0.7;" readonly>
                 </div>
             </div>
         </div>
