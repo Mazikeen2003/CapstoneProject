@@ -289,6 +289,15 @@
     display: none;
     flex-direction: column;
 }
+@media (max-width: 767px) {
+    .dept-notif-panel {
+        width: min(380px, calc(100vw - 1rem));
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        max-height: min(420px, 80vh);
+    }
+}
 .dept-notif-panel.show { display: flex; }
 .dept-notif-header {
     padding: 18px 20px;
@@ -810,14 +819,32 @@ function initializeNavbarControls() {
     function positionNotificationPanel() {
         const rect = notificationBtn.getBoundingClientRect();
         const panelHeight = Math.min(520, Math.max(220, window.innerHeight - 32));
+        const isMobile = window.innerWidth < 768;
+
+        if (isMobile) {
+            const width = Math.min(380, Math.max(280, window.innerWidth - 16));
+            const left = Math.max(8, (window.innerWidth - width) / 2);
+            const top = Math.max(16, rect.bottom + 8);
+            notificationPanel.style.width = `${width}px`;
+            notificationPanel.style.top = `${Math.min(top, Math.max(16, window.innerHeight - panelHeight - 16))}px`;
+            notificationPanel.style.left = `${left}px`;
+            notificationPanel.style.right = 'auto';
+            notificationPanel.style.transform = 'none';
+            notificationPanel.style.maxHeight = `${Math.min(panelHeight, window.innerHeight - 32)}px`;
+            notificationList.style.maxHeight = `${Math.max(140, Math.min(panelHeight - 78, window.innerHeight - 120))}px`;
+            return;
+        }
+
         const spaceBelow = window.innerHeight - rect.bottom - 16;
         const openAbove = spaceBelow < 220 && rect.top > panelHeight;
         const top = openAbove
             ? Math.max(16, rect.top - panelHeight - 8)
             : Math.min(rect.bottom + 8, window.innerHeight - panelHeight - 16);
+        notificationPanel.style.width = 'min(380px, calc(100vw - 2rem))';
         notificationPanel.style.top = `${top}px`;
         notificationPanel.style.left = 'auto';
         notificationPanel.style.right = `${Math.max(12, window.innerWidth - rect.right)}px`;
+        notificationPanel.style.transform = 'none';
         notificationPanel.style.maxHeight = `${panelHeight}px`;
         notificationList.style.maxHeight = `${Math.max(140, panelHeight - 78)}px`;
     }
