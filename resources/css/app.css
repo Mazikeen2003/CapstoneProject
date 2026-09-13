@@ -53,7 +53,19 @@ html:not(.dark-mode) .authenticated-layout .bu-table-wrap {
     border-color: #dbe3ee !important;
 }
 
-html.dark-mode body {
+body.authenticated-layout {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+}
+
+html.dark-mode body,
+html.dark-mode body.authenticated-layout,
+html.dark-mode main,
+html.dark-mode .authenticated-layout,
+.dark body,
+.dark body.authenticated-layout,
+.dark main,
+.dark .authenticated-layout {
     background-color: #0f172a !important;
     color: #e2e8f0 !important;
 }
