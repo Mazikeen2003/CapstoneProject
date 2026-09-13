@@ -10,6 +10,7 @@
     $timelineProgress = ($totalDays > 0) ? min(100, max(0, ($daysElapsed / $totalDays) * 100)) : 0;
     $reportedProgress = $project->latestUpdate?->progress_percentage;
     $reportedProgress = $reportedProgress !== null ? min(100, max(0, (float) $reportedProgress)) : null;
+    $actualBudgetDisplay = '₱' . number_format(round((float) ($project->actual_budget ?? 0)), 0);
 @endphp
 
 <style>
@@ -34,35 +35,21 @@
     --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
     --font-body: 'Inter', system-ui, sans-serif;
 }
-.dark .bs-wrap {
-    --bs-bg: #0f0e1a;
-    --bs-surface: #1a1929;
-    --bs-raised: #222136;
-    --bs-ink: #f8fafc;
-    --bs-ink-secondary: #cbd5e1;
-    --bs-muted: #64748b;
-    --bs-line: rgba(255,255,255,0.06);
-    --bs-line-strong: rgba(255,255,255,0.12);
-    --bs-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --bs-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-    --bs-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-    --bs-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
-    --bs-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
-}
+.dark .bs-wrap,
 html.dark-mode .bs-wrap {
-    --bs-bg: #0f0e1a;
-    --bs-surface: #1a1929;
-    --bs-raised: #222136;
+    --bs-bg: #0f172a;
+    --bs-surface: #111827;
+    --bs-raised: #1e293b;
     --bs-ink: #f8fafc;
     --bs-ink-secondary: #cbd5e1;
-    --bs-muted: #64748b;
-    --bs-line: rgba(255,255,255,0.06);
-    --bs-line-strong: rgba(255,255,255,0.12);
-    --bs-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --bs-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-    --bs-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-    --bs-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
-    --bs-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+    --bs-muted: #94a3b8;
+    --bs-line: rgba(148,163,184,0.18);
+    --bs-line-strong: rgba(148,163,184,0.28);
+    --bs-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.25);
+    --bs-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.35), 0 1px 2px -1px rgb(0 0 0 / 0.35);
+    --bs-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.35);
+    --bs-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.45), 0 4px 6px -4px rgb(0 0 0 / 0.35);
+    --bs-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.55), 0 8px 10px -6px rgb(0 0 0 / 0.45);
 }
 
 .bs-wrap {
@@ -73,9 +60,17 @@ html.dark-mode .bs-wrap {
     color: var(--bs-ink);
     transition: background 0.3s, color 0.3s;
 }
-html:not(.dark-mode) body:has(.bs-wrap) { background: #f8f7f5 !important; }
+html:not(.dark-mode) body:has(.bs-wrap),
+html:not(.dark-mode) .authenticated-layout:has(.bs-wrap) {
+    background: #f8f7f5 !important;
+}
 html:not(.dark-mode) .bs-wrap { background: #f8f7f5; }
-html.dark-mode body:has(.bs-wrap) { background: #0f0e1a !important; }
+html.dark-mode body:has(.bs-wrap),
+html.dark-mode .authenticated-layout:has(.bs-wrap),
+.dark body:has(.bs-wrap),
+.dark .authenticated-layout:has(.bs-wrap) {
+    background: #0f172a !important;
+}
 @media (min-width: 640px) { .bs-wrap { padding: 32px; } }
 @media (min-width: 1024px) { .bs-wrap { padding: 40px; } }
 
@@ -222,11 +217,16 @@ html:not(.dark-mode) .bs-detail-item,
 html:not(.dark-mode) .bs-timeline-content { background: #fafaf9; border-color: rgba(0,0,0,0.06); }
 html:not(.dark-mode) .bs-detail-item:hover,
 html:not(.dark-mode) .bs-timeline-content:hover { background: #fff; border-color: rgba(0,0,0,0.12); }
-html.dark-mode .bs-card { background: #1a1929; border-color: rgba(255,255,255,0.06); }
+.dark .bs-card,
+html.dark-mode .bs-card { background: #111827; border-color: rgba(148,163,184,0.18); }
+.dark .bs-detail-item,
+.dark .bs-timeline-content,
 html.dark-mode .bs-detail-item,
-html.dark-mode .bs-timeline-content { background: #222136; border-color: rgba(255,255,255,0.06); }
+html.dark-mode .bs-timeline-content { background: #1e293b; border-color: rgba(148,163,184,0.18); }
+.dark .bs-detail-item:hover,
+.dark .bs-timeline-content:hover,
 html.dark-mode .bs-detail-item:hover,
-html.dark-mode .bs-timeline-content:hover { background: #29283b; border-color: rgba(255,255,255,0.12); }
+html.dark-mode .bs-timeline-content:hover { background: #243244; border-color: rgba(148,163,184,0.28); }
 .bs-card-header {
     display: flex;
     align-items: center;
