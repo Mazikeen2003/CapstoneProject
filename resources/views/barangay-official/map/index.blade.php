@@ -7,11 +7,10 @@
 <style>
 /* ===== BARANGAY MAP - RICH REDESIGN ===== */
 .bm-wrap {
-    --bm-bg: #f4f4f5;
+    --bm-bg: #ffffff;
     --bm-surface: #ffffff;
     --bm-raised: #fafaf9;
     --bm-ink: #0f0d1f;
-        --bm-bg: #f8f7f5;
     --bm-muted: #6b7280;
     --bm-line: rgba(0,0,0,0.06);
     --bm-line-strong: rgba(0,0,0,0.12);
@@ -29,23 +28,7 @@
     --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
     --font-body: 'Inter', system-ui, sans-serif;
 }
-.dark .bm-wrap {
-    --bm-bg: #0f172a;
-    --bm-surface: #0f172a;
-    --bm-raised: #1e293b;
-    html:not(.dark-mode) body:has(.bm-wrap) {
-        background-color: #f8f7f5 !important;
-    }
-    --bm-ink: #f8fafc;
-    --bm-ink-secondary: #cbd5e1;
-    --bm-muted: #94a3b8;
-    --bm-line: rgba(148,163,184,0.2);
-    --bm-line-strong: rgba(148,163,184,0.35);
-    --bm-shadow-sm: 0 1px 3px rgba(2,6,23,0.25);
-    --bm-shadow: 0 4px 12px -2px rgba(2,6,23,0.25);
-    --bm-shadow-md: 0 8px 24px -6px rgba(2,6,23,0.35);
-    --bm-shadow-lg: 0 24px 48px -12px rgba(2,6,23,0.5);
-}
+.dark .bm-wrap,
 html.dark-mode .bm-wrap {
     --bm-bg: #0f172a;
     --bm-surface: #0f172a;
@@ -59,6 +42,18 @@ html.dark-mode .bm-wrap {
     --bm-shadow: 0 4px 12px -2px rgba(2,6,23,0.25);
     --bm-shadow-md: 0 8px 24px -6px rgba(2,6,23,0.35);
     --bm-shadow-lg: 0 24px 48px -12px rgba(2,6,23,0.5);
+}
+
+html:not(.dark-mode) body:has(.bm-wrap),
+html:not(.dark-mode) .authenticated-layout:has(.bm-wrap) {
+    background-color: #ffffff !important;
+}
+
+html.dark-mode body:has(.bm-wrap),
+html.dark-mode .authenticated-layout:has(.bm-wrap),
+.dark body:has(.bm-wrap),
+.dark .authenticated-layout:has(.bm-wrap) {
+    background-color: #0f172a !important;
 }
 
 .bm-wrap {
@@ -587,15 +582,15 @@ html.dark-mode .bm-wrap {
     margin-top: 12px;
     padding: 6px 14px;
     border-radius: 100px;
-    background: rgba(59,130,246,0.06);
-    color: #2563eb;
+    background: rgba(15,118,110,0.10);
+    color: #0f766e;
     font-family: var(--font-body);
     font-size: 0.6875rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.06em;
 }
-.dark .bm-selected-status { background: rgba(59,130,246,0.05); color: #60a5fa; }
+.dark .bm-selected-status { background: rgba(15,118,110,0.12); color: #5eead4; }
 .bm-selected-image {
     width: 100%;
     height: 220px;
