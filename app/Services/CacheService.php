@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class CacheService
 {
     const CACHE_TTL = 3600; // 1 hour
+    const GEOJSON_CACHE_VERSION = 'v2';
 
     /**
      * Get dashboard stats with caching.
@@ -63,12 +64,9 @@ class CacheService
     {
         Cache::forget('geojson_projects_all');
         Cache::forget('geojson_projects');
-        Cache::forget('geojson_projects_public');
-        Cache::forget('geojson_projects_admin');
-        Cache::forget('geojson_projects_city');
-        Cache::forget('geojson_projects_department');
-        Cache::forget('geojson_projects_engineering');
-        Cache::forget('geojson_projects_barangay');
+        foreach (['public', 'admin', 'city', 'department', 'engineering', 'barangay'] as $role) {
+            Cache::forget('geojson_projects_' . self::GEOJSON_CACHE_VERSION . '_' . $role);
+        }
     }
 
     /**
@@ -80,7 +78,7 @@ class CacheService
         $role = $user?->role_slug ?? 'public';
 
         if ($forcePublic) {
-            $cacheKey = 'geojson_projects_public';
+            $cacheKey = 'geojson_projects_' . self::GEOJSON_CACHE_VERSION . '_public';
 
             return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($user) {
                 return self::buildGeoJsonData($user, true);
@@ -88,13 +86,13 @@ class CacheService
         }
 
         $cacheKey = match ($role) {
-            'admin' => 'geojson_projects_admin',
-            'city' => 'geojson_projects_city',
-            'department' => 'geojson_projects_department',
-            'engineering' => 'geojson_projects_engineering',
-            'barangay' => 'geojson_projects_barangay',
-            'public' => 'geojson_projects_public',
-            default => 'geojson_projects_public',
+            'admin' => 'geojson_projects_' . self::GEOJSON_CACHE_VERSION . '_admin',
+            'city' => 'geojson_projects_' . self::GEOJSON_CACHE_VERSION . '_city',
+            'department' => 'geojson_projects_' . self::GEOJSON_CACHE_VERSION . '_department',
+            'engineering' => 'geojson_projects_' . self::GEOJSON_CACHE_VERSION . '_engineering',
+            'barangay' => 'geojson_projects_' . self::GEOJSON_CACHE_VERSION . '_barangay',
+            'public' => 'geojson_projects_' . self::GEOJSON_CACHE_VERSION . '_public',
+            default => 'geojson_projects_' . self::GEOJSON_CACHE_VERSION . '_public',
         };
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($user) {
@@ -146,6 +144,7 @@ class CacheService
                         'status'            => $project->current_status,
                         'barangay'          => $project->barangay?->barangay_name,
                         'budget'            => $project->approved_budget,
+                        'actual_budget'     => $project->actual_budget ?? 0,
                         'description'       => $project->public_description ?: 'No description available.',
                         'barangay_id'       => $project->barangay_id,
                         'image'             => $project->project_image ? Storage::url($project->project_image) : null,

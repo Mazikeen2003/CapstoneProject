@@ -20,19 +20,27 @@
         --dp-radius-sm: 12px;
         --dp-radius-xs: 8px;
     }
-    .dark .dept-proj-container {
-        --dp-bg: #0f0e1a;
-        --dp-surface: #1a1929;
-        --dp-surface-hover: #222136;
+    .dark .dept-proj-container,
+    html.dark-mode .dept-proj-container {
+        --dp-bg: #0f172a;
+        --dp-surface: #111827;
+        --dp-surface-hover: #1e293b;
         --dp-ink: #f8fafc;
         --dp-ink-secondary: #cbd5e1;
-        --dp-muted: #64748b;
-        --dp-line: rgba(255,255,255,0.06);
-        --dp-line-hover: rgba(255,255,255,0.12);
+        --dp-muted: #94a3b8;
+        --dp-line: #334155;
+        --dp-line-hover: #475569;
         --dp-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
         --dp-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
         --dp-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
         --dp-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+    }
+
+    html.dark-mode body:has(.dept-proj-container),
+    html.dark-mode .authenticated-layout:has(.dept-proj-container),
+    .dark body:has(.dept-proj-container),
+    .dark .authenticated-layout:has(.dept-proj-container) {
+        background-color: #0f172a !important;
     }
 
     .dept-proj-container {
@@ -220,39 +228,6 @@
         box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
     }
 
-    html.dark-mode .dept-proj-filter,
-    .dark .dept-proj-filter {
-        background: rgba(15, 23, 42, 0.72);
-        border-color: rgba(148, 163, 184, 0.18);
-        color: #e5edf9;
-    }
-
-    html.dark-mode .dept-proj-filter:hover,
-    .dark .dept-proj-filter:hover {
-        background: #243247;
-        border-color: rgba(148, 163, 184, 0.35);
-    }
-
-    html.dark-mode .dept-proj-filter.active,
-    .dark .dept-proj-filter.active {
-        background: #f8fafc;
-        color: #1e1b4b;
-        border-color: #f8fafc;
-        box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
-    }
-
-    html.dark-mode .dept-proj-toolbar,
-    .dark .dept-proj-toolbar {
-        background: #141321;
-    }
-
-    html.dark-mode .dept-proj-search input,
-    html.dark-mode .dept-proj-filter,
-    .dark .dept-proj-search input,
-    .dark .dept-proj-filter {
-        background: #0f0e1a;
-    }
-
     html:not(.dark-mode) .dept-proj-toolbar {
         background: #ffffff !important;
     }
@@ -270,25 +245,38 @@
 
     html.dark-mode .dept-proj-toolbar,
     .dark .dept-proj-toolbar {
-        background: #141321 !important;
+        background: #1e293b !important;
+        border-color: #334155;
     }
 
     html.dark-mode .dept-proj-search input,
-    html.dark-mode .dept-proj-filter,
     .dark .dept-proj-search input,
+    html.dark-mode .dept-proj-status-filter,
+    .dark .dept-proj-status-filter {
+        background: #1e293b !important;
+        border-color: #475569;
+        color: #e2e8f0;
+    }
+
+    html.dark-mode .dept-proj-filter,
     .dark .dept-proj-filter {
-        background: #0f0e1a !important;
+        background: #0f172a !important;
+        border-color: #334155;
+        color: #f8fafc;
+    }
+
+    html.dark-mode .dept-proj-filter:hover,
+    .dark .dept-proj-filter:hover {
+        background: #1e293b !important;
+        border-color: #475569;
     }
 
     html.dark-mode .dept-proj-filter.active,
     .dark .dept-proj-filter.active {
         background: #f8fafc !important;
-        color: #1e1b4b !important;
+        color: #0f172a !important;
         border-color: #f8fafc !important;
     }
-
-    html.dark-mode .dept-proj-status-filter,
-    .dark .dept-proj-status-filter { background: #0f0e1a; color: #e5edf9; border-color: rgba(148,163,184,.18); }
 
     /* Table card */
     .dept-proj-card {
@@ -298,6 +286,11 @@
         box-shadow: var(--dp-shadow-sm);
         overflow: hidden;
         transition: background 0.3s, border-color 0.3s;
+    }
+    html.dark-mode .dept-proj-card,
+    .dark .dept-proj-card {
+        background: #111827;
+        border-color: #475569;
     }
 
     .dept-proj-tablewrap { overflow-x: auto; }
@@ -320,6 +313,12 @@
         border-bottom: 1px solid var(--dp-line);
         white-space: nowrap;
     }
+    html.dark-mode .dept-proj-table thead th,
+    .dark .dept-proj-table thead th {
+        background: #111827;
+        border-color: #334155;
+        color: #93c5fd;
+    }
     .dept-proj-table thead th:first-child { padding-left: 24px; }
     .dept-proj-table thead th:last-child { padding-right: 24px; text-align: right; }
 
@@ -335,6 +334,18 @@
     .dept-proj-table tbody tr { transition: background 0.15s, transform 0.15s; }
     .dept-proj-table tbody tr:hover { background: var(--dp-surface-hover); }
     .dept-proj-table tbody tr:last-child td { border-bottom: none; }
+    html.dark-mode .dept-proj-table tbody tr,
+    .dark .dept-proj-table tbody tr {
+        background: #1e293b;
+    }
+    html.dark-mode .dept-proj-table tbody td,
+    .dark .dept-proj-table tbody td {
+        border-color: #334155;
+    }
+    html.dark-mode .dept-proj-table tbody tr:hover,
+    .dark .dept-proj-table tbody tr:hover {
+        background: #273449;
+    }
 
     /* Project name cell */
     .dept-proj-namecell {
@@ -401,15 +412,25 @@
     .dept-proj-status-completed { background: rgba(22,163,74,0.10); color: #16a34a; }
     .dept-proj-status-cancelled { background: rgba(100,116,139,0.10); color: #64748b; }
 
+    html.dark-mode .dept-proj-status-planning,
+    html.dark-mode .dept-proj-status-proposed,
     .dark .dept-proj-status-planning,
     .dark .dept-proj-status-proposed { background: rgba(37,99,235,0.12); color: #60a5fa; }
+    html.dark-mode .dept-proj-status-bidding,
     .dark .dept-proj-status-bidding { background: rgba(245,158,11,0.12); color: #fbbf24; }
+    html.dark-mode .dept-proj-status-bidding-ongoing,
     .dark .dept-proj-status-bidding-ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
+    html.dark-mode .dept-proj-status-award,
     .dark .dept-proj-status-award { background: rgba(139,92,246,0.12); color: #a78bfa; }
+    html.dark-mode .dept-proj-status-ongoing,
+    html.dark-mode .dept-proj-status-implementation,
     .dark .dept-proj-status-ongoing,
     .dark .dept-proj-status-implementation { background: rgba(15,118,110,0.12); color: #5eead4; }
+    html.dark-mode .dept-proj-status-on-hold,
     .dark .dept-proj-status-on-hold { background: rgba(220,38,38,0.12); color: #f87171; }
+    html.dark-mode .dept-proj-status-completed,
     .dark .dept-proj-status-completed { background: rgba(22,163,74,0.12); color: #4ade80; }
+    html.dark-mode .dept-proj-status-cancelled,
     .dark .dept-proj-status-cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
 
     .dept-proj-budget {
@@ -457,7 +478,9 @@
         border-color: rgba(59,130,246,0.2);
     }
     .dept-proj-action-view:hover { background: #3b82f6; color: white; }
+    html.dark-mode .dept-proj-action-view,
     .dark .dept-proj-action-view { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    html.dark-mode .dept-proj-action-view:hover,
     .dark .dept-proj-action-view:hover { background: #3b82f6; color: white; }
 
     .dept-proj-action-edit {
@@ -466,8 +489,10 @@
         border-color: rgba(245,158,11,0.2);
     }
     .dept-proj-action-edit:hover { background: #f59e0b; color: white; }
+    html.dark-mode .dept-proj-action-edit,
     .dark .dept-proj-action-edit { background: rgba(251,191,36,0.15); color: #fbbf24; }
-    .dark .dept-proj-action-edit:hover { background: #f59e0b; color: #1e1b4b; }
+    html.dark-mode .dept-proj-action-edit:hover,
+    .dark .dept-proj-action-edit:hover { background: #f59e0b; color: #0f172a; }
 
     .dept-proj-action-delete {
         background: #ffe4e6;
@@ -475,7 +500,9 @@
         border-color: rgba(244,63,94,0.2);
     }
     .dept-proj-action-delete:hover { background: #f43f5e; color: white; }
+    html.dark-mode .dept-proj-action-delete,
     .dark .dept-proj-action-delete { background: rgba(244,63,94,0.15); color: #fb7185; }
+    html.dark-mode .dept-proj-action-delete:hover,
     .dark .dept-proj-action-delete:hover { background: #f43f5e; color: white; }
 
     /* Mobile cards */

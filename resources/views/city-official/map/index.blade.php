@@ -7,7 +7,8 @@
 <style>
 /* ===== CITY MAP - RICH REDESIGN ===== */
 main {
-    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
 }
 
 .cm-wrap {
@@ -1009,7 +1010,7 @@ html.dark-mode .dept-step-connector.completed,
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>
             </div>
             <div>
-                <div class="cm-stat-label">Avg Progress</div>
+                <div class="cm-stat-label">Avg Reported Progress</div>
                 <div class="cm-stat-value" id="statAvgProgress">—</div>
             </div>
         </div>
@@ -1073,7 +1074,7 @@ html.dark-mode .dept-step-connector.completed,
         let currentTiles = null;
 
         function formatCurrency(value) {
-            return `₱${Number(value || 0).toLocaleString()}`;
+            return `₱${Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
         }
 
         function calculateProgress(project) {
@@ -1097,7 +1098,12 @@ html.dark-mode .dept-step-connector.completed,
 
         function updateMapStats() {
             const total = projectFeatures.length;
-            const progress = total ? projectFeatures.reduce((sum, project) => sum + calculateProgress(project), 0) / total : 0;
+            const reportedProgresses = projectFeatures
+                .map(calculateReportedProgress)
+                .filter(progress => progress !== null);
+            const progress = reportedProgresses.length
+                ? reportedProgresses.reduce((sum, value) => sum + value, 0) / reportedProgresses.length
+                : 0;
             const budget = projectFeatures.reduce((sum, project) => sum + Number(project.properties.budget || 0), 0);
             document.getElementById('statTotalProjects').textContent = total;
             document.getElementById('statAvgProgress').textContent = `${progress.toFixed(1)}%`;

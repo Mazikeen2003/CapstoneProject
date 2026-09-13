@@ -28,14 +28,14 @@
 
     html.dark-mode .perm-container,
     .dark .perm-container {
-        --pp-bg: #111827;
-        --pp-surface: #1f2937;
-        --pp-surface-hover: #263445;
+        --pp-bg: #0f172a;
+        --pp-surface: #111827;
+        --pp-surface-hover: #1e293b;
         --pp-ink: #f9fafb;
         --pp-ink-secondary: #d1d5db;
-        --pp-muted: #9ca3af;
-        --pp-line: rgba(255, 255, 255, 0.08);
-        --pp-line-hover: rgba(255, 255, 255, 0.14);
+        --pp-muted: #94a3b8;
+        --pp-line: #334155;
+        --pp-line-hover: #475569;
         --pp-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.16);
         --pp-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.2), 0 1px 2px -1px rgb(0 0 0 / 0.2);
         --pp-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.24), 0 2px 4px -2px rgb(0 0 0 / 0.24);
@@ -259,20 +259,29 @@
 
     html.dark-mode .perm-toolbar,
     .dark .perm-toolbar {
-        background: #141321;
+        background: #1e293b;
+        border-color: #334155;
     }
 
     html.dark-mode .perm-search input,
-    html.dark-mode .perm-filter,
     .dark .perm-search input,
+    .dark .perm-search input {
+        background: #1e293b;
+        border-color: #475569;
+        color: #e2e8f0;
+    }
+
+    html.dark-mode .perm-filter,
     .dark .perm-filter {
-        background: #0f0e1a;
+        background: #0f172a;
+        border-color: #334155;
+        color: #f8fafc;
     }
 
     html.dark-mode .perm-filter:hover,
     .dark .perm-filter:hover {
-        background: #222136;
-        border-color: rgba(255, 255, 255, 0.12);
+        background: #1e293b;
+        border-color: #475569;
     }
 
     .perm-summary {
@@ -375,6 +384,11 @@
         box-shadow: var(--pp-shadow-sm);
         overflow: hidden;
     }
+    html.dark-mode .perm-card,
+    .dark .perm-card {
+        background: #111827;
+        border-color: #475569;
+    }
 
     .perm-table-wrap {
         overflow-x: auto;
@@ -403,6 +417,11 @@
 
     .perm-table thead th:first-child { padding-left: 24px; }
     .perm-table thead th:last-child { padding-right: 24px; }
+    html.dark-mode .perm-table thead th,
+    .dark .perm-table thead th {
+        background: #111827;
+        border-color: #334155;
+    }
 
     .perm-table tbody td {
         padding: 16px 20px;
@@ -413,6 +432,14 @@
 
     .perm-table tbody td:first-child { padding-left: 24px; }
     .perm-table tbody td:last-child { padding-right: 24px; }
+    html.dark-mode .perm-table tbody tr,
+    .dark .perm-table tbody tr {
+        background: #1e293b;
+    }
+    html.dark-mode .perm-table tbody td,
+    .dark .perm-table tbody td {
+        border-color: #334155;
+    }
 
     .perm-table tbody tr:hover {
         box-shadow: inset 3px 0 0 #f59e0b;
@@ -434,7 +461,7 @@
 
     html.dark-mode .perm-table tbody tr:hover td,
     .dark .perm-table tbody tr:hover td {
-        background: var(--pp-surface) !important;
+        background: #273449 !important;
     }
 
     .perm-table tbody tr:last-child td {

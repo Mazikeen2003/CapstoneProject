@@ -286,10 +286,13 @@ html.dark-mode .dept-map-stat-icon.purple { background: rgba(139,92,246,0.15); c
 /* Map legend overlay */
 .dept-map-legend {
     position: absolute;
-    top: 16px;
+    bottom: 16px;
     right: 16px;
     z-index: 500;
     max-width: 260px;
+}
+.dept-map-legend .map-status-legend {
+    position: static;
 }
 
 /* Map overlay controls */
@@ -1050,7 +1053,7 @@ html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1;
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>
             </div>
             <div>
-                <div class="dept-map-stat-label">Avg Progress</div>
+                <div class="dept-map-stat-label">Avg Reported Progress</div>
                 <div class="dept-map-stat-value" id="statAvgProgress">—</div>
             </div>
         </div>
@@ -1128,7 +1131,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function formatCurrency(value) {
-        return '₱' + Number(value || 0).toLocaleString();
+        return '₱' + Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 0 });
     }
 
     function isMobile() { return window.innerWidth < 768; }
@@ -1205,7 +1208,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateStatsBar(projects) {
         const total = projects.length;
         const totalBudget = projects.reduce(function(sum, p) { return sum + Number(p.properties.budget || 0); }, 0);
-        const avgProgress = total > 0 ? projects.reduce(function(sum, p) { return sum + calculateProgress(p); }, 0) / total : 0;
+        const reportedProgresses = projects
+            .map(calculateReportedProgress)
+            .filter(function(progress) { return progress !== null; });
+        const avgProgress = reportedProgresses.length > 0
+            ? reportedProgresses.reduce(function(sum, progress) { return sum + progress; }, 0) / reportedProgresses.length
+            : 0;
         const barangays = new Set(projects.map(function(p) { return p.properties.barangay; }).filter(Boolean));
 
         document.getElementById('statTotalProjects').textContent = total;
