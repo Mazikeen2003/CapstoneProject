@@ -752,7 +752,7 @@ html.dark-mode .bs-empty-icon { background: rgba(251,191,36,0.15); }
                             </div>
                             <div class="bs-detail-content">
                                 <div class="bs-detail-label">Actual Budget</div>
-                                <div class="bs-detail-value">₱{{ number_format($project->actual_budget ?? 0, 2) }}</div>
+                                <div class="bs-detail-value">{{ $actualBudgetDisplay }}</div>
                             </div>
                         </div>
                         <div class="bs-detail-item">
