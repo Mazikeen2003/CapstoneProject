@@ -842,13 +842,6 @@
                                         <div class="dept-proj-actions">
                                             <a href="{{ route('department.projects.show', $project->project_id) }}" class="dept-proj-action dept-proj-action-view">View</a>
                                             <a href="{{ route('department.projects.edit', $project->project_id) }}" class="dept-proj-action dept-proj-action-edit">Edit</a>
-                                            <button type="button" class="dept-proj-action dept-proj-action-delete delete-trigger"
-                                                data-name="{{ $project->project_name }}"
-                                                data-code="{{ $project->project_code }}"
-                                                data-action="{{ route('department.projects.destroy', $project->project_id) }}"
-                                                data-token="{{ csrf_token() }}">
-                                                Delete
-                                            </button>
                                         </div>
                                     </td>
                                 </tr>
