@@ -1,14 +1,17 @@
 @extends('layouts.department')
 
 @section('content')
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
 <style>
-/* ===== RICHER, BOLDER DESIGN SYSTEM ===== */
+/* ================================================================
+   DEPARTMENT MAP — UNIFIED, ACCESSIBLE, PRODUCTION-READY
+   ================================================================ */
+
+/* Root variables: light mode */
 .dept-map-container {
-    --dm-bg: #f0eeea;
+    --dm-bg: #ffffff;
     --dm-surface: #ffffff;
     --dm-raised: #f8f7f5;
     --dm-ink: #0f0d1f;
@@ -24,21 +27,40 @@
     --dm-radius: 20px;
     --dm-radius-sm: 14px;
     --dm-radius-xs: 10px;
+    --dm-accent-start: #451a03;
+    --dm-accent-mid: #b45309;
+    --dm-accent-end: #d97706;
+    --dm-gold: #f59e0b;
 }
-.dark .dept-map-container {
-    --dm-bg: #0a0912;
-    --dm-surface: #141321;
-    --dm-raised: #1c1b2e;
+
+/* Dark mode via .dark class or html.dark-mode */
+.dark .dept-map-container,
+html.dark-mode .dept-map-container {
+    --dm-bg: #0f172a;
+    --dm-surface: #111827;
+    --dm-raised: #1e293b;
     --dm-ink: #f8f7f5;
-    --dm-ink-secondary: #a1a1aa;
-    --dm-muted: #71717a;
-    --dm-line: rgba(255,255,255,0.06);
-    --dm-line-strong: rgba(255,255,255,0.12);
+    --dm-ink-secondary: #cbd5e1;
+    --dm-muted: #94a3b8;
+    --dm-line: rgba(148,163,184,0.18);
+    --dm-line-strong: rgba(148,163,184,0.28);
     --dm-shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
     --dm-shadow: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.3);
     --dm-shadow-md: 0 8px 16px -4px rgba(0,0,0,0.5), 0 4px 8px -4px rgba(0,0,0,0.3);
     --dm-shadow-lg: 0 16px 32px -8px rgba(0,0,0,0.6), 0 8px 16px -8px rgba(0,0,0,0.4);
     --dm-shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.7), 0 12px 24px -12px rgba(0,0,0,0.5);
+}
+
+html:not(.dark-mode) body:has(.dept-map-container),
+html:not(.dark-mode) .authenticated-layout:has(.dept-map-container) {
+    background-color: #ffffff !important;
+}
+
+html.dark-mode body:has(.dept-map-container),
+html.dark-mode .authenticated-layout:has(.dept-map-container),
+.dark body:has(.dept-map-container),
+.dark .authenticated-layout:has(.dept-map-container) {
+    background-color: #0f172a !important;
 }
 
 .dept-map-container {
@@ -50,25 +72,21 @@
     transition: background 0.3s, color 0.3s;
     min-height: 100vh;
 }
-html:not(.dark-mode) .dept-map-container {
-    --dm-bg: #ffffff;
-}
 @media (min-width: 640px) { .dept-map-container { padding: 32px; } }
 @media (min-width: 1024px) { .dept-map-container { padding: 40px; } }
 
-/* ===== HERO - RICHER WITH PATTERN ===== */
+/* ===== HERO ===== */
 .dept-map-hero {
     position: relative;
-    background: linear-gradient(135deg, #451a03 0%, #78350f 30%, #b45309 70%, #d97706 100%);
+    background: linear-gradient(135deg, var(--dm-accent-start) 0%, #78350f 30%, var(--dm-accent-mid) 70%, var(--dm-accent-end) 100%);
     border-radius: var(--dm-radius);
-    padding: 36px 40px;
+    padding: 36px 28px;
     margin-bottom: 28px;
     box-shadow: var(--dm-shadow-xl);
     overflow: hidden;
 }
 @media (min-width: 640px) { .dept-map-hero { padding: 44px 48px; } }
 
-/* Dot pattern overlay */
 .dept-map-hero::before {
     content: "";
     position: absolute;
@@ -78,7 +96,6 @@ html:not(.dark-mode) .dept-map-container {
     opacity: 0.5;
     pointer-events: none;
 }
-/* Gradient orbs */
 .dept-map-hero::after {
     content: "";
     position: absolute;
@@ -94,6 +111,10 @@ html:not(.dark-mode) .dept-map-container {
     0%, 100% { transform: scale(1); opacity: 0.6; }
     50% { transform: scale(1.1); opacity: 1; }
 }
+@media (prefers-reduced-motion: reduce) {
+    .dept-map-hero::after { animation: none; }
+}
+
 .dept-map-hero-content { position: relative; z-index: 1; }
 .dept-map-hero-badge-row {
     display: flex;
@@ -123,8 +144,12 @@ html:not(.dark-mode) .dept-map-container {
     border-color: rgba(245,158,11,0.3);
     color: #fcd34d;
 }
+
+/* Engineering theme override */
 .engineering-map-theme .dept-map-hero {
-    background: linear-gradient(135deg, #0a4353 0%, #0c5c70 30%, #11788a 70%, #22a6b8 100%);
+    --dm-accent-start: #0a4353;
+    --dm-accent-mid: #11788a;
+    --dm-accent-end: #22a6b8;
 }
 .engineering-map-theme .dept-map-hero::after {
     background: radial-gradient(circle, rgba(158,230,247,0.22) 0%, transparent 60%);
@@ -134,6 +159,7 @@ html:not(.dark-mode) .dept-map-container {
     border-color: rgba(158,230,247,0.38);
     color: #d8f5ff;
 }
+
 .dept-map-hero-title {
     font-family: "Plus Jakarta Sans", "Inter", sans-serif;
     font-size: clamp(1.75rem, 4vw, 2.75rem);
@@ -159,7 +185,7 @@ html:not(.dark-mode) .dept-map-container {
 }
 .dept-map-hero-subtitle svg { width: 16px; height: 16px; opacity: 0.7; }
 
-/* Floating stats bar */
+/* ===== STATS BAR ===== */
 .dept-map-stats-bar {
     display: flex;
     gap: 0;
@@ -193,10 +219,14 @@ html:not(.dark-mode) .dept-map-container {
 .dept-map-stat-icon.emerald { background: #d1fae5; color: #059669; }
 .dept-map-stat-icon.amber { background: #fef3c7; color: #b45309; }
 .dept-map-stat-icon.purple { background: #ede9fe; color: #7c3aed; }
-.dark .dept-map-stat-icon.blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
-.dark .dept-map-stat-icon.emerald { background: rgba(16,185,129,0.15); color: #34d399; }
-.dark .dept-map-stat-icon.amber { background: rgba(251,191,36,0.15); color: #fbbf24; }
-.dark .dept-map-stat-icon.purple { background: rgba(139,92,246,0.15); color: #a78bfa; }
+.dark .dept-map-stat-icon.blue,
+html.dark-mode .dept-map-stat-icon.blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.dark .dept-map-stat-icon.emerald,
+html.dark-mode .dept-map-stat-icon.emerald { background: rgba(16,185,129,0.15); color: #34d399; }
+.dark .dept-map-stat-icon.amber,
+html.dark-mode .dept-map-stat-icon.amber { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.dark .dept-map-stat-icon.purple,
+html.dark-mode .dept-map-stat-icon.purple { background: rgba(139,92,246,0.15); color: #a78bfa; }
 .dept-map-stat-label {
     font-size: 0.625rem;
     font-weight: 700;
@@ -228,7 +258,7 @@ html:not(.dark-mode) .dept-map-container {
     .dept-map-layout { grid-template-columns: 1.5fr 1fr; align-items: start; }
 }
 
-/* ===== MAP CARD - RICHER FRAME ===== */
+/* ===== MAP CARD ===== */
 .dept-map-card {
     background: var(--dm-surface);
     border-radius: var(--dm-radius-sm);
@@ -251,6 +281,15 @@ html:not(.dark-mode) .dept-map-container {
     width: 100%;
     height: 100%;
     background: #1f2937;
+}
+
+/* Map legend overlay */
+.dept-map-legend {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 500;
+    max-width: 260px;
 }
 
 /* Map overlay controls */
@@ -301,6 +340,7 @@ html:not(.dark-mode) .dept-map-container {
     flex-direction: column;
     max-height: calc(100vh - 18rem);
     min-height: 450px;
+    position: relative;
 }
 .dept-map-sidebar::before {
     content: "";
@@ -308,13 +348,15 @@ html:not(.dark-mode) .dept-map-container {
     top: 0; left: 0; right: 0;
     height: 4px;
     background: linear-gradient(90deg, #f59e0b, #d97706);
+    z-index: 2;
 }
-.dept-map-sidebar { position: relative; }
 .dept-map-sidebar-header {
     padding: 22px 24px;
     border-bottom: 1px solid var(--dm-line);
     flex-shrink: 0;
     background: linear-gradient(180deg, var(--dm-raised) 0%, var(--dm-surface) 100%);
+    position: relative;
+    z-index: 1;
 }
 .dept-map-sidebar-header h2 {
     font-family: "Plus Jakarta Sans", sans-serif;
@@ -360,7 +402,7 @@ html:not(.dark-mode) .dept-map-container {
 }
 .dept-map-back-btn svg { width: 16px; height: 16px; }
 
-/* ===== PROJECT CARDS - RICHER ===== */
+/* ===== PROJECT CARDS ===== */
 .dept-map-project-card {
     background: var(--dm-surface);
     border: 1px solid var(--dm-line);
@@ -380,12 +422,15 @@ html:not(.dark-mode) .dept-map-container {
     opacity: 0;
     transition: opacity 0.25s;
 }
-.dept-map-project-card:hover {
+.dept-map-project-card:hover,
+.dept-map-project-card:focus-visible {
     border-color: var(--dm-line-strong);
     box-shadow: var(--dm-shadow-md);
     transform: translateY(-3px);
+    outline: none;
 }
-.dept-map-project-card:hover::before { opacity: 1; }
+.dept-map-project-card:hover::before,
+.dept-map-project-card:focus-visible::before { opacity: 1; }
 .dept-map-project-card.selected {
     border-color: #f59e0b;
     box-shadow: 0 0 0 3px rgba(245,158,11,0.2), var(--dm-shadow-md);
@@ -404,9 +449,7 @@ html:not(.dark-mode) .dept-map-container {
     display: block;
     transition: transform 0.4s ease;
 }
-.dept-map-project-card:hover .dept-map-project-image {
-    transform: scale(1.05);
-}
+.dept-map-project-card:hover .dept-map-project-image { transform: scale(1.05); }
 .dept-map-project-image-overlay {
     position: absolute;
     bottom: 0; left: 0; right: 0;
@@ -424,6 +467,7 @@ html:not(.dark-mode) .dept-map-container {
     color: var(--dm-muted);
     font-size: 0.75rem;
     font-weight: 600;
+    gap: 8px;
 }
 .dept-map-project-body { padding: 18px; }
 .dept-map-project-name {
@@ -442,7 +486,7 @@ html:not(.dark-mode) .dept-map-container {
     flex-wrap: wrap;
 }
 
-/* Richer status badges */
+/* Status badges */
 .dept-map-status-badge {
     display: inline-flex;
     align-items: center;
@@ -478,14 +522,22 @@ html:not(.dark-mode) .dept-map-container {
 .dept-map-status-badge.cancelled { background: rgba(100,116,139,0.10); color: #64748b; }
 .dept-map-status-badge.cancelled .dot { background: #64748b; }
 
-.dark .dept-map-status-badge.proposed { background: rgba(37,99,235,0.12); color: #60a5fa; }
-.dark .dept-map-status-badge.bidding { background: rgba(245,158,11,0.12); color: #fbbf24; }
-.dark .dept-map-status-badge.bidding_ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
-.dark .dept-map-status-badge.award { background: rgba(139,92,246,0.12); color: #a78bfa; }
-.dark .dept-map-status-badge.implementation { background: rgba(15,118,110,0.12); color: #5eead4; }
-.dark .dept-map-status-badge.completed { background: rgba(22,163,74,0.12); color: #4ade80; }
-.dark .dept-map-status-badge.onhold { background: rgba(220,38,38,0.12); color: #f87171; }
-.dark .dept-map-status-badge.cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
+.dark .dept-map-status-badge.proposed,
+html.dark-mode .dept-map-status-badge.proposed { background: rgba(37,99,235,0.12); color: #60a5fa; }
+.dark .dept-map-status-badge.bidding,
+html.dark-mode .dept-map-status-badge.bidding { background: rgba(245,158,11,0.12); color: #fbbf24; }
+.dark .dept-map-status-badge.bidding_ongoing,
+html.dark-mode .dept-map-status-badge.bidding_ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
+.dark .dept-map-status-badge.award,
+html.dark-mode .dept-map-status-badge.award { background: rgba(139,92,246,0.12); color: #a78bfa; }
+.dark .dept-map-status-badge.implementation,
+html.dark-mode .dept-map-status-badge.implementation { background: rgba(15,118,110,0.12); color: #5eead4; }
+.dark .dept-map-status-badge.completed,
+html.dark-mode .dept-map-status-badge.completed { background: rgba(22,163,74,0.12); color: #4ade80; }
+.dark .dept-map-status-badge.onhold,
+html.dark-mode .dept-map-status-badge.onhold { background: rgba(220,38,38,0.12); color: #f87171; }
+.dark .dept-map-status-badge.cancelled,
+html.dark-mode .dept-map-status-badge.cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
 
 .dept-map-project-stats {
     display: grid;
@@ -570,7 +622,7 @@ html:not(.dark-mode) .dept-map-container {
 }
 .dept-map-detail-body { padding: 24px; }
 
-/* ===== STEPPER - RICHER ===== */
+/* ===== STEPPER ===== */
 .dept-map-stepper {
     padding: 20px;
     background: linear-gradient(135deg, var(--dm-raised), var(--dm-surface));
@@ -583,6 +635,8 @@ html:not(.dark-mode) .dept-map-container {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 .dept-map-stepper-title {
     font-size: 0.6875rem;
@@ -624,6 +678,9 @@ html:not(.dark-mode) .dept-map-container {
 .dept-map-step.completed:not(:last-child)::after {
     background: linear-gradient(90deg, #10b981, #059669);
 }
+.dept-map-step.halted:not(:last-child)::after {
+    background: linear-gradient(90deg, #ef4444, #b91c1c);
+}
 .dept-map-step-dot {
     position: relative;
     z-index: 1;
@@ -655,9 +712,18 @@ html:not(.dark-mode) .dept-map-container {
     box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.4);
     animation: stepPulse 2s ease-in-out infinite;
 }
+.dept-map-step.halted .dept-map-step-dot {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 12px -2px rgba(239, 68, 68, 0.4);
+}
 @keyframes stepPulse {
     0%, 100% { box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.4); }
     50% { box-shadow: 0 4px 20px 2px rgba(59, 130, 246, 0.5); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .dept-map-step.active .dept-map-step-dot { animation: none; }
 }
 .dept-map-step-label {
     font-size: 0.5625rem;
@@ -669,6 +735,7 @@ html:not(.dark-mode) .dept-map-container {
 }
 .dept-map-step.completed .dept-map-step-label { color: #059669; font-weight: 800; }
 .dept-map-step.active .dept-map-step-label { color: var(--dm-ink); font-weight: 800; }
+.dept-map-step.halted .dept-map-step-label { color: #ef4444; font-weight: 800; }
 
 @media (max-width: 640px) {
     .dept-map-stepper-track {
@@ -677,26 +744,20 @@ html:not(.dark-mode) .dept-map-container {
         gap: 12px;
         padding-bottom: 8px;
         scrollbar-width: thin;
-        -ms-overflow-style: auto;
     }
-
-    .dept-map-step {
-        min-width: 72px;
-        flex: 0 0 72px;
-    }
-
-    .dept-map-step:not(:last-child)::after {
-        left: 58%;
-        width: 70%;
-    }
+    .dept-map-step { min-width: 72px; flex: 0 0 72px; }
+    .dept-map-step:not(:last-child)::after { left: 58%; width: 70%; }
 }
 
 /* ===== DETAIL STATS GRID ===== */
 .dept-map-detail-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
     margin-bottom: 20px;
+}
+@media (max-width: 480px) {
+    .dept-map-detail-grid { grid-template-columns: 1fr; }
 }
 .dept-map-detail-item {
     display: flex;
@@ -727,10 +788,14 @@ html:not(.dark-mode) .dept-map-container {
 .dept-map-detail-icon.emerald { background: #d1fae5; color: #059669; }
 .dept-map-detail-icon.amber { background: #fef3c7; color: #b45309; }
 .dept-map-detail-icon.rose { background: #ffe4e6; color: #e11d48; }
-.dark .dept-map-detail-icon.blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
-.dark .dept-map-detail-icon.emerald { background: rgba(16,185,129,0.15); color: #34d399; }
-.dark .dept-map-detail-icon.amber { background: rgba(251,191,36,0.15); color: #fbbf24; }
-.dark .dept-map-detail-icon.rose { background: rgba(244,63,94,0.15); color: #fb7185; }
+.dark .dept-map-detail-icon.blue,
+html.dark-mode .dept-map-detail-icon.blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.dark .dept-map-detail-icon.emerald,
+html.dark-mode .dept-map-detail-icon.emerald { background: rgba(16,185,129,0.15); color: #34d399; }
+.dark .dept-map-detail-icon.amber,
+html.dark-mode .dept-map-detail-icon.amber { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.dark .dept-map-detail-icon.rose,
+html.dark-mode .dept-map-detail-icon.rose { background: rgba(244,63,94,0.15); color: #fb7185; }
 .dept-map-detail-label {
     font-size: 0.625rem;
     font-weight: 800;
@@ -746,7 +811,7 @@ html:not(.dark-mode) .dept-map-container {
     font-family: "Plus Jakarta Sans", sans-serif;
 }
 
-/* ===== PROGRESS BARS - RICHER ===== */
+/* ===== PROGRESS BARS ===== */
 .dept-map-progress-wrap {
     margin-bottom: 20px;
     padding: 16px;
@@ -811,6 +876,9 @@ html:not(.dark-mode) .dept-map-container {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
 }
+@media (prefers-reduced-motion: reduce) {
+    .dept-map-progress-fill::after { animation: none; }
+}
 
 /* ===== VIEW ALL BUTTON ===== */
 .dept-map-viewall {
@@ -840,12 +908,14 @@ html:not(.dark-mode) .dept-map-container {
 }
 .dept-map-viewall svg { width: 18px; height: 18px; }
 
-/* ===== EMPTY STATE ===== */
-.dept-map-empty {
+/* ===== EMPTY / LOADING STATES ===== */
+.dept-map-empty,
+.dept-map-loading {
     text-align: center;
     padding: 56px 24px;
 }
-.dept-map-empty-icon {
+.dept-map-empty-icon,
+.dept-map-loading-icon {
     width: 72px;
     height: 72px;
     margin: 0 auto 16px;
@@ -857,8 +927,15 @@ html:not(.dark-mode) .dept-map-container {
     justify-content: center;
     box-shadow: 0 4px 12px -2px rgba(245, 158, 11, 0.2);
 }
-.dark .dept-map-empty-icon { background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.08)); color: #fbbf24; }
-.dept-map-empty-icon svg { width: 32px; height: 32px; }
+.dark .dept-map-empty-icon,
+html.dark-mode .dept-map-empty-icon,
+.dark .dept-map-loading-icon,
+html.dark-mode .dept-map-loading-icon {
+    background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.08));
+    color: #fbbf24;
+}
+.dept-map-empty-icon svg,
+.dept-map-loading-icon svg { width: 32px; height: 32px; }
 .dept-map-empty h4 {
     font-family: "Plus Jakarta Sans", sans-serif;
     font-size: 1.0625rem;
@@ -866,114 +943,26 @@ html:not(.dark-mode) .dept-map-container {
     color: var(--dm-ink);
     margin-bottom: 6px;
 }
-.dept-map-empty p {
+.dept-map-empty p,
+.dept-map-loading p {
     font-size: 0.8125rem;
     color: var(--dm-muted);
 }
-
-/* ===== LEAFLET DARK MODE & CUSTOMIZATION ===== */
-.dark .leaflet-container { background: #0f0e1a; }
-.dark .leaflet-popup-content-wrapper,
-.dark .leaflet-popup-tip {
-    background: #1a1929;
-    color: #f8fafc;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+.dept-map-loading .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(245,158,11,0.2);
+    border-top-color: #f59e0b;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 12px;
 }
-.dark .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1; }
-
-/* Application dark-mode class overrides */
-html.dark-mode .dept-map-container {
-    --dm-bg: #0f172a;
-    --dm-surface: #0f172a;
-    --dm-raised: #1e293b;
-    --dm-ink: #f8fafc;
-    --dm-ink-secondary: #cbd5e1;
-    --dm-muted: #94a3b8;
-    --dm-line: rgba(148, 163, 184, 0.2);
-    --dm-line-strong: rgba(148, 163, 184, 0.35);
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+    .dept-map-loading .spinner { animation: none; border-top-color: transparent; }
 }
 
-html.dark-mode .dept-map-stats-bar,
-html.dark-mode .dept-map-card,
-html.dark-mode .dept-map-sidebar,
-html.dark-mode .dept-map-project-card,
-html.dark-mode .dept-map-detail-card {
-    background: #0f172a !important;
-    border-color: #334155 !important;
-    color: #f8fafc !important;
-}
-
-html.dark-mode .dept-map-sidebar-header,
-html.dark-mode .dept-map-detail-header,
-html.dark-mode .dept-map-stepper,
-html.dark-mode .dept-map-detail-item,
-html.dark-mode .dept-map-progress-wrap,
-html.dark-mode .dept-map-project-stat,
-html.dark-mode .dept-map-project-noimage,
-html.dark-mode .dept-map-sidebar-body {
-    background: #1e293b !important;
-    border-color: #334155 !important;
-}
-
-html.dark-mode .dept-map-project-card:hover,
-html.dark-mode .dept-map-project-card:hover .dept-map-project-stat,
-html.dark-mode .dept-map-detail-item:hover,
-html.dark-mode .dept-map-viewall:hover {
-    background: #334155 !important;
-    border-color: #475569 !important;
-}
-
-html.dark-mode .dept-map-back-btn,
-html.dark-mode .dept-map-viewall,
-html.dark-mode .dept-map-stepper-status {
-    background: #1e293b !important;
-    border-color: #475569 !important;
-    color: #cbd5e1 !important;
-}
-
-html.dark-mode .dept-map-overlay-btn {
-    background: rgba(15, 23, 42, 0.92);
-    border-color: #475569;
-}
-
-html.dark-mode .dept-map-overlay-btn:hover {
-    background: #1e293b;
-}
-
-html.dark-mode .dept-map-project-name,
-html.dark-mode .dept-map-detail-header h3,
-html.dark-mode .dept-map-detail-value,
-html.dark-mode .dept-map-stat-value,
-html.dark-mode .dept-map-empty h4 {
-    color: #f8fafc !important;
-}
-
-html.dark-mode .dept-map-project-desc,
-html.dark-mode .dept-map-detail-label,
-html.dark-mode .dept-map-progress-label,
-html.dark-mode .dept-map-stat-label {
-    color: #94a3b8 !important;
-}
-
-html.dark-mode .dept-map-status-badge.proposed { background: rgba(37,99,235,0.12); color: #60a5fa; }
-html.dark-mode .dept-map-status-badge.bidding { background: rgba(245,158,11,0.12); color: #fbbf24; }
-html.dark-mode .dept-map-status-badge.bidding_ongoing { background: rgba(6,182,212,0.12); color: #67e8f9; }
-html.dark-mode .dept-map-status-badge.award { background: rgba(139,92,246,0.12); color: #a78bfa; }
-html.dark-mode .dept-map-status-badge.implementation { background: rgba(15,118,110,0.12); color: #5eead4; }
-html.dark-mode .dept-map-status-badge.completed { background: rgba(22,163,74,0.12); color: #4ade80; }
-html.dark-mode .dept-map-status-badge.onhold { background: rgba(220,38,38,0.12); color: #f87171; }
-html.dark-mode .dept-map-status-badge.cancelled { background: rgba(100,116,139,0.12); color: #cbd5e1; }
-
-html.dark-mode .leaflet-container { background: #0f172a; }
-html.dark-mode .leaflet-popup-content-wrapper,
-html.dark-mode .leaflet-popup-tip {
-    background: #1e293b;
-    color: #f8fafc;
-    box-shadow: 0 8px 24px rgba(2, 6, 23, 0.55);
-}
-html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1; }
-
-/* Custom marker popup */
+/* ===== LEAFLET CUSTOMIZATION ===== */
 .leaflet-popup-content-wrapper {
     border-radius: 12px;
     padding: 0;
@@ -983,6 +972,18 @@ html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1;
     margin: 12px 16px;
     font-family: "Inter", sans-serif;
 }
+.dark .leaflet-container,
+html.dark-mode .leaflet-container { background: #0f0e1a; }
+.dark .leaflet-popup-content-wrapper,
+html.dark-mode .leaflet-popup-content-wrapper,
+.dark .leaflet-popup-tip,
+html.dark-mode .leaflet-popup-tip {
+    background: #1a1929;
+    color: #f8fafc;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.dark .leaflet-container a.leaflet-popup-close-button,
+html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1; }
 
 /* ===== ANIMATIONS ===== */
 @keyframes dmFadeUp {
@@ -1001,8 +1002,6 @@ html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1;
 
 @media (prefers-reduced-motion: reduce) {
     .dept-animate { animation: none; opacity: 1; }
-    .dept-map-progress-fill::after { animation: none; }
-    .dept-map-hero::after { animation: none; }
 }
 </style>
 
@@ -1013,7 +1012,7 @@ html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1;
         <div class="dept-map-hero-content">
             <div class="dept-map-hero-badge-row">
                 <span class="dept-map-hero-badge gold">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 11115 0z"/></svg>
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
                     Cabuyao City, Laguna
                 </span>
                 <span class="dept-map-hero-badge">
@@ -1080,15 +1079,19 @@ html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1;
 
         <!-- MAP -->
         <div class="dept-map-card dept-animate">
-            <div class="dept-map-wrap" id="map">
+            <div class="dept-map-wrap" id="map"></div>
+
+            <!-- Legend moved outside Leaflet container -->
+            <div class="dept-map-legend">
                 @include('components.map-status-legend')
             </div>
+
             <div class="dept-map-overlay">
-                <button type="button" class="dept-map-overlay-btn active" id="btnLightTiles" title="Light map">
+                <button type="button" class="dept-map-overlay-btn active" id="btnLightTiles" title="Light map" aria-pressed="true">
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
                     Light
                 </button>
-                <button type="button" class="dept-map-overlay-btn" id="btnDarkTiles" title="Dark map">
+                <button type="button" class="dept-map-overlay-btn" id="btnDarkTiles" title="Dark map" aria-pressed="false">
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.598.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
                     Dark
                 </button>
@@ -1102,14 +1105,39 @@ html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1;
                 <p>Cabuyao City Projects</p>
                 <div id="departmentSidebarAction"></div>
             </div>
-            <div class="dept-map-sidebar-body" id="departmentProjectList"></div>
+            <div class="dept-map-sidebar-body" id="departmentProjectList">
+                <!-- Loading state inserted by JS -->
+            </div>
         </div>
     </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    /* ============================================================
+       UTILITIES
+       ============================================================ */
+    function e(str) {
+        if (str == null) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function formatCurrency(value) {
+        return '₱' + Number(value || 0).toLocaleString();
+    }
+
+    function isMobile() { return window.innerWidth < 768; }
+
+    /* ============================================================
+       STATE
+       ============================================================ */
     const projectList = document.getElementById('departmentProjectList');
+    const sidebarAction = document.getElementById('departmentSidebarAction');
     let selectedProjectIndex = null;
     let map = null;
     let boundedArea = null;
@@ -1117,58 +1145,28 @@ document.addEventListener('DOMContentLoaded', function() {
     let barangayLayer = null;
     let selectedBarangayLayer = null;
     let selectedBarangayName = null;
-    const markersByBarangay = {};
-    let allMarkers = null;
+    const barangayMarkerGroups = {};
+    let allMarkers = L.featureGroup();
     let currentTileLayer = null;
     let lightTiles = null;
     let darkTiles = null;
 
-    function isMobile() { return window.innerWidth < 768; }
-
-    function barangayColor(name) {
-        let hash = 0;
-        for (let i = 0; i < name.length; i++) {
-            hash = name.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        const hue = Math.abs(hash) % 360;
-        return `hsl(${hue}, 65%, 55%)`;
-    }
-
-    function formatCurrency(value) {
-        return `₱${Number(value || 0).toLocaleString()}`;
-    }
-
+    /* ============================================================
+       PROGRESS & STATUS HELPERS
+       ============================================================ */
     function calculateProgress(project) {
-        if (!project.properties.start_date || !project.properties.target_end_date) {
-            return 0;
+        const reportedProgress = calculateReportedProgress(project);
+        if (reportedProgress !== null) {
+            return reportedProgress;
         }
 
-        const startDate = new Date(project.properties.start_date);
-        const endDate = new Date(project.properties.target_end_date);
-        const today = new Date();
-
-        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || endDate <= startDate) {
-            return 0;
-        }
-
-        const totalDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
-
-        if (today < startDate) {
-            return 0;
-        }
-
-        if (today >= endDate) {
-            return 100;
-        }
-
-        const daysElapsed = Math.max(0, (today - startDate) / (1000 * 60 * 60 * 24));
-        return Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100));
+        return 0;
     }
 
     function calculateReportedProgress(project) {
-        const reportedProgress = project.properties.progress_percentage;
-        return reportedProgress !== null && reportedProgress !== undefined && reportedProgress !== ''
-            ? Math.min(100, Math.max(0, Number(reportedProgress)))
+        const rp = project.properties.progress_percentage;
+        return (rp !== null && rp !== undefined && rp !== '')
+            ? Math.min(100, Math.max(0, Number(rp)))
             : null;
     }
 
@@ -1194,11 +1192,21 @@ document.addEventListener('DOMContentLoaded', function() {
         return map[status] || 'proposed';
     }
 
-    function updateStatsBar() {
-        const total = projectFeatures.length;
-        const totalBudget = projectFeatures.reduce((sum, p) => sum + Number(p.properties.budget || 0), 0);
-        const avgProgress = total > 0 ? projectFeatures.reduce((sum, p) => sum + calculateProgress(p), 0) / total : 0;
-        const barangays = new Set(projectFeatures.map(p => p.properties.barangay).filter(Boolean));
+    function barangayColor(name) {
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        const hue = Math.abs(hash) % 360;
+        return 'hsl(' + hue + ', 65%, 55%)';
+    }
+
+    /* ============================================================
+       STATS
+       ============================================================ */
+    function updateStatsBar(projects) {
+        const total = projects.length;
+        const totalBudget = projects.reduce(function(sum, p) { return sum + Number(p.properties.budget || 0); }, 0);
+        const avgProgress = total > 0 ? projects.reduce(function(sum, p) { return sum + calculateProgress(p); }, 0) / total : 0;
+        const barangays = new Set(projects.map(function(p) { return p.properties.barangay; }).filter(Boolean));
 
         document.getElementById('statTotalProjects').textContent = total;
         document.getElementById('statAvgProgress').textContent = avgProgress.toFixed(1) + '%';
@@ -1206,6 +1214,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('statBarangays').textContent = barangays.size;
     }
 
+    /* ============================================================
+       RENDERERS
+       ============================================================ */
     function renderLifecycleStepper(status) {
         const steps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation', 'Completed'];
         const stageByStatus = {
@@ -1214,141 +1225,119 @@ document.addEventListener('DOMContentLoaded', function() {
             Planning: 0, Procurement: 1, 'Bidding - Success': 3, 'On Going': 4
         };
         const activeStep = stageByStatus[status];
+        const halted = status === 'On Hold' || status === 'Cancelled';
 
-        let html = '<div class="dept-map-stepper"><div class="dept-map-stepper-header"><span class="dept-map-stepper-title">Project lifecycle</span><span class="dept-map-stepper-status">' + (status || 'Unknown') + '</span></div><div class="dept-map-stepper-track">';
+        let html = '<div class="dept-map-stepper"><div class="dept-map-stepper-header"><span class="dept-map-stepper-title">Project lifecycle</span><span class="dept-map-stepper-status">' + e(status || 'Unknown') + '</span></div><div class="dept-map-stepper-track">';
 
-        steps.forEach((step, stepIndex) => {
-            const complete = activeStep !== undefined && stepIndex < activeStep;
-            const current = activeStep !== undefined && stepIndex === activeStep;
+        steps.forEach(function(step, idx) {
             let dotClass = '';
-            if (complete) dotClass = 'completed';
-            else if (current) dotClass = 'active';
             let labelClass = '';
-            if (complete) labelClass = 'completed';
-            else if (current) labelClass = 'active';
-            const dotContent = complete ? '&#10003;' : (stepIndex + 1);
-            html += '<div class="dept-map-step ' + dotClass + '"><div class="dept-map-step-dot">' + dotContent + '</div><div class="dept-map-step-label">' + step + '</div></div>';
+            let dotContent = String(idx + 1);
+
+            if (halted) {
+                if (idx === activeStep) { dotClass = 'halted'; labelClass = 'halted'; dotContent = '&#10007;'; }
+            } else {
+                if (activeStep !== undefined && idx < activeStep) { dotClass = 'completed'; labelClass = 'completed'; dotContent = '&#10003;'; }
+                else if (activeStep !== undefined && idx === activeStep) { dotClass = 'active'; labelClass = 'active'; }
+            }
+
+            html += '<div class="dept-map-step ' + dotClass + '"><div class="dept-map-step-dot">' + dotContent + '</div><div class="dept-map-step-label">' + e(step) + '</div></div>';
         });
         html += '</div></div>';
         return html;
     }
 
-    function renderProjectCard(project, index, isSingle = false) {
+    function renderProjectCard(project, index, isSingle) {
         const props = project.properties;
-        const timelineProgress = calculateProgress(project);
         const reportedProgress = calculateReportedProgress(project);
-        const progress = reportedProgress ?? timelineProgress;
+        const progress = calculateProgress(project);
         const allocatedBudget = Number(props.budget || 0);
         const expenditure = Number(props.actual_budget || 0);
         const expenditureProgress = allocatedBudget > 0 ? Math.min(100, Math.max(0, (expenditure / allocatedBudget) * 100)) : 0;
         const startDate = props.start_date ? new Date(props.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
         const targetDate = props.target_end_date ? new Date(props.target_end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
         const statusClass = getStatusBadgeClass(props.status);
+        const isSelected = selectedProjectIndex === index;
 
         const imageHtml = props.image
-            ? '<div class="dept-map-project-image-wrap"><img src="' + props.image + '" alt="' + props.name + '" class="dept-map-project-image"><div class="dept-map-project-image-overlay"></div></div>'
-            : '<div class="dept-map-project-noimage"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M21 21h-5.25M3 21h18M12.75 7.5a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg></div>';
+            ? '<div class="dept-map-project-image-wrap"><img src="' + e(props.image) + '" alt="' + e(props.name) + '" class="dept-map-project-image" loading="lazy"><div class="dept-map-project-image-overlay"></div></div>'
+            : '<div class="dept-map-project-noimage"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M21 21h-5.25M3 21h18M12.75 7.5a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>No image</div>';
 
         if (isSingle) {
-            return `
-                <div class="dept-map-detail-card" data-index="${index}">
-                    <div class="dept-map-detail-header">
-                        <div class="dept-map-detail-header-label">Selected project</div>
-                        <h3>${props.name}</h3>
-                        <span class="dept-map-status-badge ${statusClass}" style="margin-top:10px;">
-                            <span class="dot"></span>
-                            ${props.status || 'Unknown'}
-                        </span>
-                    </div>
-                    <div class="dept-map-detail-image-wrap">${props.image ? '<img src="' + props.image + '" alt="' + props.name + '" class="dept-map-detail-image">' : '<div class="dept-map-project-noimage" style="border-radius:10px;height:220px;"><svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M21 21h-5.25M3 21h18M12.75 7.5a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg></div>'}</div>
-                    <div class="dept-map-detail-body">
-                        ${renderLifecycleStepper(props.status)}
-                        <div class="dept-map-detail-grid">
-                            <div class="dept-map-detail-item">
-                                <div class="dept-map-detail-icon purple"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg></div>
-                                <div><div class="dept-map-detail-label">Barangay</div><div class="dept-map-detail-value">${props.barangay || 'Not specified'}</div></div>
-                            </div>
-                            <div class="dept-map-detail-item">
-                                <div class="dept-map-detail-icon emerald"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
-                                <div><div class="dept-map-detail-label">Budget</div><div class="dept-map-detail-value">${formatCurrency(allocatedBudget)}</div></div>
-                            </div>
-                            <div class="dept-map-detail-item">
-                                <div class="dept-map-detail-icon blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div>
-                                <div><div class="dept-map-detail-label">Reported Progress</div><div class="dept-map-detail-value">${reportedProgress === null ? 'Not reported' : reportedProgress.toFixed(1) + '%'}</div></div>
-                            </div>
-                            <div class="dept-map-detail-item">
-                                <div class="dept-map-detail-icon rose"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
-                                <div><div class="dept-map-detail-label">Expenditure</div><div class="dept-map-detail-value">${formatCurrency(expenditure)}</div></div>
-                            </div>
-                        </div>
-
-                        <div class="dept-map-progress-wrap">
-                            <div class="dept-map-progress-header"><span class="dept-map-progress-label">Expenditure progress</span><span class="dept-map-progress-value">${expenditureProgress.toFixed(1)}%</span></div>
-                            <div class="dept-map-progress-track"><div class="dept-map-progress-fill" style="width:${expenditureProgress}%; background:linear-gradient(90deg,#10b981,#059669);"></div></div>
-                        </div>
-
-                        <div class="dept-map-progress-wrap">
-                            <div class="dept-map-progress-header"><span class="dept-map-progress-label">Timeline progress</span><span class="dept-map-progress-value">${timelineProgress.toFixed(1)}%</span></div>
-                            <div class="dept-map-progress-track"><div class="dept-map-progress-fill" style="width:${timelineProgress}%; background:linear-gradient(90deg,#3b82f6,#2563eb);"></div></div>
-                            <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:0.6875rem;font-weight:600;color:var(--dm-muted);"><span>Start: ${startDate}</span><span>Target: ${targetDate}</span></div>
-                        </div>
-
-                        <div class="dept-map-description-card">
-                            <p>${props.description || 'No description available.'}</p>
-                        </div>
-
-                        <button type="button" class="dept-map-viewall show-all-projects-btn">
-                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/></svg>
-                            View all projects
-                        </button>
-                    </div>
-                </div>
-            `;
+            return '<div class="dept-map-detail-card" data-index="' + index + '">' +
+                '<div class="dept-map-detail-header">' +
+                    '<div class="dept-map-detail-header-label">Selected project</div>' +
+                    '<h3>' + e(props.name) + '</h3>' +
+                    '<span class="dept-map-status-badge ' + statusClass + '" style="margin-top:10px;"><span class="dot"></span>' + e(props.status || 'Unknown') + '</span>' +
+                '</div>' +
+                '<div class="dept-map-detail-image-wrap">' +
+                    (props.image ? '<img src="' + e(props.image) + '" alt="' + e(props.name) + '" class="dept-map-detail-image" loading="lazy">' : '<div class="dept-map-project-noimage" style="border-radius:10px;height:220px;"><svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M21 21h-5.25M3 21h18M12.75 7.5a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg></div>') +
+                '</div>' +
+                '<div class="dept-map-detail-body">' +
+                    renderLifecycleStepper(props.status) +
+                    '<div class="dept-map-detail-grid">' +
+                        '<div class="dept-map-detail-item"><div class="dept-map-detail-icon purple"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg></div><div><div class="dept-map-detail-label">Barangay</div><div class="dept-map-detail-value">' + e(props.barangay || 'Not specified') + '</div></div></div>' +
+                        '<div class="dept-map-detail-item"><div class="dept-map-detail-icon emerald"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div><div class="dept-map-detail-label">Budget</div><div class="dept-map-detail-value">' + formatCurrency(allocatedBudget) + '</div></div></div>' +
+                        '<div class="dept-map-detail-item"><div class="dept-map-detail-icon blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div><div><div class="dept-map-detail-label">Reported Progress</div><div class="dept-map-detail-value">' + (reportedProgress !== null ? reportedProgress.toFixed(1) + '%' : 'Not reported') + '</div></div></div>' +
+                        '<div class="dept-map-detail-item"><div class="dept-map-detail-icon rose"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div><div class="dept-map-detail-label">Expenditure</div><div class="dept-map-detail-value">' + formatCurrency(expenditure) + '</div></div></div>' +
+                    '</div>' +
+                    '<div class="dept-map-progress-wrap">' +
+                        '<div class="dept-map-progress-header"><span class="dept-map-progress-label">Expenditure progress</span><span class="dept-map-progress-value">' + expenditureProgress.toFixed(1) + '%</span></div>' +
+                        '<div class="dept-map-progress-track"><div class="dept-map-progress-fill" style="width:' + expenditureProgress + '%;background:linear-gradient(90deg,#10b981,#059669);"></div></div>' +
+                    '</div>' +
+                    '<div class="dept-map-progress-wrap">' +
+                        '<div class="dept-map-progress-header"><span class="dept-map-progress-label">' + (reportedProgress !== null ? 'Reported progress' : 'Progress') + '</span><span class="dept-map-progress-value">' + progress.toFixed(1) + '%</span></div>' +
+                        '<div class="dept-map-progress-track"><div class="dept-map-progress-fill" style="width:' + progress + '%;background:linear-gradient(90deg,#3b82f6,#2563eb);"></div></div>' +
+                        '<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:0.6875rem;font-weight:600;color:var(--dm-muted);"><span>Start: ' + e(startDate) + '</span><span>Target: ' + e(targetDate) + '</span></div>' +
+                    '</div>' +
+                    '<div class="dept-map-description-card"><p>' + e(props.description || 'No description available.') + '</p></div>' +
+                    '<button type="button" class="dept-map-viewall show-all-projects-btn">' +
+                        '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/></svg>' +
+                        'View all projects' +
+                    '</button>' +
+                '</div>' +
+            '</div>';
         }
 
-        return `
-            <div class="dept-map-project-card ${selectedProjectIndex === index ? 'selected' : ''}" data-index="${index}">
-                ${imageHtml}
-                <div class="dept-map-project-body">
-                    <div class="dept-map-project-name">${props.name}</div>
-                    <div class="dept-map-project-meta">
-                        <span class="dept-map-status-badge ${statusClass}">
-                            <span class="dot"></span>
-                            ${props.status || 'Unknown'}
-                        </span>
-                        <span class="dept-map-status-badge" style="background:var(--dm-raised);color:var(--dm-muted);border:1px solid var(--dm-line);">
-                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 11115 0z"/></svg>
-                            ${props.barangay || 'Barangay not specified'}
-                        </span>
-                    </div>
-                    <div class="dept-map-project-stats">
-                        <div class="dept-map-project-stat"><div class="dept-map-project-stat-label">Budget</div><div class="dept-map-project-stat-value">${formatCurrency(props.budget)}</div></div>
-                        <div class="dept-map-project-stat"><div class="dept-map-project-stat-label">Progress</div><div class="dept-map-project-stat-value">${progress.toFixed(1)}%</div></div>
-                    </div>
-                    <p class="dept-map-project-desc">${props.description || 'No description available.'}</p>
-                </div>
-            </div>
-        `;
+        return '<div class="dept-map-project-card ' + (isSelected ? 'selected' : '') + '" data-index="' + index + '" tabindex="0" role="button" aria-pressed="' + (isSelected ? 'true' : 'false') + '">' +
+            imageHtml +
+            '<div class="dept-map-project-body">' +
+                '<div class="dept-map-project-name">' + e(props.name) + '</div>' +
+                '<div class="dept-map-project-meta">' +
+                    '<span class="dept-map-status-badge ' + statusClass + '"><span class="dot"></span>' + e(props.status || 'Unknown') + '</span>' +
+                    '<span class="dept-map-status-badge" style="background:var(--dm-raised);color:var(--dm-muted);border:1px solid var(--dm-line);">' +
+                        '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>' +
+                        e(props.barangay || 'Barangay not specified') +
+                    '</span>' +
+                '</div>' +
+                '<div class="dept-map-project-stats">' +
+                    '<div class="dept-map-project-stat"><div class="dept-map-project-stat-label">Budget</div><div class="dept-map-project-stat-value">' + formatCurrency(props.budget) + '</div></div>' +
+                    '<div class="dept-map-project-stat"><div class="dept-map-project-stat-label">Progress</div><div class="dept-map-project-stat-value">' + progress.toFixed(1) + '%</div></div>' +
+                '</div>' +
+                '<p class="dept-map-project-desc">' + e(props.description || 'No description available.') + '</p>' +
+            '</div>' +
+        '</div>';
     }
 
+    /* ============================================================
+       SIDEBAR ACTIONS
+       ============================================================ */
     function updateSidebarAction() {
-        const actionContainer = document.getElementById('departmentSidebarAction');
+        if (!sidebarAction) return;
         if (selectedBarangayName) {
-            actionContainer.innerHTML = `
-                <button type="button" id="backToAllBarangays" class="dept-map-back-btn">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                    Back to all barangays
-                </button>
-            `;
+            sidebarAction.innerHTML = '<button type="button" id="backToAllBarangays" class="dept-map-back-btn">' +
+                '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>' +
+                'Back to all barangays</button>';
             document.getElementById('backToAllBarangays').addEventListener('click', resetToAllBarangays);
         } else {
-            actionContainer.innerHTML = '';
+            sidebarAction.innerHTML = '';
         }
     }
 
     function clearSelection() {
         document.querySelectorAll('.dept-map-project-card').forEach(function(card) {
             card.classList.remove('selected');
+            card.setAttribute('aria-pressed', 'false');
         });
     }
 
@@ -1358,8 +1347,31 @@ document.addEventListener('DOMContentLoaded', function() {
         const card = document.querySelector('.dept-map-project-card[data-index="' + index + '"]');
         if (card) {
             card.classList.add('selected');
+            card.setAttribute('aria-pressed', 'true');
             card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
+    }
+
+    function attachCardListeners() {
+        document.querySelectorAll('.dept-map-project-card').forEach(function(card) {
+            card.addEventListener('click', function() {
+                const idx = parseInt(this.getAttribute('data-index'), 10);
+                selectProject(projectFeatures[idx], idx);
+            });
+            card.addEventListener('keydown', function(ev) {
+                if (ev.key === 'Enter' || ev.key === ' ') {
+                    ev.preventDefault();
+                    const idx = parseInt(this.getAttribute('data-index'), 10);
+                    selectProject(projectFeatures[idx], idx);
+                }
+            });
+        });
+        document.querySelectorAll('.show-all-projects-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(ev) {
+                ev.stopPropagation();
+                showAllProjects();
+            });
+        });
     }
 
     function renderProjectList(projects) {
@@ -1367,15 +1379,8 @@ document.addEventListener('DOMContentLoaded', function() {
         updateSidebarAction();
 
         if (projects.length === 0) {
-            projectList.innerHTML = `
-                <div class="dept-map-empty">
-                    <div class="dept-map-empty-icon">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
-                    </div>
-                    <h4>No projects found</h4>
-                    <p>No public projects recorded in ${selectedBarangayName} yet.</p>
-                </div>
-            `;
+            projectList.innerHTML = '<div class="dept-map-empty"><div class="dept-map-empty-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div><h4>No projects found</h4><p>No public projects recorded in ' + e(selectedBarangayName || 'this barangay') + ' yet.</p></div>';
+            updateStatsBar(projects);
             return;
         }
 
@@ -1383,25 +1388,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return renderProjectCard(project, project.originalIndex, isSingle);
         }).join('');
 
-        document.querySelectorAll('.dept-map-project-card').forEach(function(card) {
-            card.addEventListener('click', function() {
-                const index = parseInt(this.getAttribute('data-index'), 10);
-                selectProject(projectFeatures[index], index);
-            });
-        });
-
-        document.querySelectorAll('.show-all-projects-btn').forEach(function(button) {
-            button.addEventListener('click', function(event) {
-                event.stopPropagation();
-                showAllProjects();
-            });
-        });
+        attachCardListeners();
+        updateStatsBar(projects);
     }
 
     function showAllProjects() {
         selectedProjectIndex = null;
         const activeList = selectedBarangayName
-            ? projectFeatures.filter(p => p.properties.barangay === selectedBarangayName)
+            ? projectFeatures.filter(function(p) { return p.properties.barangay === selectedBarangayName; })
             : projectFeatures;
         renderProjectList(activeList);
         if (map && boundedArea && !selectedBarangayName) {
@@ -1413,8 +1407,8 @@ document.addEventListener('DOMContentLoaded', function() {
         highlightProject(index);
         renderProjectList([project]);
         if (map && project && project.geometry && project.geometry.coordinates) {
-            const coords = project.geometry.coordinates;
-            map.flyTo([coords[1], coords[0]], 15, { duration: 0.7, easeLinearity: 0.35 });
+            const c = project.geometry.coordinates;
+            map.flyTo([c[1], c[0]], 15, { duration: 0.7, easeLinearity: 0.35 });
         }
     }
 
@@ -1424,47 +1418,52 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedBarangayLayer = null;
         }
         selectedBarangayName = null;
-        if (allMarkers) {
+        if (map) {
+            Object.values(barangayMarkerGroups).forEach(function(g) { map.removeLayer(g); });
             map.addLayer(allMarkers);
         }
         selectedProjectIndex = null;
         renderProjectList(projectFeatures);
-        if (map && boundedArea) {
-            map.fitBounds(boundedArea, { padding: [24, 24] });
-        }
+        if (map && boundedArea) map.fitBounds(boundedArea, { padding: [24, 24] });
     }
 
     function selectBarangayOnMap(layer, name) {
-        if (selectedBarangayLayer) {
-            barangayLayer.resetStyle(selectedBarangayLayer);
-        }
+        if (selectedBarangayLayer) barangayLayer.resetStyle(selectedBarangayLayer);
         selectedBarangayLayer = layer;
         layer.setStyle({ fillOpacity: 0.75, weight: 3, color: '#162347' });
         selectedBarangayName = name;
         selectedProjectIndex = null;
         map.fitBounds(layer.getBounds(), { padding: [40, 40] });
-        if (allMarkers) {
-            map.removeLayer(allMarkers);
-        }
-        (markersByBarangay[name] || []).forEach(marker => marker.addTo(map));
-        const filtered = projectFeatures.filter(p => p.properties.barangay === name);
-        renderProjectList(filtered);
+
+        if (allMarkers) map.removeLayer(allMarkers);
+        Object.values(barangayMarkerGroups).forEach(function(g) { map.removeLayer(g); });
+        if (barangayMarkerGroups[name]) map.addLayer(barangayMarkerGroups[name]);
+
+        renderProjectList(projectFeatures.filter(function(p) { return p.properties.barangay === name; }));
     }
 
-    // Tile layer toggle
+    /* ============================================================
+       TILE LAYER TOGGLE
+       ============================================================ */
     function setTileLayer(dark) {
+        if (!map) return;
         if (currentTileLayer) map.removeLayer(currentTileLayer);
+        const btnLight = document.getElementById('btnLightTiles');
+        const btnDark = document.getElementById('btnDarkTiles');
+        const card = document.querySelector('.dept-map-card');
+
         if (dark) {
             if (!darkTiles) {
                 darkTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; OpenStreetMap &copy; CARTO',
-                    maxZoom: 19, subdomains: 'abcd'
+                    attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19, subdomains: 'abcd'
                 });
             }
             currentTileLayer = darkTiles;
-            document.getElementById('btnDarkTiles').classList.add('active');
-            document.getElementById('btnLightTiles').classList.remove('active');
-            document.querySelector('.dept-map-card').style.background = '#141321';
+            btnDark.classList.add('active');
+            btnDark.setAttribute('aria-pressed', 'true');
+            btnLight.classList.remove('active');
+            btnLight.setAttribute('aria-pressed', 'false');
+            if (card) card.style.background = '#141321';
         } else {
             if (!lightTiles) {
                 lightTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -1472,141 +1471,146 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
             currentTileLayer = lightTiles;
-            document.getElementById('btnLightTiles').classList.add('active');
-            document.getElementById('btnDarkTiles').classList.remove('active');
-            document.querySelector('.dept-map-card').style.background = '';
+            btnLight.classList.add('active');
+            btnLight.setAttribute('aria-pressed', 'true');
+            btnDark.classList.remove('active');
+            btnDark.setAttribute('aria-pressed', 'false');
+            if (card) card.style.background = '';
         }
         currentTileLayer.addTo(map);
     }
 
-    document.getElementById('btnLightTiles').addEventListener('click', () => setTileLayer(false));
-    document.getElementById('btnDarkTiles').addEventListener('click', () => setTileLayer(true));
+    document.getElementById('btnLightTiles').addEventListener('click', function() { setTileLayer(false); });
+    document.getElementById('btnDarkTiles').addEventListener('click', function() { setTileLayer(true); });
 
-    fetch('{{ asset('data/cabuyao-map.geojson') }}')
-        .then(response => response.json())
-        .then(function(geojson) {
-            const cabuyaoBounds = L.geoJSON(geojson).getBounds();
-            boundedArea = cabuyaoBounds.pad(0.02);
-            map = L.map('map', {
-                maxBounds: boundedArea,
-                maxBoundsViscosity: 1.0
-            });
+    /* ============================================================
+       LOADING STATE
+       ============================================================ */
+    projectList.innerHTML = '<div class="dept-map-loading"><div class="spinner"></div><p>Loading projects…</p></div>';
 
-            // Default to light tiles
-            lightTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: 'OpenStreetMap contributors', maxZoom: 19
-            });
-            currentTileLayer = lightTiles;
-            lightTiles.addTo(map);
+    /* ============================================================
+       DATA FETCHING (Parallel)
+       ============================================================ */
+    const geojsonUrl = '{{ asset('data/cabuyao-map.geojson') }}';
+    const projectsUrl = '{{ url('/api/projects/geojson') }}';
 
-            barangayLayer = L.geoJSON(geojson, {
-                style: (feature) => ({
+    Promise.all([
+        fetch(geojsonUrl).then(function(r) { if (!r.ok) throw new Error('Map fetch failed: ' + r.status); return r.json(); }),
+        fetch(projectsUrl).then(function(r) { if (!r.ok) throw new Error('Project fetch failed: ' + r.status); return r.json(); })
+    ])
+    .then(function(results) {
+        const geojson = results[0];
+        const projectData = results[1];
+        initMap(geojson, projectData);
+    })
+    .catch(function(error) {
+        console.error(error);
+        projectList.innerHTML = '<div class="dept-map-empty"><div class="dept-map-empty-icon" style="background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(239,68,68,0.08));color:#dc2626;"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg></div><h4>Unable to load data</h4><p>' + e(error.message || 'Please try refreshing the page.') + '</p></div>';
+    });
+
+    /* ============================================================
+       MAP INITIALIZATION
+       ============================================================ */
+    function initMap(geojson, projectData) {
+        const cabuyaoBounds = L.geoJSON(geojson).getBounds();
+        boundedArea = cabuyaoBounds.pad(0.02);
+        map = L.map('map', { maxBounds: boundedArea, maxBoundsViscosity: 1.0 });
+
+        lightTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'OpenStreetMap contributors', maxZoom: 19
+        });
+        currentTileLayer = lightTiles;
+        lightTiles.addTo(map);
+
+        barangayLayer = L.geoJSON(geojson, {
+            style: function(feature) {
+                return {
                     fillColor: barangayColor(feature.properties.name),
                     fillOpacity: 0.35,
                     color: '#ffffff',
                     weight: 1.5,
-                }),
-                onEachFeature: (feature, layer) => {
-                    const name = feature.properties.name;
-                    layer.bindTooltip(name, { sticky: true, className: 'barangay-tooltip' });
-                    layer.on({
-                        mouseover: (e) => {
-                            if (layer !== selectedBarangayLayer) e.target.setStyle({ fillOpacity: 0.6, weight: 2.5 });
-                        },
-                        mouseout: (e) => {
-                            if (layer !== selectedBarangayLayer) barangayLayer.resetStyle(e.target);
-                        },
-                        click: () => selectBarangayOnMap(layer, name),
-                    });
-                },
-            }).addTo(map);
+                };
+            },
+            onEachFeature: function(feature, layer) {
+                const name = feature.properties.name;
+                layer.bindTooltip(e(name), { sticky: true, className: 'barangay-tooltip' });
+                layer.on({
+                    mouseover: function(e) {
+                        if (layer !== selectedBarangayLayer) e.target.setStyle({ fillOpacity: 0.6, weight: 2.5 });
+                    },
+                    mouseout: function(e) {
+                        if (layer !== selectedBarangayLayer) barangayLayer.resetStyle(e.target);
+                    },
+                    click: function() { selectBarangayOnMap(layer, name); }
+                });
+            },
+        }).addTo(map);
 
-            allMarkers = L.featureGroup();
-            projectFeatures = [];
-            window.projectFeatures = projectFeatures;
+        allMarkers = L.featureGroup();
+        projectFeatures = [];
 
-            fetch('{{ url('/api/projects/geojson') }}')
-                .then(response => response.json())
-                .then(function(projectData) {
-                    if (!projectData || !projectData.features) {
-                        throw new Error('Invalid project data');
-                    }
+        if (projectData && projectData.features) {
+            projectData.features.forEach(function(project, index) {
+                const coords = project.geometry && project.geometry.coordinates;
+                if (!coords || coords.length < 2) return;
 
-                    projectData.features.forEach(function(project, index) {
-                        const coords = project.geometry && project.geometry.coordinates;
-                        if (!coords || coords.length < 2) return;
-
-                        const marker = L.circleMarker([coords[1], coords[0]], {
-                            radius: 14,
-                            fillColor: getStatusColor(project.properties.status),
-                            color: '#ffffff',
-                            weight: 3,
-                            opacity: 1,
-                            fillOpacity: 0.9
-                        });
-
-                        const popupHtml = `<div style="font-family:'Inter',sans-serif;min-width:180px;">
-                            <h4 style="margin:0 0 6px;font-size:0.9375rem;font-weight:800;color:#1e1b4b;font-family:'Plus Jakarta Sans',sans-serif;">${project.properties.name}</h4>
-                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
-                                <span style="width:8px;height:8px;border-radius:50%;background:${getStatusColor(project.properties.status)};display:inline-block;"></span>
-                                <span style="font-size:0.75rem;font-weight:700;color:#6b7280;">${project.properties.status || 'Unknown'}</span>
-                            </div>
-                            <div style="font-size:0.75rem;color:#6b7280;line-height:1.5;">
-                                <div style="margin-bottom:2px;"><strong>Budget:</strong> ${formatCurrency(project.properties.budget)}</div>
-                                <div><strong>Barangay:</strong> ${project.properties.barangay || 'N/A'}</div>
-                            </div>
-                        </div>`;
-                        marker.bindPopup(popupHtml, { borderRadius: 12, className: 'custom-project-popup' });
-                        marker.on('click', function(e) {
-                            L.DomEvent.stopPropagation(e);
-                            map.flyTo([coords[1], coords[0]], 16, { duration: 0.7, easeLinearity: 0.35 });
-                            selectProject(project, index);
-                        });
-
-                        allMarkers.addLayer(marker);
-                        projectFeatures.push(Object.assign({ originalIndex: index }, project));
-
-                        const barangayName = project.properties.barangay;
-                        if (barangayName) {
-                            if (!markersByBarangay[barangayName]) markersByBarangay[barangayName] = [];
-                            markersByBarangay[barangayName].push(marker);
-                        }
-                    });
-
-                    map.on('click', function() {
-                        if (selectedProjectIndex !== null && !selectedBarangayName) {
-                            showAllProjects();
-                        }
-                    });
-
-                    allMarkers.addTo(map);
-                    renderProjectList(projectFeatures);
-                    updateStatsBar();
-                })
-                .catch(function(error) {
-                    console.error(error);
-                    projectList.innerHTML = `
-                        <div class="dept-map-empty">
-                            <div class="dept-map-empty-icon" style="background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(239,68,68,0.08));color:#dc2626;">
-                                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
-                            </div>
-                            <h4>Unable to load projects</h4>
-                            <p>Please try refreshing the page.</p>
-                        </div>
-                    `;
+                const marker = L.circleMarker([coords[1], coords[0]], {
+                    radius: 14,
+                    fillColor: getStatusColor(project.properties.status),
+                    color: '#ffffff',
+                    weight: 3,
+                    opacity: 1,
+                    fillOpacity: 0.9
                 });
 
-            map.fitBounds(boundedArea, { padding: [24, 24] });
-            map.setMaxBounds(boundedArea);
-            map.setMinZoom(map.getZoom());
-            setTimeout(() => map.invalidateSize(), 100);
+                const popupHtml = '<div style="font-family:\'Inter\',sans-serif;min-width:180px;">' +
+                    '<h4 style="margin:0 0 6px;font-size:0.9375rem;font-weight:800;color:#1e1b4b;font-family:\'Plus Jakarta Sans\',sans-serif;">' + e(project.properties.name) + '</h4>' +
+                    '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">' +
+                        '<span style="width:8px;height:8px;border-radius:50%;background:' + e(getStatusColor(project.properties.status)) + ';display:inline-block;"></span>' +
+                        '<span style="font-size:0.75rem;font-weight:700;color:#6b7280;">' + e(project.properties.status || 'Unknown') + '</span>' +
+                    '</div>' +
+                    '<div style="font-size:0.75rem;color:#6b7280;line-height:1.5;">' +
+                        '<div style="margin-bottom:2px;"><strong>Budget:</strong> ' + formatCurrency(project.properties.budget) + '</div>' +
+                        '<div><strong>Barangay:</strong> ' + e(project.properties.barangay || 'N/A') + '</div>' +
+                    '</div>' +
+                '</div>';
 
-            window.addEventListener('resize', function() {
-                if (map) setTimeout(() => map.invalidateSize(), 100);
+                marker.bindPopup(popupHtml, { borderRadius: 12, className: 'custom-project-popup' });
+                marker.on('click', function(ev) {
+                    L.DomEvent.stopPropagation(ev);
+                    map.flyTo([coords[1], coords[0]], 16, { duration: 0.7, easeLinearity: 0.35 });
+                    selectProject(project, index);
+                });
+
+                allMarkers.addLayer(marker);
+                projectFeatures.push(Object.assign({ originalIndex: index }, project));
+
+                const barangayName = project.properties.barangay;
+                if (barangayName) {
+                    if (!barangayMarkerGroups[barangayName]) barangayMarkerGroups[barangayName] = L.layerGroup();
+                    barangayMarkerGroups[barangayName].addLayer(marker);
+                }
             });
-        })
-        .catch(console.error);
+        }
+
+        map.on('click', function() {
+            if (selectedProjectIndex !== null) {
+                showAllProjects();
+            }
+        });
+
+        allMarkers.addTo(map);
+        renderProjectList(projectFeatures);
+
+        map.fitBounds(boundedArea, { padding: [24, 24] });
+        map.setMaxBounds(boundedArea);
+        map.setMinZoom(map.getZoom());
+        setTimeout(function() { map.invalidateSize(); }, 100);
+
+        window.addEventListener('resize', function() {
+            if (map) setTimeout(function() { map.invalidateSize(); }, 100);
+        });
+    }
 });
 </script>
-
 @endsection
