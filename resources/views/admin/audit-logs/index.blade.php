@@ -198,7 +198,7 @@ html.dark-mode .admin-audit-logs .admin-audit-table-wrap {
                 <select name="action" id="action" class="admin-audit-control w-full rounded-lg border px-3 py-2 text-sm">
                     <option value="">All Actions</option>
                     @foreach ($actions as $action)
-                        <option value="{{ $action }}" {{ request('action') == $action ? 'selected' : '' }}>{{ ucfirst($action) }}</option>
+                        <option value="{{ $action }}" {{ request('action') == $action ? 'selected' : '' }}>{{ \Illuminate\Support\Str::headline($action) }}</option>
                     @endforeach
                 </select>
             </div>
@@ -235,10 +235,10 @@ html.dark-mode .admin-audit-logs .admin-audit-table-wrap {
                                 <p class="text-xs font-semibold text-slate-900">{{ $log->created_at?->format('M d, Y h:i A') }}</p>
                                 <p class="text-xs text-slate-500">{{ $log->user->username ?? 'Unknown' }}</p>
                             </div>
-                            <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ ucfirst($log->action) }}</span>
+                            <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ \Illuminate\Support\Str::headline($log->action) }}</span>
                         </div>
                         <div class="mt-1 text-xs text-slate-600 space-y-1">
-                            <p><span class="font-semibold text-slate-700">Table:</span> {{ $log->table_name }}</p>
+                            <p><span class="font-semibold text-slate-700">Table:</span> {{ \Illuminate\Support\Str::headline($log->table_name) }}</p>
                             <p><span class="font-semibold text-slate-700">Record ID:</span> {{ $log->record_id }}</p>
                         </div>
                         <details class="admin-audit-details mt-2 rounded-2xl p-2 text-[11px]">
@@ -329,8 +329,8 @@ html.dark-mode .admin-audit-logs .admin-audit-table-wrap {
                                 <td class="break-words py-1.5 px-2 text-black">{{ $log->user->username ?? 'Unknown' }}</td>
                                 <td class="whitespace-nowrap py-1.5 px-2 text-[11px] text-black">{{ $log->ip_address ?: 'N/A' }}</td>
                                 <td class="break-words py-1.5 px-2 text-black">{{ $log->full_name ?: ($log->user->full_name ?? 'Unknown') }}</td>
-                                <td class="break-words py-1.5 px-2 text-black capitalize">{{ $log->action }}</td>
-                                <td class="break-words py-1.5 px-2 text-black">{{ $log->table_name }}</td>
+                                <td class="break-words py-1.5 px-2 text-black">{{ \Illuminate\Support\Str::headline($log->action) }}</td>
+                                <td class="break-words py-1.5 px-2 text-black">{{ \Illuminate\Support\Str::headline($log->table_name) }}</td>
                                 <td class="break-words py-1.5 px-2 text-black">{{ $log->record_id }}</td>
                                 <td class="py-1.5 px-2">
                                     <details>

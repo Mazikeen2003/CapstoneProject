@@ -1015,7 +1015,7 @@
                         <div class="dept-field">
                             <label class="dept-field-label">{{ in_array($project->current_status, ['Award of contract', 'Implementation', 'Completed'], true) ? 'Approved Budget' : 'Proposed Budget' }} <span class="required">*</span></label>
                             <div class="dept-input-wrap has-icon">
-                                <input type="number" step="0.01" id="approved_budget" name="approved_budget" value="{{ old('approved_budget', $project->approved_budget) }}" @if(!($canEditCriticalFields ?? false)) disabled @endif required>
+                                <input type="text" inputmode="decimal" autocomplete="off" id="approved_budget" name="approved_budget" value="{{ old('approved_budget', $project->approved_budget) }}" @if(!($canEditCriticalFields ?? false)) disabled @endif required>
                                 <svg class="dept-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </div>
                             <p class="dept-locked-hint">
@@ -1030,7 +1030,7 @@
                         <div class="dept-field">
                             <label class="dept-field-label">Actual Budget Spent</label>
                             <div class="dept-input-wrap has-icon">
-                                <input type="number" step="0.01" id="actual_budget" name="actual_budget" value="{{ old('actual_budget', $project->actual_budget) }}" @if(!($canEditCriticalFields ?? false)) disabled @endif>
+                                <input type="text" inputmode="decimal" autocomplete="off" id="actual_budget" name="actual_budget" value="{{ old('actual_budget', $project->actual_budget) }}" @if(!($canEditCriticalFields ?? false)) disabled @endif>
                                 <svg class="dept-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.582 1.453-1.318V5.253a1.875 1.875 0 00-1.453-1.318A60.062 60.062 0 002.25 1.575v17.175zM6.75 9.75l4.5 4.5 7.5-7.5"/></svg>
                             </div>
                             <p class="dept-locked-hint">
@@ -1158,6 +1158,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const projectTypeHidden = document.getElementById('project_type');
     const projectTypeOtherWrapper = document.getElementById('project_type_other_wrapper');
     const projectTypeOtherInput = document.getElementById('project_type_other');
+    const projectForm = document.querySelector('form[action="{{ route('department.projects.update', $project->project_id) }}"]');
+    const budgetInputs = [
+        document.getElementById('approved_budget'),
+        document.getElementById('actual_budget'),
+    ].filter(Boolean);
+
+    function formatBudgetInput(input) {
+        let rawValue = input.value.replace(/,/g, '').replace(/[^0-9.]/g, '');
+        const decimalIndex = rawValue.indexOf('.');
+        if (decimalIndex !== -1) {
+            rawValue = rawValue.slice(0, decimalIndex + 1) + rawValue.slice(decimalIndex + 1).replace(/\./g, '').slice(0, 2);
+        }
+
+        const [whole = '', decimal] = rawValue.split('.');
+        const formattedWhole = whole ? Number(whole).toLocaleString('en-US') : '';
+        input.value = decimalIndex !== -1 ? formattedWhole + '.' + (decimal ?? '') : formattedWhole;
+    }
+
+    budgetInputs.forEach(function(input) {
+        input.addEventListener('input', function() { formatBudgetInput(input); });
+        formatBudgetInput(input);
+    });
+    projectForm?.addEventListener('submit', function() {
+        budgetInputs.forEach(function(input) {
+            input.value = input.value.replace(/,/g, '');
+        });
+    });
 
     function syncProjectType() {
         if (projectTypeSelect.value === 'Others') {

@@ -23,7 +23,7 @@ class DashboardController
         ];
 
         // Get recent projects with relations already loaded
-        $recentProjects = $projects->sortByDesc('created_at')->take(5);
+        $recentProjects = $projects->sortByDesc('created_at')->take(4);
 
         return view('department.dashboard', compact('stats', 'recentProjects'));
     }

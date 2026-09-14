@@ -17,6 +17,29 @@
             backdrop-filter: blur(16px);
             background-color: rgba(248, 249, 255, 0.8);
         }
+        html.dark-mode,
+        html.dark-mode body.public-layout {
+            background: #0f172a !important;
+        }
+        html.dark-mode body.public-layout {
+            color: #e2e8f0;
+        }
+        html.dark-mode .glass-nav {
+            background-color: rgba(15, 23, 42, 0.92);
+            border-color: #334155 !important;
+        }
+        html.dark-mode .glass-nav .text-slate-900 { color: #f8fafc !important; }
+        html.dark-mode .glass-nav .text-slate-500,
+        html.dark-mode .glass-nav .text-slate-600 { color: #94a3b8 !important; }
+        html.dark-mode .glass-nav .text-emerald-700 { color: #34d399 !important; }
+        html.dark-mode .glass-nav .bg-white,
+        html.dark-mode .glass-nav .border-slate-200 { background-color: #0f172a !important; border-color: #334155 !important; }
+        html.dark-mode .public-layout > footer {
+            background: #111827 !important;
+            border-color: #334155 !important;
+        }
+        html.dark-mode .public-layout > footer .text-slate-900 { color: #f8fafc !important; }
+        html.dark-mode .public-layout > footer .text-slate-500 { color: #94a3b8 !important; }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
@@ -650,7 +673,7 @@
             new Chart(document.getElementById('barangayChart'), {
                 type: 'doughnut',
                 data: { labels: @json($barangayLabels), datasets: [{ data: @json($barangayValues), backgroundColor: darkMode ? ['#60a5fa', '#fbbf24', '#34d399', '#93c5fd', '#c4b5fd', '#fb923c', '#f472b6', '#2dd4bf', '#94a3b8', '#fcd34d'] : ['#1e1b4b', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#f97316', '#ec4899', '#14b8a6', '#64748b', '#eab308'], hoverOffset: 20, borderWidth: 2, borderColor: darkMode ? '#1e293b' : '#ffffff' }] },
-                options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { color: chartTextColor, padding: 16, usePointStyle: true, pointStyle: 'circle', generateLabels: chart => { const labels = Chart.defaults.plugins.legend.labels.generateLabels(chart); return labels.map((item, index) => ({ ...item, text: `${chart.data.labels[index]} — ${barangayProjectCounts[index] || 0} project(s)` })); } } }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)} · ${barangayProjectCounts[context.dataIndex] || 0} project(s)` } } } }
+                options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { color: chartTextColor, padding: 16, usePointStyle: true, pointStyle: 'circle', generateLabels: chart => { const labels = Chart.defaults.plugins.legend.labels.generateLabels(chart); return labels.map((item, index) => ({ ...item, text: `${chart.data.labels[index]} — ${peso(chart.data.datasets[0].data[index] || 0)}` })); } } }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)} · ${barangayProjectCounts[context.dataIndex] || 0} project(s)` } } } }
             });
         @endif
     });

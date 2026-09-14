@@ -861,16 +861,23 @@
                                     <td>
                                         <span class="dept-proj-barangay">
                                             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-                                            {{ $project->barangay?->barangay_name ?? 'N/A' }}
+                                            {{ $project->barangay?->barangay_name ?? 'Citywide' }}
                                         </span>
                                     </td>
                                     <td class="dept-proj-budget">₱{{ number_format($project->approved_budget ?? 0, 2) }}</td>
                                     <td style="text-align:right">
-                                        <div class="dept-proj-actions">
-                                            <a href="{{ route('department.projects.show', $project->project_id) }}" class="dept-proj-action dept-proj-action-view">View</a>
-                                            <a href="{{ route('department.projects.edit', $project->project_id) }}" class="dept-proj-action dept-proj-action-edit">Edit</a>
-                                        </div>
-                                    </td>
+                                    <div class="dept-proj-actions">
+                                        <a href="{{ route('department.projects.show', $project->project_id) }}" class="dept-proj-action dept-proj-action-view">View</a>
+                                        <a href="{{ route('department.projects.edit', $project->project_id) }}" class="dept-proj-action dept-proj-action-edit">Edit</a>
+                                        <button type="button" class="dept-proj-action dept-proj-action-delete delete-trigger"
+                                            data-name="{{ $project->project_name }}"
+                                            data-code="{{ $project->project_code }}"
+                                            data-action="{{ route('department.projects.destroy', $project->project_id) }}"
+                                            data-token="{{ csrf_token() }}">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -923,7 +930,7 @@
                         <div class="dept-proj-mmeta">
                             <div class="dept-proj-mmeta-item">
                                 <span class="dept-proj-mlabel">Barangay</span>
-                                <span class="dept-proj-mvalue">{{ $project->barangay?->barangay_name ?? 'N/A' }}</span>
+                                <span class="dept-proj-mvalue">{{ $project->barangay?->barangay_name ?? 'Citywide' }}</span>
                             </div>
                             <div class="dept-proj-mmeta-item">
                                 <span class="dept-proj-mlabel">Budget</span>

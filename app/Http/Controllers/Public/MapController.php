@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Models\Barangay;
 use App\Models\Project;
 use App\Models\Scopes\RoleScopedScope;
+use App\Services\CacheService;
 use App\Services\PortalVisitService;
 
 class MapController
@@ -34,16 +35,22 @@ class MapController
         // Include every project status; eager-load barangay to avoid N+1.
         $projects = Project::withoutRoleScope()
             ->with(['barangay', 'latestUpdate'])
-            ->whereNotNull('latitude')
-            ->whereNotNull('longitude')
             ->get();
 
         $features = $projects->map(function ($project) {
+            $isCitywide = $project->barangay_id === null;
+            $latitude = $isCitywide ? CacheService::CITYWIDE_LATITUDE : $project->latitude;
+            $longitude = $isCitywide ? CacheService::CITYWIDE_LONGITUDE : $project->longitude;
+
+            if ($latitude === null || $longitude === null) {
+                return null;
+            }
+
             return [
                 'type'       => 'Feature',
                 'geometry'   => [
                     'type'        => 'Point',
-                    'coordinates' => [$project->longitude, $project->latitude],
+                    'coordinates' => [$longitude, $latitude],
                 ],
                 'properties' => [
                     'id'       => $project->project_id,
@@ -51,6 +58,7 @@ class MapController
                     'status'   => $project->current_status,
                     'type'     => $project->project_type,
                     'barangay' => $project->barangay?->barangay_name ?? 'Citywide',
+                    'is_citywide' => $isCitywide,
                     'image'    => $project->project_image
                         ? asset('storage/' . $project->project_image)
                         : null,
@@ -62,7 +70,7 @@ class MapController
                     'actual_budget'      => $project->actual_budget ?? 0,
                 ],
             ];
-        });
+        })->filter()->values();
 
         return response()->json([
             'type'     => 'FeatureCollection',
