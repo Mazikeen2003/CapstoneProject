@@ -66,6 +66,7 @@
                                         <path fill-rule="evenodd" d="M5 8V6a5 5 0 1110 0v2h1a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2v-6a2 2 0 012-2h1zm2-2a3 3 0 116 0v2H7V6z" clip-rule="evenodd" />
                                     </svg>
                                     <input id="password" name="password" type="password" required minlength="12" autocomplete="new-password" placeholder="Create a strong password" class="w-full bg-transparent border-none text-sm text-slate-900 outline-none focus:ring-0 placeholder:text-slate-400">
+                                    <button type="button" data-password-toggle="password" class="shrink-0 text-sm font-semibold text-slate-500 transition hover:text-slate-800" aria-label="Show password">Show</button>
                                 </div>
                             </div>
                         </div>
@@ -80,6 +81,7 @@
                                         <path fill-rule="evenodd" d="M5 8V6a5 5 0 1110 0v2h1a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2v-6a2 2 0 012-2h1zm2-2a3 3 0 116 0v2H7V6z" clip-rule="evenodd" />
                                     </svg>
                                     <input id="password_confirmation" name="password_confirmation" type="password" required minlength="12" autocomplete="new-password" placeholder="Re-enter your password" class="w-full bg-transparent border-none text-sm text-slate-900 outline-none focus:ring-0 placeholder:text-slate-400">
+                                    <button type="button" data-password-toggle="password_confirmation" class="shrink-0 text-sm font-semibold text-slate-500 transition hover:text-slate-800" aria-label="Show password">Show</button>
                                 </div>
                             </div>
                         </div>
@@ -99,6 +101,18 @@
     </main>
 
     <script>
+        document.querySelectorAll('[data-password-toggle]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const input = document.getElementById(this.dataset.passwordToggle);
+                if (!input) return;
+
+                const isHidden = input.type === 'password';
+                input.type = isHidden ? 'text' : 'password';
+                this.textContent = isHidden ? 'Hide' : 'Show';
+                this.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+            });
+        });
+
         document.querySelector('form')?.addEventListener('submit', function () {
             const button = this.querySelector('button[type="submit"]');
             if (!button) return;
