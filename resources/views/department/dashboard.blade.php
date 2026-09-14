@@ -132,8 +132,10 @@
     .dept-stat-footer { margin-top: 12px; font-size: 0.75rem; color: var(--dept-muted); }
 
     /* Main Grid */
-    .dept-main { display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px; }
-    @media (min-width: 1024px) { .dept-main { grid-template-columns: 1.2fr 0.8fr; } }
+    .dept-main { display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px; align-items: start; }
+    @media (min-width: 1280px) {
+        .dept-main { grid-template-columns: minmax(0, 1.2fr) minmax(380px, 0.8fr); }
+    }
 
     /* Card */
     .dept-card { background: var(--dept-surface); border-radius: 12px; border: 1px solid var(--dept-line); box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1); overflow: hidden; }
@@ -244,7 +246,7 @@
     .dept-project {
         display: flex; align-items: flex-start; gap: 14px;
         padding: 16px; border-radius: 8px; border: 1px solid var(--dept-line);
-        background: #fafaf9; transition: all 0.2s ease;
+        background: #fafaf9; transition: all 0.2s ease; min-width: 0;
     }
     .dept-project:hover { background: #ffffff; border-color: rgba(0,0,0,0.12); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); transform: translateY(-1px); }
     .dept-project-avatar {
@@ -266,6 +268,14 @@
         color: #4b5563; transition: all 0.2s ease; flex-shrink: 0;
     }
     .dept-project-action:hover { background: var(--dept-blue); color: white; border-color: var(--dept-blue); }
+    @media (max-width: 639px) {
+        .dept-card-header { padding: 16px; gap: 12px; }
+        .dept-card-body { padding: 16px; }
+        #department-map { height: 320px; }
+        .dept-project { padding: 14px; gap: 10px; }
+        .dept-project-meta { gap: 8px; }
+        .dept-project-meta-item { max-width: 100%; }
+    }
 
     /* Empty State */
     .dept-empty { text-align: center; padding: 48px 24px; }
@@ -488,7 +498,7 @@
                                         <span class="dept-status {{ $statusClass }}">{{ $project->current_status }}</span>
                                         <span class="dept-project-meta-item">
                                             <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-                                            {{ $project->barangay?->barangay_name ?? 'N/A' }}
+                                            {{ $project->barangay?->barangay_name ?? 'Citywide' }}
                                         </span>
                                         <span class="dept-project-meta-item">
                                             <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
