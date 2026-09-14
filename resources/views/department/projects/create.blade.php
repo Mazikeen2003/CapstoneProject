@@ -414,6 +414,45 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
         color: var(--dc-muted);
     }
     .dept-upload-zone input[type="file"] { display: none; }
+    .dept-upload-preview { display: none; }
+    .dept-upload-preview.is-visible { display: block; }
+    .dept-upload-preview img {
+        display: block;
+        width: 100%;
+        max-height: 220px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid var(--dc-line);
+    }
+    .dept-upload-preview-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 12px;
+        text-align: left;
+    }
+    .dept-upload-preview-name {
+        min-width: 0;
+        overflow: hidden;
+        color: var(--dc-ink-secondary);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .dept-upload-replace {
+        flex-shrink: 0;
+        padding: 7px 10px;
+        border: 1px solid var(--dc-line-strong);
+        border-radius: 8px;
+        background: var(--dc-raised);
+        color: var(--dc-ink-secondary);
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
 
     /* Actions */
     .dept-create-actions {
@@ -672,7 +711,8 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
                         <div class="dept-field">
                             <label class="dept-field-label">Proposed Budget</label>
                             <div class="dept-input-wrap has-icon">
-                                <input type="number" step="0.01" name="approved_budget" value="{{ old('approved_budget') }}" placeholder="0.00">
+                                <input id="approved_budget_display" type="text" inputmode="decimal" autocomplete="off" value="{{ old('approved_budget') }}" placeholder="0.00" aria-label="Proposed Budget">
+                                <input id="approved_budget" type="hidden" name="approved_budget" value="{{ old('approved_budget') }}">
                                 <svg class="dept-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </div>
                         </div>
@@ -780,11 +820,20 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
                 </div>
                 <div class="dept-create-card-body">
                     <div class="dept-upload-zone" onclick="document.getElementById('projectImageInput').click()">
-                        <div class="dept-upload-icon">
-                            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                        <div id="projectImagePrompt">
+                            <div class="dept-upload-icon">
+                                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                            </div>
+                            <h4>Click to upload an image</h4>
+                            <p>PNG, JPG, or WEBP up to 5MB</p>
                         </div>
-                        <h4>Click to upload an image</h4>
-                        <p>PNG, JPG, or WEBP up to 5MB</p>
+                        <div id="projectImagePreview" class="dept-upload-preview">
+                            <img id="projectImagePreviewImage" alt="Selected project image preview">
+                            <div class="dept-upload-preview-meta">
+                                <span id="projectImagePreviewName" class="dept-upload-preview-name"></span>
+                                <button id="projectImageReplace" class="dept-upload-replace" type="button">Replace</button>
+                            </div>
+                        </div>
                         <input type="file" id="projectImageInput" name="project_image" accept="image/*">
                     </div>
                 </div>
@@ -803,6 +852,49 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
         const submitButton = document.getElementById('createProjectButton');
         const submitSpinner = document.getElementById('createProjectSpinner');
         const submitLabel = document.getElementById('createProjectLabel');
+        const budgetDisplayInput = document.getElementById('approved_budget_display');
+        const budgetInput = document.getElementById('approved_budget');
+        const projectImageInput = document.getElementById('projectImageInput');
+        const projectImagePrompt = document.getElementById('projectImagePrompt');
+        const projectImagePreview = document.getElementById('projectImagePreview');
+        const projectImagePreviewImage = document.getElementById('projectImagePreviewImage');
+        const projectImagePreviewName = document.getElementById('projectImagePreviewName');
+        const projectImageReplace = document.getElementById('projectImageReplace');
+        let projectImageObjectUrl = null;
+
+        function formatBudgetInput() {
+            if (!budgetDisplayInput || !budgetInput) return;
+
+            let rawValue = budgetDisplayInput.value.replace(/,/g, '').replace(/[^0-9.]/g, '');
+            const decimalIndex = rawValue.indexOf('.');
+            if (decimalIndex !== -1) {
+                rawValue = rawValue.slice(0, decimalIndex + 1) + rawValue.slice(decimalIndex + 1).replace(/\./g, '').slice(0, 2);
+            }
+
+            const [whole = '', decimal] = rawValue.split('.');
+            const formattedWhole = whole ? Number(whole).toLocaleString('en-US') : '';
+            budgetDisplayInput.value = decimalIndex !== -1 ? formattedWhole + '.' + (decimal ?? '') : formattedWhole;
+            budgetInput.value = rawValue;
+        }
+
+        budgetDisplayInput?.addEventListener('input', formatBudgetInput);
+        formatBudgetInput();
+
+        projectImageInput?.addEventListener('change', function() {
+            const [file] = this.files;
+            if (!file || !file.type.startsWith('image/')) return;
+
+            if (projectImageObjectUrl) URL.revokeObjectURL(projectImageObjectUrl);
+            projectImageObjectUrl = URL.createObjectURL(file);
+            projectImagePreviewImage.src = projectImageObjectUrl;
+            projectImagePreviewName.textContent = file.name;
+            projectImagePrompt.hidden = true;
+            projectImagePreview.classList.add('is-visible');
+        });
+        projectImageReplace?.addEventListener('click', function(event) {
+            event.stopPropagation();
+            projectImageInput?.click();
+        });
 
         if (form && submitButton) {
             form.addEventListener('submit', function() {
