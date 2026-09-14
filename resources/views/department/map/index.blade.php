@@ -975,16 +975,25 @@ html.dark-mode .dept-map-loading-icon {
     margin: 12px 16px;
     font-family: "Inter", sans-serif;
 }
+.custom-project-popup .project-popup-title { margin: 0 0 6px; font-family: "Plus Jakarta Sans", sans-serif; font-size: 0.9375rem; font-weight: 800; color: #1e293b; }
+.custom-project-popup .project-popup-status { font-size: 0.75rem; font-weight: 700; color: #64748b; }
+.custom-project-popup .project-popup-details { font-size: 0.75rem; color: #64748b; line-height: 1.5; }
 .dark .leaflet-container,
 html.dark-mode .leaflet-container { background: #0f0e1a; }
 .dark .leaflet-popup-content-wrapper,
 html.dark-mode .leaflet-popup-content-wrapper,
 .dark .leaflet-popup-tip,
 html.dark-mode .leaflet-popup-tip {
-    background: #1a1929;
+    background: #1e293b;
     color: #f8fafc;
     box-shadow: 0 8px 24px rgba(0,0,0,0.5);
 }
+.dark .custom-project-popup .project-popup-title,
+html.dark-mode .custom-project-popup .project-popup-title { color: #f8fafc; }
+.dark .custom-project-popup .project-popup-status,
+html.dark-mode .custom-project-popup .project-popup-status,
+.dark .custom-project-popup .project-popup-details,
+html.dark-mode .custom-project-popup .project-popup-details { color: #94a3b8; }
 .dark .leaflet-container a.leaflet-popup-close-button,
 html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1; }
 
@@ -1572,14 +1581,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 const popupHtml = '<div style="font-family:\'Inter\',sans-serif;min-width:180px;">' +
-                    '<h4 style="margin:0 0 6px;font-size:0.9375rem;font-weight:800;color:#1e1b4b;font-family:\'Plus Jakarta Sans\',sans-serif;">' + e(project.properties.name) + '</h4>' +
+                    '<h4 class="project-popup-title">' + e(project.properties.name) + '</h4>' +
                     '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">' +
                         '<span style="width:8px;height:8px;border-radius:50%;background:' + e(getStatusColor(project.properties.status)) + ';display:inline-block;"></span>' +
-                        '<span style="font-size:0.75rem;font-weight:700;color:#6b7280;">' + e(project.properties.status || 'Unknown') + '</span>' +
+                        '<span class="project-popup-status">' + e(project.properties.status || 'Unknown') + '</span>' +
                     '</div>' +
-                    '<div style="font-size:0.75rem;color:#6b7280;line-height:1.5;">' +
+                    '<div class="project-popup-details">' +
                         '<div style="margin-bottom:2px;"><strong>Budget:</strong> ' + formatCurrency(project.properties.budget) + '</div>' +
-                        '<div><strong>Barangay:</strong> ' + e(project.properties.barangay || 'N/A') + '</div>' +
+                        '<div><strong>Barangay:</strong> ' + e(project.properties.barangay || 'Citywide') + '</div>' +
                     '</div>' +
                 '</div>';
 
