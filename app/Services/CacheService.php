@@ -9,7 +9,10 @@ use Illuminate\Support\Facades\Storage;
 class CacheService
 {
     const CACHE_TTL = 3600; // 1 hour
-    const GEOJSON_CACHE_VERSION = 'v2';
+    const GEOJSON_CACHE_VERSION = 'v3';
+    /** Single representative location for projects that cover all of Cabuyao. */
+    public const CITYWIDE_LATITUDE = 14.2753;
+    public const CITYWIDE_LONGITUDE = 121.1248;
 
     /**
      * Get dashboard stats with caching.
@@ -107,8 +110,9 @@ class CacheService
         $projects = $query->with(['barangay', 'latestUpdate'])->get();
 
         $features = $projects->map(function ($project) use ($user) {
-                $latitude = $project->latitude;
-                $longitude = $project->longitude;
+                $isCitywide = $project->barangay_id === null;
+                $latitude = $isCitywide ? self::CITYWIDE_LATITUDE : $project->latitude;
+                $longitude = $isCitywide ? self::CITYWIDE_LONGITUDE : $project->longitude;
 
                 if (empty($latitude) || empty($longitude)) {
                     $latitude = $project->barangay?->latitude;
@@ -143,6 +147,7 @@ class CacheService
                         'code'              => $project->project_code,
                         'status'            => $project->current_status,
                         'barangay'          => $project->barangay?->barangay_name,
+                        'is_citywide'       => $isCitywide,
                         'budget'            => $project->approved_budget,
                         'actual_budget'     => $project->actual_budget ?? 0,
                         'description'       => $project->public_description ?: 'No description available.',
