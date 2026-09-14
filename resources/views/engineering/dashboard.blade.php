@@ -698,7 +698,7 @@ html.dark-mode .ed-progress-bg,
                                         <span class="ed-status {{ $statusClass }}">{{ $project->current_status }}</span>
                                         <span class="ed-project-meta-item">
                                             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-                                            {{ $project->barangay?->barangay_name ?? 'N/A' }}
+                                            {{ $project->barangay?->barangay_name ?? 'Citywide' }}
                                         </span>
                                         <span class="ed-project-meta-item">₱{{ number_format($project->approved_budget ?? 0) }}</span>
                                     </div>
@@ -714,9 +714,6 @@ html.dark-mode .ed-progress-bg,
                             </div>
                         @endforeach
                     </div>
-                    @if ($recentProjects->hasPages())
-                        <div class="ed-pagination">{{ $recentProjects->links() }}</div>
-                    @endif
                 @endif
             </div>
         </div>
