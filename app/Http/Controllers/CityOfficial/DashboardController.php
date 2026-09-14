@@ -21,7 +21,7 @@ class DashboardController
             'budget_used'      => $projects->sum('actual_budget') ?? 0,
         ];
 
-        $recentProjects = $projects->sortByDesc('created_at')->take(5);
+        $recentProjects = $projects->sortByDesc('created_at')->take(4);
 
         return view('city-official.dashboard', compact('stats', 'recentProjects'));
     }
