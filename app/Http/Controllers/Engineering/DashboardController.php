@@ -21,11 +21,7 @@ class DashboardController extends Controller
             'budget_used' => $projects->sum('actual_budget') ?? 0,
         ];
 
-        $recentProjects = Project::withoutRoleScope()
-            ->withBasicRelations()
-            ->with('latestUpdate')
-            ->latest('created_at')
-            ->paginate(10, ['*'], 'recent_page');
+        $recentProjects = $projects->sortByDesc('created_at')->take(4);
 
         return view('engineering.dashboard', compact('stats', 'recentProjects'));
     }
