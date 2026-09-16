@@ -22,9 +22,16 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('auth.login');
+        $email = (string) $request->old('email', '');
+        $lockoutSeconds = 0;
+
+        if ($email !== '' && RateLimiter::tooManyAttempts($this->loginThrottleKeyForEmail($email, $request), 5)) {
+            $lockoutSeconds = RateLimiter::availableIn($this->loginThrottleKeyForEmail($email, $request));
+        }
+
+        return view('auth.login', compact('lockoutSeconds'));
     }
 
     /**
@@ -50,7 +57,7 @@ class AuthenticatedSessionController extends Controller
             } catch (\Throwable $e) {
                 // Do not let logging errors affect authentication flow.
             }
-            RateLimiter::hit($this->loginThrottleKey($request));
+            $this->recordFailedLoginAttempt($request);
 
             throw ValidationException::withMessages([
                 'email' => 'The provided credentials do not match our records.',
@@ -58,7 +65,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         if ($user->is_disabled) {
-            RateLimiter::hit($this->loginThrottleKey($request));
+            $this->recordFailedLoginAttempt($request);
 
             throw ValidationException::withMessages([
                 'email' => 'This account has been disabled. Please contact the administrator.',
@@ -72,7 +79,7 @@ class AuthenticatedSessionController extends Controller
             } catch (\Throwable $e) {
                 // Do not let logging errors affect authentication flow.
             }
-            RateLimiter::hit($this->loginThrottleKey($request));
+            $this->recordFailedLoginAttempt($request);
 
             throw ValidationException::withMessages([
                 'email' => 'The provided credentials do not match our records.',
@@ -127,9 +134,32 @@ class AuthenticatedSessionController extends Controller
         ]);
     }
 
+    /** Record a failure and lock the form as soon as the fifth attempt is reached. */
+    protected function recordFailedLoginAttempt(Request $request): void
+    {
+        $key = $this->loginThrottleKey($request);
+        RateLimiter::hit($key);
+
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.throttle', [
+                    'seconds' => $seconds,
+                    'minutes' => ceil($seconds / 60),
+                ]),
+            ]);
+        }
+    }
+
     protected function loginThrottleKey(Request $request): string
     {
-        return Str::lower($request->input('email', '')) . '|' . $request->ip();
+        return $this->loginThrottleKeyForEmail((string) $request->input('email', ''), $request);
+    }
+
+    protected function loginThrottleKeyForEmail(string $email, Request $request): string
+    {
+        return Str::lower($email) . '|' . $request->ip();
     }
     /**
      * Destroy an authenticated session.
