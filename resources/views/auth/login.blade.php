@@ -29,7 +29,7 @@
                         <x-auth-session-status class="mb-4" :status="session('status')" />
                         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-                        <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                        <form method="POST" action="{{ route('login') }}" class="space-y-6" id="loginForm" data-lockout-seconds="{{ $lockoutSeconds ?? 0 }}">
                             @csrf
 
                             <!-- Email -->
@@ -43,7 +43,7 @@
                                             <path d="M10 4a4 4 0 100 8 4 4 0 000-8z" />
                                             <path fill-rule="evenodd" d="M2 16.5A6.5 6.5 0 0110 10a6.5 6.5 0 018 6.5v.5H2v-.5z" clip-rule="evenodd" />
                                         </svg>
-                                        <input type="email" name="email" required autofocus
+                                        <input type="email" name="email" value="{{ old('email') }}" required autofocus
                                             placeholder="Enter your email"
                                             class="w-full bg-transparent text-sm border-none outline-none focus:ring-0" />
                                     </div>
@@ -95,9 +95,9 @@
                             </script>
 
                             <!-- Button -->
-                            <button type="submit"
-                                class="login-submit-button w-full rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition-colors">
-                                Sign In
+                            <button type="submit" id="loginSubmitButton"
+                                class="login-submit-button w-full rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition-colors disabled:cursor-not-allowed disabled:bg-slate-400 disabled:shadow-none disabled:hover:bg-slate-400">
+                                <span id="loginSubmitLabel">Sign In</span>
                             </button>
                         </form>
                     </div>
@@ -105,6 +105,41 @@
                     <div class="mt-6 text-center text-sm text-slate-500">
                         <p>Unauthorized access is strictly prohibited.</p>
                     </div>
+
+                    <script>
+                        (function () {
+                            const form = document.getElementById('loginForm');
+                            const button = document.getElementById('loginSubmitButton');
+                            const label = document.getElementById('loginSubmitLabel');
+                            const storageKey = 'city-transparency-login-lockout-until';
+                            const serverSeconds = Number(form.dataset.lockoutSeconds || 0);
+                            let lockoutUntil = Number(localStorage.getItem(storageKey) || 0);
+
+                            if (serverSeconds > 0) {
+                                lockoutUntil = Date.now() + (serverSeconds * 1000);
+                                localStorage.setItem(storageKey, String(lockoutUntil));
+                            }
+
+                            function updateLockout() {
+                                const secondsLeft = Math.max(0, Math.ceil((lockoutUntil - Date.now()) / 1000));
+
+                                if (secondsLeft === 0) {
+                                    button.disabled = false;
+                                    label.textContent = 'Sign In';
+                                    localStorage.removeItem(storageKey);
+                                    return;
+                                }
+
+                                const minutes = Math.floor(secondsLeft / 60);
+                                const seconds = String(secondsLeft % 60).padStart(2, '0');
+                                button.disabled = true;
+                                label.textContent = `${minutes}:${seconds}`;
+                                window.setTimeout(updateLockout, 250);
+                            }
+
+                            updateLockout();
+                        }());
+                    </script>
                 </div>
             </div>
         </div>
