@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore Cabuyao City public projects, budgets, locations, and reported progress.">
     <title>Public Projects Map | Cabuyao</title>
     @include('layouts.favicon')
     @include('components.theme-init')
@@ -33,6 +34,16 @@
             min-height: 58vh;
             height: 58vh;
         }
+        .public-map-tile-controls { position:absolute; z-index:500; left:16px; bottom:16px; display:flex; gap:6px; }
+        .public-map-tile-controls button { border:1px solid rgba(255,255,255,.25); border-radius:9px; padding:9px 13px; background:rgba(15,23,42,.9); color:#fff; font-size:.75rem; font-weight:700; cursor:pointer; }
+        .public-map-tile-controls button.active { background:#059669; border-color:#059669; }
+        html.dark-mode #map { background:#1f2937; }
+        .public-map-popup h4 { margin:0 0 4px; font-weight:800; color:#0f172a; }
+        .public-map-popup p { margin:0; color:#475569; font-size:.75rem; }
+        html.dark-mode .leaflet-popup-content-wrapper, html.dark-mode .leaflet-popup-tip { background:#1e293b; }
+        html.dark-mode .public-map-popup h4 { color:#f8fafc; }
+        html.dark-mode .public-map-popup p { color:#cbd5e1; }
+        @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior:auto!important; transition:none!important; animation:none!important; } }
 
         @media (min-width: 640px) {
             #map {
@@ -590,6 +601,7 @@
     </style>
 </head>
 <body class="public-layout bg-white font-sans text-slate-900 antialiased">
+    <a href="#projectSidebar" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[1200] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-slate-900">Skip to project list</a>
 
     {{-- ============ TOP NAV (same as landing page) ============ --}}
     <header class="public-map-header glass-nav w-full border-b border-slate-200/50">
@@ -625,8 +637,12 @@
     {{-- ============ MAP CONTENT ============ --}}
     <main class="px-4 py-5 md:px-6 md:py-6 lg:px-8">
         <div class="flex flex-col lg:flex-row gap-4 overflow-hidden rounded-3xl border border-gray-300 shadow-sm">
-            <div class="flex-1 min-w-0 w-full relative z-0" id="map" style="background-color: #f0f0f0;">
+            <div class="flex-1 min-w-0 w-full relative z-0" id="map" aria-label="Interactive map of Cabuyao City public projects">
                 @include('components.map-status-legend')
+                <div class="public-map-tile-controls" aria-label="Map theme">
+                    <button type="button" id="btnPublicLightTiles" class="active" aria-pressed="true">Light</button>
+                    <button type="button" id="btnPublicDarkTiles" aria-pressed="false">Dark</button>
+                </div>
             </div>
 
             <div id="projectSidebar" class="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden order-3 md:order-2 flex flex-col" style="max-height: 86vh;">
@@ -637,7 +653,7 @@
                     </div>
                     <div id="departmentSidebarAction" class="mt-4"></div>
                 </div>
-                <div id="departmentProjectList" class="space-y-4 overflow-y-auto bg-slate-50 p-4 min-h-0 flex-1"></div>
+                <div id="departmentProjectList" class="space-y-4 overflow-y-auto bg-slate-50 p-4 min-h-0 flex-1" aria-live="polite"><div class="p-6 text-center text-sm text-slate-500">Loading public projects…</div></div>
             </div>
         </div>
     </main>
@@ -662,7 +678,7 @@
         </div>
     </footer>
 
-    <div class="public-image-lightbox" id="publicMapProjectLightbox" aria-hidden="true">
+    <div class="public-image-lightbox" id="publicMapProjectLightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Project image preview">
         <div class="public-image-lightbox-toolbar">
             <button type="button" class="public-image-lightbox-button" id="publicMapProjectZoomOut" aria-label="Zoom out" title="Zoom out">−</button>
             <button type="button" class="public-image-lightbox-button" id="publicMapProjectZoomReset" aria-label="Reset zoom" title="Reset zoom">1:1</button>
@@ -694,7 +710,11 @@
             let selectedBarangayName = null;
             const markersByBarangay = {}; // barangay name -> array of Leaflet markers
             let allMarkers = null; // featureGroup holding every marker
+            let currentTileLayer = null;
+            let lightTiles = null;
+            let darkTiles = null;
             let publicProjectZoom = 1;
+            let lightboxTrigger = null;
 
             function barangayColor(name) {
                 let hash = 0;
@@ -718,9 +738,42 @@
                     .replace(/'/g, '&#039;');
             }
 
+            function safeImageUrl(value) {
+                if (!value) return null;
+                try {
+                    const url = new URL(value, window.location.origin);
+                    return ['http:', 'https:'].includes(url.protocol) ? url.href : null;
+                } catch (_) {
+                    return null;
+                }
+            }
+
+            function formatProjectDate(value) {
+                if (!value) return 'Not specified';
+                const date = new Date(value);
+                return Number.isNaN(date.getTime()) ? 'Not specified' : date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            }
+
             function setPublicProjectZoom(value) {
                 publicProjectZoom = Math.min(4, Math.max(0.5, value));
                 lightboxImage.style.transform = 'scale(' + publicProjectZoom + ')';
+            }
+
+            function setTileLayer(useDarkTiles) {
+                if (!map) return;
+                if (currentTileLayer) map.removeLayer(currentTileLayer);
+                if (useDarkTiles) {
+                    darkTiles ??= L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19, subdomains: 'abcd' });
+                    currentTileLayer = darkTiles;
+                } else {
+                    lightTiles ??= L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'OpenStreetMap contributors', maxZoom: 19 });
+                    currentTileLayer = lightTiles;
+                }
+                currentTileLayer.addTo(map);
+                document.getElementById('btnPublicLightTiles').classList.toggle('active', !useDarkTiles);
+                document.getElementById('btnPublicDarkTiles').classList.toggle('active', useDarkTiles);
+                document.getElementById('btnPublicLightTiles').setAttribute('aria-pressed', String(!useDarkTiles));
+                document.getElementById('btnPublicDarkTiles').setAttribute('aria-pressed', String(useDarkTiles));
             }
 
             function closePublicProjectLightbox() {
@@ -728,33 +781,28 @@
                 lightbox.setAttribute('aria-hidden', 'true');
                 lightboxImage.removeAttribute('src');
                 setPublicProjectZoom(1);
+                lightboxTrigger?.focus();
             }
 
             function bindPublicProjectImageLightboxTriggers() {
                 document.querySelectorAll('.public-project-lightbox-trigger').forEach(function (image) {
                     image.addEventListener('click', function (event) {
                         event.stopPropagation();
-                        lightboxImage.src = image.dataset.fullImage || image.src;
+                        const imageUrl = safeImageUrl(image.dataset.fullImage || image.src);
+                        if (!imageUrl) return;
+                        lightboxTrigger = image;
+                        lightboxImage.src = imageUrl;
                         lightbox.classList.add('is-open');
                         lightbox.setAttribute('aria-hidden', 'false');
                         setPublicProjectZoom(1);
+                        closeButton.focus();
                     });
                 });
             }
 
             function calculateProgress(project) {
-                if (!project.properties.start_date || !project.properties.target_end_date) {
-                    return 0;
-                }
-
-                const startDate = new Date(project.properties.start_date);
-                const endDate = new Date(project.properties.target_end_date);
-                const today = new Date();
-
-                const totalDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
-                const daysElapsed = (today - startDate) / (1000 * 60 * 60 * 24);
-
-                return totalDays > 0 ? Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100)) : 0;
+                // Public progress reflects a submitted project update, not elapsed calendar time.
+                return calculateReportedProgress(project) ?? 0;
             }
 
             function calculateReportedProgress(project) {
@@ -831,20 +879,21 @@
                 const timelineProgress = calculateProgress(project);
                 const reportedProgress = calculateReportedProgress(project);
                 const progress = reportedProgress ?? timelineProgress;
-                const allocatedBudget = Number(props.budget || 0);
-                const expenditure = Number(props.actual_budget || 0);
+                const allocatedBudget = Math.max(0, Number(props.budget || 0));
+                const expenditure = Math.max(0, Number(props.actual_budget || 0));
                 const expenditureProgress = allocatedBudget > 0 ? Math.min(100, Math.max(0, (expenditure / allocatedBudget) * 100)) : 0;
-                const startDate = props.start_date ? new Date(props.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
-                const targetDate = props.target_end_date ? new Date(props.target_end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
+                const startDate = formatProjectDate(props.start_date);
+                const targetDate = formatProjectDate(props.target_end_date);
                 const lifecycleHtml = renderLifecycleStepper(props.status);
                 const statusClass = getStatusClass(props.status);
                 const description = escapeHtml(props.description || 'No description available.');
 
-                const imageHtml = props.image
-                    ? `<img src="${props.image}" alt="${props.name}" class="public-project-lightbox-trigger h-40 w-full rounded-2xl object-cover bg-slate-100" data-full-image="${props.image}">`
+                const imageUrl = safeImageUrl(props.image);
+                const imageHtml = imageUrl
+                    ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(props.name)}" loading="lazy" class="public-project-lightbox-trigger h-40 w-full rounded-2xl object-cover bg-slate-100" data-full-image="${escapeHtml(imageUrl)}">`
                     : '<div class="h-40 w-full rounded-2xl bg-gray-100 flex items-center justify-center text-xs text-gray-500">No image</div>';
-                const collapsedImageHtml = props.image
-                    ? `<div class="public-project-image-wrap"><img src="${props.image}" alt="${props.name}" class="public-project-image"><div class="public-project-image-overlay"></div></div>`
+                const collapsedImageHtml = imageUrl
+                    ? `<div class="public-project-image-wrap"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(props.name)}" loading="lazy" class="public-project-image"><div class="public-project-image-overlay"></div></div>`
                     : '<div class="h-40 w-full rounded-2xl bg-gray-100 flex items-center justify-center text-xs text-gray-500">No image</div>';
 
                 if (isSingle) {
@@ -865,7 +914,7 @@
                                         <h4 class="text-sm font-bold text-slate-900">Project Details</h4>
                                     </div>
                                     <div class="public-project-details-grid">
-                                        <div class="public-project-detail"><span class="public-project-detail-icon purple material-symbols-outlined">location_on</span><div><div class="public-project-detail-label">Barangay</div><div class="public-project-detail-value">${props.barangay || 'Not specified'}</div></div></div>
+                                        <div class="public-project-detail"><span class="public-project-detail-icon purple material-symbols-outlined">location_on</span><div><div class="public-project-detail-label">Barangay</div><div class="public-project-detail-value">${props.barangay || 'Citywide'}</div></div></div>
                                         <div class="public-project-detail"><span class="public-project-detail-icon emerald material-symbols-outlined">payments</span><div><div class="public-project-detail-label">Allocated Budget</div><div class="public-project-detail-value">${formatCurrency(allocatedBudget)}</div></div></div>
                                         <div class="public-project-detail"><span class="public-project-detail-icon amber material-symbols-outlined">trending_up</span><div><div class="public-project-detail-label">Reported Progress</div><div class="public-project-detail-value">${reportedProgress === null ? 'Not reported' : reportedProgress.toFixed(1) + '%'}</div></div></div>
                                         <div class="public-project-detail"><span class="public-project-detail-icon rose material-symbols-outlined">account_balance_wallet</span><div><div class="public-project-detail-label">Expenditure</div><div class="public-project-detail-value">${formatCurrency(expenditure)}</div></div></div>
@@ -901,7 +950,7 @@
                             <h3 class="text-base font-semibold text-slate-900">${props.name}</h3>
                             <div class="mt-2 flex flex-wrap items-center gap-2">
                                 <span class="public-status-badge ${statusClass}">${props.status || 'Unknown'}</span>
-                                <p class="public-collapsed-barangay">${props.barangay || 'Barangay not specified'}</p>
+                                <p class="public-collapsed-barangay">${props.barangay || 'Citywide'}</p>
                             </div>
                             <div class="public-project-details-card mt-4 rounded-2xl p-3">
                                 <div class="mb-3 flex items-center gap-2">
@@ -959,6 +1008,14 @@
             zoomOutButton.addEventListener('click', function () { setPublicProjectZoom(publicProjectZoom - 0.25); });
             zoomResetButton.addEventListener('click', function () { setPublicProjectZoom(1); });
             lightbox.addEventListener('click', function (event) { if (event.target === lightbox) closePublicProjectLightbox(); });
+            lightbox.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') { closePublicProjectLightbox(); return; }
+                if (event.key !== 'Tab') return;
+                const controls = [...lightbox.querySelectorAll('button')];
+                const index = controls.indexOf(document.activeElement);
+                if (event.shiftKey && index <= 0) { event.preventDefault(); controls.at(-1).focus(); }
+                if (!event.shiftKey && index === controls.length - 1) { event.preventDefault(); controls[0].focus(); }
+            });
             lightboxImage.addEventListener('wheel', function (event) {
                 event.preventDefault();
                 setPublicProjectZoom(publicProjectZoom + (event.deltaY < 0 ? 0.25 : -0.25));
@@ -974,7 +1031,7 @@
                 updateSidebarAction();
 
                 if (projects.length === 0) {
-                    projectList.innerHTML = `<div class="p-6 text-sm text-gray-500">No public projects recorded in ${selectedBarangayName} yet.</div>`;
+                    projectList.innerHTML = `<div class="p-6 text-sm text-gray-500">${selectedBarangayName ? `No public projects recorded in ${escapeHtml(selectedBarangayName)} yet.` : 'No public projects recorded yet.'}</div>`;
                     return;
                 }
 
@@ -995,8 +1052,7 @@
                 document.querySelectorAll('.show-all-projects-btn').forEach(function(button) {
                     button.addEventListener('click', function(event) {
                         event.stopPropagation();
-                        const barangay = this.dataset.barangay || null;
-                        showAllProjects(barangay);
+                        resetToAllBarangays();
                     });
                 });
             }
@@ -1038,8 +1094,14 @@
                 }
                 selectedBarangayName = null;
 
+                Object.values(markersByBarangay).forEach(markers => markers.forEach(marker => map.removeLayer(marker)));
+
+                // Reattach every marker explicitly. Markers may have been detached from
+                // the feature group while the selected barangay was being displayed.
                 if (allMarkers) {
-                    map.addLayer(allMarkers);
+                    allMarkers.eachLayer(function(marker) {
+                        if (!map.hasLayer(marker)) marker.addTo(map);
+                    });
                 }
 
                 selectedProjectIndex = null;
@@ -1065,6 +1127,7 @@
                 if (allMarkers) {
                     map.removeLayer(allMarkers);
                 }
+                Object.values(markersByBarangay).forEach(markers => markers.forEach(marker => map.removeLayer(marker)));
                 (markersByBarangay[name] || []).forEach(marker => marker.addTo(map));
 
                 const filtered = projectFeatures.filter(p => p.properties.barangay === name);
@@ -1104,11 +1167,13 @@
                         maxBoundsViscosity: 1.0
                     });
 
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: 'OpenStreetMap contributors',
-                        maxZoom: 19,
-                        minZoom: 11
-                    }).addTo(map);
+                    lightTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: 'OpenStreetMap contributors', maxZoom: 19, minZoom: 11
+                    });
+                    currentTileLayer = lightTiles;
+                    lightTiles.addTo(map);
+                    document.getElementById('btnPublicLightTiles').addEventListener('click', () => setTileLayer(false));
+                    document.getElementById('btnPublicDarkTiles').addEventListener('click', () => setTileLayer(true));
 
                     // Draw barangay shapes
                     barangayLayer = L.geoJSON(geojson, {
@@ -1173,7 +1238,7 @@
                                     fillOpacity: 0.9
                                 });
 
-                                marker.bindPopup(`<div class="text-sm" style="color: ${document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#000'}"><h4 class="font-bold" style="color: ${document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#000'}">${project.properties.name}</h4><p class="text-xs" style="color: ${document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#4b5563'}">${project.properties.status || 'Unknown'}</p></div>`);
+                                marker.bindPopup(`<div class="public-map-popup"><h4>${escapeHtml(project.properties.name)}</h4><p>${escapeHtml(project.properties.status || 'Unknown')}</p></div>`);
                                 marker.on('click', function(e) {
                                     L.DomEvent.stopPropagation(e);
                                     map.flyTo([coords[1], coords[0]], 16, { duration: 0.7, easeLinearity: 0.35 });
@@ -1190,11 +1255,7 @@
                                 }
                             });
 
-                            function restoreListOnMapClick() {
-                                if (selectedProjectIndex !== null && !selectedBarangayName) {
-                                    showAllProjects();
-                                }
-                            }
+                            function restoreListOnMapClick() { showAllProjects(); }
 
                             map.on('click', restoreListOnMapClick);
                             allMarkers.addTo(map);
