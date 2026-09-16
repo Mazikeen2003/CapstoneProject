@@ -798,6 +798,7 @@
         $reportedProgress = $project->latestUpdate?->progress_percentage;
         $progress = $reportedProgress !== null ? $reportedProgress : $timelineProgress;
         $progressLabel = $reportedProgress !== null ? 'Reported Progress' : 'Timeline Progress';
+        $projectHasStarted = $project->hasStarted();
     @endphp
     <div class="dept-progress-hero dept-animate">
         <div class="dept-progress-content">
@@ -1030,12 +1031,14 @@
                         <div class="dept-field">
                             <label class="dept-field-label">Actual Budget Spent</label>
                             <div class="dept-input-wrap has-icon">
-                                <input type="text" inputmode="decimal" autocomplete="off" id="actual_budget" name="actual_budget" value="{{ old('actual_budget', $project->actual_budget) }}" @if(!($canEditCriticalFields ?? false)) disabled @endif>
+                                <input type="text" inputmode="decimal" autocomplete="off" id="actual_budget" name="actual_budget" value="{{ old('actual_budget', $project->actual_budget) }}" @if(!($canEditCriticalFields ?? false) || ! $projectHasStarted) disabled @endif>
                                 <svg class="dept-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.582 1.453-1.318V5.253a1.875 1.875 0 00-1.453-1.318A60.062 60.062 0 002.25 1.575v17.175zM6.75 9.75l4.5 4.5 7.5-7.5"/></svg>
                             </div>
                             <p class="dept-locked-hint">
                                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
-                                @if($canEditCriticalFields ?? false)
+                                @if(! $projectHasStarted)
+                                    Expenditure updates are available on {{ $project->start_date?->format('M d, Y') ?? 'the project start date' }}.
+                                @elseif($canEditCriticalFields ?? false)
                                     Permission approved — you can now edit this field.
                                 @else
                                     Locked — requires Department Head approval
@@ -1065,7 +1068,7 @@
                         @php $status = old('current_status', $project->current_status); @endphp
                         <div class="dept-status-wrap">
                             <span class="dept-status-dot" style="background: #f59e0b;"></span>
-                            <select name="current_status">
+                            <select name="current_status" @disabled(! $projectHasStarted)>
                                 <option class="dept-status-group-option" disabled>Project Lifecycle</option>
                                 <option value="Proposed" @selected($status == 'Proposed')>Proposed</option>
                                 <option value="For bidding" @selected($status == 'For bidding')>For bidding</option>
@@ -1078,7 +1081,13 @@
                                     <option value="Cancelled" @selected($status == 'Cancelled')>Cancelled</option>
                                 </optgroup>
                             </select>
+                            @if (! $projectHasStarted)
+                                <input type="hidden" name="current_status" value="{{ $project->current_status }}">
+                            @endif
                         </div>
+                        @if (! $projectHasStarted)
+                            <p class="dept-locked-hint">Lifecycle updates are available on {{ $project->start_date?->format('M d, Y') ?? 'the project start date' }}.</p>
+                        @endif
                     </div>
                 </div>
 

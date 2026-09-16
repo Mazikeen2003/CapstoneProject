@@ -59,6 +59,10 @@ class ProjectController extends Controller
         $project = Project::withoutRoleScope()->findOrFail($id);
         $this->authorize('updateForms', $project);
 
+        if (! $project->hasStarted()) {
+            return back()->with('error', 'Progress updates are unavailable until the project start date.');
+        }
+
         if (! $project->hasReachedImplementationStage()) {
             return back()->with('error', 'Progress updates are available once the project reaches the Implementation stage.');
         }

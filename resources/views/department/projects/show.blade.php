@@ -1309,7 +1309,7 @@
                         <p>Timeline of project milestones and progress reports.</p>
                     </div>
                     @if ($projectRoutePrefix === 'engineering.projects')
-                        @php $progressUpdatesEnabled = $project->hasReachedImplementationStage(); @endphp
+                        @php $progressUpdatesEnabled = $project->hasStarted() && $project->hasReachedImplementationStage(); @endphp
                         <form method="POST" action="{{ route('engineering.projects.progress', $project->project_id) }}" enctype="multipart/form-data" class="engineering-progress-form {{ $progressUpdatesEnabled ? '' : 'is-disabled' }}">
                             @csrf
                             <div class="engineering-progress-field">
@@ -1330,7 +1330,13 @@
                                 <input id="engineering_image" type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" @disabled(! $progressUpdatesEnabled)>
                             </div>
                             @if (! $progressUpdatesEnabled)
-                                <div class="engineering-progress-disabled-note">Progress updates become available at the Implementation stage.</div>
+                                <div class="engineering-progress-disabled-note">
+                                    @if (! $project->hasStarted())
+                                        Progress updates are available on {{ $project->start_date?->format('M d, Y') ?? 'the project start date' }}.
+                                    @else
+                                        Progress updates become available at the Implementation stage.
+                                    @endif
+                                </div>
                             @endif
                         </form>
                     @endif

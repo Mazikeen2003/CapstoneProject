@@ -163,6 +163,24 @@ class ProjectController extends Controller
         $data = $request->validated();
         $data['updated_by'] = Auth::id();
 
+        if (! $project->hasStarted()) {
+            foreach (['current_status', 'lifecycle_stage', 'actual_budget'] as $field) {
+                if (! array_key_exists($field, $data)) {
+                    continue;
+                }
+
+                $hasChanged = $field === 'actual_budget'
+                    ? (float) ($data[$field] ?? 0) !== (float) ($original[$field] ?? 0)
+                    : $data[$field] !== ($original[$field] ?? null);
+
+                if ($hasChanged) {
+                    return back()->withErrors([
+                        $field => 'Project lifecycle, progress, and expenditure updates are unavailable until the project start date.',
+                    ])->withInput();
+                }
+            }
+        }
+
         $lockedFields = ['start_date', 'target_end_date', 'approved_budget', 'actual_budget'];
         $latestPermissionRequest = EditPermissionRequest::where('project_id', $project->project_id)
             ->where('requested_by', Auth::id())
