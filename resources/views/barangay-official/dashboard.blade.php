@@ -122,9 +122,10 @@ html.dark-mode .bd-hero {
 
 html.dark-mode .bd-stat,
 html.dark-mode .bd-card {
-    background: #0f172a;
-    border-color: #334155;
+    background: #141321;
+    border-color: #26354d;
     color: #f8fafc;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
 }
 html.dark-mode .bd-stat-value,
 html.dark-mode .bd-card-title,
@@ -132,7 +133,7 @@ html.dark-mode .bd-project-title,
 html.dark-mode .bd-empty h4 {
     color: #f8fafc;
 }
-html.dark-mode .bd-card-header { border-bottom-color: #334155; }
+html.dark-mode .bd-card-header { border-bottom-color: #26354d; }
 html.dark-mode .bd-card-subtitle,
 html.dark-mode .bd-stat-label,
 html.dark-mode .bd-stat-footer,

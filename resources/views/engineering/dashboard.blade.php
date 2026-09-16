@@ -483,6 +483,23 @@ html.dark-mode .ed-wrap {
 }
 
 /* ===== DARK MODE OVERRIDES ===== */
+/* Keep dashboard cards consistent with the deep navy surface used by the
+   Barangay and City Official dashboards, without changing each KPI's color. */
+html.dark-mode .ed-stat,
+html.dark-mode .ed-card,
+.dark .ed-stat,
+.dark .ed-card {
+    background: #141321;
+    border-color: #26354d;
+    color: #f8fafc;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+}
+
+html.dark-mode .ed-card-header,
+.dark .ed-card-header {
+    border-bottom-color: #26354d;
+}
+
 html.dark-mode .ed-status-planning,
 html.dark-mode .ed-status-proposed,
 .dark .ed-status-planning,
