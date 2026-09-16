@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AuditLog;
+use App\Models\Barangay;
 use App\Models\Project;
 use App\Models\ProjectUpdate;
 use App\Models\User;
@@ -14,14 +15,10 @@ class ReportService
      * Generate a comprehensive report dataset with eager loading.
      * Returns an array with project list, summary stats, and metadata.
      */
-    public static function generateProjectReport(): array
+    public static function generateProjectReport(array $filters = []): array
     {
         $user = Auth::user();
-        
-        // Eager load all required relations to avoid N+1 queries
-        $projects = Project::withRelations()
-            ->latest('created_at')
-            ->get();
+        $projects = self::filteredProjects($filters);
 
         $totalBudget = $projects->sum('approved_budget') ?? 0;
         $totalSpent = $projects->sum('actual_budget') ?? 0;
@@ -54,6 +51,7 @@ class ReportService
             },
             'generated_by'    => $user->username,
             'generated_date'  => now()->format('M d, Y H:i A'),
+            'filter_label'    => self::filterLabel($projects, $filters),
             'total_projects'  => $projects->count(),
             'completed'       => $completedCount,
             'ongoing'         => $ongoingCount,
@@ -67,14 +65,10 @@ class ReportService
     /**
      * Generate budget analysis report with eager loading.
      */
-    public static function generateBudgetReport(): array
+    public static function generateBudgetReport(array $filters = []): array
     {
         $user = Auth::user();
-        
-        // Eager load relations for efficient grouping
-        $projects = Project::withRelations()
-            ->latest('created_at')
-            ->get();
+        $projects = self::filteredProjects($filters);
 
         $byStatus = $projects->groupBy('current_status')->map(fn($group) => [
             'count'  => $group->count(),
@@ -93,11 +87,66 @@ class ReportService
             'title'         => 'Budget Analysis Report',
             'generated_by'  => $user->username,
             'generated_date' => now()->format('M d, Y H:i A'),
+            'filter_label'  => self::filterLabel($projects, $filters),
             'by_status'     => $byStatus,
             'by_barangay'   => $byBarangay,
             'total_budget'  => $projects->sum('approved_budget'),
             'total_spent'   => $projects->sum('actual_budget'),
         ];
+    }
+
+    public static function reportFilterOptions(): array
+    {
+        $user = Auth::user();
+        $projects = Project::query()
+            ->with('barangay')
+            ->orderBy('project_name')
+            ->get();
+
+        $barangays = $user->role_slug === 'barangay'
+            ? collect([$user->barangay])->filter()
+            : Barangay::query()
+                ->whereIn('barangay_id', $projects->pluck('barangay_id')->filter()->unique())
+                ->orderBy('barangay_name')
+                ->get();
+
+        return compact('barangays', 'projects');
+    }
+
+    private static function filteredProjects(array $filters)
+    {
+        $user = Auth::user();
+        $query = Project::withRelations()->latest('created_at');
+        $barangayId = $user->role_slug === 'barangay'
+            ? $user->barangay_id
+            : ($filters['barangay_id'] ?? null);
+
+        if ($barangayId) {
+            $query->where('barangay_id', $barangayId);
+        }
+
+        if (! empty($filters['project_id'])) {
+            $query->where('project_id', $filters['project_id']);
+        }
+
+        return $query->get();
+    }
+
+    private static function filterLabel($projects, array $filters): string
+    {
+        if ($projects->isEmpty() && (! empty($filters['barangay_id']) || ! empty($filters['project_id']))) {
+            return 'No matching projects';
+        }
+
+        if (! empty($filters['project_id'])) {
+            return 'Project: ' . ($projects->first()?->project_name ?? 'Selected project');
+        }
+
+        if (! empty($filters['barangay_id']) || Auth::user()->role_slug === 'barangay') {
+            return 'Barangay: ' . ($projects->first()?->barangay?->barangay_name ?? Auth::user()->barangay?->barangay_name ?? 'Selected barangay');
+        }
+
+        return 'All accessible projects';
     }
 
     public static function generateSystemUsageReport(): array
@@ -212,12 +261,12 @@ class ReportService
         ];
     }
 
-    public static function generateSglgComplianceReport(?string $generatedBy = null): array
+    public static function generateSglgComplianceReport(?string $generatedBy = null, array $filters = []): array
     {
         $user = Auth::user();
         $generatedByLabel = $generatedBy ?? ($user?->username ?? 'Public Portal');
 
-        $projects = Project::withoutRoleScope()->with(['barangay', 'forms', 'updates'])->get();
+        $projects = self::filteredProjects($filters)->load(['forms', 'updates']);
 
         $totalProjects = $projects->count();
 
@@ -258,6 +307,7 @@ class ReportService
             'title' => 'SGLG Compliance Report',
             'generated_by' => $generatedByLabel,
             'generated_date' => now()->format('M d, Y H:i A'),
+            'filter_label' => self::filterLabel($projects, $filters),
             'summary' => [
                 'total_projects' => $totalProjects,
                 'documentation_rate' => $documentationRate,

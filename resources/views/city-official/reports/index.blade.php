@@ -342,11 +342,14 @@ html.dark-mode .cr-info li::before { background: #34d399; }
         </div>
     @endif
 
+    <x-report-filters :barangays="$barangays" :projects="$projects" :report-filters="$reportFilters" />
+
+    @php($reportQuery = array_filter($reportFilters))
     <!-- REPORT CARDS -->
     <div class="cr-grid cr-animate">
-        <x-report-card eyebrow="Citywide overview" title="Citywide Projects" description="Complete list of all projects across all departments with full details." icon="document" :route="route('city.reports.projects-pdf')" />
-        <x-report-card eyebrow="Financial overview" title="Budget Analysis" description="Citywide budget breakdown by status and barangay with spending analysis." icon="budget" :route="route('city.reports.budget-pdf')" />
-        <x-report-card eyebrow="Compliance overview" title="SGLG Compliance" description="Documentation, transparency, and monitoring compliance summary for DILG SGLG assessment." icon="document" :route="route('city.reports.sglg-pdf')" />
+        <x-report-card eyebrow="Citywide overview" title="Citywide Projects" description="Complete list of all projects across all departments with full details." icon="document" :route="route('city.reports.projects-pdf', $reportQuery)" />
+        <x-report-card eyebrow="Financial overview" title="Budget Analysis" description="Citywide budget breakdown by status and barangay with spending analysis." icon="budget" :route="route('city.reports.budget-pdf', $reportQuery)" />
+        <x-report-card eyebrow="Compliance overview" title="SGLG Compliance" description="Documentation, transparency, and monitoring compliance summary for DILG SGLG assessment." icon="document" :route="route('city.reports.sglg-pdf', $reportQuery)" />
     </div>
 
     <!-- INFO PANEL -->

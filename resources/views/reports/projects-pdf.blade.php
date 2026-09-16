@@ -420,7 +420,7 @@ body {
 <div class="header">
   <div class="header-eyebrow">City of Cabuyao — Transparency Portal</div>
   <h1>{{ $title }}</h1>
-  <div class="header-sub">Official Project Tracker report documenting active and completed city projects</div>
+  <div class="header-sub">{{ $filter_label ?? 'All accessible projects' }}</div>
   <span class="header-badge">Public Record</span>
 </div>
 

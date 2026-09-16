@@ -163,9 +163,12 @@
         </div>
     @endif
 
+    <x-report-filters :barangays="$barangays" :projects="$projects" :report-filters="$reportFilters" :fixed-barangay="auth()->user()->barangay" />
+
+    @php($reportQuery = array_filter($reportFilters))
     <div class="barangay-report-grid">
-        <x-report-card eyebrow="Project overview" title="Projects Report" description="Complete list of all projects in your barangay with details and budget information." icon="document" :route="route('barangay.reports.projects-pdf')" />
-        <x-report-card eyebrow="Financial overview" title="Budget Analysis" description="Detailed budget breakdown by status and spending analysis for your barangay." icon="budget" :route="route('barangay.reports.budget-pdf')" />
+        <x-report-card eyebrow="Project overview" title="Projects Report" description="Complete list of all projects in your barangay with details and budget information." icon="document" :route="route('barangay.reports.projects-pdf', $reportQuery)" />
+        <x-report-card eyebrow="Financial overview" title="Budget Analysis" description="Detailed budget breakdown by status and spending analysis for your barangay." icon="budget" :route="route('barangay.reports.budget-pdf', $reportQuery)" />
     </div>
 
     <div class="barangay-report-info">

@@ -131,6 +131,11 @@ class Project extends Model
         return in_array($this->current_status, ['Implementation', 'On Going', 'Completed'], true);
     }
 
+    public function hasStarted(): bool
+    {
+        return $this->start_date !== null && $this->start_date->copy()->startOfDay()->lte(today());
+    }
+
     // Query Scopes
     public function scopeWithRelations($query)
     {
