@@ -170,6 +170,14 @@ html.dark-mode .authenticated-layout:has(.dept-map-container),
     border-color: rgba(253,164,175,0.35);
     color: #fecdd3;
 }
+.barangay-map-theme .dept-map-overlay-btn.active {
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+    color: #ffffff;
+}
+.barangay-map-theme .dept-map-overlay-btn:hover {
+    border-color: #f87171;
+    color: #fecaca;
+}
 
 /* City official theme override */
 .city-map-theme .dept-map-hero {
@@ -182,6 +190,14 @@ html.dark-mode .authenticated-layout:has(.dept-map-container),
     background: rgba(76,29,149,0.35);
     border-color: rgba(196,181,253,0.35);
     color: #ddd6fe;
+}
+.city-map-theme .dept-map-overlay-btn.active {
+    background: linear-gradient(135deg, #6d28d9, #4c1d95);
+    color: #ffffff;
+}
+.city-map-theme .dept-map-overlay-btn:hover {
+    border-color: #8b5cf6;
+    color: #c4b5fd;
 }
 
 .dept-map-hero-title {
