@@ -34,9 +34,10 @@
             min-height: 58vh;
             height: 58vh;
         }
-        .public-map-tile-controls { position:absolute; z-index:500; left:16px; bottom:16px; display:flex; gap:6px; }
-        .public-map-tile-controls button { border:1px solid rgba(255,255,255,.25); border-radius:9px; padding:9px 13px; background:rgba(15,23,42,.9); color:#fff; font-size:.75rem; font-weight:700; cursor:pointer; }
-        .public-map-tile-controls button.active { background:#059669; border-color:#059669; }
+        .public-map-tile-controls { position:absolute; z-index:500; left:16px; bottom:16px; display:flex; gap:7px; }
+        .public-map-tile-controls button { border:1px solid rgba(255,255,255,.18); border-radius:10px; padding:10px 15px; background:rgba(15,23,42,.94); color:#f8fafc; font-size:.75rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(15,23,42,.22); transition:transform .15s ease,background .15s ease; }
+        .public-map-tile-controls button:hover { transform:translateY(-1px); background:#1e293b; }
+        .public-map-tile-controls button.active { background:linear-gradient(135deg,#10b981,#059669); border-color:transparent; color:#fff; box-shadow:0 5px 14px rgba(5,150,105,.38); }
         html.dark-mode #map { background:#1f2937; }
         .public-map-popup h4 { margin:0 0 4px; font-weight:800; color:#0f172a; }
         .public-map-popup p { margin:0; color:#475569; font-size:.75rem; }
