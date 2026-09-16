@@ -1,4 +1,4 @@
-@extends('layouts.department')
+@extends($mapLayout ?? 'layouts.department')
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
@@ -147,9 +147,7 @@ html.dark-mode .authenticated-layout:has(.dept-map-container),
 
 /* Engineering theme override */
 .engineering-map-theme .dept-map-hero {
-    --dm-accent-start: #0a4353;
-    --dm-accent-mid: #11788a;
-    --dm-accent-end: #22a6b8;
+    background: linear-gradient(135deg, #0a4353 0%, #0c5c70 30%, #11788a 70%, #22a6b8 100%);
 }
 .engineering-map-theme .dept-map-hero::after {
     background: radial-gradient(circle, rgba(158,230,247,0.22) 0%, transparent 60%);
@@ -158,6 +156,32 @@ html.dark-mode .authenticated-layout:has(.dept-map-container),
     background: rgba(15,106,124,0.32);
     border-color: rgba(158,230,247,0.38);
     color: #d8f5ff;
+}
+
+/* Barangay theme override */
+.barangay-map-theme .dept-map-hero {
+    background: linear-gradient(135deg, #24070b 0%, #4c0d14 30%, #991b1b 70%, #dc2626 100%);
+}
+.barangay-map-theme .dept-map-hero::after {
+    background: radial-gradient(circle, rgba(251,113,133,0.28) 0%, transparent 60%);
+}
+.barangay-map-theme .dept-map-hero-badge.gold {
+    background: rgba(127,29,45,0.4);
+    border-color: rgba(253,164,175,0.35);
+    color: #fecdd3;
+}
+
+/* City official theme override */
+.city-map-theme .dept-map-hero {
+    background: linear-gradient(135deg, #10051f 0%, #24103f 30%, #4c1d95 70%, #6d28d9 100%);
+}
+.city-map-theme .dept-map-hero::after {
+    background: radial-gradient(circle, rgba(196,181,253,0.25) 0%, transparent 60%);
+}
+.city-map-theme .dept-map-hero-badge.gold {
+    background: rgba(76,29,149,0.35);
+    border-color: rgba(196,181,253,0.35);
+    color: #ddd6fe;
 }
 
 .dept-map-hero-title {
@@ -1017,7 +1041,7 @@ html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1;
 }
 </style>
 
-<div class="dept-map-container {{ ($mapTheme ?? null) === 'engineering' ? 'engineering-map-theme' : '' }}">
+<div class="dept-map-container {{ ($mapTheme ?? null) === 'engineering' ? 'engineering-map-theme' : (($mapTheme ?? null) === 'barangay' ? 'barangay-map-theme' : (($mapTheme ?? null) === 'city' ? 'city-map-theme' : '')) }}">
 
     <!-- HERO HEADER -->
     <div class="dept-map-hero dept-animate">

@@ -216,6 +216,19 @@ html.dark-mode .dept-analytics-hero-teal {
 .dept-kpi-card.info::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
 .dept-kpi-card.danger::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
 .dept-kpi-card.dark::before { background: linear-gradient(90deg, #1e1b4b, #4338ca); }
+.dept-kpi-link,
+.dept-insight-link {
+    color: inherit;
+    display: block;
+    text-decoration: none;
+}
+.dept-kpi-link:focus-visible .dept-kpi-card,
+.dept-insight-link:focus-visible .dept-insight-card {
+    outline: 3px solid #60a5fa;
+    outline-offset: 3px;
+}
+.dept-kpi-link .dept-kpi-card,
+.dept-insight-link .dept-insight-card { cursor: pointer; }
 
 .dept-kpi-header {
     display: flex;
@@ -831,6 +844,11 @@ html.dark-mode .dept-analytics-empty {
 
     @php
         $currentRole = Auth::user()?->role_slug ?? 'public';
+        $departmentProjectsUrl = $currentRole === 'department' ? route('department.projects.index') : null;
+        $cityProjectsUrl = $currentRole === 'city' ? route('city.projects.index') : null;
+        $engineeringProjectsUrl = $currentRole === 'engineering' ? route('engineering.projects.index') : null;
+        $barangayProjectsUrl = $currentRole === 'barangay' ? route('barangay.projects.index') : null;
+        $analyticsProjectsUrl = $departmentProjectsUrl ?? $cityProjectsUrl ?? $engineeringProjectsUrl ?? $barangayProjectsUrl;
         $budgetUsedDisplay = ($budgetStats['total_spent'] ?? 0) >= 1000000000
             ? '₱' . number_format(($budgetStats['total_spent'] ?? 0) / 1000000000, 1) . 'B'
             : (($budgetStats['total_spent'] ?? 0) >= 1000000
@@ -839,32 +857,32 @@ html.dark-mode .dept-analytics-empty {
 
         $roleKpis = match ($currentRole) {
             'department' => [
-                ['label' => 'Total Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark'],
-                ['label' => 'Active Projects', 'value' => $stats['ongoing'] ?? 0, 'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info'],
-                ['label' => 'Completed', 'value' => $stats['completed'] ?? 0, 'color' => '#059669', 'icon' => 'emerald', 'type' => 'success'],
-                ['label' => 'On Hold', 'value' => $stats['on_hold'] ?? 0, 'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger'],
-                ['label' => 'Allocated Budget', 'value' => $totalBudgetDisplay, 'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent'],
+                ['label' => 'Total Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark', 'url' => $departmentProjectsUrl],
+                ['label' => 'Active Projects', 'value' => $stats['ongoing'] ?? 0, 'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info', 'url' => $departmentProjectsUrl . '?filter=active'],
+                ['label' => 'Completed', 'value' => $stats['completed'] ?? 0, 'color' => '#059669', 'icon' => 'emerald', 'type' => 'success', 'url' => $departmentProjectsUrl . '?filter=completed'],
+                ['label' => 'On Hold', 'value' => $stats['on_hold'] ?? 0, 'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger', 'url' => $departmentProjectsUrl . '?filter=on_hold'],
+                ['label' => 'Allocated Budget', 'value' => $totalBudgetDisplay, 'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent', 'url' => $departmentProjectsUrl . '?sort=approved_budget'],
             ],
             'city' => [
-                ['label' => 'Citywide Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark'],
-                ['label' => 'Active Projects', 'value' => $stats['ongoing'] ?? 0, 'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info'],
-                ['label' => 'Completed', 'value' => $stats['completed'] ?? 0, 'color' => '#059669', 'icon' => 'emerald', 'type' => 'success'],
-                ['label' => 'On Hold', 'value' => $stats['on_hold'] ?? 0, 'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger'],
-                ['label' => 'Allocated Budget', 'value' => $totalBudgetDisplay, 'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent'],
+                ['label' => 'Citywide Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark', 'url' => $cityProjectsUrl],
+                ['label' => 'Active Projects', 'value' => $stats['ongoing'] ?? 0, 'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info', 'url' => $cityProjectsUrl . '?filter=active'],
+                ['label' => 'Completed', 'value' => $stats['completed'] ?? 0, 'color' => '#059669', 'icon' => 'emerald', 'type' => 'success', 'url' => $cityProjectsUrl . '?filter=completed'],
+                ['label' => 'On Hold', 'value' => $stats['on_hold'] ?? 0, 'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger', 'url' => $cityProjectsUrl . '?filter=on_hold'],
+                ['label' => 'Allocated Budget', 'value' => $totalBudgetDisplay, 'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent', 'url' => $cityProjectsUrl . '?sort=approved_budget'],
             ],
             'barangay' => [
-                ['label' => 'Barangay Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark'],
-                ['label' => 'Active Projects', 'value' => $stats['ongoing'] ?? 0, 'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info'],
-                ['label' => 'Completed', 'value' => $stats['completed'] ?? 0, 'color' => '#059669', 'icon' => 'emerald', 'type' => 'success'],
-                ['label' => 'On Hold', 'value' => $stats['on_hold'] ?? 0, 'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger'],
-                ['label' => 'Barangay Budget', 'value' => $totalBudgetDisplay, 'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent'],
+                ['label' => 'Barangay Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark', 'url' => $barangayProjectsUrl],
+                ['label' => 'Active Projects', 'value' => $stats['ongoing'] ?? 0, 'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info', 'url' => $barangayProjectsUrl . '?filter=active'],
+                ['label' => 'Completed', 'value' => $stats['completed'] ?? 0, 'color' => '#059669', 'icon' => 'emerald', 'type' => 'success', 'url' => $barangayProjectsUrl . '?filter=completed'],
+                ['label' => 'On Hold', 'value' => $stats['on_hold'] ?? 0, 'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger', 'url' => $barangayProjectsUrl . '?filter=on_hold'],
+                ['label' => 'Barangay Budget', 'value' => $totalBudgetDisplay, 'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent', 'url' => $barangayProjectsUrl . '?sort=approved_budget'],
             ],
             'engineering' => [
-                ['label' => 'Tracked Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark'],
-                ['label' => 'Projects in Progress', 'value' => $stats['ongoing'] ?? 0, 'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info'],
-                ['label' => 'Completed', 'value' => $stats['completed'] ?? 0, 'color' => '#059669', 'icon' => 'emerald', 'type' => 'success'],
-                ['label' => 'Pending Updates', 'value' => $insights['without_updates'] ?? 0, 'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger'],
-                ['label' => 'Budget Used', 'value' => $budgetUsedDisplay, 'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent'],
+                ['label' => 'Tracked Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark', 'url' => $engineeringProjectsUrl],
+                ['label' => 'Projects in Progress', 'value' => $stats['ongoing'] ?? 0, 'color' => '#2563eb', 'icon' => 'blue', 'type' => 'info', 'url' => $engineeringProjectsUrl . '?filter=active'],
+                ['label' => 'Completed', 'value' => $stats['completed'] ?? 0, 'color' => '#059669', 'icon' => 'emerald', 'type' => 'success', 'url' => $engineeringProjectsUrl . '?filter=completed'],
+                ['label' => 'Pending Updates', 'value' => $insights['without_updates'] ?? 0, 'color' => '#dc2626', 'icon' => 'rose', 'type' => 'danger', 'url' => $engineeringProjectsUrl . '?filter=missing_updates'],
+                ['label' => 'Budget Used', 'value' => $budgetUsedDisplay, 'color' => '#1e1b4b', 'icon' => 'amber', 'type' => 'accent', 'url' => $engineeringProjectsUrl . '?sort=actual_budget'],
             ],
             default => [
                 ['label' => 'Total Projects', 'value' => $stats['total_projects'] ?? 0, 'color' => '#1e1b4b', 'icon' => 'indigo', 'type' => 'dark'],
@@ -879,6 +897,9 @@ html.dark-mode .dept-analytics-empty {
     <!-- KPI CARDS -->
     <div class="dept-kpi-grid">
         @foreach ($roleKpis as $kpi)
+            @if ($kpi['url'] ?? false)
+            <a href="{{ $kpi['url'] }}" class="dept-kpi-link" aria-label="View department projects for {{ strtolower($kpi['label']) }}">
+            @endif
             <div class="dept-kpi-card {{ $kpi['type'] }} dept-animate">
                 <div class="dept-kpi-header">
                     <div class="dept-kpi-icon {{ $kpi['icon'] }}">
@@ -898,17 +919,23 @@ html.dark-mode .dept-analytics-empty {
                 <div class="dept-kpi-label">{{ $kpi['label'] }}</div>
                 <div class="dept-kpi-value" style="color: {{ $kpi['color'] }};">{{ $kpi['value'] }}</div>
             </div>
+            @if ($kpi['url'] ?? false)
+            </a>
+            @endif
         @endforeach
     </div>
 
     <!-- INSIGHT CARDS -->
     <div class="dept-insight-grid">
         @foreach ([
-            ['label' => 'Needs attention', 'value' => $insights['overdue'], 'caption' => 'Overdue projects', 'color' => '#dc2626', 'icon' => 'danger', 'svg' => 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'],
-            ['label' => 'Coming up', 'value' => $insights['due_soon'], 'caption' => 'Due within 30 days', 'color' => '#d97706', 'icon' => 'warning', 'svg' => 'M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z'],
-            ['label' => 'Missing updates', 'value' => $insights['without_updates'], 'caption' => 'Active projects', 'color' => '#2563eb', 'icon' => 'info', 'svg' => 'M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 00.063.853l.041.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z'],
-            ['label' => 'Budget used', 'value' => number_format($insights['budget_utilization'], 1) . '%', 'caption' => 'Actual versus approved', 'color' => '#059669', 'icon' => 'success', 'svg' => 'M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941'],
+            ['label' => 'Needs attention', 'value' => $insights['overdue'], 'caption' => 'Overdue projects', 'color' => '#dc2626', 'icon' => 'danger', 'svg' => 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z', 'url' => $analyticsProjectsUrl ? $analyticsProjectsUrl . '?filter=overdue' : null],
+            ['label' => 'Coming up', 'value' => $insights['due_soon'], 'caption' => 'Due within 30 days', 'color' => '#d97706', 'icon' => 'warning', 'svg' => 'M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z', 'url' => $analyticsProjectsUrl ? $analyticsProjectsUrl . '?filter=due_soon' : null],
+            ['label' => 'Missing updates', 'value' => $insights['without_updates'], 'caption' => 'Active projects', 'color' => '#2563eb', 'icon' => 'info', 'svg' => 'M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 00.063.853l.041.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z', 'url' => $analyticsProjectsUrl ? $analyticsProjectsUrl . '?filter=missing_updates' : null],
+            ['label' => 'Budget used', 'value' => number_format($insights['budget_utilization'], 1) . '%', 'caption' => 'Actual versus approved', 'color' => '#059669', 'icon' => 'success', 'svg' => 'M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941', 'url' => $analyticsProjectsUrl ? $analyticsProjectsUrl . '?sort=actual_budget' : null],
         ] as $insight)
+            @if ($insight['url'] ?? false)
+            <a href="{{ $insight['url'] }}" class="dept-insight-link" aria-label="View department projects for {{ strtolower($insight['label']) }}">
+            @endif
             <div class="dept-insight-card {{ $insight['icon'] }} dept-animate">
                 <div class="dept-insight-header">
                     <div class="dept-insight-icon {{ $insight['icon'] }}">
@@ -919,6 +946,9 @@ html.dark-mode .dept-analytics-empty {
                 <div class="dept-insight-value" style="color: {{ $insight['color'] }};">{{ $insight['value'] }}</div>
                 <div class="dept-insight-caption">{{ $insight['caption'] }}</div>
             </div>
+            @if ($insight['url'] ?? false)
+            </a>
+            @endif
         @endforeach
     </div>
 
