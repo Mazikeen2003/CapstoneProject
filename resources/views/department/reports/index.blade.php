@@ -183,10 +183,13 @@
         </div>
     @endif
 
+    <x-report-filters :barangays="$barangays" :projects="$projects" :report-filters="$reportFilters" />
+
+    @php($reportQuery = array_filter($reportFilters))
     <div class="dept-report-grid dept-report-animate">
-        <div class="dept-report-animate"><x-report-card eyebrow="Project overview" title="Projects Report" description="Complete list of all your projects with details and budget information." icon="document" :route="route('department.reports.projects-pdf')" /></div>
-        <div class="dept-report-animate"><x-report-card eyebrow="Financial overview" title="Budget Analysis" description="Detailed budget breakdown by status and spending analysis." icon="budget" :route="route('department.reports.budget-pdf')" /></div>
-        <div class="dept-report-animate"><x-report-card eyebrow="Compliance overview" title="SGLG Compliance" description="Documentation, transparency, and monitoring compliance summary for DILG SGLG assessment." icon="document" :route="route('department.reports.sglg-pdf')" /></div>
+        <div class="dept-report-animate"><x-report-card eyebrow="Project overview" title="Projects Report" description="Complete list of all your projects with details and budget information." icon="document" :route="route('department.reports.projects-pdf', $reportQuery)" /></div>
+        <div class="dept-report-animate"><x-report-card eyebrow="Financial overview" title="Budget Analysis" description="Detailed budget breakdown by status and spending analysis." icon="budget" :route="route('department.reports.budget-pdf', $reportQuery)" /></div>
+        <div class="dept-report-animate"><x-report-card eyebrow="Compliance overview" title="SGLG Compliance" description="Documentation, transparency, and monitoring compliance summary for DILG SGLG assessment." icon="document" :route="route('department.reports.sglg-pdf', $reportQuery)" /></div>
     </div>
 
     <div class="dept-report-info dept-report-animate">

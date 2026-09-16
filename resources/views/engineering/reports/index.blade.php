@@ -167,10 +167,13 @@
         </div>
     @endif
 
+    <x-report-filters :barangays="$barangays" :projects="$projects" :report-filters="$reportFilters" />
+
+    @php($reportQuery = array_filter($reportFilters))
     <div class="engineering-report-grid">
-        <x-report-card eyebrow="Project overview" title="Projects Report" description="Complete list of all current projects with implementation details and funding information." icon="document" :route="route('engineering.reports.projects-pdf')" />
-        <x-report-card eyebrow="Financial overview" title="Budget Analysis" description="Detailed budget review by funding allocation, expenditure, and implementation status." icon="budget" :route="route('engineering.reports.budget-pdf')" />
-        <x-report-card eyebrow="Compliance overview" title="SGLG Compliance" description="Documentation and transparency checks aligned with compliance and assessment reporting." icon="document" :route="route('engineering.reports.sglg-pdf')" />
+        <x-report-card eyebrow="Project overview" title="Projects Report" description="Complete list of all current projects with implementation details and funding information." icon="document" :route="route('engineering.reports.projects-pdf', $reportQuery)" />
+        <x-report-card eyebrow="Financial overview" title="Budget Analysis" description="Detailed budget review by funding allocation, expenditure, and implementation status." icon="budget" :route="route('engineering.reports.budget-pdf', $reportQuery)" />
+        <x-report-card eyebrow="Compliance overview" title="SGLG Compliance" description="Documentation and transparency checks aligned with compliance and assessment reporting." icon="document" :route="route('engineering.reports.sglg-pdf', $reportQuery)" />
     </div>
 
     <div class="engineering-report-info">

@@ -426,7 +426,7 @@ body {
 <div class="header">
   <div class="header-eyebrow">City of Cabuyao — Transparency Portal</div>
   <h1>Budget Analysis Report</h1>
-  <div class="header-sub">Official financial breakdown of all city projects by status and barangay</div>
+  <div class="header-sub">{{ $filter_label ?? 'All accessible projects' }}</div>
   <span class="header-badge">Public Record</span>
 </div>
 
