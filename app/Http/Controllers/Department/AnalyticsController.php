@@ -36,7 +36,7 @@ class AnalyticsController extends Controller
             'spent'  => $group->sum('actual_budget'),
         ]);
 
-        $byBarangay = $projects->groupBy(fn($project) => $project->barangay?->barangay_name ?? 'Citywide')
+        $byBarangay = $budgetProjects->groupBy(fn($project) => $project->barangay?->barangay_name ?? 'Citywide')
             ->map(fn($group) => [
                 'count'  => $group->count(),
                 'budget' => $group->sum('approved_budget'),

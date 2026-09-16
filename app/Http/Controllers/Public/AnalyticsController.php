@@ -42,12 +42,13 @@ class AnalyticsController extends Controller
             'spent'  => $group->sum('actual_budget'),
         ]);
 
-        $byBarangay = $projects->groupBy(fn($p) => $p->barangay?->barangay_name ?? 'Citywide')
+        $byBarangay = $budgetProjects->groupBy(fn($p) => $p->barangay?->barangay_name ?? 'Citywide')
             ->map(fn($group) => [
                 'count'  => $group->count(),
                 'budget' => $group->sum('approved_budget'),
             ])
-            ->sortByDesc('budget');
+            ->sortByDesc('budget')
+            ->take(10);
 
         $budgetStats = ['total_budget' => $budgetProjects->sum('approved_budget') ?? 0, 'total_spent' => $budgetProjects->sum('actual_budget') ?? 0];
         $insights = AnalyticsInsightsService::summarize($projects);
