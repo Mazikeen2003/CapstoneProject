@@ -10,6 +10,7 @@
         --report-surface: var(--dr-surface, var(--br-surface, var(--cr-surface, #ffffff)));
         --report-surface-hover: var(--dr-surface-hover, var(--br-surface-hover, var(--cr-surface-hover, #fafaf9)));
         --report-ink: var(--dr-ink, var(--br-ink, var(--cr-ink, #1e1b4b)));
+        --report-ink-secondary: var(--dr-ink-secondary, var(--br-ink-secondary, var(--cr-ink-secondary, #374151)));
         --report-muted: var(--dr-muted, var(--br-muted, var(--cr-muted, #6b7280)));
         --report-line: var(--dr-line, var(--br-line, var(--cr-line, rgba(0, 0, 0, 0.08))));
         --report-shadow: var(--dr-shadow-sm, var(--br-shadow-sm, var(--cr-shadow-sm, 0 1px 2px rgb(0 0 0 / 0.05))));
@@ -23,7 +24,7 @@
 
     .report-filter-label {
         display: block;
-        color: var(--report-muted);
+        color: var(--report-ink-secondary);
         font-size: 0.6875rem;
         font-weight: 800;
         letter-spacing: 0.1em;
@@ -48,6 +49,8 @@
         color: var(--report-ink);
         font-size: 0.875rem;
     }
+
+    .report-filter-select option { color: var(--report-ink); }
 
     .report-filter-select:focus {
         border-color: #d97706;
