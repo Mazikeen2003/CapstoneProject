@@ -123,9 +123,17 @@ html.dark-mode .cd-hero {
 
 html.dark-mode .cd-stat,
 html.dark-mode .cd-card {
-    background: #0f172a;
-    border-color: #334155;
+    background: #141321;
+    border-color: #26354d;
     color: #f8fafc;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+}
+.dark .cd-stat,
+.dark .cd-card {
+    background: #141321;
+    border-color: #26354d;
+    color: #f8fafc;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
 }
 html.dark-mode .cd-stat-value,
 html.dark-mode .cd-card-title,
@@ -133,7 +141,8 @@ html.dark-mode .cd-project-title,
 html.dark-mode .cd-empty h4 {
     color: #f8fafc;
 }
-html.dark-mode .cd-card-header { border-bottom-color: #334155; }
+html.dark-mode .cd-card-header,
+.dark .cd-card-header { border-bottom-color: #26354d; }
 html.dark-mode .cd-card-subtitle,
 html.dark-mode .cd-stat-label,
 html.dark-mode .cd-stat-footer,
