@@ -59,7 +59,15 @@ class ProjectFormController extends Controller
             'form_number' => str_replace('form_', '', $type),
         ];
 
-        return Pdf::loadView('reports.project-form-pdf', $data)->download(
+        $pdf = Pdf::loadView('reports.project-form-pdf', $data);
+
+        // Forms 1–11 are official 13 x 8.5 inch RPMES grids. Legal
+        // landscape keeps their many columns readable without shrinking text.
+        if (in_array($type, ['form_1', 'form_2', 'form_3', 'form_4', 'form_5', 'form_6', 'form_7', 'form_8', 'form_9', 'form_10', 'form_11'], true)) {
+            $pdf->setPaper('legal', 'landscape');
+        }
+
+        return $pdf->download(
             'project_' . $project->project_code . '_form_' . $data['form_number'] . '_' . now()->format('Y-m-d') . '.pdf'
         );
     }
