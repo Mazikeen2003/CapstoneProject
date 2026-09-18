@@ -39,6 +39,11 @@
         .public-map-tile-controls button:hover { transform:translateY(-1px); background:#1e293b; }
         .public-map-tile-controls button.active { background:linear-gradient(135deg,#10b981,#059669); border-color:transparent; color:#fff; box-shadow:0 5px 14px rgba(5,150,105,.38); }
         html.dark-mode #map { background:#1f2937; }
+        /* Apply the dark appearance to map tiles only; project markers and
+           barangay overlays retain their original, readable colors. */
+        #map .leaflet-tile-pane.public-map-dark-tiles {
+            filter: brightness(.26) saturate(.5) contrast(1.4) hue-rotate(165deg);
+        }
         .public-map-popup h4 { margin:0 0 4px; font-weight:800; color:#0f172a; }
         .public-map-popup p { margin:0; color:#475569; font-size:.75rem; }
         html.dark-mode .leaflet-popup-content-wrapper, html.dark-mode .leaflet-popup-tip { background:#1e293b; }
@@ -764,13 +769,18 @@
                 if (!map) return;
                 if (currentTileLayer) map.removeLayer(currentTileLayer);
                 if (useDarkTiles) {
-                    darkTiles ??= L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19, subdomains: 'abcd' });
+                    darkTiles ??= L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap contributors',
+                        maxZoom: 19,
+                        minZoom: 11
+                    });
                     currentTileLayer = darkTiles;
                 } else {
                     lightTiles ??= L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'OpenStreetMap contributors', maxZoom: 19 });
                     currentTileLayer = lightTiles;
                 }
                 currentTileLayer.addTo(map);
+                map.getPane('tilePane').classList.toggle('public-map-dark-tiles', useDarkTiles);
                 document.getElementById('btnPublicLightTiles').classList.toggle('active', !useDarkTiles);
                 document.getElementById('btnPublicDarkTiles').classList.toggle('active', useDarkTiles);
                 document.getElementById('btnPublicLightTiles').setAttribute('aria-pressed', String(!useDarkTiles));
