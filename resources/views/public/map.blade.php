@@ -23,9 +23,14 @@
             backdrop-filter: blur(16px);
             background-color: rgba(248, 249, 255, 0.8);
         }
+        html.dark-mode .glass-nav {
+            /* More opaque than the landing page so map controls remain clear. */
+            background-color: rgba(15, 23, 42, 0.72) !important;
+            border-color: rgba(148, 163, 184, 0.22) !important;
+        }
 
         .public-map-header {
-            position: sticky;
+            position: fixed;
             top: 0;
             z-index: 1100;
         }
