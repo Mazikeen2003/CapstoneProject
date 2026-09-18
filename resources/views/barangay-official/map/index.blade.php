@@ -891,6 +891,7 @@ html.dark-mode .dept-step-connector.completed,
 
 /* Leaflet dark mode */
 .dark .leaflet-container { background: #0f0e1a; }
+#map .leaflet-tile-pane.barangay-map-dark-tiles { filter: brightness(.26) saturate(.5) contrast(1.4) hue-rotate(165deg); }
 .dark .leaflet-popup-content-wrapper,
 .dark .leaflet-popup-tip {
     background: #1c1b2e;
@@ -1239,17 +1240,19 @@ html.dark-mode .dept-step-connector.completed,
                 lightTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: 'OpenStreetMap contributors', maxZoom: 19, minZoom: 11
                 });
-                darkTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19, minZoom: 11
+                darkTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors', maxZoom: 19, minZoom: 11
                 });
                 currentTiles = lightTiles.addTo(map);
 
                 document.getElementById('btnLightTiles').addEventListener('click', function() {
                     if (currentTiles !== lightTiles) { map.removeLayer(currentTiles); currentTiles = lightTiles.addTo(map); }
+                    map.getPane('tilePane').classList.remove('barangay-map-dark-tiles');
                     this.classList.add('active'); document.getElementById('btnDarkTiles').classList.remove('active');
                 });
                 document.getElementById('btnDarkTiles').addEventListener('click', function() {
                     if (currentTiles !== darkTiles) { map.removeLayer(currentTiles); currentTiles = darkTiles.addTo(map); }
+                    map.getPane('tilePane').classList.add('barangay-map-dark-tiles');
                     this.classList.add('active'); document.getElementById('btnLightTiles').classList.remove('active');
                 });
 
