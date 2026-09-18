@@ -1,5 +1,9 @@
 @extends('layouts.department')
 
 @section('content')
-    @include('components.analytics-dashboard', ['heading' => 'Department Project Analytics', 'heroTone' => 'gold'])
+    @include('components.analytics-dashboard', [
+        'heading' => 'Department Project Analytics',
+        'heroTone' => 'gold',
+        'chartExport' => true,
+    ])
 @endsection
