@@ -531,6 +531,14 @@ html.dark-mode .dept-kpi-card.accent .dept-kpi-value,
         align-items: flex-end;
         justify-content: space-between;
     }
+    .dept-chart-card-header .dept-chart-title-wrap {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+    .dept-chart-card-header .dept-filter-form {
+        flex: 0 0 auto;
+        flex-wrap: nowrap;
+    }
 }
 .dept-chart-title-wrap {
     display: flex;
@@ -568,6 +576,7 @@ html.dark-mode .dept-kpi-card.accent .dept-kpi-value,
     display: flex;
     gap: 10px;
     align-items: stretch;
+    flex-wrap: wrap;
 }
 .dept-filter-select {
     min-width: 140px;
@@ -603,6 +612,65 @@ html.dark-mode .dept-kpi-card.accent .dept-kpi-value,
 .dept-filter-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px -2px rgba(30, 27, 75, 0.4);
+}
+.dept-chart-export {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    min-width: 42px;
+    padding: 9px;
+    border: 1px solid var(--da-line-strong);
+    border-radius: 10px;
+    background: var(--da-raised);
+    color: var(--da-ink);
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.dept-chart-export:hover {
+    border-color: #f59e0b;
+    color: #b45309;
+    transform: translateY(-1px);
+}
+.dept-chart-export svg { width: 17px; height: 17px; }
+.dept-barangay-export { margin-left: auto; }
+@media (max-width: 639px) {
+    .dept-chart-card,
+    .dept-barangay-card { padding: 20px; }
+    .dept-chart-card-header { gap: 14px; }
+    .dept-chart-title-wrap { align-items: flex-start; }
+    .dept-chart-title-wrap > div:last-child { min-width: 0; }
+    .dept-filter-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+    }
+    .dept-filter-select {
+        grid-column: 1 / -1;
+        min-width: 0;
+        width: 100%;
+    }
+    .dept-filter-btn {
+        width: 100%;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+    .dept-chart-export {
+        width: 100%;
+        min-width: 0;
+    }
+    .dept-chart-body { height: 280px; }
+    .dept-barangay-header {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    .dept-barangay-header .dept-barangay-export {
+        margin-left: 52px !important;
+        width: calc(100% - 52px);
+    }
 }
 .dept-chart-body {
     height: 320px;
@@ -1008,6 +1076,11 @@ html.dark-mode .dept-analytics-empty {
                         @endforeach
                     </select>
                     <button type="submit" class="dept-filter-btn">Filter</button>
+                    @if ($chartExport ?? false)
+                        <button type="button" class="dept-chart-export" data-chart-export="statusChart" data-chart-title="Project Status Distribution" title="Export chart as PNG" aria-label="Export Project Status Distribution chart as PNG">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l4-4m-4 4l-4-4m-5 6v2a2 2 0 002 2h14a2 2 0 002-2v-2"/></svg>
+                        </button>
+                    @endif
                 </form>
             </div>
             <div class="dept-chart-body">
@@ -1036,6 +1109,11 @@ html.dark-mode .dept-analytics-empty {
                         @endforeach
                     </select>
                     <button type="submit" class="dept-filter-btn">Filter</button>
+                    @if ($chartExport ?? false)
+                        <button type="button" class="dept-chart-export" data-chart-export="budgetChart" data-chart-title="Budget Comparison" title="Export chart as PNG" aria-label="Export Budget Comparison chart as PNG">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l4-4m-4 4l-4-4m-5 6v2a2 2 0 002 2h14a2 2 0 002-2v-2"/></svg>
+                        </button>
+                    @endif
                 </form>
             </div>
             <div class="dept-chart-body">
@@ -1055,6 +1133,11 @@ html.dark-mode .dept-analytics-empty {
                     <div class="dept-barangay-title">Barangay Budget Share</div>
                     <div class="dept-chart-subtitle">Top 10 barangays by allocated budget</div>
                 </div>
+                @if ($chartExport ?? false)
+                    <button type="button" class="dept-chart-export dept-barangay-export" data-chart-export="barangayChart" data-chart-title="Barangay Budget Share" title="Export chart as PNG" aria-label="Export Barangay Budget Share chart as PNG">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l4-4m-4 4l-4-4m-5 6v2a2 2 0 002 2h14a2 2 0 002-2v-2"/></svg>
+                    </button>
+                @endif
             </div>
             <div class="dept-barangay-body">
                 <canvas id="barangayChart"></canvas>
@@ -1106,13 +1189,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const smoothAnimation = { duration: 1300, easing: 'easeOutQuart' };
     const smoothHover = { mode: 'nearest', intersect: true, animationDuration: 420 };
 
-    new Chart(document.getElementById('statusChart'), {
+    const statusChart = new Chart(document.getElementById('statusChart'), {
         type: 'polarArea',
         data: { labels: statusLabels, datasets: [{ data: statusCounts, backgroundColor: statusColors, hoverOffset: 18, borderWidth: 2, borderColor: darkMode ? '#1e293b' : '#ffffff' }] },
         options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, scales: { r: { ticks: { precision: 0, color: chartTextColor }, grid: { color: chartGridColor } } }, plugins: { legend: { position: 'bottom', labels: { color: chartTextColor, padding: 20, usePointStyle: true, pointStyle: 'circle' } } } }
     });
 
-    new Chart(document.getElementById('budgetChart'), {
+    const budgetChart = new Chart(document.getElementById('budgetChart'), {
         type: 'bar',
         data: { labels: ['Allocated', 'Spent', 'Remaining'], datasets: [{ data: @json([$budgetStats['total_budget'], $budgetStats['total_spent'], $remainingBudget]), backgroundColor: darkMode ? ['#60a5fa', '#fbbf24', '#34d399'] : ['#1e1b4b', '#f59e0b', '#10b981'], hoverBackgroundColor: darkMode ? ['#93c5fd', '#fcd34d', '#6ee7b7'] : ['#4338ca', '#fbbf24', '#34d399'], borderRadius: 10, hoverBorderRadius: 12, barThickness: 60 }] },
         options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, scales: { y: { beginAtZero: true, grid: { color: chartGridColor }, ticks: { color: chartTextColor, callback: value => peso(value) } }, x: { ticks: { color: chartTextColor }, grid: { display: false } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)}` } } } }
@@ -1120,12 +1203,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     @if (isset($byBarangay))
         const barangayProjectCounts = @json($barangayProjectCounts);
-        new Chart(document.getElementById('barangayChart'), {
+        const barangayChart = new Chart(document.getElementById('barangayChart'), {
             type: 'doughnut',
             data: { labels: @json($barangayLabels), datasets: [{ data: @json($barangayValues), backgroundColor: darkMode ? ['#60a5fa', '#fbbf24', '#34d399', '#93c5fd', '#c4b5fd', '#fb923c', '#f472b6', '#2dd4bf', '#94a3b8', '#fcd34d'] : ['#1e1b4b', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#f97316', '#ec4899', '#14b8a6', '#64748b', '#eab308'], hoverOffset: 20, borderWidth: 2, borderColor: darkMode ? '#1e293b' : '#ffffff' }] },
             options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { color: chartTextColor, padding: 16, usePointStyle: true, pointStyle: 'circle', generateLabels: chart => { const labels = Chart.overrides.doughnut.plugins.legend.labels.generateLabels(chart); return labels.map((item, index) => ({ ...item, text: `${chart.data.labels[index]} — ${peso(chart.data.datasets[0].data[index] || 0)}` })); } } }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)} · ${barangayProjectCounts[context.dataIndex] || 0} project(s)` } } } }
         });
+        window.analyticsCharts = { statusChart, budgetChart, barangayChart };
     @endif
+
+    window.analyticsCharts = window.analyticsCharts || { statusChart, budgetChart };
+    document.querySelectorAll('[data-chart-export]').forEach(button => {
+        button.addEventListener('click', () => {
+            const chart = window.analyticsCharts[button.dataset.chartExport];
+            if (!chart) return;
+
+            const scale = 3;
+            const source = chart.canvas;
+            const output = document.createElement('canvas');
+            output.width = source.width * scale;
+            output.height = source.height * scale + 150;
+            const context = output.getContext('2d');
+            const background = document.documentElement.classList.contains('dark-mode') ? '#111827' : '#ffffff';
+            const ink = document.documentElement.classList.contains('dark-mode') ? '#f8fafc' : '#0f172a';
+
+            context.fillStyle = background;
+            context.fillRect(0, 0, output.width, output.height);
+            context.fillStyle = ink;
+            context.font = '700 48px Arial';
+            context.textAlign = 'center';
+            context.fillText(button.dataset.chartTitle, output.width / 2, 70);
+            context.drawImage(source, 0, 0, source.width, source.height, 0, 120, output.width, source.height * scale);
+
+            const link = document.createElement('a');
+            link.download = button.dataset.chartExport + '.png';
+            link.href = output.toDataURL('image/png');
+            link.click();
+        });
+    });
 });
 </script>
 
