@@ -43,6 +43,12 @@
         background-color: #0f172a !important;
     }
 
+    /* The centred content and the surrounding project-list canvas share one surface. */
+    html:not(.dark-mode) body:has(.dept-proj-container),
+    html:not(.dark-mode) main:has(.dept-proj-container) {
+        background-color: #f8f7f5 !important;
+    }
+
     .dept-proj-container {
         max-width: 1400px;
         margin: 0 auto;
