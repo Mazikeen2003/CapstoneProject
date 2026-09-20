@@ -44,6 +44,9 @@
         color: var(--de-ink);
         transition: background 0.3s, color 0.3s;
     }
+    /* Keep the page canvas and centred project editor on one light-mode surface. */
+    html:not(.dark-mode) body:has(.dept-edit-container),
+    html:not(.dark-mode) main:has(.dept-edit-container) { background: #f8f7f5 !important; }
     @media (min-width: 640px) { .dept-edit-container { padding: 32px; } }
     @media (min-width: 1024px) { .dept-edit-container { padding: 40px; } }
 

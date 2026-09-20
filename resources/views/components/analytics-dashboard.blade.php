@@ -1,7 +1,3 @@
-@extends('layouts.department')
-
-@section('content')
-
 @php
     $statusOrder = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation', 'Completed', 'On Hold', 'Cancelled'];
     $statusColors = ['#fbbf24', '#f59e0b', '#3b82f6', '#8b5cf6', '#0ea5e9', '#10b981', '#ef4444', '#64748b'];
@@ -1242,5 +1238,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
-
-@endsection

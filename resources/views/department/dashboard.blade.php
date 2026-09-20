@@ -336,9 +336,9 @@
     <!-- STATS -->
     <div class="dept-stats">
         <!-- Total Projects -->
-        <div class="dept-stat dept-animate" style="--stat-accent: #d97706; --stat-icon-bg: #fef3c7; --stat-icon-color: #d97706;">
+        <div class="dept-stat dept-animate" style="--stat-accent: #3b82f6; --stat-icon-bg: #dbeafe; --stat-icon-color: #2563eb;">
             <div class="dept-stat-header">
-                <div class="dept-stat-icon">
+                <div class="dept-stat-icon blue">
                     <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.429-2.507a2.117 2.117 0 00-1.86-.22m-7.5 2.1l.22.22m6.44-2.22l-.22.22m-6.44 2.1l.22.22m6.44-2.22l-.22.22m-6.44 2.1l.22.22m6.44-2.22l-.22.22M3.75 6.75l7.5-4.5 7.5 4.5M3.75 6.75v10.5a2.25 2.25 0 002.25 2.25h10.5"/></svg>
                 </div>
                 <span class="dept-stat-trend">
@@ -354,7 +354,7 @@
         <!-- Ongoing -->
         <div class="dept-stat dept-animate" style="--stat-accent: #f59e0b; --stat-icon-bg: #fef3c7; --stat-icon-color: #d97706;">
             <div class="dept-stat-header">
-                <div class="dept-stat-icon">
+                <div class="dept-stat-icon amber">
                     <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.412 15.655L9.75 21.75l3.745-4.012M9.257 13.5H3.75l2.659-2.849m2.048-2.194L6.75 3.75l8.586 8.986M12.75 3.75h5.695l-2.659 2.849m-2.048 2.194L17.25 12.75l-4.518 4.518"/></svg>
                 </div>
                 <span class="dept-stat-trend">
@@ -370,7 +370,7 @@
         <!-- Completed -->
         <div class="dept-stat dept-animate" style="--stat-accent: #10b981; --stat-icon-bg: #d1fae5; --stat-icon-color: #047857;">
             <div class="dept-stat-header">
-                <div class="dept-stat-icon">
+                <div class="dept-stat-icon emerald">
                     <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
                 <span class="dept-stat-trend">
@@ -386,7 +386,7 @@
         <!-- Budget -->
         <div class="dept-stat dept-animate" style="--stat-accent: #f43f5e; --stat-icon-bg: #ffe4e6; --stat-icon-color: #be123c;">
             <div class="dept-stat-header">
-                <div class="dept-stat-icon">
+                <div class="dept-stat-icon rose">
                     <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
                 <span class="dept-stat-trend negative">

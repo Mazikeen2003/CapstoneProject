@@ -61,6 +61,9 @@
         color: var(--ds-ink);
         transition: background 0.3s, color 0.3s;
     }
+    /* Keep the page canvas and centred project view on one light-mode surface. */
+    html:not(.dark-mode) body:has(.dept-show-container),
+    html:not(.dark-mode) main:has(.dept-show-container) { background: #f8f7f5 !important; }
     @media (min-width: 640px) { .dept-show-container { padding: 32px; } }
     @media (min-width: 1024px) { .dept-show-container { padding: 40px; } }
 
