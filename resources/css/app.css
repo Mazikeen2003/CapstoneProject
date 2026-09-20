@@ -558,6 +558,12 @@ html.dark-mode .dept-stat-icon {
     color: #bfdbfe !important;
 }
 
+/* Preserve the dashboard metric palette in dark mode. */
+html.dark-mode .dept-stat-icon.blue { background: #dbeafe !important; color: #2563eb !important; }
+html.dark-mode .dept-stat-icon.amber { background: #fef3c7 !important; color: #d97706 !important; }
+html.dark-mode .dept-stat-icon.emerald { background: #d1fae5 !important; color: #047857 !important; }
+html.dark-mode .dept-stat-icon.rose { background: #ffe4e6 !important; color: #be123c !important; }
+
 html.dark-mode .dept-stat-trend {
     background: #064e3b !important;
     color: #a7f3d0 !important;
