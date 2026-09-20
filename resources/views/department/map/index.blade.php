@@ -1020,6 +1020,7 @@ html.dark-mode .dept-map-loading-icon {
 .custom-project-popup .project-popup-details { font-size: 0.75rem; color: #64748b; line-height: 1.5; }
 .dark .leaflet-container,
 html.dark-mode .leaflet-container { background: #0f0e1a; }
+#map .leaflet-tile-pane.dept-map-dark-tiles { filter: brightness(.26) saturate(.5) contrast(1.4) hue-rotate(165deg); }
 .dark .leaflet-popup-content-wrapper,
 html.dark-mode .leaflet-popup-content-wrapper,
 .dark .leaflet-popup-tip,
@@ -1511,8 +1512,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (dark) {
             if (!darkTiles) {
-                darkTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19, subdomains: 'abcd'
+                darkTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors', maxZoom: 19, minZoom: 11
                 });
             }
             currentTileLayer = darkTiles;
@@ -1535,6 +1536,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (card) card.style.background = '';
         }
         currentTileLayer.addTo(map);
+        map.getPane('tilePane').classList.toggle('dept-map-dark-tiles', dark);
     }
 
     document.getElementById('btnLightTiles').addEventListener('click', function() { setTileLayer(false); });

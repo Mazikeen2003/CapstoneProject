@@ -19,6 +19,10 @@
             backdrop-filter: blur(16px);
             background-color: rgba(248, 249, 255, 0.8);
         }
+        html.dark-mode .glass-nav {
+            background-color: rgba(15, 23, 42, 0.48) !important;
+            border-color: rgba(148, 163, 184, 0.18) !important;
+        }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
@@ -30,7 +34,7 @@
 <body class="public-layout bg-white font-sans text-slate-900 antialiased">
 
     {{-- ============ TOP NAV ============ --}}
-    <header class="sticky top-0 z-50 glass-nav w-full border-b border-slate-200/50">
+    <header class="fixed top-0 z-50 glass-nav w-full border-b border-slate-200/50">
         <nav class="relative flex items-center justify-between w-full mx-auto px-4 py-3 sm:px-6 sm:py-4 lg:px-12">
             <div class="flex items-center gap-2 sm:gap-4 min-w-0">
                 <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-9 w-9 sm:h-10 sm:w-10 shrink-0 rounded-lg object-contain" width="40" height="40" decoding="async" />

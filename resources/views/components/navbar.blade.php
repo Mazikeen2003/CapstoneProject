@@ -632,7 +632,7 @@ function initializeNavbarControls() {
     const accountMenu = document.getElementById('accountMenu');
     const storageKey = 'projectTrackerNotifications:' + (window.__currentRole || 'public');
     const cursorKey = 'projectTrackerNotificationCursor:' + (window.__currentRole || 'public');
-    const clearedAtKey = 'projectTrackerNotificationsClearedAt:' + (window.__currentRole || 'public');
+    const dismissedKey = 'projectTrackerNotificationWidgetDismissed:' + (window.__currentRole || 'public');
     const pendingCookieName = 'project_tracker_pending_notification:' + (window.__currentRole || 'public');
     const darkModeKey = 'projectTrackerDarkMode';
 
@@ -680,6 +680,13 @@ function initializeNavbarControls() {
     function saveStoredNotifications(notifications) {
         localStorage.setItem(storageKey, JSON.stringify(notifications));
     }
+    function getDismissedNotificationIds() {
+        try { return new Set(JSON.parse(localStorage.getItem(dismissedKey) || '[]')); }
+        catch (error) { return new Set(); }
+    }
+    function saveDismissedNotificationIds(ids) {
+        localStorage.setItem(dismissedKey, JSON.stringify([...ids]));
+    }
     function markNotificationAsRead(notificationId) {
         const notifications = getStoredNotifications();
         const notification = notifications.find(item => item.id === notificationId);
@@ -724,11 +731,8 @@ function initializeNavbarControls() {
             });
             if (!response.ok) return;
             const payload = await response.json();
-            const latestClearedAt = localStorage.getItem(clearedAtKey);
             const latestStoredNotifications = getStoredNotifications();
-            const fetchedNotifications = (payload.notifications || []).filter(notification => {
-                return !latestClearedAt || !notification.time || Date.parse(notification.time) > Date.parse(latestClearedAt);
-            });
+            const fetchedNotifications = payload.notifications || [];
             fetchedNotifications.forEach(notification => {
                 const existingIndex = latestStoredNotifications.findIndex(item => item.id === notification.id);
                 if (existingIndex >= 0) {
@@ -744,7 +748,8 @@ function initializeNavbarControls() {
         } catch (error) { console.warn('Unable to refresh notifications', error); }
     }
     function updateNotificationBadge() {
-        const unreadCount = getStoredNotifications().filter(n => !n.read).length;
+        const dismissedIds = getDismissedNotificationIds();
+        const unreadCount = getStoredNotifications().filter(n => !n.read && !dismissedIds.has(n.id)).length;
         if (unreadCount > 0) {
             notificationBadge.textContent = unreadCount;
             notificationBadge.style.display = 'flex';
@@ -753,10 +758,9 @@ function initializeNavbarControls() {
         }
     }
     function clearNotifications() {
-        saveStoredNotifications([]);
-        const clearedAt = new Date().toISOString();
-        localStorage.setItem(clearedAtKey, clearedAt);
-        localStorage.setItem(cursorKey, clearedAt);
+        const dismissedIds = getDismissedNotificationIds();
+        getStoredNotifications().filter(notification => !notification.read).forEach(notification => dismissedIds.add(notification.id));
+        saveDismissedNotificationIds(dismissedIds);
         renderNotifications();
         updateNotificationBadge();
     }
@@ -779,7 +783,8 @@ function initializeNavbarControls() {
         return new Date(timestamp).toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
     }
     function renderNotifications() {
-        const notifications = getStoredNotifications().filter(n => !n.read);
+        const dismissedIds = getDismissedNotificationIds();
+        const notifications = getStoredNotifications().filter(n => !n.read && !dismissedIds.has(n.id));
         if (notifications.length === 0) {
             notificationList.innerHTML = `
                 <div class="dept-notif-empty">

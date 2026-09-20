@@ -8,6 +8,7 @@
             <h1 class="mt-1 text-3xl font-bold text-slate-900">All Notifications</h1>
             <p class="mt-1 text-sm text-slate-500">Review activity relevant to your account and projects.</p>
         </div>
+        <button type="button" id="markAllNotificationsRead" class="rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50">Mark all as Read</button>
     </div>
 
     <div id="allNotificationsList" class="space-y-3">
@@ -20,8 +21,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const list = document.getElementById('allNotificationsList');
     const pagination = document.getElementById('notificationsPagination');
+    const markAllReadButton = document.getElementById('markAllNotificationsRead');
     const storageKey = 'projectTrackerNotifications:' + (window.__currentRole || 'public');
-    const clearedAtKey = 'projectTrackerNotificationsClearedAt:' + (window.__currentRole || 'public');
     const pageSize = 10;
     let currentPage = 1;
 
@@ -33,8 +34,19 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem(storageKey, JSON.stringify(notifications));
     }
 
+    function markAllAsRead() {
+        const notifications = getNotifications();
+        if (!notifications.length) return;
+
+        notifications.forEach(notification => { notification.read = true; });
+        saveNotifications(notifications);
+        render();
+        window.dispatchEvent(new Event('notifications:updated'));
+    }
+
     function render() {
         const notifications = getNotifications();
+        markAllReadButton.disabled = notifications.length === 0 || notifications.every(notification => notification.read);
         if (!notifications.length) {
             list.innerHTML = '<div class="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-500">No notifications yet.</div>';
             pagination.innerHTML = '';
@@ -87,19 +99,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const payload = await response.json();
             const existing = getNotifications();
             const byId = new Map(existing.map(notification => [notification.id, notification]));
-            const clearedAt = localStorage.getItem(clearedAtKey);
-            const clearedTimestamp = clearedAt ? Date.parse(clearedAt) : Number.NaN;
             (payload.notifications || []).forEach(notification => {
                 const previous = byId.get(notification.id);
-                const notificationTimestamp = Date.parse(notification.time || '');
-                const wasCleared = !Number.isNaN(clearedTimestamp)
-                    && !Number.isNaN(notificationTimestamp)
-                    && notificationTimestamp <= clearedTimestamp;
 
                 byId.set(notification.id, {
                     ...previous,
                     ...notification,
-                    read: Boolean(previous?.read || wasCleared),
+                    read: Boolean(previous?.read),
                 });
             });
             saveNotifications(Array.from(byId.values()).sort((a, b) => Date.parse(b.time || 0) - Date.parse(a.time || 0)));
@@ -110,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     render();
+    markAllReadButton.addEventListener('click', markAllAsRead);
     loadAllNotifications();
 });
 </script>
