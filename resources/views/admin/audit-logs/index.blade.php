@@ -172,6 +172,11 @@ html.dark-mode .admin-audit-logs .admin-audit-table-wrap {
     opacity: 0.5;
     cursor: not-allowed;
 }
+.admin-audit-page-btn.jump {
+    min-width: 40px;
+    justify-content: center;
+    padding: 9px 12px;
+}
 </style>
 
 <div class="admin-audit-logs space-y-6">
@@ -381,6 +386,12 @@ html.dark-mode .admin-audit-logs .admin-audit-table-wrap {
                 <span>Page {{ $logs->currentPage() }} of {{ $logs->lastPage() }}</span>
                 <div class="admin-audit-page-btns">
                     @if ($logs->onFirstPage())
+                        <span class="admin-audit-page-btn jump disabled" aria-label="First page" title="First page">&lt;&lt;</span>
+                    @else
+                        <a href="{{ $logs->url(1) }}" class="admin-audit-page-btn jump" aria-label="First page" title="First page">&lt;&lt;</a>
+                    @endif
+
+                    @if ($logs->onFirstPage())
                         <span class="admin-audit-page-btn disabled">Previous</span>
                     @else
                         <a href="{{ $logs->previousPageUrl() }}" class="admin-audit-page-btn">Previous</a>
@@ -390,6 +401,12 @@ html.dark-mode .admin-audit-logs .admin-audit-table-wrap {
                         <a href="{{ $logs->nextPageUrl() }}" class="admin-audit-page-btn">Next</a>
                     @else
                         <span class="admin-audit-page-btn disabled">Next</span>
+                    @endif
+
+                    @if ($logs->currentPage() === $logs->lastPage())
+                        <span class="admin-audit-page-btn jump disabled" aria-label="Last page" title="Last page">&gt;&gt;</span>
+                    @else
+                        <a href="{{ $logs->url($logs->lastPage()) }}" class="admin-audit-page-btn jump" aria-label="Last page" title="Last page">&gt;&gt;</a>
                     @endif
                 </div>
             </div>
