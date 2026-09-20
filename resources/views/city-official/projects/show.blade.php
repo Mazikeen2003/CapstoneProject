@@ -34,9 +34,9 @@
     --font-body: 'Inter', system-ui, sans-serif;
 }
 .dark .cs-wrap {
-    --cs-bg: #0f0e1a;
-    --cs-surface: #1a1929;
-    --cs-raised: #222136;
+    --cs-bg: #0f172a;
+    --cs-surface: #141321;
+    --cs-raised: #1e293b;
     --cs-ink: #f8fafc;
     --cs-ink-secondary: #cbd5e1;
     --cs-muted: #64748b;
@@ -49,9 +49,9 @@
     --cs-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
 }
 html.dark-mode .cs-wrap {
-    --cs-bg: #0f0e1a;
-    --cs-surface: #1a1929;
-    --cs-raised: #222136;
+    --cs-bg: #0f172a;
+    --cs-surface: #141321;
+    --cs-raised: #1e293b;
     --cs-ink: #f8fafc;
     --cs-ink-secondary: #cbd5e1;
     --cs-muted: #64748b;
@@ -74,7 +74,8 @@ html.dark-mode .cs-wrap {
 }
 html:not(.dark-mode) body:has(.cs-wrap) { background: #f8f7f5 !important; }
 html:not(.dark-mode) .cs-wrap { background: #f8f7f5; }
-html.dark-mode body:has(.cs-wrap) { background: #0f0e1a !important; }
+html.dark-mode body:has(.cs-wrap),
+html.dark-mode main:has(.cs-wrap) { background: #0f172a !important; }
 @media (min-width: 640px) { .cs-wrap { padding: 32px; } }
 @media (min-width: 1024px) { .cs-wrap { padding: 40px; } }
 
@@ -221,11 +222,11 @@ html:not(.dark-mode) .cs-detail-item,
 html:not(.dark-mode) .cs-timeline-content { background: #fafaf9; border-color: rgba(0,0,0,0.06); }
 html:not(.dark-mode) .cs-detail-item:hover,
 html:not(.dark-mode) .cs-timeline-content:hover { background: #fff; border-color: rgba(0,0,0,0.12); }
-html.dark-mode .cs-card { background: #1a1929; border-color: rgba(255,255,255,0.06); }
+html.dark-mode .cs-card { background: #141321; border-color: #020617; box-shadow: inset 0 0 0 1px #1e293b, 0 1px 3px rgba(0,0,0,.15), 0 4px 12px rgba(0,0,0,.1); }
 html.dark-mode .cs-detail-item,
-html.dark-mode .cs-timeline-content { background: #222136; border-color: rgba(255,255,255,0.06); }
+html.dark-mode .cs-timeline-content { background: #1e293b; border-color: #475569; }
 html.dark-mode .cs-detail-item:hover,
-html.dark-mode .cs-timeline-content:hover { background: #29283b; border-color: rgba(255,255,255,0.12); }
+html.dark-mode .cs-timeline-content:hover { background: #334155; border-color: #64748b; }
 .cs-card-header {
     display: flex;
     align-items: center;
