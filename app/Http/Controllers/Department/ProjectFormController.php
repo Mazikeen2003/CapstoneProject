@@ -51,15 +51,149 @@ class ProjectFormController extends Controller
             ->where('form_type', $type)
             ->firstOrFail();
 
+        $formTwoProjects = collect();
+        if ($type === 'form_2') {
+            $formTwoProjects = Project::query()
+                ->with([
+                    'forms' => fn ($query) => $query->where('form_type', 'form_2'),
+                ])
+                ->whereHas('forms', fn ($query) => $query->where('form_type', 'form_2'))
+                ->orderBy('project_name')
+                ->get();
+        }
+
+        $formThreeProjects = collect();
+        if ($type === 'form_3') {
+            $formThreeProjects = Project::query()
+                ->with([
+                    'barangay',
+                    'forms' => fn ($query) => $query->where('form_type', 'form_3'),
+                ])
+                ->whereHas('forms', fn ($query) => $query->where('form_type', 'form_3'))
+                ->orderBy('project_name')
+                ->get();
+        }
+
+        $formFourProjects = collect();
+        if ($type === 'form_4') {
+            $formFourProjects = Project::query()
+                ->with([
+                    'forms' => fn ($query) => $query->where('form_type', 'form_4'),
+                ])
+                ->whereHas('forms', fn ($query) => $query->where('form_type', 'form_4'))
+                ->orderBy('project_name')
+                ->get();
+        }
+
+        $formFiveProjects = collect();
+        if ($type === 'form_5') {
+            $formFiveProjects = Project::query()
+                ->with(['forms' => fn ($query) => $query->where('form_type', 'form_5')])
+                ->whereHas('forms', fn ($query) => $query->where('form_type', 'form_5'))
+                ->orderBy('project_name')
+                ->get();
+        }
+
+        $formSixProjects = collect();
+        if ($type === 'form_6') {
+            $formSixProjects = Project::query()
+                ->with([
+                    'barangay',
+                    'forms' => fn ($query) => $query->where('form_type', 'form_6'),
+                ])
+                ->whereHas('forms', fn ($query) => $query->where('form_type', 'form_6'))
+                ->orderBy('project_name')
+                ->get();
+        }
+
+        $formSevenProjects = collect();
+        if ($type === 'form_7') {
+            $formSevenProjects = Project::query()
+                ->with([
+                    'barangay',
+                    'forms' => fn ($query) => $query->where('form_type', 'form_7'),
+                ])
+                ->whereHas('forms', fn ($query) => $query->where('form_type', 'form_7'))
+                ->orderBy('project_name')
+                ->get();
+        }
+
+        $formEightProjects = collect();
+        if ($type === 'form_8') {
+            $formEightProjects = Project::query()
+                ->with([
+                    'barangay',
+                    'forms' => fn ($query) => $query->where('form_type', 'form_8'),
+                ])
+                ->whereHas('forms', fn ($query) => $query->where('form_type', 'form_8'))
+                ->orderBy('project_name')
+                ->get();
+        }
+
+        $formNineProjects = collect();
+        if ($type === 'form_9') {
+            $formNineProjects = Project::query()
+                ->with(['forms' => fn ($query) => $query->where('form_type', 'form_9')])
+                ->whereHas('forms', fn ($query) => $query->where('form_type', 'form_9'))
+                ->orderBy('project_name')
+                ->get();
+        }
+
+        $formTenProjects = collect();
+        if ($type === 'form_10') {
+            $formTenProjects = Project::query()
+                ->with(['forms' => fn ($query) => $query->where('form_type', 'form_10')])
+                ->whereHas('forms', fn ($query) => $query->where('form_type', 'form_10'))
+                ->orderBy('project_name')
+                ->get();
+        }
+
+        $formElevenProjects = collect();
+        if ($type === 'form_11') {
+            $formElevenProjects = Project::query()
+                ->with([
+                    'barangay',
+                    'forms' => fn ($query) => $query->where('form_type', 'form_11'),
+                ])
+                ->whereHas('forms', fn ($query) => $query->where('form_type', 'form_11'))
+                ->orderBy('project_name')
+                ->get();
+        }
+
         $data = [
             'project' => $project,
             'form' => $form,
+            'formTwoProjects' => $formTwoProjects,
+            'formThreeProjects' => $formThreeProjects,
+            'formFourProjects' => $formFourProjects,
+            'formFiveProjects' => $formFiveProjects,
+            'formSixProjects' => $formSixProjects,
+            'formSevenProjects' => $formSevenProjects,
+            'formEightProjects' => $formEightProjects,
+            'formNineProjects' => $formNineProjects,
+            'formTenProjects' => $formTenProjects,
+            'formElevenProjects' => $formElevenProjects,
             'form_title' => $this->formTitle($type),
             'field_labels' => $this->fieldLabelsFor($type),
             'form_number' => str_replace('form_', '', $type),
         ];
 
-        $pdf = Pdf::loadView('reports.project-form-pdf', $data);
+        $pdf = Pdf::loadView(
+            match ($type) {
+                'form_2' => 'reports.project-form-2-all-pdf',
+                'form_3' => 'reports.project-form-3-all-pdf',
+                'form_4' => 'reports.project-form-4-all-pdf',
+                'form_5' => 'reports.project-form-5-all-pdf',
+                'form_6' => 'reports.project-form-6-all-pdf',
+                'form_7' => 'reports.project-form-7-all-pdf',
+                'form_8' => 'reports.project-form-8-all-pdf',
+                'form_9' => 'reports.project-form-9-all-pdf',
+                'form_10' => 'reports.project-form-10-all-pdf',
+                'form_11' => 'reports.project-form-11-all-pdf',
+                default => 'reports.project-form-pdf',
+            },
+            $data
+        );
 
         // Forms 1–11 are official 13 x 8.5 inch RPMES grids. Legal
         // landscape keeps their many columns readable without shrinking text.
@@ -67,9 +201,21 @@ class ProjectFormController extends Controller
             $pdf->setPaper('legal', 'landscape');
         }
 
-        return $pdf->download(
-            'project_' . $project->project_code . '_form_' . $data['form_number'] . '_' . now()->format('Y-m-d') . '.pdf'
-        );
+        $filename = match ($type) {
+            'form_2' => 'all_projects_form_2_' . now()->format('Y-m-d') . '.pdf',
+            'form_3' => 'all_projects_form_3_' . now()->format('Y-m-d') . '.pdf',
+            'form_4' => 'all_projects_form_4_' . now()->format('Y-m-d') . '.pdf',
+            'form_5' => 'all_projects_form_5_' . now()->format('Y-m-d') . '.pdf',
+            'form_6' => 'all_projects_form_6_' . now()->format('Y-m-d') . '.pdf',
+            'form_7' => 'all_projects_form_7_' . now()->format('Y-m-d') . '.pdf',
+            'form_8' => 'all_projects_form_8_' . now()->format('Y-m-d') . '.pdf',
+            'form_9' => 'all_projects_form_9_' . now()->format('Y-m-d') . '.pdf',
+            'form_10' => 'all_projects_form_10_' . now()->format('Y-m-d') . '.pdf',
+            'form_11' => 'all_projects_form_11_' . now()->format('Y-m-d') . '.pdf',
+            default => 'project_' . $project->project_code . '_form_' . $data['form_number'] . '_' . now()->format('Y-m-d') . '.pdf',
+        };
+
+        return $pdf->download($filename);
     }
 
     public function update(Request $request, Project $project, string $type)

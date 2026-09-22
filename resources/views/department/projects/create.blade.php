@@ -959,24 +959,53 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
                     minZoom: 11
                 }).addTo(locationMap);
 
-                L.geoJSON(geojson, {
-                    style: { color: '#162347', weight: 1, fillOpacity: 0.05 }
-                }).addTo(locationMap);
-
                 locationMap.fitBounds(cabuyaoBounds, { padding: [16, 16] });
                 locationMap.setMinZoom(locationMap.getZoom());
 
                 const marker = L.marker(defaultLocation, { draggable: true }).addTo(locationMap);
 
                 const barangayLookup = {};
+                const normalizeBarangayName = name => String(name || '').trim().toLowerCase();
                 geojson.features.forEach(function(feature) {
                     if (!feature.properties || !feature.properties.name) return;
                     const layer = L.geoJSON(feature);
-                    barangayLookup[feature.properties.name] = {
+                    barangayLookup[normalizeBarangayName(feature.properties.name)] = {
                         bounds: layer.getBounds(),
                         center: layer.getBounds().getCenter(),
                     };
                 });
+
+                let selectedBarangayLayer = null;
+                const barangayPolygonLayer = L.geoJSON(geojson, {
+                    style: { color: '#162347', weight: 1, fillOpacity: 0.05 },
+                    onEachFeature: function(feature, layer) {
+                        const name = feature.properties?.name;
+                        if (!name) return;
+
+                        layer.bindTooltip(name, { sticky: true, className: 'barangay-tooltip' });
+                        layer.on({
+                            mouseover: function() {
+                                if (layer !== selectedBarangayLayer) layer.setStyle({ fillOpacity: 0.18, weight: 2 });
+                            },
+                            mouseout: function() {
+                                if (layer !== selectedBarangayLayer) barangayPolygonLayer.resetStyle(layer);
+                            },
+                            click: function(event) {
+                                L.DomEvent.stopPropagation(event);
+                                const option = Array.from(barangaySelect.options).find(function(candidate) {
+                                    return normalizeBarangayName(candidate.dataset.name) === normalizeBarangayName(name);
+                                });
+                                if (!option) return;
+
+                                if (selectedBarangayLayer) barangayPolygonLayer.resetStyle(selectedBarangayLayer);
+                                selectedBarangayLayer = layer;
+                                layer.setStyle({ color: '#059669', weight: 3, fillOpacity: 0.25 });
+                                barangaySelect.value = option.value;
+                                barangaySelect.dispatchEvent(new Event('change', { bubbles: true }));
+                            },
+                        });
+                    },
+                }).addTo(locationMap);
 
                 function setAddress(value, persist = true) {
                     addressDisplay.value = value;
@@ -1011,7 +1040,7 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
                         return;
                     }
 
-                    const match = barangayLookup[selectedName];
+                    const match = barangayLookup[normalizeBarangayName(selectedName)];
                     if (match) {
                         locationMap.fitBounds(match.bounds, { padding: [24, 24] });
                         setProjectLocation(match.center, `${selectedName}, Cabuyao City`);
