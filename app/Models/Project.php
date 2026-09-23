@@ -136,6 +136,20 @@ class Project extends Model
         return $this->start_date !== null && $this->start_date->copy()->startOfDay()->lte(today());
     }
 
+    public function statusBeforeOnHold(): ?string
+    {
+        $auditLog = AuditLog::query()
+            ->where('table_name', $this->getTable())
+            ->where('record_id', $this->getKey())
+            ->where('action', 'update')
+            ->latest('created_at')
+            ->latest('log_id')
+            ->get(['old_values', 'new_values'])
+            ->first(fn (AuditLog $log) => data_get($log->new_values, 'current_status') === 'On Hold');
+
+        return data_get($auditLog?->old_values, 'current_status');
+    }
+
     // Query Scopes
     public function scopeWithRelations($query)
     {

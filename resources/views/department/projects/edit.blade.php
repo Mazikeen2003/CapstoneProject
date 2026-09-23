@@ -1068,20 +1068,26 @@
                 <div class="dept-edit-row">
                     <div class="dept-field">
                         <label class="dept-field-label">Current Status</label>
-                        @php $status = old('current_status', $project->current_status); @endphp
+                        @php
+                            $status = old('current_status', $project->current_status);
+                            $statusSteps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation', 'Completed'];
+                            $currentStep = array_search($project->current_status, $statusSteps, true);
+                            $nextStatus = $currentStep !== false ? ($statusSteps[$currentStep + 1] ?? null) : null;
+                            $resumeStatus = $project->current_status === 'On Hold' ? $project->statusBeforeOnHold() : null;
+                            $statusOptions = $project->current_status === 'On Hold'
+                                ? array_filter([$resumeStatus, 'On Hold'])
+                                : array_filter([$project->current_status, $nextStatus]);
+                        @endphp
                         <div class="dept-status-wrap">
                             <span class="dept-status-dot" style="background: #f59e0b;"></span>
                             <select name="current_status" @disabled(! $projectHasStarted)>
                                 <option class="dept-status-group-option" disabled>Project Lifecycle</option>
-                                <option value="Proposed" @selected($status == 'Proposed')>Proposed</option>
-                                <option value="For bidding" @selected($status == 'For bidding')>For bidding</option>
-                                <option value="Bidding ongoing" @selected($status == 'Bidding ongoing')>Bidding ongoing</option>
-                                <option value="Award of contract" @selected($status == 'Award of contract')>Award of contract</option>
-                                <option value="Implementation" @selected($status == 'Implementation')>Implementation</option>
-                                <option value="Completed" @selected($status == 'Completed')>Completed</option>
+                                @foreach ($statusSteps as $lifecycleStatus)
+                                    <option value="{{ $lifecycleStatus }}" @selected($status == $lifecycleStatus) @disabled(! in_array($lifecycleStatus, $statusOptions, true))>{{ $lifecycleStatus }}</option>
+                                @endforeach
                                 <optgroup label="Other statuses">
-                                    <option value="On Hold" @selected($status == 'On Hold')>On Hold</option>
-                                    <option value="Cancelled" @selected($status == 'Cancelled')>Cancelled</option>
+                                    <option value="On Hold" @selected($status == 'On Hold') @disabled($project->current_status === 'Completed')>On Hold</option>
+                                    <option value="Cancelled" @selected($status == 'Cancelled') @disabled($project->current_status === 'Completed' || $project->current_status === 'Cancelled')>Cancelled</option>
                                 </optgroup>
                             </select>
                             @if (! $projectHasStarted)

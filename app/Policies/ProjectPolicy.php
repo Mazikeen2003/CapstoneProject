@@ -9,7 +9,7 @@ class ProjectPolicy
 {
     /**
      * Admin and City Official can view/manage everything.
-     * Department can only act on projects they created.
+     * Department users can access any project in the department workflow.
      * Barangay Official can only view projects in their own barangay.
      */
     public function viewAny(User $user): bool
@@ -44,8 +44,7 @@ class ProjectPolicy
     {
         return match ($user->role_slug) {
             'admin' => true,
-            'department' => $user->isDepartmentHead()
-                || ($project->created_by === $user->user_id && $user->hasPermission('can_edit_project')),
+            'department' => true,
             default => false,
         };
     }
@@ -54,8 +53,7 @@ class ProjectPolicy
     {
         return match ($user->role_slug) {
             'admin' => true,
-            'department' => $user->isDepartmentHead()
-                || ($project->created_by === $user->user_id && $user->hasPermission('can_delete_project')),
+            'department' => true,
             default => false,
         };
     }
@@ -87,6 +85,10 @@ class ProjectPolicy
             return true;
         }
 
-        return $user->isDepartmentHead() || $project->created_by === $user->user_id || $user->hasPermission('can_edit_project');
+        if ($user->role_slug === 'department') {
+            return true;
+        }
+
+        return false;
     }
 }

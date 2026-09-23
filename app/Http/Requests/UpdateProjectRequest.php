@@ -31,7 +31,25 @@ class UpdateProjectRequest extends FormRequest
             'start_date'           => ['nullable', 'date'],
             'target_end_date'      => ['nullable', 'date', 'after_or_equal:start_date'],
             'actual_end_date'      => ['nullable', 'date'],
-            'current_status'       => ['required', 'string', 'in:Proposed,For bidding,Bidding ongoing,Award of contract,Implementation,Completed,Planning,On Going,On Hold,Cancelled,Bidding - Success,Bidding - Failed,Procurement'],
+            'current_status'       => ['required', 'string', function ($attribute, $value, $fail) use ($projectId) {
+                $project = \App\Models\Project::find($projectId);
+                $statusSteps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation', 'Completed'];
+                $currentStep = array_search($project?->current_status, $statusSteps, true);
+                $allowedStatuses = match ($project?->current_status) {
+                    'On Hold' => array_filter([$project?->statusBeforeOnHold(), 'On Hold', 'Cancelled']),
+                    'Cancelled' => ['Cancelled'],
+                    default => array_filter([
+                        $project?->current_status,
+                        $currentStep !== false ? ($statusSteps[$currentStep + 1] ?? null) : null,
+                        $project?->current_status !== 'Completed' ? 'On Hold' : null,
+                        $project?->current_status !== 'Completed' ? 'Cancelled' : null,
+                    ]),
+                };
+
+                if (! in_array($value, $allowedStatuses, true)) {
+                    $fail('The project status can only remain the same or advance one phase at a time.');
+                }
+            }],
             'lifecycle_stage'      => ['nullable', 'integer', 'between:1,6'],
             'public_description'   => ['nullable', 'string', 'max:1000'],
             'remarks'              => ['nullable', 'string', 'max:2000'],
