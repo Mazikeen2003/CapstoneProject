@@ -1317,11 +1317,12 @@
                             @csrf
                             <div class="engineering-progress-field">
                                 <label for="engineering_update_date">Update date</label>
-                                <input id="engineering_update_date" type="date" name="update_date" value="{{ old('update_date', now()->format('Y-m-d')) }}" required @disabled(! $progressUpdatesEnabled)>
+                                <div id="engineering_update_date" aria-disabled="true" class="cursor-default rounded-md border border-gray-300 bg-gray-200 px-3 py-2 text-sm" style="color: #6b7280;">{{ now()->format('m/d/Y') }}</div>
+                                <input type="hidden" name="update_date" value="{{ now()->format('Y-m-d') }}">
                             </div>
                             <div class="engineering-progress-field">
                                 <label for="engineering_progress_percentage">Progress %</label>
-                                <input id="engineering_progress_percentage" type="number" name="progress_percentage" min="0" max="100" step="0.01" value="{{ old('progress_percentage', $project->latestUpdate?->progress_percentage ?? 0) }}" required @disabled(! $progressUpdatesEnabled)>
+                                <input id="engineering_progress_percentage" type="number" name="progress_percentage" min="{{ $project->latestUpdate?->progress_percentage ?? 0 }}" max="100" step="0.01" value="{{ old('progress_percentage', $project->latestUpdate?->progress_percentage ?? 0) }}" required @disabled(! $progressUpdatesEnabled)>
                             </div>
                             <button type="submit" class="engineering-progress-submit" @disabled(! $progressUpdatesEnabled)>Update</button>
                             <div class="engineering-progress-field full-width">

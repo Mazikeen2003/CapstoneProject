@@ -68,23 +68,35 @@ class ProjectController extends Controller
         }
 
         $validated = $request->validate([
-            'update_date' => ['required', 'date'],
+            'update_date' => ['required', 'date', 'before_or_equal:today'],
             'progress_percentage' => ['required', 'numeric', 'between:0,100'],
             'status' => ['nullable', 'string', 'in:Proposed,For bidding,Bidding ongoing,Award of contract,Implementation,Completed,Planning,On Going,On Hold,Cancelled,Bidding - Success,Bidding - Failed,Procurement'],
             'remarks' => ['nullable', 'string', 'max:2000'],
             'image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
         ]);
 
+        $currentProgress = (float) ($project->latestUpdate()->value('progress_percentage') ?? 0);
+        if ((float) $validated['progress_percentage'] < $currentProgress) {
+            return back()
+                ->withErrors(['progress_percentage' => "Progress cannot be lower than the current {$currentProgress}%."])
+                ->withInput();
+        }
+
         if ($request->hasFile('image')) {
             $validated['image_path'] = $request->file('image')->store('progress_updates', 'public');
         }
         unset($validated['image']);
+        $validated['update_date'] = today()->toDateString();
 
         $update = ProjectUpdate::create([
             ...$validated,
             'project_id' => $project->project_id,
             'user_id' => Auth::id(),
         ]);
+
+        if ((float) $validated['progress_percentage'] === 100.0) {
+            $project->update(['current_status' => 'Completed']);
+        }
 
         AuditLogService::logCreate($update);
         CacheService::invalidateGeoJsonCache();
