@@ -1326,12 +1326,12 @@
                             </div>
                             <button type="submit" class="engineering-progress-submit" @disabled(! $progressUpdatesEnabled)>Update</button>
                             <div class="engineering-progress-field full-width">
-                                <label for="engineering_remarks">Remarks</label>
-                                <textarea id="engineering_remarks" name="remarks" rows="2" maxlength="2000" placeholder="Add a progress note (optional)" @disabled(! $progressUpdatesEnabled)>{{ old('remarks') }}</textarea>
+                                <label for="engineering_remarks">Remarks <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span></label>
+                                <textarea id="engineering_remarks" name="remarks" rows="2" maxlength="2000" placeholder="Add a progress note" required @disabled(! $progressUpdatesEnabled)>{{ old('remarks') }}</textarea>
                             </div>
                             <div class="engineering-progress-field full-width">
-                                <label for="engineering_image">Progress image</label>
-                                <input id="engineering_image" type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" @disabled(! $progressUpdatesEnabled)>
+                                <label for="engineering_image">Progress image <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span></label>
+                                <input id="engineering_image" type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" required @disabled(! $progressUpdatesEnabled)>
                             </div>
                             @if (! $progressUpdatesEnabled)
                                 <div class="engineering-progress-disabled-note">
