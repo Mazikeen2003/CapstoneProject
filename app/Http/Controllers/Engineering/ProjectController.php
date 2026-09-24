@@ -71,8 +71,11 @@ class ProjectController extends Controller
             'update_date' => ['required', 'date', 'before_or_equal:today'],
             'progress_percentage' => ['required', 'numeric', 'between:0,100'],
             'status' => ['nullable', 'string', 'in:Proposed,For bidding,Bidding ongoing,Award of contract,Implementation,Completed,Planning,On Going,On Hold,Cancelled,Bidding - Success,Bidding - Failed,Procurement'],
-            'remarks' => ['nullable', 'string', 'max:2000'],
-            'image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
+            'remarks' => ['required', 'string', 'max:2000'],
+            'image' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
+        ], [
+            'remarks.required' => 'Remarks are required for every progress update.',
+            'image.required' => 'A progress image is required for every progress update.',
         ]);
 
         $currentProgress = (float) ($project->latestUpdate()->value('progress_percentage') ?? 0);
