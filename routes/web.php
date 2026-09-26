@@ -36,8 +36,21 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\NotificationPageController;
 use Dacastro4\LaravelGmail\Facade\LaravelGmail;
 
-Route::get('/oauth/gmail', function () {
-    return LaravelGmail::redirect();
+Route::get('/oauth/gmail/find-token', function () {
+    $base = storage_path('app');
+    $results = [];
+
+    $rii = new \RecursiveIteratorIterator(
+        new \RecursiveDirectoryIterator($base, \FilesystemIterator::SKIP_DOTS)
+    );
+
+    foreach ($rii as $file) {
+        if (stripos($file->getFilename(), 'gmail') !== false) {
+            $results[] = $file->getPathname();
+        }
+    }
+
+    return empty($results) ? 'No gmail-related files found under ' . $base : implode("\n", $results);
 });
 
 Route::get('/oauth/gmail/callback', function (\Illuminate\Http\Request $request) {
