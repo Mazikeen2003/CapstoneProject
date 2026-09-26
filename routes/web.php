@@ -34,6 +34,16 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use App\Http\Controllers\NotificationPageController;
+use Dacastro4\LaravelGmail\Facade\LaravelGmail;
+
+Route::get('/oauth/gmail', function () {
+    return LaravelGmail::redirect();
+});
+
+Route::get('/oauth/gmail/callback', function () {
+    LaravelGmail::makeToken();
+    return 'Gmail authorized successfully! You can remove these routes now.';
+});
 
 /*
 |--------------------------------------------------------------------------
