@@ -40,8 +40,8 @@ Route::get('/oauth/gmail', function () {
     return LaravelGmail::redirect();
 });
 
-Route::get('/oauth/gmail/callback', function () {
-    LaravelGmail::makeToken();
+Route::get('/oauth/gmail/callback', function (\Illuminate\Http\Request $request) {
+    LaravelGmail::makeToken($request->get('code'));
     return 'Gmail authorized successfully! You can remove these routes now.';
 });
 
