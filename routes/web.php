@@ -62,6 +62,14 @@ Route::get('/oauth/gmail/find-token', function () {
     return empty($results) ? 'No gmail-related files found under ' . $base : implode("\n", $results);
 });
 
+Route::get('/oauth/gmail/export-token', function () {
+    $path = storage_path('app/private/gmail/tokens/gmail-json.json');
+    if (!file_exists($path)) {
+        return 'File not found at ' . $path;
+    }
+    return base64_encode(file_get_contents($path));
+});
+
 /*
 |--------------------------------------------------------------------------
 | Rate Limiting
