@@ -41,7 +41,7 @@ Route::get('/oauth/gmail', function () {
 });
 
 Route::get('/oauth/gmail/callback', function (\Illuminate\Http\Request $request) {
-    LaravelGmail::makeToken($request->get('code'));
+    LaravelGmail::makeToken($request);
     return 'Gmail authorized successfully! You can remove these routes now.';
 });
 
