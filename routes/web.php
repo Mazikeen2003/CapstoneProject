@@ -45,6 +45,14 @@ Route::get('/oauth/gmail/callback', function (\Illuminate\Http\Request $request)
     return 'Gmail authorized successfully! You can remove these routes now.';
 });
 
+Route::get('/oauth/gmail/find-token', function () {
+    $dir = storage_path('app/gmail/tokens');
+    if (!is_dir($dir)) {
+        return 'Directory not found: ' . $dir;
+    }
+    return implode(', ', scandir($dir));
+});
+
 /*
 |--------------------------------------------------------------------------
 | Rate Limiting
