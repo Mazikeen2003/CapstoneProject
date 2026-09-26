@@ -36,6 +36,15 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\NotificationPageController;
 use Dacastro4\LaravelGmail\Facade\LaravelGmail;
 
+Route::get('/oauth/gmail', function () {
+    return LaravelGmail::redirect();
+});
+
+Route::get('/oauth/gmail/callback', function (\Illuminate\Http\Request $request) {
+    LaravelGmail::makeToken($request);
+    return 'Gmail authorized successfully! You can remove these routes now.';
+});
+
 Route::get('/oauth/gmail/find-token', function () {
     $base = storage_path('app');
     $results = [];
@@ -51,19 +60,6 @@ Route::get('/oauth/gmail/find-token', function () {
     }
 
     return empty($results) ? 'No gmail-related files found under ' . $base : implode("\n", $results);
-});
-
-Route::get('/oauth/gmail/callback', function (\Illuminate\Http\Request $request) {
-    LaravelGmail::makeToken($request);
-    return 'Gmail authorized successfully! You can remove these routes now.';
-});
-
-Route::get('/oauth/gmail/find-token', function () {
-    $dir = storage_path('app/gmail/tokens');
-    if (!is_dir($dir)) {
-        return 'Directory not found: ' . $dir;
-    }
-    return implode(', ', scandir($dir));
 });
 
 /*
