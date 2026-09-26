@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Dacastro4\LaravelGmail\Facade\LaravelGmail;
 
 class OtpController extends Controller
 {
@@ -146,7 +147,16 @@ class OtpController extends Controller
             'otp_expires_at' => now()->addMinutes(10),
         ])->save();
 
-        Mail::to($user->user_email)->send(new OtpMail($code, $user->first_name ?: $user->username));
+        $htmlBody = view('emails.otp', [
+            'code' => $code,
+            'username' => $user->first_name ?: $user->username,
+        ])->render();
+
+        LaravelGmail::message()
+            ->to($user->user_email)
+            ->subject('Your ProjectTracker Login Verification Code')
+            ->html($htmlBody)
+            ->send();
 
         RateLimiter::hit($this->resendThrottleKey($request), 600);
 
