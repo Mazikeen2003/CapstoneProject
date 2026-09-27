@@ -48,8 +48,14 @@ class ProjectController extends Controller
         };
 
         $projects = $query->paginate(10)->withQueryString();
+        $deletePermissionRequests = EditPermissionRequest::query()
+            ->where('requested_by', Auth::id())
+            ->where('request_type', 'delete')
+            ->whereIn('status', ['pending', 'approved'])
+            ->get()
+            ->keyBy('project_id');
 
-        return view('department.projects.index', compact('projects'));
+        return view('department.projects.index', compact('projects', 'deletePermissionRequests'));
     }
 
     public function create()
@@ -133,6 +139,7 @@ class ProjectController extends Controller
 
         $latestPermissionRequest = EditPermissionRequest::where('project_id', $project->project_id)
             ->where('requested_by', Auth::id())
+            ->where('request_type', 'edit')
             ->latest('created_at')
             ->first();
 
@@ -176,6 +183,7 @@ class ProjectController extends Controller
         $lockedFields = ['start_date', 'target_end_date', 'approved_budget', 'actual_budget'];
         $latestPermissionRequest = EditPermissionRequest::where('project_id', $project->project_id)
             ->where('requested_by', Auth::id())
+            ->where('request_type', 'edit')
             ->latest('created_at')
             ->first();
 
@@ -235,9 +243,23 @@ class ProjectController extends Controller
     public function destroy($id)
     {
         $project = Project::findOrFail($id);
+        $user = Auth::user();
 
-        if (Auth::user()?->cannot('delete', $project)) {
+        if ($user?->cannot('delete', $project)) {
             abort(403, 'This action is unauthorized.');
+        }
+
+        if (! $user->isDepartmentHead()) {
+            $permissionRequest = EditPermissionRequest::query()
+                ->where('project_id', $project->project_id)
+                ->where('requested_by', $user->user_id)
+                ->where('request_type', 'delete')
+                ->where('status', 'approved')
+                ->latest('created_at')
+                ->first();
+
+            abort_unless($permissionRequest, 403, 'Department Head approval is required before deleting this project.');
+            $permissionRequest->update(['status' => 'used', 'used_at' => now()]);
         }
 
         AuditLogService::logDelete($project);
@@ -250,6 +272,54 @@ class ProjectController extends Controller
         return redirect()
             ->route('department.projects.index')
             ->with('success', 'Project deleted.');
+    }
+
+    public function requestDeletePermission(Request $request, $id)
+    {
+        $project = Project::findOrFail($id);
+        $this->authorize('delete', $project);
+
+        if (Auth::user()->isDepartmentHead()) {
+            return redirect()->route('department.projects.index')->with('info', 'Department heads can delete projects directly.');
+        }
+
+        $existingRequest = EditPermissionRequest::query()
+            ->where('project_id', $project->project_id)
+            ->where('requested_by', Auth::id())
+            ->where('request_type', 'delete')
+            ->whereIn('status', ['pending', 'approved'])
+            ->exists();
+
+        if ($existingRequest) {
+            return redirect()->route('department.projects.index')->with('info', 'A deletion request is already pending or approved for this project.');
+        }
+
+        $validated = $request->validate([
+            'reason' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        EditPermissionRequest::create([
+            'project_id' => $project->project_id,
+            'requested_by' => Auth::id(),
+            'request_type' => 'delete',
+            'fields_requested' => ['delete_project'],
+            'reason' => $validated['reason'] ?? 'Department staff requested project deletion.',
+            'status' => 'pending',
+        ]);
+
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'delete_permission_requested',
+            'table_name' => 'projects',
+            'record_id' => $project->project_id,
+            'old_values' => null,
+            'new_values' => ['request_type' => 'delete', 'status' => 'pending'],
+            'full_name' => Auth::user()?->full_name ?: Auth::user()?->username,
+            'ip_address' => $request->ip(),
+            'created_at' => now(),
+        ]);
+
+        return redirect()->route('department.projects.index')->with('success', 'Deletion request sent to the department head for approval.');
     }
 
     private function storeProjectImage($file): string
@@ -274,6 +344,7 @@ class ProjectController extends Controller
         $permissionRequest = EditPermissionRequest::create([
             'project_id' => $project->project_id,
             'requested_by' => Auth::id(),
+            'request_type' => 'edit',
             'fields_requested' => $fieldsRequested,
             'reason' => $reason,
             'status' => 'pending',
