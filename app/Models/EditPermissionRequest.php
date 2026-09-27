@@ -12,6 +12,7 @@ class EditPermissionRequest extends Model
     protected $fillable = [
         'project_id',
         'requested_by',
+        'request_type',
         'fields_requested',
         'reason',
         'status',

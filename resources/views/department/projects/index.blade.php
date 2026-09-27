@@ -875,13 +875,22 @@
                                     <div class="dept-proj-actions">
                                         <a href="{{ route('department.projects.show', $project->project_id) }}" class="dept-proj-action dept-proj-action-view">View</a>
                                         <a href="{{ route('department.projects.edit', $project->project_id) }}" class="dept-proj-action dept-proj-action-edit">Edit</a>
-                                        <button type="button" class="dept-proj-action dept-proj-action-delete delete-trigger"
-                                            data-name="{{ $project->project_name }}"
-                                            data-code="{{ $project->project_code }}"
-                                            data-action="{{ route('department.projects.destroy', $project->project_id) }}"
-                                            data-token="{{ csrf_token() }}">
-                                            Delete
-                                        </button>
+                                        @if (Auth::user()->isDepartmentHead() || ($deletePermissionRequests->get($project->project_id)?->status === 'approved'))
+                                            <button type="button" class="dept-proj-action dept-proj-action-delete delete-trigger"
+                                                data-name="{{ $project->project_name }}"
+                                                data-code="{{ $project->project_code }}"
+                                                data-action="{{ route('department.projects.destroy', $project->project_id) }}"
+                                                data-token="{{ csrf_token() }}">
+                                                Delete
+                                            </button>
+                                        @elseif ($deletePermissionRequests->get($project->project_id)?->status === 'pending')
+                                            <span class="dept-proj-action" aria-label="Deletion approval pending">Approval pending</span>
+                                        @else
+                                            <form method="POST" action="{{ route('department.projects.request-delete-permission', $project->project_id) }}">
+                                                @csrf
+                                                <button type="submit" class="dept-proj-action dept-proj-action-delete">Request approval</button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                                 </tr>
@@ -946,13 +955,22 @@
                         <div class="dept-proj-mactions">
                             <a href="{{ route('department.projects.show', $project->project_id) }}" class="dept-proj-action dept-proj-action-view">View</a>
                             <a href="{{ route('department.projects.edit', $project->project_id) }}" class="dept-proj-action dept-proj-action-edit">Edit</a>
-                            <button type="button" class="dept-proj-action dept-proj-action-delete delete-trigger"
-                                data-name="{{ $project->project_name }}"
-                                data-code="{{ $project->project_code }}"
-                                data-action="{{ route('department.projects.destroy', $project->project_id) }}"
-                                data-token="{{ csrf_token() }}">
-                                Delete
-                            </button>
+                            @if (Auth::user()->isDepartmentHead() || ($deletePermissionRequests->get($project->project_id)?->status === 'approved'))
+                                <button type="button" class="dept-proj-action dept-proj-action-delete delete-trigger"
+                                    data-name="{{ $project->project_name }}"
+                                    data-code="{{ $project->project_code }}"
+                                    data-action="{{ route('department.projects.destroy', $project->project_id) }}"
+                                    data-token="{{ csrf_token() }}">
+                                    Delete
+                                </button>
+                            @elseif ($deletePermissionRequests->get($project->project_id)?->status === 'pending')
+                                <span class="dept-proj-action" aria-label="Deletion approval pending">Approval pending</span>
+                            @else
+                                <form method="POST" action="{{ route('department.projects.request-delete-permission', $project->project_id) }}">
+                                    @csrf
+                                    <button type="submit" class="dept-proj-action dept-proj-action-delete">Request approval</button>
+                                </form>
+                            @endif
                         </div>
                     </div>
                 @endforeach

@@ -146,6 +146,7 @@ Route::middleware(['auth', 'department'])
         Route::get('/dashboard', [DepartmentDashboard::class, 'index'])->name('dashboard');
 
         Route::post('/projects/{id}/request-edit-permission', [DepartmentProjectController::class, 'requestEditPermission'])->name('projects.request-edit-permission');
+        Route::post('/projects/{id}/request-delete-permission', [DepartmentProjectController::class, 'requestDeletePermission'])->name('projects.request-delete-permission');
 
         Route::resource('projects', DepartmentProjectController::class)->names([
             'index'   => 'projects.index',
