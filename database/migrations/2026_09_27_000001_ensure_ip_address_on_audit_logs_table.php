@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (! Schema::hasColumn('audit_logs', 'ip_address')) {
+        if (Schema::hasTable('audit_logs') && ! Schema::hasColumn('audit_logs', 'ip_address')) {
             Schema::table('audit_logs', function (Blueprint $table) {
                 $table->string('ip_address', 45)->nullable()->after('full_name');
             });
@@ -17,10 +17,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        if (Schema::hasColumn('audit_logs', 'ip_address')) {
-            Schema::table('audit_logs', function (Blueprint $table) {
-                $table->dropColumn('ip_address');
-            });
-        }
+        // The column may have existed before this repair migration ran.
     }
 };
