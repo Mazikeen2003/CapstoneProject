@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Mail\Transport\BrevoApiTransport;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Mail::extend('brevo', function (array $config = []) {
+            $apiKey = config('services.brevo.api_key');
+
+            if (! is_string($apiKey) || $apiKey === '') {
+                throw new \RuntimeException('BREVO_API_KEY must be configured to use the Brevo mail transport.');
+            }
+
+            return new BrevoApiTransport($apiKey);
+        });
+
         // Ensure a sane default for session driver in local environment
         // This forces file sessions when environment variables are not picked up.
         if (config('session.driver') !== 'file') {
