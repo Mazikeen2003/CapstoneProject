@@ -214,22 +214,44 @@ class ReportService
     {
         $user = Auth::user();
         $projects = Project::withoutRoleScope();
-
-        $dataQuality = [
-            'incomplete_projects' => (clone $projects)->where(function ($query) {
-                $query->whereNull('project_name')->orWhere('project_name', '')
+        $incompleteProjectCriteria = static function ($query): void {
+            $query->where(function ($query) {
+                $query->whereNull('project_code')->orWhere('project_code', '')
+                    ->orWhereNull('project_name')->orWhere('project_name', '')
                     ->orWhereNull('project_type')->orWhere('project_type', '')
                     ->orWhereNull('current_status')->orWhere('current_status', '');
-            })->count(),
-            'missing_coordinates' => (clone $projects)->where(fn($q) => $q->whereNull('latitude')->orWhereNull('longitude'))->count(),
-            'missing_budget' => (clone $projects)->where(function ($query) {
-                $query->whereNull('approved_budget')->orWhere('approved_budget', 0)
-                    ->orWhereNull('actual_budget')->orWhere('actual_budget', 0);
-            })->count(),
+            });
+        };
+        $missingBudgetCriteria = static function ($query): void {
+            $query->where(function ($query) {
+                $query->whereNull('approved_budget')->orWhere('approved_budget', 0);
+            });
+        };
+
+        $dataQuality = [
+            'incomplete_projects' => (clone $projects)->where($incompleteProjectCriteria)->count(),
+            'missing_coordinates' => (clone $projects)
+                ->whereNotNull('barangay_id')
+                ->where(function ($query) {
+                    $query->whereNull('latitude')->orWhereNull('longitude');
+                })
+                ->whereDoesntHave('barangay', function ($query) {
+                    $query->whereNotNull('latitude')->whereNotNull('longitude');
+                })
+                ->count(),
+            'missing_budget' => (clone $projects)->where($missingBudgetCriteria)->count(),
             'orphaned_projects' => (clone $projects)->where(function ($query) {
-                $query->whereNotNull('barangay_id')->whereDoesntHave('barangay');
-            })->orWhere(function ($query) {
-                $query->whereNotNull('created_by')->whereDoesntHave('creator');
+                $query->where(function ($query) {
+                    $query->whereNotNull('barangay_id')->whereDoesntHave('barangay');
+                })->orWhere(function ($query) {
+                    $query->whereNotNull('created_by')->whereDoesntHave('creator', function ($query) {
+                        $query->withTrashed();
+                    });
+                });
+            })->count(),
+            'projects_with_validation_issues' => (clone $projects)->where(function ($query) use ($incompleteProjectCriteria, $missingBudgetCriteria) {
+                $query->where($incompleteProjectCriteria)
+                    ->orWhere($missingBudgetCriteria);
             })->count(),
         ];
 
@@ -248,7 +270,7 @@ class ReportService
 
         $technicalMetrics = [
             'total_audit_logs' => AuditLog::count(),
-            'projects_with_validation_issues' => $dq['incomplete_projects'] + $dq['missing_budget'],
+            'projects_with_validation_issues' => $dq['projects_with_validation_issues'],
             'recent_audit_count' => AuditLog::where('created_at', '>=', now()->subDays(30))->count(),
             'recent_project_updates' => ProjectUpdate::where('created_at', '>=', now()->subDays(30))->count(),
         ];

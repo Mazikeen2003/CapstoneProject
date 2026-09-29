@@ -55,34 +55,11 @@ class ReportController extends Controller
             })->count(),
         ];
 
-        $projects = Project::withoutRoleScope();
-
-        $dataQuality = [
-            'incomplete_projects' => $projects->where(function ($query) {
-                $query->whereNull('project_name')
-                    ->orWhere('project_name', '')
-                    ->orWhereNull('project_type')
-                    ->orWhere('project_type', '')
-                    ->orWhereNull('current_status')
-                    ->orWhere('current_status', '');
-            })->count(),
-            'missing_coordinates' => $projects->whereNull('latitude')->orWhereNull('longitude')->count(),
-            'missing_budget' => $projects->where(function ($query) {
-                $query->whereNull('approved_budget')
-                    ->orWhere('approved_budget', 0)
-                    ->orWhereNull('actual_budget')
-                    ->orWhere('actual_budget', 0);
-            })->count(),
-            'orphaned_projects' => $projects->where(function ($query) {
-                $query->whereNotNull('barangay_id')->whereDoesntHave('barangay');
-            })->orWhere(function ($query) {
-                $query->whereNotNull('created_by')->whereDoesntHave('creator');
-            })->count(),
-        ];
+        $dataQuality = ReportService::generateDataQualityReport()['data_quality'];
 
         $technicalMetrics = [
             'total_audit_logs' => AuditLog::count(),
-            'projects_with_validation_issues' => $dataQuality['incomplete_projects'] + $dataQuality['missing_budget'],
+            'projects_with_validation_issues' => $dataQuality['projects_with_validation_issues'],
             'recent_audit_count' => AuditLog::where('created_at', '>=', now()->subDays(30))->count(),
             'recent_project_updates' => ProjectUpdate::where('created_at', '>=', now()->subDays(30))->count(),
         ];

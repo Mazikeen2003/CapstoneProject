@@ -36,19 +36,19 @@
 
     <div class="summary-box">
         <div class="summary-row">
-            <span class="summary-label">Incomplete Project Records</span>
+            <span class="summary-label">Projects Missing Required Fields</span>
             <span class="summary-value">{{ $data_quality['incomplete_projects'] }}</span>
         </div>
         <div class="summary-row">
-            <span class="summary-label">Missing Coordinates</span>
+            <span class="summary-label">Projects Without a Mappable Location</span>
             <span class="summary-value">{{ $data_quality['missing_coordinates'] }}</span>
         </div>
         <div class="summary-row">
-            <span class="summary-label">Missing Budget Data</span>
+            <span class="summary-label">Projects Missing Approved Budget</span>
             <span class="summary-value">{{ $data_quality['missing_budget'] }}</span>
         </div>
         <div class="summary-row">
-            <span class="summary-label">Orphaned/Potential Orphaned Records</span>
+            <span class="summary-label">Projects with Missing Related Records</span>
             <span class="summary-value">{{ $data_quality['orphaned_projects'] }}</span>
         </div>
     </div>
