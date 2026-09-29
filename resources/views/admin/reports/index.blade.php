@@ -319,19 +319,19 @@ html.dark-mode .admin-reports .admin-reports-subcard .text-3xl { color: #818cf8 
             <p class="mt-2 text-sm text-slate-500">Validation issues and orphaned records.</p>
             <div class="mt-5 space-y-3 text-sm text-slate-700">
                 <div class="admin-reports-subcard flex items-center justify-between rounded-2xl px-4 py-3">
-                    <span>Incomplete project records</span>
+                    <span>Projects missing required fields</span>
                     <span class="font-semibold">{{ $dataQuality['incomplete_projects'] }}</span>
                 </div>
                 <div class="admin-reports-subcard flex items-center justify-between rounded-2xl px-4 py-3">
-                    <span>Missing coordinates</span>
+                    <span>Projects without a mappable location</span>
                     <span class="font-semibold">{{ $dataQuality['missing_coordinates'] }}</span>
                 </div>
                 <div class="admin-reports-subcard flex items-center justify-between rounded-2xl px-4 py-3">
-                    <span>Missing budget data</span>
+                    <span>Projects missing approved budget</span>
                     <span class="font-semibold">{{ $dataQuality['missing_budget'] }}</span>
                 </div>
                 <div class="admin-reports-subcard flex items-center justify-between rounded-2xl px-4 py-3">
-                    <span>Potential orphaned records</span>
+                    <span>Projects with missing related records</span>
                     <span class="font-semibold">{{ $dataQuality['orphaned_projects'] }}</span>
                 </div>
             </div>
