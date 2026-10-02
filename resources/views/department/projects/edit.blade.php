@@ -958,7 +958,7 @@
                 </div>
                 <div>
                     <h2>Critical Project Details</h2>
-                    <p>These fields require Department Head approval to edit.</p>
+                    <p>Start date, target completion, and approved budget require Department Head approval to edit.</p>
                 </div>
             </div>
             <div class="dept-edit-card-body">
@@ -1031,23 +1031,35 @@
                                 @endif
                             </p>
                         </div>
-                        <div class="dept-field">
-                            <label class="dept-field-label">Actual Budget Spent</label>
-                            <div class="dept-input-wrap has-icon">
-                                <input type="text" inputmode="decimal" autocomplete="off" id="actual_budget" name="actual_budget" value="{{ old('actual_budget', $project->actual_budget) }}" @if(!($canEditCriticalFields ?? false) || ! $projectHasStarted) disabled @endif>
-                                <svg class="dept-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.582 1.453-1.318V5.253a1.875 1.875 0 00-1.453-1.318A60.062 60.062 0 002.25 1.575v17.175zM6.75 9.75l4.5 4.5 7.5-7.5"/></svg>
-                            </div>
-                            <p class="dept-locked-hint">
-                                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
-                                @if(! $projectHasStarted)
-                                    Expenditure updates are available on {{ $project->start_date?->format('M d, Y') ?? 'the project start date' }}.
-                                @elseif($canEditCriticalFields ?? false)
-                                    Permission approved — you can now edit this field.
-                                @else
-                                    Locked — requires Department Head approval
-                                @endif
-                            </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dept-edit-card dept-animate">
+            <div class="dept-edit-card-header">
+                <div class="dept-edit-card-icon emerald">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <h2>Expenditure Tracking</h2>
+                    <p>Record cumulative project spending. Department Head approval is not required.</p>
+                </div>
+            </div>
+            <div class="dept-edit-card-body">
+                <div class="dept-edit-row">
+                    <div class="dept-field">
+                        <label class="dept-field-label" for="actual_budget">Actual Budget Spent (calculated)</label>
+                        <div class="dept-input-wrap has-icon">
+                            <input type="text" id="actual_budget" value="{{ number_format($actualBudgetTotal, 2, '.', ',') }}" readonly aria-readonly="true">
+                            <svg class="dept-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.582 1.453-1.318V5.253a1.875 1.875 0 00-1.453-1.318A60.062 60.062 0 002.25 1.575v17.175zM6.75 9.75l4.5 4.5 7.5-7.5"/></svg>
                         </div>
+                        <p class="dept-field-hint">Calculated from categorized Actual entries and previously recorded spending.</p>
+                        @if ($actualBudgetTotal > (float) ($project->approved_budget ?? 0))
+                            <p role="alert" class="mt-3 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-800">
+                                Actual expenditure exceeds approved budget by ₱{{ number_format($actualBudgetTotal - (float) $project->approved_budget, 2) }}.
+                            </p>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -1141,6 +1153,7 @@
                 </div>
             </div>
         </div>
+
     </form>
 </div>
 
@@ -1179,7 +1192,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const projectForm = document.querySelector('form[action="{{ route('department.projects.update', $project->project_id) }}"]');
     const budgetInputs = [
         document.getElementById('approved_budget'),
-        document.getElementById('actual_budget'),
     ].filter(Boolean);
 
     function formatBudgetInput(input) {

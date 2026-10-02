@@ -488,7 +488,7 @@ body {
   <h3>Key Findings</h3>
   <ul class="findings-list">
     <li>The total approved budget across all projects is <strong>PHP {{ number_format($total_budget, 2) }}</strong>, of which <strong>PHP {{ number_format($total_spent, 2) }}</strong> has been spent.</li>
-    <li>The overall budget utilization rate is <strong>{{ round($utilizationRate, 1) }}%</strong>, which is considered {{ $utilClass == 'safe' ? 'healthy' : ($utilClass == 'warning' ? 'approaching threshold' : 'over budget') }}.</li>
+    <li>The overall budget utilization rate is <strong>{{ number_format($utilizationRate, 2) }}%</strong>, which is considered {{ $utilClass == 'safe' ? 'healthy' : ($utilClass == 'warning' ? 'approaching threshold' : 'over budget') }}.</li>
     <li>The remaining balance of <strong>PHP {{ number_format($totalRemaining, 2) }}</strong> represents {{ $total_budget > 0 ? round(($totalRemaining / $total_budget) * 100, 1) : 0 }}% of the total approved allocation.</li>
     <li>All financial data is published as public record in accordance with the City Transparency Portal mandate.</li>
   </ul>
@@ -552,7 +552,7 @@ body {
               <td class="{{ $fillClass }}" style="width: {{ $fillWidth }}%"></td>
               <td class="util-empty" style="width: {{ $emptyWidth }}%"></td>
             </tr></table>
-            <div class="util-label">{{ round($statusUtil, 1) }}%</div>
+            <div class="util-label">{{ number_format($statusUtil, 2) }}%</div>
           </td>
         </tr>
       @endforeach
@@ -610,13 +610,65 @@ body {
               <td class="{{ $bFillClass }}" style="width: {{ $bFillWidth }}%"></td>
               <td class="util-empty" style="width: {{ $bEmptyWidth }}%"></td>
             </tr></table>
-            <div class="util-label">{{ round($barangayUtil, 1) }}%</div>
+            <div class="util-label">{{ number_format($barangayUtil, 2) }}%</div>
           </td>
         </tr>
       @endforeach
     </tbody>
   </table>
 </div>
+
+@if (!empty($category_breakdown))
+<!-- Breakdown by Budget Category -->
+<div class="section-title">Breakdown by Budget Category</div>
+<p class="section-desc">Planned allocations, recorded expenditures, and remaining variance by category.</p>
+
+<div class="table-wrapper">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th class="text-right">Planned Amount</th>
+        <th class="text-right">Actual Spent</th>
+        <th class="text-right">Variance</th>
+      </tr>
+    </thead>
+    <tbody>
+      @php
+        $categoryPlannedTotal = 0;
+        $categoryActualTotal = 0;
+      @endphp
+      @foreach ($category_breakdown as $category => $totals)
+        @php
+          $categoryPlannedTotal += $totals['planned'];
+          $categoryActualTotal += $totals['actual'];
+        @endphp
+        <tr>
+          <td><strong>{{ $category }}</strong></td>
+          <td class="text-right"><span class="money">{{ number_format($totals['planned'], 2) }}</span></td>
+          <td class="text-right"><span class="money {{ $totals['variance'] < 0 ? 'money-spent' : '' }}">{{ number_format($totals['actual'], 2) }}</span></td>
+          <td class="text-right"><span class="money {{ $totals['variance'] < 0 ? 'money-spent' : 'money-balance' }}">{{ number_format($totals['variance'], 2) }}</span></td>
+        </tr>
+      @endforeach
+      @if (($unclassified_actual_spent ?? 0) > 0)
+        @php $categoryActualTotal += $unclassified_actual_spent; @endphp
+        <tr>
+          <td><strong>Previously recorded / unclassified</strong></td>
+          <td class="text-right"><span class="money">0.00</span></td>
+          <td class="text-right"><span class="money money-spent">{{ number_format($unclassified_actual_spent, 2) }}</span></td>
+          <td class="text-right"><span class="money money-spent">-{{ number_format($unclassified_actual_spent, 2) }}</span></td>
+        </tr>
+      @endif
+      <tr>
+        <td><strong>Grand Total</strong></td>
+        <td class="text-right"><strong>{{ number_format($categoryPlannedTotal, 2) }}</strong></td>
+        <td class="text-right"><strong>{{ number_format($categoryActualTotal, 2) }}</strong></td>
+        <td class="text-right"><strong>{{ number_format($categoryPlannedTotal - $categoryActualTotal, 2) }}</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+@endif
 
 <!-- Footer -->
 <div class="footer">

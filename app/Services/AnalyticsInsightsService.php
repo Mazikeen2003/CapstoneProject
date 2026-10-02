@@ -18,14 +18,14 @@ class AnalyticsInsightsService
         ];
         $lifecycleCounts = $projects->countBy(fn ($project) => $lifecycleAliases[$project->current_status] ?? $project->current_status);
         $totalBudget = (float) $projects->sum('approved_budget');
-        $totalSpent = (float) $projects->sum('actual_budget');
+        $totalSpent = (float) $projects->sum(fn ($project) => $project->actual_budget_total);
 
         return [
             'lifecycle_counts' => $lifecycleCounts,
             'overdue' => $activeProjects->filter(fn ($project) => $project->target_end_date && $project->target_end_date->lt($today))->count(),
             'due_soon' => $activeProjects->filter(fn ($project) => $project->target_end_date && $project->target_end_date->between($today, $today->copy()->addDays(30)))->count(),
             'without_updates' => $activeProjects->filter(fn ($project) => ! $project->latestUpdate)->count(),
-            'budget_utilization' => $totalBudget > 0 ? round(($totalSpent / $totalBudget) * 100, 1) : 0,
+            'budget_utilization' => $totalBudget > 0 ? ($totalSpent / $totalBudget) * 100 : 0,
         ];
     }
 }

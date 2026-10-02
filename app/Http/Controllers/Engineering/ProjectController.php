@@ -17,6 +17,12 @@ class ProjectController extends Controller
         $this->authorize('viewAny', Project::class);
 
         $query = Project::withoutRoleScope()->withBasicRelations();
+        $projectListView = $request->query('view') === 'archived' ? 'archived' : 'active';
+        if ($projectListView === 'archived') {
+            $query->where('current_status', 'Completed');
+        } else {
+            $query->where(fn ($statusQuery) => $statusQuery->whereNull('current_status')->orWhere('current_status', '!=', 'Completed'));
+        }
         $terminalStatuses = ['Completed', 'Cancelled', 'On Hold'];
 
         match ($request->query('filter')) {
@@ -35,15 +41,15 @@ class ProjectController extends Controller
             default => $query->latest('created_at'),
         };
 
-        $projects = $query->paginate(10)->withQueryString();
+        $projects = $query->withActualTransactionSum()->paginate(10)->withQueryString();
 
-        return view('engineering.projects.index', compact('projects'));
+        return view('engineering.projects.index', compact('projects', 'projectListView'));
     }
 
     public function show($id)
     {
         $project = Project::withoutRoleScope()
-            ->with(['barangay', 'latestUpdate', 'updates', 'budgetTransactions', 'forms'])
+            ->with(['barangay', 'latestUpdate', 'updates.user', 'budgetTransactions', 'forms'])
             ->findOrFail($id);
 
         $this->authorize('view', $project);
@@ -69,19 +75,23 @@ class ProjectController extends Controller
 
         $validated = $request->validate([
             'update_date' => ['required', 'date', 'before_or_equal:today'],
-            'progress_percentage' => ['required', 'numeric', 'between:0,100'],
+            'progress_increment' => ['required', 'numeric', 'gt:0', 'max:100'],
             'status' => ['nullable', 'string', 'in:Proposed,For bidding,Bidding ongoing,Award of contract,Implementation,Completed,Planning,On Going,On Hold,Cancelled,Bidding - Success,Bidding - Failed,Procurement'],
             'remarks' => ['required', 'string', 'max:2000'],
             'image' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
         ], [
+            'progress_increment.gt' => 'The progress amount to add must be greater than zero.',
             'remarks.required' => 'Remarks are required for every progress update.',
             'image.required' => 'A progress image is required for every progress update.',
         ]);
 
         $currentProgress = (float) ($project->latestUpdate()->value('progress_percentage') ?? 0);
-        if ((float) $validated['progress_percentage'] < $currentProgress) {
+        $progressIncrement = (float) $validated['progress_increment'];
+        $newProgressTotal = $currentProgress + $progressIncrement;
+
+        if ($newProgressTotal > 100) {
             return back()
-                ->withErrors(['progress_percentage' => "Progress cannot be lower than the current {$currentProgress}%."])
+                ->withErrors(['progress_increment' => 'Adding this amount would exceed 100% total progress. You can add up to ' . number_format(100 - $currentProgress, 2) . '%.'])
                 ->withInput();
         }
 
@@ -89,7 +99,9 @@ class ProjectController extends Controller
             $validated['image_path'] = $request->file('image')->store('progress_updates', 'public');
         }
         unset($validated['image']);
+        unset($validated['progress_increment']);
         $validated['update_date'] = today()->toDateString();
+        $validated['progress_percentage'] = $newProgressTotal;
 
         $update = ProjectUpdate::create([
             ...$validated,
@@ -97,7 +109,7 @@ class ProjectController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        if ((float) $validated['progress_percentage'] === 100.0) {
+        if ($newProgressTotal >= 100) {
             $project->update(['current_status' => 'Completed']);
         }
 

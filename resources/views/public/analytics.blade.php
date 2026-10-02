@@ -481,7 +481,7 @@
                 ['label' => 'Needs attention',   'value' => $insights['overdue'], 'caption' => 'Overdue projects', 'icon' => 'rose', 'accent' => 'accent-rose', 'symbol' => 'warning', 'color' => '#dc2626'],
                 ['label' => 'Coming up',         'value' => $insights['due_soon'], 'caption' => 'Due within 30 days', 'icon' => 'amber', 'accent' => 'accent-amber', 'symbol' => 'schedule', 'color' => '#d97706'],
                 ['label' => 'Missing updates',   'value' => $insights['without_updates'], 'caption' => 'Active projects', 'icon' => 'blue', 'accent' => 'accent-blue', 'symbol' => 'sync_problem', 'color' => '#2563eb'],
-                ['label' => 'Budget used',       'value' => number_format($insights['budget_utilization'], 1) . '%', 'caption' => 'Actual versus approved', 'icon' => 'emerald', 'accent' => 'accent-emerald', 'symbol' => 'trending_up', 'color' => '#059669'],
+                ['label' => 'Budget used',       'value' => number_format($insights['budget_utilization'], 2) . '%', 'caption' => 'Actual versus approved', 'icon' => 'emerald', 'accent' => 'accent-emerald', 'symbol' => 'trending_up', 'color' => '#059669'],
             ] as $insight)
                 <div class="an-card {{ $insight['accent'] }} an-animate p-5">
                     <div class="an-icon-chip {{ $insight['icon'] }} mb-3" style="width:38px;height:38px;">

@@ -148,7 +148,7 @@
                     'Status' => $project->current_status,
                     'Barangay' => $project->barangay->barangay_name ?? 'Citywide',
                     (in_array($project->current_status, ['Award of contract', 'Implementation', 'Completed'], true) ? 'Approved Budget' : 'Proposed Budget') => '₱' . number_format($project->approved_budget ?? 0, 2),
-                    'Actual Budget' => '₱' . number_format($project->actual_budget ?? 0, 2),
+                    'Actual Budget' => '₱' . number_format($project->actual_budget_total, 2),
                     'Start Date' => $project->start_date?->format('M d, Y') ?? '—',
                     'Target Completion' => $project->target_end_date?->format('M d, Y') ?? '—',
                     'Location' => $project->location_description ?? '—',
@@ -179,8 +179,9 @@
                     <input id="update_date" type="date" name="update_date" value="{{ old('update_date', now()->format('Y-m-d')) }}" required class="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-sm" style="border-color: #B2BEB5; color: black;">
                 </div>
                 <div>
-                    <label for="progress_percentage" class="block text-xs font-semibold text-gray-600">Progress %</label>
-                    <input id="progress_percentage" type="number" name="progress_percentage" min="0" max="100" value="{{ old('progress_percentage', $project->latestUpdate?->progress_percentage ?? 0) }}" required class="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-sm" style="border-color: #B2BEB5; color: black;">
+                    <label for="progress_increment" class="block text-xs font-semibold text-gray-600">Progress to add (%)</label>
+                    <input id="progress_increment" type="number" name="progress_increment" min="0.01" max="100" step="0.01" value="{{ old('progress_increment') }}" required class="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-sm" style="border-color: #B2BEB5; color: black;">
+                    @error('progress_increment')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
                 </div>
                 <div>
                     <label for="status" class="block text-xs font-semibold text-gray-600">Status</label>
@@ -192,7 +193,7 @@
                     </select>
                 </div>
                 <div class="flex items-end">
-                    <button type="submit" class="inline-flex w-full items-center justify-center rounded-md px-4 py-2 text-sm font-semibold" style="background-color: #c9a84c; color: #0f1e3d;">Update</button>
+                    <button type="submit" class="inline-flex w-full items-center justify-center rounded-md px-4 py-2 text-sm font-semibold" style="background-color: #c9a84c; color: #0f1e3d;">Add</button>
                 </div>
                 <div class="sm:col-span-2 lg:col-span-4">
                     <label for="remarks" class="block text-xs font-semibold text-gray-600">Remarks</label>
@@ -205,9 +206,21 @@
             <p class="text-sm text-gray-500">No updates logged yet.</p>
         @else
             <ul class="space-y-2">
-                @foreach ($project->updates as $update)
+                @php
+                    $engineeringUpdates = $project->updates->sortBy([
+                        ['update_date', 'desc'],
+                        ['update_id', 'desc'],
+                    ])->values();
+                @endphp
+                @foreach ($engineeringUpdates->take(1) as $update)
+                    @php
+                        $olderUpdate = $engineeringUpdates->get($loop->index + 1);
+                        $addedProgress = (float) ($update->progress_percentage ?? 0) - (float) ($olderUpdate?->progress_percentage ?? 0);
+                    @endphp
                     <li class="text-sm text-black border-b border-gray-100 pb-2">
-                        {{ $update->update_date?->format('M d, Y') }} — {{ $update->progress_percentage }}% — {{ $update->remarks ?? '' }}
+                        <strong>{{ $update->update_date?->format('M d, Y') ?? '—' }} — +{{ number_format(max(0, $addedProgress), 2) }}% added / {{ number_format((float) ($update->progress_percentage ?? 0), 2) }}% total</strong>
+                        <span class="block text-xs text-gray-500">Updated by {{ $update->user?->username ?? 'Unknown user' }}</span>
+                        <span class="block">{{ $update->remarks ?? '' }}</span>
                     </li>
                 @endforeach
             </ul>

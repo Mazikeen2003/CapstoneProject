@@ -10,7 +10,7 @@
     $timelineProgress = ($totalDays > 0) ? min(100, max(0, ($daysElapsed / $totalDays) * 100)) : 0;
     $reportedProgress = $project->latestUpdate?->progress_percentage;
     $reportedProgress = $reportedProgress !== null ? min(100, max(0, (float) $reportedProgress)) : null;
-    $actualBudgetDisplay = '₱' . number_format(round((float) ($project->actual_budget ?? 0)), 0);
+    $actualBudgetDisplay = '₱' . number_format(round($project->actual_budget_total), 0);
 @endphp
 
 <style>
@@ -816,6 +816,28 @@ html.dark-mode .bs-empty-icon { background: rgba(251,191,36,0.15); }
                     </div>
                 </div>
                 <div class="bs-card-body">
+                    <div class="bs-progress-mini mb-6 rounded-lg" style="background: var(--bs-raised); border: 1px solid var(--bs-line);">
+                        <div class="bs-progress-header">
+                            <span class="bs-progress-label">Timeline Progress</span>
+                            <span class="bs-progress-value">{{ number_format($timelineProgress, 1) }}%</span>
+                        </div>
+                        <div class="bs-progress-track">
+                            <div class="bs-progress-fill" style="width: {{ $timelineProgress }}%"></div>
+                        </div>
+                        <div class="bs-progress-block">
+                            <div class="bs-progress-header">
+                                <span class="bs-progress-label">Reported Progress</span>
+                                <span class="bs-progress-value">{{ $reportedProgress !== null ? number_format($reportedProgress, 1) . '%' : 'Not reported' }}</span>
+                            </div>
+                            <div class="bs-progress-track">
+                                <div class="bs-progress-fill" style="width: {{ $reportedProgress ?? 0 }}%"></div>
+                            </div>
+                        </div>
+                        <div class="bs-progress-footer">
+                            <span>Started {{ $project->start_date?->format('M d, Y') ?? '—' }}</span>
+                            <span>{{ max(0, $today->diffInDays($endDate, false)) }} days remaining</span>
+                        </div>
+                    </div>
                     @if ($project->updates->isEmpty())
                         <div class="bs-empty">
                             <div class="bs-empty-icon">
@@ -832,7 +854,11 @@ html.dark-mode .bs-empty-icon { background: rgba(251,191,36,0.15); }
                                     ['update_id', 'desc'],
                                 ])->values();
                             @endphp
-                            @foreach ($progressUpdates as $update)
+                            @foreach ($progressUpdates->take(1) as $update)
+                                @php
+                                    $olderUpdate = $progressUpdates->get($loop->index + 1);
+                                    $addedProgress = (float) ($update->progress_percentage ?? 0) - (float) ($olderUpdate?->progress_percentage ?? 0);
+                                @endphp
                                 <div class="bs-timeline-item {{ $loop->index > 0 ? 'completed' : '' }}">
                                     <div class="bs-timeline-dot"></div>
                                     <div class="bs-timeline-content">
@@ -840,7 +866,8 @@ html.dark-mode .bs-empty-icon { background: rgba(251,191,36,0.15); }
                                             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
                                             {{ $update->update_date?->format('M d, Y') ?? '—' }}
                                         </div>
-                                        <div class="bs-timeline-progress">{{ $update->progress_percentage }}% Complete</div>
+                                        <div class="bs-timeline-remarks">Updated by {{ $update->user?->username ?? 'Unknown user' }}</div>
+                                        <div class="bs-timeline-progress">+{{ number_format(max(0, $addedProgress), 2) }}% added · {{ number_format((float) ($update->progress_percentage ?? 0), 2) }}% total</div>
                                         @if ($update->image_path)
                                             <div class="bs-timeline-evidence">
                                                 <div class="bs-timeline-evidence-image">
@@ -862,32 +889,6 @@ html.dark-mode .bs-empty-icon { background: rgba(251,191,36,0.15); }
 
         <!-- RIGHT COLUMN (Sidebar) -->
         <div class="bs-sidebar">
-            <!-- Progress Mini Card -->
-            <div class="bs-card bs-animate">
-                <div class="bs-progress-mini">
-                    <div class="bs-progress-header">
-                        <span class="bs-progress-label">Timeline Progress</span>
-                        <span class="bs-progress-value">{{ number_format($timelineProgress, 1) }}%</span>
-                    </div>
-                    <div class="bs-progress-track">
-                        <div class="bs-progress-fill" style="width: {{ $timelineProgress }}%"></div>
-                    </div>
-                    <div class="bs-progress-block">
-                        <div class="bs-progress-header">
-                            <span class="bs-progress-label">Reported Progress</span>
-                            <span class="bs-progress-value">{{ $reportedProgress !== null ? number_format($reportedProgress, 1) . '%' : 'Not reported' }}</span>
-                        </div>
-                        <div class="bs-progress-track">
-                            <div class="bs-progress-fill" style="width: {{ $reportedProgress ?? 0 }}%"></div>
-                        </div>
-                    </div>
-                    <div class="bs-progress-footer">
-                        <span>Started {{ $project->start_date?->format('M d, Y') ?? '—' }}</span>
-                        <span>{{ max(0, $today->diffInDays($endDate, false)) }} days remaining</span>
-                    </div>
-                </div>
-            </div>
-
             <!-- Project Image -->
             @if($project->project_image)
                 <div class="bs-card bs-animate">

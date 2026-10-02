@@ -13,6 +13,12 @@ class ProjectController extends Controller
         $this->authorize('viewAny', Project::class);
 
         $query = Project::withBasicRelations();
+        $projectListView = $request->query('view') === 'archived' ? 'archived' : 'active';
+        if ($projectListView === 'archived') {
+            $query->where('current_status', 'Completed');
+        } else {
+            $query->where(fn ($statusQuery) => $statusQuery->whereNull('current_status')->orWhere('current_status', '!=', 'Completed'));
+        }
         $terminalStatuses = ['Completed', 'Cancelled', 'On Hold'];
 
         match ($request->query('filter')) {
@@ -31,9 +37,9 @@ class ProjectController extends Controller
             default => $query->latest('created_at'),
         };
 
-        $projects = $query->paginate(10)->withQueryString();
+        $projects = $query->withActualTransactionSum()->paginate(10)->withQueryString();
 
-        return view('barangay-official.projects.index', compact('projects'));
+        return view('barangay-official.projects.index', compact('projects', 'projectListView'));
     }
 
     public function show(Project $project)

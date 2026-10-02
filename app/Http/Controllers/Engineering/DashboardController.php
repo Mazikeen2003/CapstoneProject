@@ -11,14 +11,14 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $projects = Project::withoutRoleScope()->withBasicRelations()->with('latestUpdate')->get();
+        $projects = Project::withoutRoleScope()->withBasicRelations()->with('latestUpdate')->withActualTransactionSum()->get();
 
         $stats = [
             'total_projects' => $projects->count(),
             'ongoing' => $projects->whereNotIn('current_status', ['Completed', 'Cancelled', 'On Hold'])->count(),
             'completed' => $projects->where('current_status', 'Completed')->count(),
             'budget_allocated' => $projects->sum('approved_budget') ?? 0,
-            'budget_used' => $projects->sum('actual_budget') ?? 0,
+            'budget_used' => $projects->sum(fn (Project $project) => $project->actual_budget_total),
         ];
 
         $recentProjects = $projects->sortByDesc('created_at')->take(4);

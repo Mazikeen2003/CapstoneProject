@@ -22,6 +22,7 @@ class MapController
         $projects = Project::withoutRoleScope()
             ->withBasicRelations()
             ->withLocation()
+            ->withActualTransactionSum()
             ->get();
 
         return view('public.map', compact('projects'));
@@ -35,6 +36,7 @@ class MapController
         // Include every project status; eager-load barangay to avoid N+1.
         $projects = Project::withoutRoleScope()
             ->with(['barangay', 'latestUpdate'])
+            ->withActualTransactionSum()
             ->get();
 
         $features = $projects->map(function ($project) {
@@ -67,7 +69,7 @@ class MapController
                     'target_end_date'    => $project->target_end_date?->toDateString(),
                     'progress_percentage' => $project->latestUpdate?->progress_percentage,
                     'budget'             => $project->approved_budget ?? 0,
-                    'actual_budget'      => $project->actual_budget ?? 0,
+                    'actual_budget'      => $project->actual_budget_total,
                 ],
             ];
         })->filter()->values();
@@ -116,6 +118,7 @@ class MapController
         $projects = $barangay->projects()
             ->withoutGlobalScope(RoleScopedScope::class)
             ->with('latestUpdate')
+            ->withActualTransactionSum()
             ->whereNotNull('latitude')
             ->whereNotNull('longitude')
             ->get();
@@ -140,7 +143,7 @@ class MapController
                     'target_end_date'    => $project->target_end_date?->toDateString(),
                     'progress_percentage' => $project->latestUpdate?->progress_percentage,
                     'budget'             => $project->approved_budget ?? 0,
-                    'actual_budget'      => $project->actual_budget ?? 0,
+                    'actual_budget'      => $project->actual_budget_total,
                 ],
             ];
         });

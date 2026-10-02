@@ -1244,7 +1244,7 @@
                             <div class="dept-detail-content">
                                 <div class="dept-detail-label">Budget Spent</div>
                                 @php
-                                    $actualBudgetShort = $project->actual_budget ?? 0;
+                                    $actualBudgetShort = $project->actual_budget_total;
                                     $actualBudgetShort = $actualBudgetShort >= 1000000
                                         ? '₱' . number_format($actualBudgetShort / 1000000, 1) . 'M'
                                         : '₱' . number_format($actualBudgetShort, 0);
@@ -1301,6 +1301,22 @@
                 </div>
             </div>
 
+            @if ($projectRoutePrefix === 'department.projects')
+                @include('components.project-budget-breakdown', ['project' => $project, 'allowEntry' => true])
+                <div class="mt-6"></div>
+            @endif
+
+            @php
+                $startDate = \Carbon\Carbon::parse($project->start_date);
+                $endDate = \Carbon\Carbon::parse($project->target_end_date);
+                $today = \Carbon\Carbon::today();
+                $totalDays = $startDate->diffInDays($endDate);
+                $daysElapsed = $startDate->diffInDays($today);
+                $timelineProgress = ($totalDays > 0) ? min(100, max(0, ($daysElapsed / $totalDays) * 100)) : 0;
+                $reportedProgress = $project->latestUpdate?->progress_percentage;
+                $reportedProgress = $reportedProgress !== null ? min(100, max(0, (float) $reportedProgress)) : null;
+            @endphp
+
             <!-- Progress Updates -->
             <div class="dept-show-card dept-animate">
                 <div class="dept-show-card-header">
@@ -1321,10 +1337,11 @@
                                 <input type="hidden" name="update_date" value="{{ now()->format('Y-m-d') }}">
                             </div>
                             <div class="engineering-progress-field">
-                                <label for="engineering_progress_percentage">Progress %</label>
-                                <input id="engineering_progress_percentage" type="number" name="progress_percentage" min="{{ $project->latestUpdate?->progress_percentage ?? 0 }}" max="100" step="0.01" value="{{ old('progress_percentage', $project->latestUpdate?->progress_percentage ?? 0) }}" required @disabled(! $progressUpdatesEnabled)>
+                                <label for="engineering_progress_increment">Progress to add (%)</label>
+                                <input id="engineering_progress_increment" type="number" name="progress_increment" min="0.01" max="100" step="0.01" value="{{ old('progress_increment') }}" required @disabled(! $progressUpdatesEnabled)>
+                                @error('progress_increment')<p class="text-xs text-red-700">{{ $message }}</p>@enderror
                             </div>
-                            <button type="submit" class="engineering-progress-submit" @disabled(! $progressUpdatesEnabled)>Update</button>
+                            <button type="submit" class="engineering-progress-submit" @disabled(! $progressUpdatesEnabled)>Add</button>
                             <div class="engineering-progress-field full-width">
                                 <label for="engineering_remarks">Remarks <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span></label>
                                 <textarea id="engineering_remarks" name="remarks" rows="2" maxlength="2000" placeholder="Add a progress note" required @disabled(! $progressUpdatesEnabled)>{{ old('remarks') }}</textarea>
@@ -1346,6 +1363,28 @@
                     @endif
                 </div>
                 <div class="dept-show-card-body">
+                    <div class="dept-progress-mini mb-6 rounded-lg" style="background: var(--ds-raised); border: 1px solid var(--ds-line);">
+                        <div class="dept-progress-mini-header">
+                            <span class="dept-progress-mini-label">Timeline Progress</span>
+                            <span class="dept-progress-mini-value">{{ number_format($timelineProgress, 1) }}%</span>
+                        </div>
+                        <div class="dept-progress-mini-track">
+                            <div class="dept-progress-mini-fill" style="width: {{ $timelineProgress }}%"></div>
+                        </div>
+                        <div class="dept-progress-mini-block">
+                            <div class="dept-progress-mini-header">
+                                <span class="dept-progress-mini-label">Reported Progress</span>
+                                <span class="dept-progress-mini-value">{{ $reportedProgress !== null ? number_format($reportedProgress, 1) . '%' : 'Not reported' }}</span>
+                            </div>
+                            <div class="dept-progress-mini-track">
+                                <div class="dept-progress-mini-fill" style="width: {{ $reportedProgress ?? 0 }}%"></div>
+                            </div>
+                        </div>
+                        <div class="dept-progress-mini-footer">
+                            <span>Started {{ $project->start_date?->format('M d, Y') ?? '—' }}</span>
+                            <span>{{ max(0, $today->diffInDays($endDate, false)) }} days remaining</span>
+                        </div>
+                    </div>
                     @if ($project->updates->isEmpty())
                         <div class="dept-empty-state">
                             <div class="dept-empty-state-icon">
@@ -1362,7 +1401,11 @@
                             ])->values();
                         @endphp
                         <div class="dept-timeline">
-                            @foreach ($progressUpdates as $update)
+                            @foreach ($progressUpdates->take(1) as $update)
+                                @php
+                                    $olderUpdate = $progressUpdates->get($loop->index + 1);
+                                    $addedProgress = (float) $update->progress_percentage - (float) ($olderUpdate?->progress_percentage ?? 0);
+                                @endphp
                                 <div class="dept-timeline-item {{ $loop->index > 0 ? 'completed' : '' }}">
                                     <div class="dept-timeline-dot"></div>
                                     <div class="dept-timeline-content">
@@ -1370,7 +1413,8 @@
                                             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
                                             {{ $update->update_date?->format('M d, Y') ?? '—' }}
                                         </div>
-                                        <div class="dept-timeline-progress">{{ $update->progress_percentage }}% Complete</div>
+                                        <div class="dept-timeline-remarks">Updated by {{ $update->user?->username ?? 'Unknown user' }}</div>
+                                        <div class="dept-timeline-progress">+{{ number_format(max(0, $addedProgress), 2) }}% added · {{ number_format((float) $update->progress_percentage, 2) }}% total</div>
                                         @if ($update->image_path)
                                             <div class="dept-timeline-evidence">
                                                 <div class="dept-timeline-evidence-image">
@@ -1392,44 +1436,6 @@
 
         <!-- RIGHT COLUMN (Sidebar) -->
         <div class="dept-show-sidebar">
-
-            @php
-                $startDate = \Carbon\Carbon::parse($project->start_date);
-                $endDate = \Carbon\Carbon::parse($project->target_end_date);
-                $today = \Carbon\Carbon::today();
-                $totalDays = $startDate->diffInDays($endDate);
-                $daysElapsed = $startDate->diffInDays($today);
-                $timelineProgress = ($totalDays > 0) ? min(100, max(0, ($daysElapsed / $totalDays) * 100)) : 0;
-                $reportedProgress = $project->latestUpdate?->progress_percentage;
-                $reportedProgress = $reportedProgress !== null ? min(100, max(0, (float) $reportedProgress)) : null;
-            @endphp
-
-            <!-- Progress Mini Card -->
-            <div class="dept-show-card dept-animate">
-                <div class="dept-progress-mini">
-                    <div class="dept-progress-mini-header">
-                        <span class="dept-progress-mini-label">Timeline Progress</span>
-                        <span class="dept-progress-mini-value">{{ number_format($timelineProgress, 1) }}%</span>
-                    </div>
-                    <div class="dept-progress-mini-track">
-                        <div class="dept-progress-mini-fill" style="width: {{ $timelineProgress }}%"></div>
-                    </div>
-                    <div class="dept-progress-mini-block">
-                        <div class="dept-progress-mini-header">
-                            <span class="dept-progress-mini-label">Reported Progress</span>
-                            <span class="dept-progress-mini-value">{{ $reportedProgress !== null ? number_format($reportedProgress, 1) . '%' : 'Not reported' }}</span>
-                        </div>
-                        <div class="dept-progress-mini-track">
-                            <div class="dept-progress-mini-fill" style="width: {{ $reportedProgress ?? 0 }}%"></div>
-                        </div>
-                    </div>
-                    <div class="dept-progress-mini-footer">
-                        <span>Started {{ $project->start_date?->format('M d, Y') ?? '—' }}</span>
-                        <span>{{ max(0, $today->diffInDays($endDate, false)) }} days remaining</span>
-                    </div>
-                </div>
-            </div>
-
             <!-- Government Forms -->
             <div class="dept-show-card dept-animate">
                 <div class="dept-show-card-header">

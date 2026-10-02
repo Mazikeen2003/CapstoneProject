@@ -15,6 +15,7 @@ class AnalyticsController
         $projects = Project::withoutRoleScope()
             ->withBasicRelations()
             ->with('latestUpdate')
+            ->withActualTransactionSum()
             ->get();
         $availableYears = collect(range(now()->year, 2000));
         $statusYear = $request->query('status_year');
@@ -31,13 +32,13 @@ class AnalyticsController
             'on_hold'         => $projects->where('current_status', 'On Hold')->count(),
             'planning'        => $projects->whereIn('current_status', ['Proposed', 'Planning'])->count(),
             'total_budget'    => $projects->sum('approved_budget') ?? 0,
-            'total_spent'     => $projects->sum('actual_budget') ?? 0,
+            'total_spent'     => $projects->sum(fn (Project $project) => $project->actual_budget_total),
         ];
 
         $byStatus = $statusProjects->groupBy('current_status')->map(fn($group) => [
             'count'  => $group->count(),
             'budget' => $group->sum('approved_budget'),
-            'spent'  => $group->sum('actual_budget'),
+            'spent'  => $group->sum(fn (Project $project) => $project->actual_budget_total),
         ]);
 
         $byBarangay = $budgetProjects->groupBy(fn($p) => $p->barangay?->barangay_name ?? 'Citywide')
@@ -48,7 +49,7 @@ class AnalyticsController
             ->sortByDesc('budget')
             ->take(10);
 
-        $budgetStats = ['total_budget' => $budgetProjects->sum('approved_budget') ?? 0, 'total_spent' => $budgetProjects->sum('actual_budget') ?? 0];
+        $budgetStats = ['total_budget' => $budgetProjects->sum('approved_budget') ?? 0, 'total_spent' => $budgetProjects->sum(fn (Project $project) => $project->actual_budget_total)];
         $insights = AnalyticsInsightsService::summarize($projects);
 
         $portalVisits = PortalVisit::query()->orderBy('visited_at');
