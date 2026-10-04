@@ -122,6 +122,12 @@ class Project extends Model
         return $this->hasMany(BudgetTransaction::class, 'project_id', 'project_id');
     }
 
+    public function stageDocuments()
+    {
+        return $this->hasMany(ProjectStageDocument::class, 'project_id', 'project_id')
+            ->orderByDesc('created_at');
+    }
+
     public function getActualBudgetTotalAttribute(): float
     {
         $legacyTotal = (float) ($this->attributes['actual_budget'] ?? 0);

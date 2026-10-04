@@ -892,10 +892,7 @@
                                         @elseif ($deletePermissionRequests->get($project->project_id)?->status === 'pending')
                                             <span class="dept-proj-action" aria-label="Deletion approval pending">Approval pending</span>
                                         @else
-                                            <form method="POST" action="{{ route('department.projects.request-delete-permission', $project->project_id) }}">
-                                                @csrf
-                                                <button type="submit" class="dept-proj-action dept-proj-action-delete">Request approval</button>
-                                            </form>
+                                            <button type="button" class="dept-proj-action dept-proj-action-delete delete-request-trigger" data-action="{{ route('department.projects.request-delete-permission', $project->project_id) }}">Delete</button>
                                         @endif
                                     </div>
                                 </td>
@@ -978,10 +975,7 @@
                             @elseif ($deletePermissionRequests->get($project->project_id)?->status === 'pending')
                                 <span class="dept-proj-action" aria-label="Deletion approval pending">Approval pending</span>
                             @else
-                                <form method="POST" action="{{ route('department.projects.request-delete-permission', $project->project_id) }}">
-                                    @csrf
-                                    <button type="submit" class="dept-proj-action dept-proj-action-delete">Request approval</button>
-                                </form>
+                                <button type="button" class="dept-proj-action dept-proj-action-delete delete-request-trigger" data-action="{{ route('department.projects.request-delete-permission', $project->project_id) }}">Delete</button>
                             @endif
                         </div>
                     </div>
@@ -998,6 +992,7 @@
         <div class="dept-proj-modalicon">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
         </div>
+
         <h3 class="dept-proj-modaltitle">Delete Project?</h3>
         <p class="dept-proj-modaldesc" id="deleteModalDescription">This action cannot be undone. The project and all associated data will be permanently removed.</p>
         <form id="deleteProjectForm" method="POST" class="dept-proj-modalactions">
@@ -1011,6 +1006,24 @@
     </div>
 </div>
 
+<dialog id="deletePermissionDialog" class="w-full max-w-lg rounded-2xl p-0 shadow-2xl backdrop:bg-slate-950/60">
+    <form method="POST" id="deletePermissionForm" class="space-y-4 p-6">
+        @csrf
+        <div>
+            <h2 class="text-xl font-bold text-slate-900">Request project deletion</h2>
+            <p class="mt-2 text-sm text-slate-600">This will send a request to the department head. The project will not be deleted until the request is approved.</p>
+        </div>
+        <div>
+            <label for="deletePermissionReason" class="mb-1 block text-sm font-semibold text-slate-700">Reason (optional)</label>
+            <textarea id="deletePermissionReason" name="reason" rows="3" maxlength="2000" class="w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-amber-500 focus:ring-amber-500" placeholder="Explain why the project should be deleted."></textarea>
+        </div>
+        <div class="flex justify-end gap-2">
+            <button type="button" id="cancelDeletePermission" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700">Cancel</button>
+            <button type="submit" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Send request</button>
+        </div>
+    </form>
+</dialog>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const modal = document.getElementById('deleteConfirmModal');
@@ -1018,6 +1031,9 @@
         const cancelBtn = document.getElementById('cancelDeleteBtn');
         const confirmBtn = document.getElementById('confirmDeleteBtn');
         const deleteForm = document.getElementById('deleteProjectForm');
+        const deletePermissionDialog = document.getElementById('deletePermissionDialog');
+        const deletePermissionForm = document.getElementById('deletePermissionForm');
+        const deletePermissionReason = document.getElementById('deletePermissionReason');
         const searchInput = document.getElementById('projectSearch');
         const statusFilter = document.getElementById('projectStatusFilter');
         const projectRows = document.querySelectorAll('.project-row');
@@ -1053,6 +1069,19 @@
 
                 modal.classList.add('show');
             });
+
+        });
+
+        document.querySelectorAll('.delete-request-trigger').forEach(function (button) {
+            button.addEventListener('click', function () {
+                deletePermissionForm.action = button.dataset.action;
+                deletePermissionReason.value = '';
+                deletePermissionDialog.showModal();
+                deletePermissionReason.focus();
+            });
+        });
+        document.getElementById('cancelDeletePermission').addEventListener('click', function () {
+            deletePermissionDialog.close();
         });
 
         function closeModal() {

@@ -12,6 +12,7 @@ use App\Http\Controllers\Department\MapController as DepartmentMapController;
 use App\Http\Controllers\Department\AnalyticsController as DepartmentAnalyticsController;
 use App\Http\Controllers\Department\ReportExportController as DepartmentReportController;
 use App\Http\Controllers\Department\ProjectFormController as DepartmentProjectFormController;
+use App\Http\Controllers\Department\ProjectStageDocumentController as DepartmentProjectStageDocumentController;
 use App\Http\Controllers\Engineering\DashboardController as EngineeringDashboard;
 use App\Http\Controllers\Engineering\ProjectController as EngineeringProjectController;
 use App\Http\Controllers\Engineering\MapController as EngineeringMapController;
@@ -148,6 +149,9 @@ Route::middleware(['auth', 'department'])
         Route::post('/projects/{id}/request-edit-permission', [DepartmentProjectController::class, 'requestEditPermission'])->name('projects.request-edit-permission');
         Route::post('/projects/{id}/request-delete-permission', [DepartmentProjectController::class, 'requestDeletePermission'])->name('projects.request-delete-permission');
         Route::post('/projects/{id}/budget-transactions', [DepartmentProjectController::class, 'storeBudgetTransaction'])->name('projects.budget-transactions.store');
+        Route::post('/projects/{project}/stage-documents', [DepartmentProjectStageDocumentController::class, 'store'])->name('projects.stage-documents.store');
+        Route::get('/projects/{project}/stage-documents/{document}/view', [DepartmentProjectStageDocumentController::class, 'view'])->name('projects.stage-documents.view');
+        Route::get('/projects/{project}/stage-documents/{document}/download', [DepartmentProjectStageDocumentController::class, 'download'])->name('projects.stage-documents.download');
 
         Route::resource('projects', DepartmentProjectController::class)->names([
             'index'   => 'projects.index',

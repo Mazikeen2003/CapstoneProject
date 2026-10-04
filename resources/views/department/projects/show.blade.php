@@ -1302,6 +1302,7 @@
             </div>
 
             @if ($projectRoutePrefix === 'department.projects')
+                @include('components.project-stage-documents', ['project' => $project, 'allowUpload' => true])
                 @include('components.project-budget-breakdown', ['project' => $project, 'allowEntry' => true])
                 <div class="mt-6"></div>
             @endif
