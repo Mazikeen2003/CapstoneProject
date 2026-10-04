@@ -689,6 +689,17 @@
     </style>
 
     <style>
+        .public-map-project-search { border-color: #cbd5e1; }
+        html.dark-mode .public-map-project-search,
+        .dark .public-map-project-search {
+            border-color: #475569;
+            background: #0f172a;
+            color: #f8fafc;
+            color-scheme: dark;
+        }
+        html.dark-mode .public-map-project-search::placeholder,
+        .dark .public-map-project-search::placeholder { color: #94a3b8; }
+
         /* Constrain project details sidebar on wide screens so a single project card
            doesn't expand to cover most of the viewport. Keep small-screen behavior unchanged. */
         @media (min-width: 1024px) {
@@ -790,6 +801,8 @@
                         <h2 class="text-lg font-bold text-black">Projects Overview</h2>
                         <p class="text-sm text-gray-500 mt-1">Tap a barangay on the map or browse all projects.</p>
                     </div>
+                    <label for="publicProjectSearch" class="sr-only">Search public projects</label>
+                    <input id="publicProjectSearch" type="search" autocomplete="off" placeholder="Search projects, status, type, or barangay…" class="public-map-project-search mt-4 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/30">
                     <div id="departmentSidebarAction" class="mt-4"></div>
                 </div>
                 <div id="departmentProjectList" class="space-y-4 overflow-y-auto bg-slate-50 p-4 min-h-0 flex-1" aria-live="polite"><div class="p-6 text-center text-sm text-slate-500">Loading public projects…</div></div>
@@ -833,6 +846,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const projectList = document.getElementById('departmentProjectList');
+            const projectSearch = document.getElementById('publicProjectSearch');
             const mapLegend = document.querySelector('.public-map-legend');
             const mapLegendToggle = mapLegend?.querySelector('.public-map-legend-toggle');
             const selectedClass = 'bg-slate-50 border border-slate-200';
@@ -856,6 +870,15 @@
             let darkTiles = null;
             let publicProjectZoom = 1;
             let lightboxTrigger = null;
+            let projectSearchTerm = '';
+
+            projectSearch?.addEventListener('input', function() {
+                projectSearchTerm = this.value.trim().toLocaleLowerCase();
+                const visibleProjects = selectedBarangayName
+                    ? projectFeatures.filter(project => project.properties.barangay === selectedBarangayName)
+                    : projectFeatures;
+                renderProjectList(visibleProjects);
+            });
 
             mapLegendToggle?.addEventListener('click', function(event) {
                 event.stopPropagation();
@@ -1180,15 +1203,27 @@
             });
 
             function renderProjectList(projects) {
-                const isSingle = projects.length === 1;
+                const visibleProjects = projectSearchTerm
+                    ? projects.filter(function(project) {
+                        const searchableText = Object.values(project.properties || {})
+                            .filter(value => value !== null && value !== undefined)
+                            .join(' ')
+                            .toLocaleLowerCase();
+                        return searchableText.includes(projectSearchTerm);
+                    })
+                    : projects;
+                const isSingle = visibleProjects.length === 1;
                 updateSidebarAction();
 
-                if (projects.length === 0) {
-                    projectList.innerHTML = `<div class="p-6 text-sm text-gray-500">${selectedBarangayName ? `No public projects recorded in ${escapeHtml(selectedBarangayName)} yet.` : 'No public projects recorded yet.'}</div>`;
+                if (visibleProjects.length === 0) {
+                    const message = projectSearchTerm
+                        ? 'No projects match your search.'
+                        : (selectedBarangayName ? `No public projects recorded in ${escapeHtml(selectedBarangayName)} yet.` : 'No public projects recorded yet.');
+                    projectList.innerHTML = `<div class="p-6 text-sm text-gray-500">${message}</div>`;
                     return;
                 }
 
-                projectList.innerHTML = projects.map(function(project) {
+                projectList.innerHTML = visibleProjects.map(function(project) {
                     return renderProjectCard(project, project.originalIndex, isSingle);
                 }).join('');
 

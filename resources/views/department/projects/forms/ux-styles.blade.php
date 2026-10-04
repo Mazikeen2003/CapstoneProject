@@ -56,6 +56,12 @@
         border: 1px solid #dbe3ee;
         border-radius: 0.75rem;
     }
+    .department-form-ux .text-gray-500,
+    .department-form-ux .text-slate-500 { color: #475569 !important; }
+    .department-form-ux .text-gray-600,
+    .department-form-ux .text-slate-600 { color: #334155 !important; }
+    .department-form-ux .text-gray-700,
+    .department-form-ux .text-slate-700 { color: #1e293b !important; }
     .department-form-ux table {
         min-width: 44rem;
     }
@@ -111,6 +117,22 @@
     .dark .department-form-ux .overflow-x-auto {
         border-color: #334155;
     }
+    html.dark-mode .department-form-ux .text-gray-400,
+    html.dark-mode .department-form-ux .text-gray-500,
+    html.dark-mode .department-form-ux .text-gray-600,
+    html.dark-mode .department-form-ux .text-gray-700,
+    html.dark-mode .department-form-ux .text-slate-400,
+    html.dark-mode .department-form-ux .text-slate-500,
+    html.dark-mode .department-form-ux .text-slate-600,
+    html.dark-mode .department-form-ux .text-slate-700,
+    .dark .department-form-ux .text-gray-400,
+    .dark .department-form-ux .text-gray-500,
+    .dark .department-form-ux .text-gray-600,
+    .dark .department-form-ux .text-gray-700,
+    .dark .department-form-ux .text-slate-400,
+    .dark .department-form-ux .text-slate-500,
+    .dark .department-form-ux .text-slate-600,
+    .dark .department-form-ux .text-slate-700 { color: #cbd5e1 !important; }
     @media (max-width: 640px) {
         .department-form-ux { padding: 1rem 0.75rem; }
         .department-form-ux .project-form-action { flex: 1 1 auto; justify-content: center; }

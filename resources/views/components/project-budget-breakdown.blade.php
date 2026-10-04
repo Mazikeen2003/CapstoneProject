@@ -19,8 +19,9 @@
 
 <style>
     .project-budget-breakdown {
-        border: 0 !important;
-        box-shadow: none !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 1rem;
+        box-shadow: 0 8px 24px rgb(15 23 42 / 0.06) !important;
     }
     .budget-submit-button {
         border: 0;
@@ -37,8 +38,10 @@
     }
     html.dark-mode .project-budget-breakdown,
     .dark .project-budget-breakdown {
+        border-color: #334155 !important;
         background: #141321 !important;
         color: #f8fafc;
+        box-shadow: 0 8px 24px rgb(2 6 23 / 0.28) !important;
     }
     html.dark-mode .project-budget-breakdown .budget-breakdown-title,
     .dark .project-budget-breakdown .budget-breakdown-title,
@@ -100,6 +103,16 @@
         border-color: rgba(255, 255, 255, 0.12) !important;
         color: #f8fafc !important;
     }
+    html.dark-mode .project-budget-breakdown .budget-transactions-table,
+    .dark .project-budget-breakdown .budget-transactions-table { color: #cbd5e1; }
+    html.dark-mode .project-budget-breakdown .budget-transactions-table thead,
+    .dark .project-budget-breakdown .budget-transactions-table thead { color: #e2e8f0; }
+    html.dark-mode .project-budget-breakdown .budget-transactions-table tr,
+    .dark .project-budget-breakdown .budget-transactions-table tr { border-color: #334155 !important; }
+    html.dark-mode .project-budget-breakdown .budget-section-description,
+    .dark .project-budget-breakdown .budget-section-description,
+    html.dark-mode .project-budget-breakdown .text-gray-600,
+    .dark .project-budget-breakdown .text-gray-600 { color: #cbd5e1 !important; }
 </style>
 
 <section class="project-budget-breakdown mt-6 rounded-lg bg-white p-5">

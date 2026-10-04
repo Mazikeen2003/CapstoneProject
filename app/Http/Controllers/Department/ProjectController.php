@@ -140,12 +140,13 @@ class ProjectController extends Controller
 
     public function storeBudgetTransaction(Request $request, $id)
     {
+        $project = Project::findOrFail($id);
+        $this->authorize('update', $project);
+        abort_unless($project->isInImplementationStage(), 403, 'Category budget entries are only available during the Implementation stage.');
+
         if (! BudgetTransaction::supportsCategoryTracking()) {
             return back()->with('error', 'Category budget tracking is unavailable until its database migration has been applied.');
         }
-
-        $project = Project::findOrFail($id);
-        $this->authorize('update', $project);
 
         $validated = $request->validate([
             'category' => ['required', Rule::in(BudgetTransaction::CATEGORIES)],

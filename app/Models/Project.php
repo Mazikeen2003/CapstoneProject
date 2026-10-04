@@ -158,6 +158,16 @@ class Project extends Model
         return in_array($this->current_status, ['Implementation', 'On Going', 'Completed'], true);
     }
 
+    public function isInImplementationStage(): bool
+    {
+        if (in_array($this->current_status, ['Completed', 'On Hold', 'Cancelled'], true)) {
+            return false;
+        }
+
+        return $this->lifecycle_stage === 5
+            || in_array($this->current_status, ['Implementation', 'On Going'], true);
+    }
+
     public function hasStarted(): bool
     {
         return $this->start_date !== null && $this->start_date->copy()->startOfDay()->lte(today());

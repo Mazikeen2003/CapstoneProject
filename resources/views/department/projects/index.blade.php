@@ -677,6 +677,46 @@
         color: #f8fafc;
     }
 
+    .dept-delete-permission-dialog {
+        width: min(100% - 2rem, 32rem);
+        border: 1px solid #cbd5e1;
+        border-radius: 1rem;
+        background: #fff;
+        color: #0f172a;
+    }
+    .dept-delete-permission-dialog::backdrop { background: rgb(15 23 42 / 0.6); }
+    .dept-delete-permission-dialog textarea {
+        min-height: 6rem;
+        background: #fff;
+        color: #0f172a;
+    }
+    html.dark-mode .dept-delete-permission-dialog,
+    .dark .dept-delete-permission-dialog {
+        border-color: #334155;
+        background: #0f172a;
+        color: #f8fafc;
+    }
+    html.dark-mode .dept-delete-permission-dialog h2,
+    .dark .dept-delete-permission-dialog h2 { color: #f8fafc; }
+    html.dark-mode .dept-delete-permission-dialog p,
+    .dark .dept-delete-permission-dialog p { color: #cbd5e1; }
+    html.dark-mode .dept-delete-permission-dialog label,
+    .dark .dept-delete-permission-dialog label { color: #e2e8f0; }
+    html.dark-mode .dept-delete-permission-dialog textarea,
+    .dark .dept-delete-permission-dialog textarea {
+        border-color: #475569;
+        background: #1e293b;
+        color: #f8fafc;
+        color-scheme: dark;
+    }
+    html.dark-mode .dept-delete-permission-dialog textarea::placeholder,
+    .dark .dept-delete-permission-dialog textarea::placeholder { color: #94a3b8; }
+    html.dark-mode .dept-delete-permission-dialog #cancelDeletePermission,
+    .dark .dept-delete-permission-dialog #cancelDeletePermission {
+        border-color: #475569;
+        color: #e2e8f0;
+    }
+
     .dept-proj-modalicon {
         width: 56px;
         height: 56px;
@@ -1006,7 +1046,7 @@
     </div>
 </div>
 
-<dialog id="deletePermissionDialog" class="w-full max-w-lg rounded-2xl p-0 shadow-2xl backdrop:bg-slate-950/60">
+<dialog id="deletePermissionDialog" class="dept-delete-permission-dialog p-0 shadow-2xl">
     <form method="POST" id="deletePermissionForm" class="space-y-4 p-6">
         @csrf
         <div>
