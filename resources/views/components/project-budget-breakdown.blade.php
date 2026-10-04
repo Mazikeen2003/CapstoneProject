@@ -102,7 +102,7 @@
     }
 </style>
 
-<section class="project-budget-breakdown rounded-lg bg-white p-5">
+<section class="project-budget-breakdown mt-6 rounded-lg bg-white p-5">
     <div class="mb-4">
         <h2 class="budget-breakdown-title text-lg font-bold" style="color: #0f1e3d;">Category Budget Breakdown</h2>
         <p class="budget-section-description mt-1 text-sm text-gray-600">Enter one planned and actual amount per category each month. Planned amounts are dated on the first day of the month, or the implementation start date in the first month; actual expenditure is dated on the last day.</p>
