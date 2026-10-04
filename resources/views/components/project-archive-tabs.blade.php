@@ -1,0 +1,4 @@
+<nav aria-label="Project list view" class="mb-4 flex flex-wrap gap-2">
+    <a href="{{ route($routeName, ['view' => 'active']) }}" @if($view === 'active') aria-current="page" @endif class="rounded-md border px-4 py-2 text-sm font-semibold" style="border-color: #B2BEB5; background: {{ $view === 'active' ? '#0f1e3d' : '#ffffff' }}; color: {{ $view === 'active' ? '#ffffff' : '#0f1e3d' }};">Active Projects</a>
+    <a href="{{ route($routeName, ['view' => 'archived']) }}" @if($view === 'archived') aria-current="page" @endif class="rounded-md border px-4 py-2 text-sm font-semibold" style="border-color: #B2BEB5; background: {{ $view === 'archived' ? '#0f1e3d' : '#ffffff' }}; color: {{ $view === 'archived' ? '#ffffff' : '#0f1e3d' }};">Archived Projects</a>
+</nav>

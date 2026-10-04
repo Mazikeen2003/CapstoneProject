@@ -23,14 +23,14 @@ class CacheService
         $cacheKey = "dashboard_stats_{$roleSlug}_{$userId}";
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () {
-            $projects = Project::get();
+            $projects = Project::withActualTransactionSum()->get();
 
             return [
                 'total_projects'  => $projects->count(),
                 'ongoing'         => $projects->where('current_status', 'On Going')->count(),
                 'completed'       => $projects->where('current_status', 'Completed')->count(),
                 'budget_allocated' => $projects->sum('approved_budget') ?? 0,
-                'budget_used'     => $projects->sum('actual_budget') ?? 0,
+                'budget_used'     => $projects->sum(fn (Project $project) => $project->actual_budget_total),
             ];
         });
     }
@@ -107,7 +107,9 @@ class CacheService
     {
         $query = $ignoreRoleScope ? Project::withoutRoleScope() : Project::query();
 
-        $projects = $query->with(['barangay', 'latestUpdate'])->get();
+        $projects = $query->with(['barangay', 'latestUpdate'])
+            ->withActualTransactionSum()
+            ->get();
 
         $features = $projects->map(function ($project) use ($user) {
                 $isCitywide = $project->barangay_id === null;
@@ -149,7 +151,7 @@ class CacheService
                         'barangay'          => $project->barangay?->barangay_name,
                         'is_citywide'       => $isCitywide,
                         'budget'            => $project->approved_budget,
-                        'actual_budget'     => $project->actual_budget ?? 0,
+                        'actual_budget'     => $project->actual_budget_total,
                         'description'       => $project->public_description ?: 'No description available.',
                         'barangay_id'       => $project->barangay_id,
                         'image'             => $project->project_image ? Storage::url($project->project_image) : null,

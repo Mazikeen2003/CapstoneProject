@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AuditLog;
 use App\Models\Barangay;
+use App\Models\BudgetTransaction;
 use App\Models\Project;
 use App\Models\ProjectUpdate;
 use App\Models\User;
@@ -21,7 +22,7 @@ class ReportService
         $projects = self::filteredProjects($filters);
 
         $totalBudget = $projects->sum('approved_budget') ?? 0;
-        $totalSpent = $projects->sum('actual_budget') ?? 0;
+        $totalSpent = $projects->sum(fn (Project $project) => $project->actual_budget_total);
         $completedCount = $projects->where('current_status', 'Completed')->count();
         $ongoingCount = $projects->where('current_status', 'On Going')->count();
 
@@ -35,7 +36,7 @@ class ReportService
                 'start_date'  => $p->start_date?->format('M d, Y'),
                 'end_date'    => $p->target_end_date?->format('M d, Y'),
                 'budget'      => $p->approved_budget ?? 0,
-                'spent'       => $p->actual_budget ?? 0,
+                'spent'       => $p->actual_budget_total,
                 'remarks'     => $p->remarks,
                 'created_by'  => $p->creator->username ?? 'Unknown',
             ];
@@ -73,17 +74,17 @@ class ReportService
         $byStatus = $projects->groupBy('current_status')->map(fn($group) => [
             'count'  => $group->count(),
             'budget' => $group->sum('approved_budget'),
-            'spent'  => $group->sum('actual_budget'),
+            'spent'  => $group->sum(fn (Project $project) => $project->actual_budget_total),
         ]);
 
         $byBarangay = $projects->groupBy(fn($p) => $p->barangay?->barangay_name ?? 'Citywide')
             ->map(fn($group) => [
                 'count'  => $group->count(),
                 'budget' => $group->sum('approved_budget'),
-                'spent'  => $group->sum('actual_budget'),
+                'spent'  => $group->sum(fn (Project $project) => $project->actual_budget_total),
             ]);
 
-        return [
+        $report = [
             'title'         => 'Budget Analysis Report',
             'generated_by'  => $user->username,
             'generated_date' => now()->format('M d, Y H:i A'),
@@ -91,8 +92,35 @@ class ReportService
             'by_status'     => $byStatus,
             'by_barangay'   => $byBarangay,
             'total_budget'  => $projects->sum('approved_budget'),
-            'total_spent'   => $projects->sum('actual_budget'),
+            'total_spent'   => $projects->sum(fn (Project $project) => $project->actual_budget_total),
         ];
+
+        $categorizedTransactions = $projects
+            ->flatMap(fn (Project $project) => $project->budgetTransactions)
+            ->filter(fn (BudgetTransaction $transaction) =>
+                in_array($transaction->category, BudgetTransaction::CATEGORIES, true)
+                && in_array($transaction->type, BudgetTransaction::TYPES, true)
+            );
+
+        if ($categorizedTransactions->isNotEmpty()) {
+            $report['category_breakdown'] = collect(BudgetTransaction::CATEGORIES)
+                ->mapWithKeys(function (string $category) use ($categorizedTransactions) {
+                    $categoryTransactions = $categorizedTransactions->where('category', $category);
+                    $planned = (float) $categoryTransactions->where('type', 'planned')->sum('amount');
+                    $actual = (float) $categoryTransactions->where('type', 'actual')->sum('amount');
+
+                    return [$category => [
+                        'planned' => $planned,
+                        'actual' => $actual,
+                        'variance' => $planned - $actual,
+                    ]];
+                });
+
+            $categorizedActualTotal = (float) $categorizedTransactions->where('type', 'actual')->sum('amount');
+            $report['unclassified_actual_spent'] = max(0, (float) $report['total_spent'] - $categorizedActualTotal);
+        }
+
+        return $report;
     }
 
     public static function reportFilterOptions(): array

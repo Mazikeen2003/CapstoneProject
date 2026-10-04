@@ -114,13 +114,15 @@
         </div>
     </div>
 
+    @include('components.project-archive-tabs', ['routeName' => 'barangay.projects.index', 'view' => $projectListView])
+
     <div class="barangay-projects-card">
         @if ($projects->isEmpty())
             <div class="p-8 text-center text-sm text-slate-500">No projects have been added yet.</div>
         @else
             <div class="barangay-projects-tablewrap">
                 <table class="barangay-projects-table">
-                    <thead><tr><th>Project</th><th>Status</th><th>Barangay</th><th>Budget</th><th>Actions</th></tr></thead>
+                    <thead><tr><th>Project</th><th>Status</th><th>Barangay</th><th>Budget</th>@if ($projectListView === 'archived')<th>Spent</th>@endif<th>Actions</th></tr></thead>
                     <tbody>
                         @foreach ($projects as $project)
                             @php
@@ -141,6 +143,7 @@
                                 <td><span class="barangay-project-status {{ $statusClass }}">{{ $project->current_status }}</span></td>
                                 <td>{{ $project->barangay?->barangay_name ?? 'N/A' }}</td>
                                 <td>₱{{ number_format($project->approved_budget ?? 0, 2) }}</td>
+                                @if ($projectListView === 'archived')<td>₱{{ number_format(max((float) ($project->actual_budget ?? 0), (float) ($project->actual_transactions_sum ?? 0)), 2) }}</td>@endif
                                 <td><a class="barangay-project-view" href="{{ route('barangay.projects.show', $project->project_id) }}">View</a></td>
                             </tr>
                         @endforeach
@@ -154,7 +157,7 @@
                     @endphp
                     <div class="barangay-project-mobile-card barangay-project-row" data-status="{{ $project->current_status }}" data-search="{{ strtolower($project->project_name . ' ' . ($project->project_code ?? '')) }}">
                         <div class="barangay-project-mobile-top"><div><span class="barangay-project-mobile-name">{{ $project->project_name }}</span><span class="barangay-project-code">{{ $project->project_code ?? 'No project code' }}</span></div><span class="barangay-project-status {{ $statusClass }}">{{ $project->current_status }}</span></div>
-                        <div class="barangay-project-mobile-meta"><div>Barangay<strong>{{ $project->barangay?->barangay_name ?? 'N/A' }}</strong></div><div>Budget<strong>₱{{ number_format($project->approved_budget ?? 0, 2) }}</strong></div><div>Action<strong><a class="barangay-project-view" href="{{ route('barangay.projects.show', $project->project_id) }}">View</a></strong></div></div>
+                        <div class="barangay-project-mobile-meta"><div>Barangay<strong>{{ $project->barangay?->barangay_name ?? 'N/A' }}</strong></div><div>Budget<strong>₱{{ number_format($project->approved_budget ?? 0, 2) }}</strong></div>@if ($projectListView === 'archived')<div>Spent<strong>₱{{ number_format(max((float) ($project->actual_budget ?? 0), (float) ($project->actual_transactions_sum ?? 0)), 2) }}</strong></div>@endif<div>Action<strong><a class="barangay-project-view" href="{{ route('barangay.projects.show', $project->project_id) }}">View</a></strong></div></div>
                     </div>
                 @endforeach
             </div>

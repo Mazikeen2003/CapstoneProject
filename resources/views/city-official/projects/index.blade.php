@@ -200,6 +200,8 @@
         </div>
     </div>
 
+    @include('components.project-archive-tabs', ['routeName' => 'city.projects.index', 'view' => $projectListView])
+
     <div class="city-projects-card cp-animate">
         @if ($projects->isEmpty())
             <div class="city-projects-empty">
@@ -220,6 +222,7 @@
                             <th>Status</th>
                             <th>Barangay</th>
                             <th>Budget</th>
+                            @if ($projectListView === 'archived')<th>Spent</th>@endif
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -257,6 +260,7 @@
                                 <td><span class="city-project-status {{ $statusClass }}">{{ $project->current_status }}</span></td>
                                 <td>{{ $project->barangay?->barangay_name ?? 'Citywide' }}</td>
                                 <td>₱{{ number_format($project->approved_budget ?? 0, 2) }}</td>
+                                @if ($projectListView === 'archived')<td>₱{{ number_format(max((float) ($project->actual_budget ?? 0), (float) ($project->actual_transactions_sum ?? 0)), 2) }}</td>@endif
                                 <td>
                                     <a class="city-project-view" href="{{ route($projectsRoutePrefix . '.projects.show', $project->project_id) }}">View</a>
                                 </td>
@@ -301,6 +305,7 @@
                         <div class="city-project-mobile-meta">
                             <div>Barangay<strong>{{ $project->barangay?->barangay_name ?? 'Citywide' }}</strong></div>
                             <div>Budget<strong>₱{{ number_format($project->approved_budget ?? 0, 2) }}</strong></div>
+                            @if ($projectListView === 'archived')<div>Spent<strong>₱{{ number_format(max((float) ($project->actual_budget ?? 0), (float) ($project->actual_transactions_sum ?? 0)), 2) }}</strong></div>@endif
                             <div>Action<strong><a class="city-project-view" href="{{ route($projectsRoutePrefix . '.projects.show', $project->project_id) }}">View</a></strong></div>
                         </div>
                     </div>
