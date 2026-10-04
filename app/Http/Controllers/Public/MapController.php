@@ -81,14 +81,13 @@ class MapController
     }
 
     /**
-     * API endpoint for barangay pins GeoJSON.
+     * API endpoint for barangay project counts.
      */
 
     public function barangaysGeojson()
     {
         $barangays = Barangay::query()
             ->withPublicProjectCount()
-            ->whereNotNull('boundary_geojson')
             ->get();
 
         $features = $barangays->map(function (Barangay $barangay) {
