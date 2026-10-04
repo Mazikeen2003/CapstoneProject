@@ -330,6 +330,15 @@
         margin-top: 2px;
     }
     .dept-show-card-body { padding: 24px; }
+    .dept-progress-updates-card .dept-show-card-header,
+    .dept-progress-updates-card .dept-show-card-body { background: var(--ds-surface); }
+    .dept-progress-updates-card .dept-progress-mini { color: var(--ds-ink); }
+    .dept-progress-updates-card .dept-empty-state {
+        border: 1px solid var(--ds-line);
+        border-radius: var(--ds-radius-xs);
+        background: var(--ds-raised);
+    }
+    .dept-progress-updates-card .dept-empty-state p { color: var(--ds-muted); }
 
     .engineering-progress-form {
         display: grid;
@@ -1192,7 +1201,7 @@
         <div class="dept-show-main">
 
             <!-- Project Details -->
-            <div class="dept-show-card dept-animate">
+            <div class="dept-show-card dept-progress-updates-card dept-animate">
                 <div class="dept-show-card-header">
                     <div class="dept-show-card-icon blue">
                         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 00.063.853l.041.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
@@ -1302,7 +1311,10 @@
             </div>
 
             @if ($projectRoutePrefix === 'department.projects')
-                @include('components.project-budget-breakdown', ['project' => $project, 'allowEntry' => true])
+                @include('components.project-stage-documents', ['project' => $project, 'allowUpload' => true])
+                @if ($project->isInImplementationStage())
+                    @include('components.project-budget-breakdown', ['project' => $project, 'allowEntry' => true])
+                @endif
                 <div class="mt-6"></div>
             @endif
 

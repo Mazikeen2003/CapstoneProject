@@ -10,6 +10,7 @@ use App\Models\AuditLog;
 use App\Models\BudgetTransaction;
 use App\Models\EditPermissionRequest;
 use App\Models\Project;
+use Carbon\Carbon;
 use App\Services\AuditLogService;
 use App\Services\BackupService;
 use App\Services\CacheService;
@@ -34,7 +35,7 @@ class ProjectController extends Controller
         $projectListView = $request->query('view') === 'archived' ? 'archived' : 'active';
         if ($projectListView === 'archived') {
             $query->where('current_status', 'Completed');
-        } else {
+        } elseif ($request->query('filter') !== 'completed') {
             $query->where(fn ($statusQuery) => $statusQuery->whereNull('current_status')->orWhere('current_status', '!=', 'Completed'));
         }
         $filter = $request->string('filter')->toString();
@@ -125,7 +126,7 @@ class ProjectController extends Controller
         // findOrFail already respects the global scope, so a department
         // user can't even fetch another department's project by guessing
         // the ID — it'll 404 before the policy check even runs.
-        $project = Project::with(['barangay', 'latestUpdate', 'updates.user', 'budgetTransactions'])
+        $project = Project::with(['barangay', 'latestUpdate', 'updates.user', 'budgetTransactions', 'stageDocuments.uploader'])
             ->findOrFail($id);
 
         $this->authorize('view', $project);
@@ -139,22 +140,39 @@ class ProjectController extends Controller
 
     public function storeBudgetTransaction(Request $request, $id)
     {
+        $project = Project::findOrFail($id);
+        $this->authorize('update', $project);
+        abort_unless($project->isInImplementationStage(), 403, 'Category budget entries are only available during the Implementation stage.');
+
         if (! BudgetTransaction::supportsCategoryTracking()) {
             return back()->with('error', 'Category budget tracking is unavailable until its database migration has been applied.');
         }
-
-        $project = Project::findOrFail($id);
-        $this->authorize('update', $project);
 
         $validated = $request->validate([
             'category' => ['required', Rule::in(BudgetTransaction::CATEGORIES)],
             'type' => ['required', Rule::in(BudgetTransaction::TYPES)],
             'amount' => ['required', 'numeric', 'gt:0', 'max:999999999999.99'],
             'description' => ['nullable', 'string', 'max:2000'],
-            'transaction_date' => ['required', 'date'],
+            'period' => ['required', 'date_format:Y-m'],
         ]);
 
-        DB::transaction(function () use ($validated, $project): void {
+        $period = Carbon::createFromFormat('!Y-m', $validated['period']);
+        if ($period->greaterThan(today()->startOfMonth())) {
+            throw ValidationException::withMessages([
+                'period' => 'Budget entries can only be recorded for the current or a previous month.',
+            ]);
+        }
+
+        $implementationStart = $project->start_date;
+        $transactionDate = $validated['type'] === 'planned'
+            && $implementationStart
+            && $implementationStart->isSameMonth($period)
+                ? $implementationStart->toDateString()
+                : ($validated['type'] === 'planned'
+                    ? $period->copy()->startOfMonth()->toDateString()
+                    : $period->copy()->endOfMonth()->toDateString());
+
+        DB::transaction(function () use ($validated, $project, $period, $transactionDate): void {
             $lockedProject = Project::where('project_id', $project->project_id)->lockForUpdate()->firstOrFail();
             $transactions = $lockedProject->budgetTransactions()
                 ->whereIn('category', BudgetTransaction::CATEGORIES)
@@ -162,12 +180,32 @@ class ProjectController extends Controller
                 ->get();
             $plannedTransactions = $transactions->where('type', 'planned');
             $actualTransactions = $transactions->where('type', 'actual');
+            $inPeriod = static fn ($transaction): bool => $transaction->transaction_date?->format('Y-m') === $period->format('Y-m');
+            $monthlyPlanned = $plannedTransactions->filter($inPeriod);
+            $existingEntry = $transactions->first(
+                fn ($transaction) => $transaction->category === $validated['category']
+                    && $transaction->type === $validated['type']
+                    && $inPeriod($transaction)
+            );
+            $existingAmount = (float) ($existingEntry?->amount ?? 0);
             $amount = (float) $validated['amount'];
             $currentSpent = max((float) ($lockedProject->actual_budget ?? 0), (float) $actualTransactions->sum('amount'));
 
             if ($validated['type'] === 'planned') {
                 $approvedBudget = $lockedProject->approved_budget !== null ? (float) $lockedProject->approved_budget : null;
-                $newPlannedTotal = (float) $plannedTransactions->sum('amount') + $amount;
+                $newPlannedTotal = (float) $plannedTransactions->sum('amount')
+                    - $existingAmount
+                    + $amount;
+                $monthlyActualForCategory = (float) $actualTransactions
+                    ->filter($inPeriod)
+                    ->where('category', $validated['category'])
+                    ->sum('amount');
+
+                if ($monthlyActualForCategory > $amount) {
+                    throw ValidationException::withMessages([
+                        'amount' => 'The monthly planned amount cannot be lower than the actual expenditure already recorded for this category.',
+                    ]);
+                }
 
                 if ($approvedBudget !== null && $newPlannedTotal > $approvedBudget) {
                     throw ValidationException::withMessages([
@@ -175,16 +213,18 @@ class ProjectController extends Controller
                     ]);
                 }
             } else {
-                $categoryPlanned = $plannedTransactions->where('category', $validated['category']);
-                if ($categoryPlanned->isNotEmpty()) {
-                    $categoryLimit = (float) $categoryPlanned->sum('amount');
-                    $categorySpent = (float) $actualTransactions->where('category', $validated['category'])->sum('amount');
+                $categoryPlanned = $monthlyPlanned->where('category', $validated['category']);
+                if ($categoryPlanned->isEmpty()) {
+                    throw ValidationException::withMessages([
+                        'amount' => 'Record the monthly planned amount for ' . $validated['category'] . ' before entering actual expenditure.',
+                    ]);
+                }
 
-                    if ($categorySpent + $amount > $categoryLimit) {
-                        throw ValidationException::withMessages([
-                            'amount' => 'This expenditure would exceed the planned ' . $validated['category'] . ' amount of ₱' . number_format($categoryLimit, 2) . '.',
-                        ]);
-                    }
+                $categoryLimit = (float) $categoryPlanned->sum('amount');
+                if ($amount > $categoryLimit) {
+                    throw ValidationException::withMessages([
+                        'amount' => 'This expenditure would exceed the monthly planned ' . $validated['category'] . ' amount of ₱' . number_format($categoryLimit, 2) . '.',
+                    ]);
                 }
 
                 $approvedBudget = $lockedProject->approved_budget !== null ? (float) $lockedProject->approved_budget : null;
@@ -195,23 +235,38 @@ class ProjectController extends Controller
                     default => $approvedBudget,
                 };
 
-                if ($projectLimit !== null && $currentSpent + $amount > $projectLimit) {
+                $newSpent = $currentSpent - $existingAmount + $amount;
+                if ($projectLimit !== null && $newSpent > $projectLimit) {
                     throw ValidationException::withMessages([
                         'amount' => 'This expenditure would exceed the project spending limit of ₱' . number_format($projectLimit, 2) . '.',
                     ]);
                 }
             }
 
-            $lockedProject->budgetTransactions()->create([
-                ...$validated,
+            $entryData = [
+                'category' => $validated['category'],
+                'type' => $validated['type'],
+                'amount' => $amount,
+                'transaction_date' => $transactionDate,
+                'description' => $validated['description'] ?? null,
                 'action' => $validated['type'] === 'planned' ? 'category_budget' : 'expenditure',
                 'transaction_type' => $validated['type'],
                 'user_id' => Auth::id(),
                 'created_at' => now(),
-            ]);
+            ];
+            if ($existingEntry) {
+                $existingEntry->update($entryData);
+            } else {
+                $lockedProject->budgetTransactions()->create($entryData);
+            }
 
             if ($validated['type'] === 'actual') {
-                $lockedProject->forceFill(['actual_budget' => $currentSpent + $amount])->save();
+                $previousCategorizedSpent = (float) $actualTransactions->sum('amount');
+                $unclassifiedSpent = max(0, (float) ($lockedProject->actual_budget ?? 0) - $previousCategorizedSpent);
+                $updatedCategorizedSpent = $previousCategorizedSpent
+                    - $existingAmount
+                    + $amount;
+                $lockedProject->forceFill(['actual_budget' => $unclassifiedSpent + $updatedCategorizedSpent])->save();
             }
         });
 

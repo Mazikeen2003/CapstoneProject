@@ -19,8 +19,9 @@
 
 <style>
     .project-budget-breakdown {
-        border: 0 !important;
-        box-shadow: none !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 1rem;
+        box-shadow: 0 8px 24px rgb(15 23 42 / 0.06) !important;
     }
     .budget-submit-button {
         border: 0;
@@ -37,8 +38,10 @@
     }
     html.dark-mode .project-budget-breakdown,
     .dark .project-budget-breakdown {
+        border-color: #334155 !important;
         background: #141321 !important;
         color: #f8fafc;
+        box-shadow: 0 8px 24px rgb(2 6 23 / 0.28) !important;
     }
     html.dark-mode .project-budget-breakdown .budget-breakdown-title,
     .dark .project-budget-breakdown .budget-breakdown-title,
@@ -100,12 +103,22 @@
         border-color: rgba(255, 255, 255, 0.12) !important;
         color: #f8fafc !important;
     }
+    html.dark-mode .project-budget-breakdown .budget-transactions-table,
+    .dark .project-budget-breakdown .budget-transactions-table { color: #cbd5e1; }
+    html.dark-mode .project-budget-breakdown .budget-transactions-table thead,
+    .dark .project-budget-breakdown .budget-transactions-table thead { color: #e2e8f0; }
+    html.dark-mode .project-budget-breakdown .budget-transactions-table tr,
+    .dark .project-budget-breakdown .budget-transactions-table tr { border-color: #334155 !important; }
+    html.dark-mode .project-budget-breakdown .budget-section-description,
+    .dark .project-budget-breakdown .budget-section-description,
+    html.dark-mode .project-budget-breakdown .text-gray-600,
+    .dark .project-budget-breakdown .text-gray-600 { color: #cbd5e1 !important; }
 </style>
 
-<section class="project-budget-breakdown rounded-lg bg-white p-5">
+<section class="project-budget-breakdown mt-6 rounded-lg bg-white p-5">
     <div class="mb-4">
         <h2 class="budget-breakdown-title text-lg font-bold" style="color: #0f1e3d;">Category Budget Breakdown</h2>
-        <p class="budget-section-description mt-1 text-sm text-gray-600">Planned allocations and recorded expenditure by category.</p>
+        <p class="budget-section-description mt-1 text-sm text-gray-600">Enter one planned and actual amount per category each month. Planned amounts are dated on the first day of the month, or the implementation start date in the first month; actual expenditure is dated on the last day.</p>
     </div>
 
     @if ($budgetOverage > 0)
@@ -118,6 +131,18 @@
         @if (session('budget_success'))
             <div role="status" class="mb-4 rounded-md border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{{ session('budget_success') }}</div>
         @endif
+        @php
+            $submittedPeriod = old('period');
+            $budgetPeriod = is_string($submittedPeriod) && preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $submittedPeriod)
+                ? $submittedPeriod
+                : today()->format('Y-m');
+            $budgetType = old('type', 'planned');
+            $budgetPeriodStart = \Carbon\Carbon::createFromFormat('!Y-m', $budgetPeriod);
+            $implementationStart = $project->start_date;
+            $budgetEntryDate = $budgetType === 'planned' && $implementationStart && $implementationStart->isSameMonth($budgetPeriodStart)
+                ? $implementationStart->toDateString()
+                : ($budgetType === 'planned' ? $budgetPeriodStart->copy()->startOfMonth()->toDateString() : $budgetPeriodStart->copy()->endOfMonth()->toDateString());
+        @endphp
         <form method="POST" action="{{ route('department.projects.budget-transactions.store', $project->project_id) }}" class="budget-form mb-6 grid gap-3 border-b border-gray-200 pb-6 sm:grid-cols-2">
             @csrf
             <div class="min-w-0">
@@ -132,10 +157,15 @@
             <div class="min-w-0">
                 <label for="budget-type" class="mb-1 block text-xs font-semibold text-gray-700">Entry type</label>
                 <select id="budget-type" name="type" required class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
-                    <option value="planned" @selected(old('type', 'planned') === 'planned')>Planned</option>
+                    <option value="planned" @selected($budgetType === 'planned')>Monthly planned amount</option>
                     <option value="actual" @selected(old('type') === 'actual')>Actual expenditure</option>
                 </select>
                 @error('type')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
+            </div>
+            <div class="min-w-0">
+                <label for="budget-period" class="mb-1 block text-xs font-semibold text-gray-700">Month</label>
+                <input id="budget-period" type="month" name="period" value="{{ $budgetPeriod }}" max="{{ today()->format('Y-m') }}" required class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
+                @error('period')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
             </div>
             <div class="min-w-0">
                 <label for="budget-amount" class="mb-1 block text-xs font-semibold text-gray-700">Amount (PHP)</label>
@@ -143,9 +173,9 @@
                 @error('amount')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
             </div>
             <div class="min-w-0">
-                <label for="budget-date" class="mb-1 block text-xs font-semibold text-gray-700">Date</label>
-                <input id="budget-date" type="date" name="transaction_date" value="{{ old('transaction_date', today()->toDateString()) }}" required class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
-                @error('transaction_date')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
+                <label for="budget-date" class="mb-1 block text-xs font-semibold text-gray-700">Fixed entry date</label>
+                <input id="budget-date" type="date" value="{{ $budgetEntryDate }}" readonly aria-describedby="budget-date-help" class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
+                <p id="budget-date-help" class="mt-1 text-xs text-gray-500">Assigned automatically and cannot be changed.</p>
             </div>
             <div class="min-w-0 sm:col-span-2">
                 <label for="budget-description" class="mb-1 block text-xs font-semibold text-gray-700">Description</label>
@@ -165,8 +195,8 @@
             <thead>
                 <tr class="budget-table-headings border-b" style="border-color: #B2BEB5; color: #0f1e3d;">
                     <th class="px-3 py-2">Category</th>
-                    <th class="px-3 py-2 text-right">Planned Amount</th>
-                    <th class="px-3 py-2 text-right">Actual Spent</th>
+                    <th class="px-3 py-2 text-right">Planned Amounts</th>
+                    <th class="px-3 py-2 text-right">Actual Expenditure</th>
                     <th class="px-3 py-2 text-right">Variance</th>
                 </tr>
             </thead>
@@ -227,6 +257,30 @@
         const amountInput = document.getElementById('budget-amount');
         const amountForm = amountInput?.form;
         if (!amountInput || !amountForm) return;
+        const typeInput = document.getElementById('budget-type');
+        const periodInput = document.getElementById('budget-period');
+        const fixedDateInput = document.getElementById('budget-date');
+        const implementationStartDate = @json($project->start_date?->format('Y-m-d'));
+
+        function updateFixedDate() {
+            if (!typeInput || !periodInput || !fixedDateInput || !periodInput.value) return;
+            const [year, month] = periodInput.value.split('-').map(Number);
+            const firstDay = new Date(year, month - 1, 1);
+            const lastDay = new Date(year, month, 0);
+            const startDate = implementationStartDate ? new Date(`${implementationStartDate}T00:00:00`) : null;
+            const isImplementationStartMonth = startDate
+                && startDate.getFullYear() === year
+                && startDate.getMonth() === month - 1;
+            const fixedDate = typeInput.value === 'planned'
+                ? (isImplementationStartMonth ? startDate : firstDay)
+                : lastDay;
+
+            fixedDateInput.value = [
+                fixedDate.getFullYear(),
+                String(fixedDate.getMonth() + 1).padStart(2, '0'),
+                String(fixedDate.getDate()).padStart(2, '0')
+            ].join('-');
+        }
 
         function formatAmountInput() {
             const value = amountInput.value;
@@ -259,9 +313,12 @@
         }
 
         amountInput.addEventListener('input', formatAmountInput);
+        typeInput?.addEventListener('change', updateFixedDate);
+        periodInput?.addEventListener('change', updateFixedDate);
         amountForm.addEventListener('submit', function() {
             amountInput.value = amountInput.value.replace(/,/g, '');
         });
         formatAmountInput();
+        updateFixedDate();
     })();
 </script>

@@ -106,7 +106,29 @@ class NotificationController extends Controller
                 ];
             });
 
-        return response()->json(['notifications' => $notifications]);
+        $databaseNotifications = $user->notifications()
+            ->where('created_at', '>', $since)
+            ->latest('created_at')
+            ->limit($request->boolean('all') ? 500 : 50)
+            ->get()
+            ->map(fn ($notification): array => [
+                'id' => 'database-notification-' . $notification->id,
+                'title' => data_get($notification->data, 'title', 'Notification'),
+                'message' => data_get($notification->data, 'message', ''),
+                'time' => $notification->created_at?->toIso8601String(),
+                'type' => 'database_notification',
+                'url' => data_get($notification->data, 'url'),
+            ]);
+
+        $limit = $request->boolean('all') ? 500 : 50;
+
+        return response()->json([
+            'notifications' => $notifications
+                ->concat($databaseNotifications)
+                ->sortByDesc('time')
+                ->take($limit)
+                ->values(),
+        ]);
     }
 
     private function destinationFor(AuditLog $log, $user): ?string

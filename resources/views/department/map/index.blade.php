@@ -414,6 +414,33 @@ html.dark-mode .dept-map-stat-icon.purple { background: rgba(139,92,246,0.15); c
     color: var(--dm-muted);
     margin-top: 3px;
 }
+.dept-map-search {
+    width: 100%;
+    padding: 10px 13px 10px 38px;
+    border: 1px solid var(--dm-line-strong);
+    border-radius: 10px;
+    background: var(--dm-surface);
+    color: var(--dm-ink);
+    font: inherit;
+    font-size: 0.8125rem;
+}
+.dept-map-search:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.16);
+}
+.dept-map-search::placeholder { color: var(--dm-muted); }
+.dept-map-search-wrap { position: relative; margin-top: 14px; }
+.dept-map-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    color: var(--dm-muted);
+    pointer-events: none;
+    transform: translateY(-50%);
+}
 .dept-map-sidebar-body {
     flex: 1;
     overflow-y: auto;
@@ -1157,6 +1184,11 @@ html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1;
             <div class="dept-map-sidebar-header">
                 <h2>{{ $projectsTitle ?? 'Department Projects' }}</h2>
                 <p>Cabuyao City Projects</p>
+                <label class="sr-only" for="departmentMapSearch">Search projects by name, code, status, barangay, or description</label>
+                <div class="dept-map-search-wrap">
+                    <svg class="dept-map-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+                    <input id="departmentMapSearch" type="search" class="dept-map-search" placeholder="Search name, code, status, barangay, or description…" autocomplete="off">
+                </div>
                 <div id="departmentSidebarAction"></div>
             </div>
             <div class="dept-map-sidebar-body" id="departmentProjectList">
@@ -1192,7 +1224,9 @@ document.addEventListener('DOMContentLoaded', function() {
        ============================================================ */
     const projectList = document.getElementById('departmentProjectList');
     const sidebarAction = document.getElementById('departmentSidebarAction');
+    const projectSearch = document.getElementById('departmentMapSearch');
     let selectedProjectIndex = null;
+    let projectSearchTerm = '';
     let map = null;
     let boundedArea = null;
     let projectFeatures = [];
@@ -1433,7 +1467,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function matchesSearch(project) {
+        if (!projectSearchTerm) return true;
+        const props = project.properties || {};
+        const searchableText = [props.name, props.code, props.id, props.status, props.barangay, props.description]
+            .filter(Boolean)
+            .join(' ')
+            .toLocaleLowerCase();
+        const searchTerms = projectSearchTerm.split(/\s+/).filter(Boolean);
+
+        return searchTerms.every(function(term) { return searchableText.includes(term); });
+    }
+
     function renderProjectList(projects) {
+        if (!(selectedProjectIndex !== null && projects.length === 1)) {
+            projects = projects.filter(matchesSearch);
+        }
         const isSingle = projects.length === 1;
         updateSidebarAction();
 
@@ -1542,6 +1591,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('btnLightTiles').addEventListener('click', function() { setTileLayer(false); });
     document.getElementById('btnDarkTiles').addEventListener('click', function() { setTileLayer(true); });
+    projectSearch.addEventListener('input', function() {
+        projectSearchTerm = this.value.trim().toLocaleLowerCase();
+        selectedProjectIndex = null;
+        const visibleProjects = selectedBarangayName
+            ? projectFeatures.filter(function(project) { return project.properties.barangay === selectedBarangayName; })
+            : projectFeatures;
+        renderProjectList(visibleProjects);
+    });
 
     /* ============================================================
        LOADING STATE

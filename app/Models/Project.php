@@ -122,6 +122,12 @@ class Project extends Model
         return $this->hasMany(BudgetTransaction::class, 'project_id', 'project_id');
     }
 
+    public function stageDocuments()
+    {
+        return $this->hasMany(ProjectStageDocument::class, 'project_id', 'project_id')
+            ->orderByDesc('created_at');
+    }
+
     public function getActualBudgetTotalAttribute(): float
     {
         $legacyTotal = (float) ($this->attributes['actual_budget'] ?? 0);
@@ -150,6 +156,16 @@ class Project extends Model
     public function hasReachedImplementationStage(): bool
     {
         return in_array($this->current_status, ['Implementation', 'On Going', 'Completed'], true);
+    }
+
+    public function isInImplementationStage(): bool
+    {
+        if (in_array($this->current_status, ['Completed', 'On Hold', 'Cancelled'], true)) {
+            return false;
+        }
+
+        return $this->lifecycle_stage === 5
+            || in_array($this->current_status, ['Implementation', 'On Going'], true);
     }
 
     public function hasStarted(): bool

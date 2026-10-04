@@ -106,6 +106,7 @@ php artisan test
 ## 📝 Notes
 
 - Update `.env` with your local database credentials before running migrations.
+- Monthly budget reminders use Laravel's scheduler. Run `php artisan schedule:work` during local development, or configure the production scheduler to run `php artisan schedule:run` every minute.
 - Public map and analytics pages are available under `/public/map` and `/public/analytics`.
 
 ## 📄 License
