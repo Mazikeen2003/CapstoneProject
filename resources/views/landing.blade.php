@@ -29,6 +29,28 @@
         .hero-gradient {
             background: linear-gradient(135deg, rgba(11, 28, 48, 0.95) 0%, rgba(19, 27, 46, 0.8) 100%);
         }
+        .map-guide-type-shape {
+            display: inline-flex;
+            width: 30px;
+            height: 30px;
+            flex: 0 0 30px;
+            align-items: center;
+            justify-content: center;
+            background: #111827;
+        }
+        .map-guide-type-shape svg { width: 19px; height: 19px; }
+        .map-guide-type-shape.bridges { clip-path: polygon(5% 20%,95% 20%,95% 38%,82% 38%,82% 57%,72% 57%,72% 45%,60% 45%,50% 55%,40% 45%,28% 45%,28% 57%,18% 57%,18% 38%,5% 38%); }
+        .map-guide-type-shape.buildings { border-radius: 5px; }
+        .map-guide-type-shape.flood-control { clip-path: polygon(50% 0,100% 50%,50% 100%,0 50%); }
+        .map-guide-type-shape.roads { width: 38px; height: 24px; flex-basis: 38px; border-radius: 8px; }
+        .map-guide-type-shape.septage { clip-path: polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%); }
+        .map-guide-type-shape.water { clip-path: polygon(50% 0,95% 55%,88% 78%,72% 95%,50% 100%,28% 95%,12% 78%,5% 55%); }
+        .map-guide-type-shape.others { clip-path: polygon(50% 0,62% 35%,100% 38%,72% 61%,82% 100%,50% 77%,18% 100%,28% 61%,0 38%,38% 35%); }
+        #features.landing-map-guide { background-color: #fff !important; }
+        html.dark-mode #features.landing-map-guide { background-color: #16233a !important; }
+        @media (max-width: 640px) {
+            .map-guide-type-list { grid-template-columns: 1fr !important; }
+        }
     </style>
 </head>
 <body class="public-layout bg-white font-sans text-slate-900 antialiased">
@@ -107,7 +129,7 @@
         </section>
 
         {{-- ============ LIVE STATS (overlapping hero) ============ --}}
-        <section class="relative z-20 -mt-10 flex justify-center bg-transparent px-4 py-5 sm:-mt-14 sm:px-6 sm:py-7 lg:-mt-20 lg:px-8 lg:py-8">
+        <section class="landing-stats relative z-20 -mt-10 flex justify-center bg-transparent px-4 py-5 sm:-mt-14 sm:px-6 sm:py-7 lg:-mt-20 lg:px-8 lg:py-8">
             <div class="mx-auto w-full max-w-7xl">
                 <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 lg:gap-6">
                     <div class="flex flex-col items-center justify-center rounded-xl border border-slate-200/60 bg-white p-4 text-center shadow-[0_20px_25px_-8px_rgba(0,0,0,0.15)] sm:p-6 md:p-8">
@@ -130,71 +152,78 @@
             </div>
         </section>
 
-        {{-- ============ FEATURES BENTO GRID ============ --}}
-        <section id="features" class="bg-white px-6 pt-6 pb-24 flex flex-col items-center">
-            <div class="max-w-7xl mx-auto">
-                <div class="mb-16 text-center">
-                    <span class="text-xs uppercase tracking-[0.2em] text-emerald-700 font-bold mb-4 block" style="font-family:'Public Sans',sans-serif;">Portal Pillars</span>
-                    <h2 class="text-4xl font-extrabold text-slate-900 tracking-tighter" style="font-family:'Manrope',sans-serif;">Governance Redefined</h2>
+        {{-- ============ PUBLIC MAP GUIDE ============ --}}
+        <section id="features" class="landing-map-guide bg-white px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+            <div class="mx-auto max-w-7xl">
+                <div class="mx-auto mb-10 max-w-2xl text-center">
+                    <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-emerald-700" style="font-family:'Public Sans',sans-serif;">Public Map Guide</span>
+                    <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl" style="font-family:'Manrope',sans-serif;">Read the map at a glance</h2>
+                    <p class="mt-3 text-sm leading-6 text-slate-600 sm:text-base">Pin color shows project status. Pin shape shows project type. Use the steps below to explore projects around Cabuyao.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {{-- Feature 1 --}}
-                    <div class="group bg-slate-50 p-8 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300 relative overflow-hidden">
-                        <div class="relative z-10">
-                            <div class="w-14 h-14 rounded-lg bg-emerald-100 flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
-                                <span class="material-symbols-outlined text-emerald-700 text-3xl" style="font-variation-settings: 'FILL' 1;">location_on</span>
+                <div class="grid gap-5 lg:grid-cols-3">
+                    <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="map-status-legend-title">
+                        <div class="mb-4 flex items-center gap-3">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                                <span class="material-symbols-outlined">palette</span>
+                            </span>
+                            <div>
+                                <h3 id="map-status-legend-title" class="font-bold text-slate-900">Project status</h3>
+                                <p class="text-xs text-slate-500">Read the pin color</p>
                             </div>
-                            <h3 class="text-2xl font-bold mb-3 text-slate-900" style="font-family:'Manrope',sans-serif;">Public Projects</h3>
-                            <p class="text-slate-600 leading-relaxed">
-                                Real-time map tracking of all municipal construction and infrastructure developments across Cabuyao's districts.
-                            </p>
-                            <a href="{{ route('public.map') }}" class="mt-6 inline-flex items-center gap-2 text-emerald-700 font-semibold text-sm group/link">
-                                Exploration Dashboard
-                                <span class="material-symbols-outlined text-lg transition-transform group-hover/link:translate-x-1">arrow_forward</span>
-                            </a>
                         </div>
-                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <span class="material-symbols-outlined text-8xl">map</span>
+                        <div class="grid grid-cols-2 gap-x-3 gap-y-3 text-xs font-semibold text-slate-700">
+                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#2563eb]"></span>Proposed</div>
+                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#f59e0b]"></span>For bidding</div>
+                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#06b6d4]"></span>Bidding ongoing</div>
+                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#8b5cf6]"></span>Award of contract</div>
+                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#0f766e]"></span>Implementation</div>
+                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#16a34a]"></span>Completed</div>
+                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#dc2626]"></span>On Hold</div>
+                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#64748b]"></span>Cancelled</div>
                         </div>
-                    </div>
+                    </section>
 
-                    {{-- Feature 2 --}}
-                    <div class="group bg-white p-8 rounded-xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden">
-                        <div class="relative z-10">
-                            <div class="w-14 h-14 rounded-lg bg-emerald-100 flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
-                                <span class="material-symbols-outlined text-emerald-700 text-3xl" style="font-variation-settings: 'FILL' 1;">bar_chart</span>
+                    <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="map-type-legend-title">
+                        <div class="mb-4 flex items-center gap-3">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-700">
+                                <span class="material-symbols-outlined">category</span>
+                            </span>
+                            <div>
+                                <h3 id="map-type-legend-title" class="font-bold text-slate-900">Project type</h3>
+                                <p class="text-xs text-slate-500">Read the pin shape</p>
                             </div>
-                            <h3 class="text-2xl font-bold mb-3 text-slate-900" style="font-family:'Manrope',sans-serif;">Project Analytics</h3>
-                            <p class="text-slate-600 leading-relaxed">
-                                Explore project status distribution, completion trends, and barangay-level activity without exposing budget or expense details.
-                            </p>
-                            <a href="{{ route('public.analytics') }}" class="mt-6 inline-flex items-center gap-2 text-emerald-700 font-semibold text-sm group/link">
-                                Analytics Dashboard
-                                <span class="material-symbols-outlined text-lg transition-transform group-hover/link:translate-x-1">arrow_forward</span>
-                            </a>
                         </div>
-                    </div>
+                        <div class="map-guide-type-list grid grid-cols-2 gap-x-3 gap-y-3 text-xs font-semibold text-slate-700">
+                            <div class="flex items-center gap-2"><span class="map-guide-type-shape bridges" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18M5 18V9m14 9V9M4 9h16M7 9c0 4 2.2 6 5 6s5-2 5-6M8 5v2m8-2v2"/></svg></span>Bridges</div>
+                            <div class="flex items-center gap-2"><span class="map-guide-type-shape buildings" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V5h14v15M3 20h18M9 9h2m2 0h2M9 13h2m2 0h2M10 20v-3h4v3"/></svg></span>Buildings and Facilities</div>
+                            <div class="flex items-center gap-2"><span class="map-guide-type-shape flood-control" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2M3 12c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2M3 17c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2"/></svg></span>Flood Control and Drainage</div>
+                            <div class="flex items-center gap-2"><span class="map-guide-type-shape roads" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3 6 21m9-18 3 18M12 5v3m0 4v3m0 4v2"/></svg></span>Roads</div>
+                            <div class="flex items-center gap-2"><span class="map-guide-type-shape septage" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12v13H6zM9 7V4h6v3M9 11h6m-6 4h6m-3 5v-3m0-13v3"/></svg></span>Septage and Sewerage</div>
+                            <div class="flex items-center gap-2"><span class="map-guide-type-shape water" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.5 6 11a6 6 0 1 1-12 0c0-4.5 6-11 6-11Z"/><path d="M9 15a3 3 0 0 0 3 3"/></svg></span>Water Provision and Storage</div>
+                            <div class="flex items-center gap-2"><span class="map-guide-type-shape others" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/></svg></span>Others</div>
+                        </div>
+                    </section>
 
-                    {{-- Feature 3 --}}
-                    <div class="group bg-slate-50 p-8 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300 relative overflow-hidden">
-                        <div class="relative z-10">
-                            <div class="w-14 h-14 rounded-lg bg-slate-900/10 flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
-                                <span class="material-symbols-outlined text-slate-900 text-3xl" style="font-variation-settings: 'FILL' 1;">description</span>
+                    <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="map-howto-title">
+                        <div class="mb-4 flex items-center gap-3">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                                <span class="material-symbols-outlined">touch_app</span>
+                            </span>
+                            <div>
+                                <h3 id="map-howto-title" class="font-bold text-slate-900">How to explore</h3>
+                                <p class="text-xs text-slate-500">A few simple steps</p>
                             </div>
-                            <h3 class="text-2xl font-bold mb-3 text-slate-900" style="font-family:'Manrope',sans-serif;">Transparency Report</h3>
-                            <p class="text-slate-600 leading-relaxed">
-                                See how Cabuyao City tracks project documentation, timeliness, and public transparency.
-                            </p>
-                            <a href="{{ route('public.transparency') }}" class="mt-6 inline-flex items-center gap-2 text-emerald-700 font-semibold text-sm group/link">
-                                Transparency Report
-                                <span class="material-symbols-outlined text-lg transition-transform group-hover/link:translate-x-1">arrow_forward</span>
-                            </a>
                         </div>
-                        <div class="absolute bottom-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <span class="material-symbols-outlined text-8xl">verified</span>
-                        </div>
-                    </div>
+                        <ol class="space-y-4 text-xs leading-5 text-slate-600">
+                            <li class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">1</span><span>Choose a barangay on the map. Its numbered badge shows how many projects it has.</span></li>
+                            <li class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">2</span><span>View its project pins and select a pin or project in the list to see details.</span></li>
+                            <li class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">3</span><span>Use the map legend and Light/Dark controls to understand markers and adjust the map.</span></li>
+                        </ol>
+                        <a href="{{ route('public.map') }}" class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                            Open the Public Map <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
+                        </a>
+                    </section>
                 </div>
             </div>
         </section>

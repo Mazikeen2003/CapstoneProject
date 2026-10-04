@@ -582,6 +582,8 @@ html.dark-mode .ep-empty-icon {
         </div>
     </div>
 
+    @include('components.project-archive-tabs', ['routeName' => 'engineering.projects.index', 'view' => $projectListView])
+
     <!-- CARD -->
     <div class="ep-card ep-animate">
         @if ($projects->isEmpty())
@@ -603,6 +605,7 @@ html.dark-mode .ep-empty-icon {
                                 <th>Status</th>
                                 <th>Barangay</th>
                                 <th>Budget</th>
+                                @if ($projectListView === 'archived')<th>Spent</th>@endif
                                 <th style="text-align:right">Actions</th>
                             </tr>
                         </thead>
@@ -650,6 +653,7 @@ html.dark-mode .ep-empty-icon {
                                         </span>
                                     </td>
                                     <td class="ep-project-budget">₱{{ number_format($project->approved_budget ?? 0, 2) }}</td>
+                                    @if ($projectListView === 'archived')<td class="ep-project-budget">₱{{ number_format(max((float) ($project->actual_budget ?? 0), (float) ($project->actual_transactions_sum ?? 0)), 2) }}</td>@endif
                                     <td style="text-align:right">
                                         <a href="{{ route('engineering.projects.show', $project->project_id) }}" class="ep-project-action">View</a>
                                     </td>
@@ -693,6 +697,12 @@ html.dark-mode .ep-empty-icon {
                                 <span class="ep-mobile-label">Budget</span>
                                 <span class="ep-mobile-value">₱{{ number_format($project->approved_budget ?? 0, 2) }}</span>
                             </div>
+                            @if ($projectListView === 'archived')
+                                <div>
+                                    <span class="ep-mobile-label">Spent</span>
+                                    <span class="ep-mobile-value">₱{{ number_format(max((float) ($project->actual_budget ?? 0), (float) ($project->actual_transactions_sum ?? 0)), 2) }}</span>
+                                </div>
+                            @endif
                         </div>
                         <div class="ep-mobile-action">
                             <a href="{{ route('engineering.projects.show', $project->project_id) }}" class="ep-project-action">View</a>

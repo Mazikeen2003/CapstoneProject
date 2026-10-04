@@ -3,9 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class BudgetTransaction extends Model
 {
+    public const CATEGORIES = ['Project Overhead', 'Manpower', 'Material', 'Admin Overhead'];
+
+    public const TYPES = ['planned', 'actual'];
+
+    public static function supportsCategoryTracking(): bool
+    {
+        return Schema::hasColumn('budget_transactions', 'category')
+            && Schema::hasColumn('budget_transactions', 'type')
+            && Schema::hasColumn('budget_transactions', 'transaction_date');
+    }
+
     public $timestamps = false;
 
     protected $primaryKey = 'transaction_id';
@@ -15,6 +27,9 @@ class BudgetTransaction extends Model
         'action',
         'amount',
         'transaction_type',
+        'category',
+        'type',
+        'transaction_date',
         'description',
         'user_id',
         'created_at',
@@ -23,6 +38,7 @@ class BudgetTransaction extends Model
     protected $casts = [
         'amount'     => 'decimal:2',
         'created_at' => 'datetime',
+        'transaction_date' => 'date',
     ];
 
     public function project()

@@ -798,6 +798,8 @@
         </div>
     </div>
 
+    @include('components.project-archive-tabs', ['routeName' => 'department.projects.index', 'view' => $projectListView])
+
     <!-- PROJECTS CARD -->
     <div class="dept-proj-card dept-proj-animate">
 
@@ -825,6 +827,7 @@
                                 <th>Status</th>
                                 <th>Barangay</th>
                                 <th>Budget</th>
+                                @if ($projectListView === 'archived')<th>Spent</th>@endif
                                 <th style="text-align:right">Actions</th>
                             </tr>
                         </thead>
@@ -871,6 +874,9 @@
                                         </span>
                                     </td>
                                     <td class="dept-proj-budget">₱{{ number_format($project->approved_budget ?? 0, 2) }}</td>
+                                    @if ($projectListView === 'archived')
+                                        <td class="dept-proj-budget">₱{{ number_format(max((float) ($project->actual_budget ?? 0), (float) ($project->actual_transactions_sum ?? 0)), 2) }}</td>
+                                    @endif
                                     <td style="text-align:right">
                                     <div class="dept-proj-actions">
                                         <a href="{{ route('department.projects.show', $project->project_id) }}" class="dept-proj-action dept-proj-action-view">View</a>
@@ -951,6 +957,12 @@
                                 <span class="dept-proj-mlabel">Budget</span>
                                 <span class="dept-proj-mvalue" style="font-family:'Plus Jakarta Sans',sans-serif; color:var(--dp-ink)">₱{{ number_format($project->approved_budget ?? 0, 2) }}</span>
                             </div>
+                            @if ($projectListView === 'archived')
+                                <div class="dept-proj-mmeta-item">
+                                    <span class="dept-proj-mlabel">Spent</span>
+                                    <span class="dept-proj-mvalue">₱{{ number_format(max((float) ($project->actual_budget ?? 0), (float) ($project->actual_transactions_sum ?? 0)), 2) }}</span>
+                                </div>
+                            @endif
                         </div>
                         <div class="dept-proj-mactions">
                             <a href="{{ route('department.projects.show', $project->project_id) }}" class="dept-proj-action dept-proj-action-view">View</a>

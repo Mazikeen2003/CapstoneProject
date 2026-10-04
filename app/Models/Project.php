@@ -121,6 +121,27 @@ class Project extends Model
     {
         return $this->hasMany(BudgetTransaction::class, 'project_id', 'project_id');
     }
+
+    public function getActualBudgetTotalAttribute(): float
+    {
+        $legacyTotal = (float) ($this->attributes['actual_budget'] ?? 0);
+
+        if (array_key_exists('actual_transactions_sum', $this->attributes)) {
+            return max($legacyTotal, (float) ($this->attributes['actual_transactions_sum'] ?? 0));
+        }
+
+        if (! $this->relationLoaded('budgetTransactions')) {
+            return $legacyTotal;
+        }
+
+        $categorizedTotal = (float) $this->budgetTransactions
+            ->where('type', 'actual')
+            ->whereIn('category', BudgetTransaction::CATEGORIES)
+            ->sum('amount');
+
+        return max($legacyTotal, $categorizedTotal);
+    }
+
      public function forms()
     {
         return $this->hasMany(ProjectForm::class, 'project_id', 'project_id');
@@ -153,12 +174,25 @@ class Project extends Model
     // Query Scopes
     public function scopeWithRelations($query)
     {
-        return $query->with(['barangay', 'creator', 'updates', 'budgetTransactions']);
+        return $query->with(['barangay', 'creator', 'updates.user', 'budgetTransactions']);
     }
 
     public function scopeWithBasicRelations($query)
     {
         return $query->with(['barangay', 'creator']);
+    }
+
+    public function scopeWithActualTransactionSum($query)
+    {
+        if (! BudgetTransaction::supportsCategoryTracking()) {
+            return $query;
+        }
+
+        return $query->withSum([
+            'budgetTransactions as actual_transactions_sum' => fn ($transactions) => $transactions
+                ->where('type', 'actual')
+                ->whereIn('category', BudgetTransaction::CATEGORIES),
+        ], 'amount');
     }
 
     public function scopeByStatus($query, $status)

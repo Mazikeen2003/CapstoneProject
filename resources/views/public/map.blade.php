@@ -54,6 +54,117 @@
         html.dark-mode .leaflet-popup-content-wrapper, html.dark-mode .leaflet-popup-tip { background:#1e293b; }
         html.dark-mode .public-map-popup h4 { color:#f8fafc; }
         html.dark-mode .public-map-popup p { color:#cbd5e1; }
+        .public-map-legend {
+            position:absolute; right:16px; bottom:16px; z-index:500;
+            border:1px solid rgba(148,163,184,.35); border-radius:10px;
+            padding:10px 12px; background:rgba(255,255,255,.96);
+            color:#334155; font-size:.6875rem; font-weight:600;
+            box-shadow:0 8px 18px rgba(15,23,42,.12);
+        }
+        .public-map-legend-title { margin-bottom:6px; font-size:.7rem; font-weight:800; }
+        .public-map-legend-toggle { display:none; }
+        .public-map-legend-count { margin-bottom:7px; color:#64748b; }
+        .public-map-legend-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px 12px; }
+        .public-map-legend-item { display:flex; align-items:center; gap:6px; white-space:nowrap; }
+        .public-project-type-shape {
+            display:inline-flex; flex:0 0 14px; width:14px; height:14px;
+            align-items:center; justify-content:center;
+            background:var(--project-marker-color, #64748b);
+            box-shadow:0 1px 3px rgba(15,23,42,.22);
+        }
+        .public-project-type-shape.bridges { clip-path:polygon(5% 20%,95% 20%,95% 38%,82% 38%,82% 57%,72% 57%,72% 45%,60% 45%,50% 55%,40% 45%,28% 45%,28% 57%,18% 57%,18% 38%,5% 38%); }
+        .public-project-type-shape.buildings { border-radius:3px; }
+        .public-project-type-shape.flood-control { clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%); }
+        .public-project-type-shape.roads { width:18px; flex-basis:18px; height:11px; border-radius:5px; }
+        .public-project-type-shape.septage { clip-path:polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%); }
+        .public-project-type-shape.water { clip-path:polygon(50% 0,95% 55%,88% 78%,72% 95%,50% 100%,28% 95%,12% 78%,5% 55%); }
+        .public-project-type-shape.others { clip-path:polygon(50% 0,62% 35%,100% 38%,72% 61%,82% 100%,50% 77%,18% 100%,28% 61%,0 38%,38% 35%); }
+        .public-project-type-shape svg { width:70%; height:70%; display:block; }
+        .public-project-type-marker.leaflet-div-icon { border:0; background:transparent; }
+        .public-project-type-marker .public-project-type-shape {
+            width:34px; height:34px; flex-basis:34px;
+            border:1px solid rgba(255,255,255,.78);
+            background:var(--project-marker-color, #64748b);
+            filter:drop-shadow(0 2px 3px rgba(15,23,42,.34));
+        }
+        .public-project-type-marker .public-project-type-shape.roads {
+            width:38px; flex-basis:38px; height:28px; border-radius:8px;
+            clip-path:none;
+        }
+        .public-project-type-marker .public-project-type-shape.buildings { border-radius:8px; }
+        .public-project-type-marker .public-project-type-shape svg { width:62%; height:62%; }
+        .public-project-type-marker .public-project-type-shape.roads svg { width:72%; height:72%; }
+        .public-project-type-marker .public-project-type-shape.water svg { width:58%; height:58%; }
+        .public-project-type-marker .public-project-type-shape.others svg { width:58%; height:58%; }
+        .public-map-legend-item .public-project-type-shape {
+            --project-marker-color:#111827;
+            width:16px; height:16px; flex-basis:16px;
+            border:0;
+            box-shadow:none;
+        }
+        .public-map-legend-item .public-project-type-shape.roads {
+            width:19px; flex-basis:19px; height:14px; border-radius:4px;
+        }
+        .public-map-legend-item .public-project-type-shape.buildings { border-radius:2px; }
+        .public-map-legend-item .public-project-type-shape svg { width:72%; height:72%; }
+        html.dark-mode .public-map-legend,
+        .dark .public-map-legend {
+            border-color:rgba(148,163,184,.3); background:rgba(15,23,42,.94); color:#e2e8f0;
+        }
+        html.dark-mode .public-map-legend-count,
+        .dark .public-map-legend-count { color:#94a3b8; }
+        @media (max-width: 640px) {
+            .public-map-legend { right:10px; bottom:10px; max-width:calc(100% - 20px); max-height:45%; overflow-y:auto; padding:8px 9px; }
+            .public-map-legend-title { display:none; }
+            .public-map-legend-toggle {
+                display:flex; align-items:center; justify-content:space-between; gap:8px;
+                min-width:108px; padding:2px 0; border:0; background:transparent;
+                color:inherit; font:inherit; font-weight:800; text-align:left; cursor:pointer;
+            }
+            .public-map-legend-toggle-icon { font-size:1rem; line-height:1; }
+            .public-map-legend-count,
+            .public-map-legend-grid { grid-template-columns:1fr; gap:4px; }
+            .public-map-legend-count,
+            .public-map-legend-grid { display:none; }
+            .public-map-legend.is-expanded .public-map-legend-count,
+            .public-map-legend.is-expanded .public-map-legend-grid { display:grid; }
+            .public-map-legend.is-expanded .public-map-legend-count { display:block; }
+            .public-map-legend-item { white-space:normal; }
+        }
+        .public-barangay-count-marker {
+            display:flex; align-items:center; justify-content:center;
+            border:0; background:transparent;
+        }
+        .public-barangay-count-marker span {
+            display:flex; align-items:center; justify-content:center;
+            min-width:36px; height:36px; padding:0 8px; box-sizing:border-box;
+            border:1px solid rgba(255,255,255,.72); border-radius:9999px;
+            background:linear-gradient(145deg, rgba(16,185,129,.58), rgba(5,150,105,.34));
+            color:#fff; font-size:12px; font-weight:750; letter-spacing:.01em;
+            text-shadow:0 1px 2px rgba(6,78,59,.65);
+            -webkit-backdrop-filter:blur(12px) saturate(155%);
+            backdrop-filter:blur(12px) saturate(155%);
+            box-shadow:
+                0 3px 10px rgba(15,23,42,.22),
+                inset 0 1px 0 rgba(255,255,255,.48),
+                inset 0 -1px 0 rgba(6,78,59,.12);
+            transition:transform .16s ease, box-shadow .16s ease, background .16s ease;
+        }
+        .public-barangay-count-marker:hover span,
+        .public-barangay-count-marker:focus-visible span {
+            transform:translateY(-1px) scale(1.06);
+            background:linear-gradient(145deg, rgba(16,185,129,.7), rgba(5,150,105,.46));
+            box-shadow:
+                0 5px 14px rgba(15,23,42,.26),
+                inset 0 1px 0 rgba(255,255,255,.58),
+                inset 0 -1px 0 rgba(6,78,59,.12);
+        }
+        .public-barangay-count-marker:focus-visible {
+            outline:2px solid #fff;
+            outline-offset:3px;
+            border-radius:9999px;
+        }
+        .public-barangay-count-marker.leaflet-div-icon { background:transparent; border:0; }
         @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior:auto!important; transition:none!important; animation:none!important; } }
 
         @media (min-width: 640px) {
@@ -649,7 +760,24 @@
     <main class="px-4 py-5 md:px-6 md:py-6 lg:px-8">
         <div class="flex flex-col lg:flex-row gap-4 overflow-hidden rounded-3xl border border-gray-300 shadow-sm">
             <div class="flex-1 min-w-0 w-full relative z-0" id="map" aria-label="Interactive map of Cabuyao City public projects">
-                @include('components.map-status-legend')
+                <div class="public-map-legend" aria-label="Map legend">
+                    <div class="public-map-legend-title">Map legend</div>
+                    <button type="button" class="public-map-legend-toggle" aria-expanded="false" aria-controls="publicMapLegendContent">
+                        <span>Map legend</span><span class="public-map-legend-toggle-icon" aria-hidden="true">+</span>
+                    </button>
+                    <div id="publicMapLegendContent">
+                    <div class="public-map-legend-count">Numbered barangay pins show project counts</div>
+                    <div class="public-map-legend-grid">
+                        <div class="public-map-legend-item"><span class="public-project-type-shape bridges"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18h18M5 18V9m14 9V9M4 9h16M7 9c0 4 2.2 6 5 6s5-2 5-6M8 5v2m8-2v2"/></svg></span>Bridges</div>
+                        <div class="public-map-legend-item"><span class="public-project-type-shape buildings"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V5h14v15M3 20h18M9 9h2m2 0h2M9 13h2m2 0h2M10 20v-3h4v3"/></svg></span>Buildings and Facilities</div>
+                        <div class="public-map-legend-item"><span class="public-project-type-shape flood-control"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2M3 12c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2M3 17c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2"/></svg></span>Flood Control and Drainage</div>
+                        <div class="public-map-legend-item"><span class="public-project-type-shape roads"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3 6 21m9-18 3 18M12 5v3m0 4v3m0 4v2"/></svg></span>Roads</div>
+                        <div class="public-map-legend-item"><span class="public-project-type-shape septage"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12v13H6zM9 7V4h6v3M9 11h6m-6 4h6m-3 5v-3m0-13v3"/></svg></span>Septage and Sewerage Plants</div>
+                        <div class="public-map-legend-item"><span class="public-project-type-shape water"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 1 1-12 0c0-4.5 6-11 6-11Z"/><path d="M9 15a3 3 0 0 0 3 3"/></svg></span>Water Provision and Storage</div>
+                        <div class="public-map-legend-item"><span class="public-project-type-shape others"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/></svg></span>Others</div>
+                    </div>
+                    </div>
+                </div>
                 <div class="public-map-tile-controls" aria-label="Map theme">
                     <button type="button" id="btnPublicLightTiles" class="active" aria-pressed="true">Light</button>
                     <button type="button" id="btnPublicDarkTiles" aria-pressed="false">Dark</button>
@@ -705,6 +833,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const projectList = document.getElementById('departmentProjectList');
+            const mapLegend = document.querySelector('.public-map-legend');
+            const mapLegendToggle = mapLegend?.querySelector('.public-map-legend-toggle');
             const selectedClass = 'bg-slate-50 border border-slate-200';
             const lightbox = document.getElementById('publicMapProjectLightbox');
             const lightboxImage = document.getElementById('publicMapProjectLightboxImage');
@@ -719,13 +849,20 @@
             let barangayLayer = null;
             let selectedBarangayLayer = null;
             let selectedBarangayName = null;
-            const markersByBarangay = {}; // barangay name -> array of Leaflet markers
-            let allMarkers = null; // featureGroup holding every marker
+            let allMarkers = null;
+            let selectedProjectMarkers = null;
             let currentTileLayer = null;
             let lightTiles = null;
             let darkTiles = null;
             let publicProjectZoom = 1;
             let lightboxTrigger = null;
+
+            mapLegendToggle?.addEventListener('click', function(event) {
+                event.stopPropagation();
+                const isExpanded = mapLegend.classList.toggle('is-expanded');
+                mapLegendToggle.setAttribute('aria-expanded', String(isExpanded));
+                mapLegendToggle.querySelector('.public-map-legend-toggle-icon').textContent = isExpanded ? '−' : '+';
+            });
 
             function barangayColor(name) {
                 let hash = 0;
@@ -1110,14 +1247,13 @@
                 }
                 selectedBarangayName = null;
 
-                Object.values(markersByBarangay).forEach(markers => markers.forEach(marker => map.removeLayer(marker)));
+                if (selectedProjectMarkers) {
+                    map.removeLayer(selectedProjectMarkers);
+                    selectedProjectMarkers = null;
+                }
 
-                // Reattach every marker explicitly. Markers may have been detached from
-                // the feature group while the selected barangay was being displayed.
-                if (allMarkers) {
-                    allMarkers.eachLayer(function(marker) {
-                        if (!map.hasLayer(marker)) marker.addTo(map);
-                    });
+                if (allMarkers && !map.hasLayer(allMarkers)) {
+                    allMarkers.addTo(map);
                 }
 
                 selectedProjectIndex = null;
@@ -1139,14 +1275,82 @@
 
                 map.fitBounds(layer.getBounds(), { padding: [40, 40] });
 
-                // Show only markers belonging to this barangay
                 if (allMarkers) {
                     map.removeLayer(allMarkers);
                 }
-                Object.values(markersByBarangay).forEach(markers => markers.forEach(marker => map.removeLayer(marker)));
-                (markersByBarangay[name] || []).forEach(marker => marker.addTo(map));
+                if (selectedProjectMarkers) {
+                    map.removeLayer(selectedProjectMarkers);
+                }
 
                 const filtered = projectFeatures.filter(p => p.properties.barangay === name);
+                selectedProjectMarkers = L.featureGroup();
+
+                function getProjectMarkerColor(status) {
+                    const colors = {
+                        'Proposed': '#2563eb',
+                        'For bidding': '#f59e0b',
+                        'Bidding ongoing': '#06b6d4',
+                        'Award of contract': '#8b5cf6',
+                        'Implementation': '#0f766e',
+                        'On Going': '#0f766e',
+                        'Completed': '#16a34a',
+                        'On Hold': '#dc2626',
+                        'Cancelled': '#64748b'
+                    };
+                    return colors[String(status ?? '').trim()] || '#64748b';
+                }
+
+                function getProjectTypeShape(type) {
+                    const normalizedType = String(type ?? '').trim().toLocaleLowerCase();
+                    const shapes = {
+                        'bridges': 'bridges',
+                        'buildings and facilities': 'buildings',
+                        'flood control and drainage': 'flood-control',
+                        'roads': 'roads',
+                        'septage and sewerage plants': 'septage',
+                        'water provision and storage': 'water',
+                        'others': 'others'
+                    };
+                    return shapes[normalizedType] || 'others';
+                }
+
+                function getProjectTypeIcon(type) {
+                    const icons = {
+                        bridges: '<path d="M3 18h18M5 18V9m14 9V9M4 9h16M7 9c0 4 2.2 6 5 6s5-2 5-6M8 5v2m8-2v2"/>',
+                        buildings: '<path d="M5 20V5h14v15M3 20h18M9 9h2m2 0h2M9 13h2m2 0h2M10 20v-3h4v3"/>',
+                        'flood-control': '<path d="M3 7c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2M3 12c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2M3 17c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2"/>',
+                        roads: '<path d="M9 3 6 21m9-18 3 18M12 5v3m0 4v3m0 4v2"/>',
+                        septage: '<path d="M6 7h12v13H6zM9 7V4h6v3M9 11h6m-6 4h6m-3 5v-3m0-13v3"/>',
+                        water: '<path d="M12 3s6 6.5 6 11a6 6 0 1 1-12 0c0-4.5 6-11 6-11Z"/><path d="M9 15a3 3 0 0 0 3 3"/>',
+                        others: '<path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/>'
+                    };
+                    return icons[getProjectTypeShape(type)];
+                }
+
+                filtered.forEach(function(project) {
+                    const coords = project.geometry?.coordinates;
+                    if (!coords || coords.length < 2) return;
+
+                    const projectType = project.properties.type || 'Others';
+                    const markerColor = getProjectMarkerColor(project.properties.status);
+                    const marker = L.marker([coords[1], coords[0]], {
+                        icon: L.divIcon({
+                            className: 'public-project-type-marker',
+                            html: `<span class="public-project-type-shape ${getProjectTypeShape(projectType)}" style="--project-marker-color:${markerColor}" aria-label="${escapeHtml(projectType)}"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${getProjectTypeIcon(projectType)}</svg></span>`,
+                            iconSize: [42, 42],
+                            iconAnchor: [21, 21]
+                        }),
+                        title: `${project.properties.name} — ${projectType}`
+                    });
+                    marker.bindPopup(`<div class="public-map-popup"><h4>${escapeHtml(project.properties.name)}</h4><p>${escapeHtml(projectType)} · ${escapeHtml(project.properties.status || 'Unknown')}</p></div>`);
+                    marker.on('click', function(event) {
+                        L.DomEvent.stopPropagation(event);
+                        selectProject(project, project.originalIndex);
+                    });
+                    selectedProjectMarkers.addLayer(marker);
+                });
+                selectedProjectMarkers.addTo(map);
+
                 renderProjectList(filtered);
             }
 
@@ -1214,61 +1418,71 @@
                         },
                     }).addTo(map);
 
-                    function getMarkerColor(status) {
-                        const colors = {
-                            'Proposed': '#2563eb',
-                            'For bidding': '#f59e0b',
-                            'Bidding ongoing': '#06b6d4',
-                            'Award of contract': '#8b5cf6',
-                            'Implementation': '#0f766e',
-                            'Completed': '#16a34a',
-                            'On Hold': '#dc2626',
-                            'Cancelled': '#64748b'
-                        };
-                        return colors[String(status ?? '').trim()] || '#64748b';
-                    }
-
                     allMarkers = L.featureGroup();
                     projectFeatures = [];
                     window.projectFeatures = projectFeatures;
 
-                    fetch('{{ route('api.public.projects.geojson') }}')
-                        .then(response => response.json())
-                        .then(function(projectData) {
-                            if (!projectData || !projectData.features) {
-                                throw new Error('Invalid project data');
+                    function fetchFeatureCollection(url) {
+                        return fetch(url).then(function(response) {
+                            if (!response.ok) {
+                                throw new Error(`Unable to load map data (${response.status})`);
                             }
+                            return response.json();
+                        }).then(function(data) {
+                            if (!data || !Array.isArray(data.features)) {
+                                throw new Error('Invalid map data');
+                            }
+                            return data;
+                        });
+                    }
 
-                            projectData.features.forEach(function(project, index) {
+                    Promise.all([
+                        fetchFeatureCollection('{{ route('api.public.projects.geojson') }}'),
+                        fetchFeatureCollection('{{ route('api.public.barangays.geojson') }}')
+                    ])
+                        .then(function([projectData, barangayData]) {
+                            projectData.features.forEach(function(project) {
                                 const coords = project.geometry && project.geometry.coordinates;
                                 if (!coords || coords.length < 2) {
                                     return;
                                 }
 
-                                const marker = L.circleMarker([coords[1], coords[0]], {
-                                    radius: 12,
-                                    fillColor: getMarkerColor(project.properties.status),
-                                    color: '#ffffff',
-                                    weight: 2,
-                                    opacity: 1,
-                                    fillOpacity: 0.9
-                                });
+                                projectFeatures.push(Object.assign({ originalIndex: projectFeatures.length }, project));
+                            });
 
-                                marker.bindPopup(`<div class="public-map-popup"><h4>${escapeHtml(project.properties.name)}</h4><p>${escapeHtml(project.properties.status || 'Unknown')}</p></div>`);
-                                marker.on('click', function(e) {
-                                    L.DomEvent.stopPropagation(e);
-                                    map.flyTo([coords[1], coords[0]], 16, { duration: 0.7, easeLinearity: 0.35 });
-                                    selectProject(project, index);
+                            const projectCounts = new Map(barangayData.features.map(function(feature) {
+                                return [
+                                    String(feature.properties.name || '').trim().toLocaleLowerCase(),
+                                    Number(feature.properties.project_count) || 0
+                                ];
+                            }));
+
+                            barangayLayer.eachLayer(function(layer) {
+                                const name = layer.feature?.properties?.name;
+                                if (!name) return;
+
+                                const count = projectCounts.get(String(name).trim().toLocaleLowerCase()) || 0;
+                                if (count === 0) return;
+
+                                const marker = L.marker(layer.getBounds().getCenter(), {
+                                    icon: L.divIcon({
+                                        className: 'public-barangay-count-marker',
+                                        html: `<span>${count}</span>`,
+                                        iconSize: [34, 34],
+                                        iconAnchor: [17, 17]
+                                    }),
+                                    title: `${name}: ${count} public project${count === 1 ? '' : 's'}`
+                                });
+                                marker.bindTooltip(`${escapeHtml(name)}: ${count} public project${count === 1 ? '' : 's'}`, {
+                                    direction: 'top',
+                                    offset: [0, -18]
+                                });
+                                marker.on('click', function(event) {
+                                    L.DomEvent.stopPropagation(event);
+                                    selectBarangayOnMap(layer, name);
                                 });
 
                                 allMarkers.addLayer(marker);
-                                projectFeatures.push(Object.assign({ originalIndex: index }, project));
-
-                                const barangayName = project.properties.barangay;
-                                if (barangayName) {
-                                    if (!markersByBarangay[barangayName]) markersByBarangay[barangayName] = [];
-                                    markersByBarangay[barangayName].push(marker);
-                                }
                             });
 
                             function restoreListOnMapClick() { showAllProjects(); }

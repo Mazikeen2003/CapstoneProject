@@ -11,7 +11,7 @@
 
 /* Root variables: light mode */
 .dept-map-container {
-    --dm-bg: #ffffff;
+    --dm-bg: #f8f7f5;
     --dm-surface: #ffffff;
     --dm-raised: #f8f7f5;
     --dm-ink: #0f0d1f;
@@ -52,8 +52,9 @@ html.dark-mode .dept-map-container {
 }
 
 html:not(.dark-mode) body:has(.dept-map-container),
-html:not(.dark-mode) .authenticated-layout:has(.dept-map-container) {
-    background-color: #ffffff !important;
+html:not(.dark-mode) .authenticated-layout:has(.dept-map-container),
+html:not(.dark-mode) main:has(.dept-map-container) {
+    background-color: #f8f7f5 !important;
 }
 
 html.dark-mode body:has(.dept-map-container),

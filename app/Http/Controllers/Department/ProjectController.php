@@ -16,8 +16,11 @@ use App\Services\CacheService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class ProjectController extends Controller
 {
@@ -28,6 +31,12 @@ class ProjectController extends Controller
         // No need to call ->forUser() anymore — the global scope on
         // the Project model filters this automatically by role.
         $query = Project::withBasicRelations();
+        $projectListView = $request->query('view') === 'archived' ? 'archived' : 'active';
+        if ($projectListView === 'archived') {
+            $query->where('current_status', 'Completed');
+        } else {
+            $query->where(fn ($statusQuery) => $statusQuery->whereNull('current_status')->orWhere('current_status', '!=', 'Completed'));
+        }
         $filter = $request->string('filter')->toString();
         $terminalStatuses = ['Completed', 'Cancelled', 'On Hold'];
 
@@ -47,7 +56,7 @@ class ProjectController extends Controller
             default => $query->latest('created_at'),
         };
 
-        $projects = $query->paginate(10)->withQueryString();
+        $projects = $query->withActualTransactionSum()->paginate(10)->withQueryString();
         $deletePermissionRequests = EditPermissionRequest::query()
             ->where('requested_by', Auth::id())
             ->where('request_type', 'delete')
@@ -55,7 +64,7 @@ class ProjectController extends Controller
             ->get()
             ->keyBy('project_id');
 
-        return view('department.projects.index', compact('projects', 'deletePermissionRequests'));
+        return view('department.projects.index', compact('projects', 'deletePermissionRequests', 'projectListView'));
     }
 
     public function create()
@@ -116,7 +125,7 @@ class ProjectController extends Controller
         // findOrFail already respects the global scope, so a department
         // user can't even fetch another department's project by guessing
         // the ID — it'll 404 before the policy check even runs.
-        $project = Project::with(['barangay', 'latestUpdate', 'updates', 'budgetTransactions'])
+        $project = Project::with(['barangay', 'latestUpdate', 'updates.user', 'budgetTransactions'])
             ->findOrFail($id);
 
         $this->authorize('view', $project);
@@ -124,12 +133,98 @@ class ProjectController extends Controller
         return view('department.projects.show', [
             'project' => $project,
             'projectRoutePrefix' => 'department.projects',
+            'budgetTrackingAvailable' => BudgetTransaction::supportsCategoryTracking(),
         ]);
+    }
+
+    public function storeBudgetTransaction(Request $request, $id)
+    {
+        if (! BudgetTransaction::supportsCategoryTracking()) {
+            return back()->with('error', 'Category budget tracking is unavailable until its database migration has been applied.');
+        }
+
+        $project = Project::findOrFail($id);
+        $this->authorize('update', $project);
+
+        $validated = $request->validate([
+            'category' => ['required', Rule::in(BudgetTransaction::CATEGORIES)],
+            'type' => ['required', Rule::in(BudgetTransaction::TYPES)],
+            'amount' => ['required', 'numeric', 'gt:0', 'max:999999999999.99'],
+            'description' => ['nullable', 'string', 'max:2000'],
+            'transaction_date' => ['required', 'date'],
+        ]);
+
+        DB::transaction(function () use ($validated, $project): void {
+            $lockedProject = Project::where('project_id', $project->project_id)->lockForUpdate()->firstOrFail();
+            $transactions = $lockedProject->budgetTransactions()
+                ->whereIn('category', BudgetTransaction::CATEGORIES)
+                ->whereIn('type', BudgetTransaction::TYPES)
+                ->get();
+            $plannedTransactions = $transactions->where('type', 'planned');
+            $actualTransactions = $transactions->where('type', 'actual');
+            $amount = (float) $validated['amount'];
+            $currentSpent = max((float) ($lockedProject->actual_budget ?? 0), (float) $actualTransactions->sum('amount'));
+
+            if ($validated['type'] === 'planned') {
+                $approvedBudget = $lockedProject->approved_budget !== null ? (float) $lockedProject->approved_budget : null;
+                $newPlannedTotal = (float) $plannedTransactions->sum('amount') + $amount;
+
+                if ($approvedBudget !== null && $newPlannedTotal > $approvedBudget) {
+                    throw ValidationException::withMessages([
+                        'amount' => 'Planned category amounts cannot exceed the approved budget of ₱' . number_format($approvedBudget, 2) . '.',
+                    ]);
+                }
+            } else {
+                $categoryPlanned = $plannedTransactions->where('category', $validated['category']);
+                if ($categoryPlanned->isNotEmpty()) {
+                    $categoryLimit = (float) $categoryPlanned->sum('amount');
+                    $categorySpent = (float) $actualTransactions->where('category', $validated['category'])->sum('amount');
+
+                    if ($categorySpent + $amount > $categoryLimit) {
+                        throw ValidationException::withMessages([
+                            'amount' => 'This expenditure would exceed the planned ' . $validated['category'] . ' amount of ₱' . number_format($categoryLimit, 2) . '.',
+                        ]);
+                    }
+                }
+
+                $approvedBudget = $lockedProject->approved_budget !== null ? (float) $lockedProject->approved_budget : null;
+                $plannedBudget = $plannedTransactions->isNotEmpty() ? (float) $plannedTransactions->sum('amount') : null;
+                $projectLimit = match (true) {
+                    $approvedBudget !== null && $plannedBudget !== null => min($approvedBudget, $plannedBudget),
+                    $plannedBudget !== null => $plannedBudget,
+                    default => $approvedBudget,
+                };
+
+                if ($projectLimit !== null && $currentSpent + $amount > $projectLimit) {
+                    throw ValidationException::withMessages([
+                        'amount' => 'This expenditure would exceed the project spending limit of ₱' . number_format($projectLimit, 2) . '.',
+                    ]);
+                }
+            }
+
+            $lockedProject->budgetTransactions()->create([
+                ...$validated,
+                'action' => $validated['type'] === 'planned' ? 'category_budget' : 'expenditure',
+                'transaction_type' => $validated['type'],
+                'user_id' => Auth::id(),
+                'created_at' => now(),
+            ]);
+
+            if ($validated['type'] === 'actual') {
+                $lockedProject->forceFill(['actual_budget' => $currentSpent + $amount])->save();
+            }
+        });
+
+        CacheService::invalidateGeoJsonCache();
+
+        return redirect()
+            ->route('department.projects.show', $project->project_id)
+            ->with('budget_success', 'Budget entry recorded successfully.');
     }
 
     public function edit($id)
     {
-        $project = Project::with(['barangay', 'latestUpdate'])->findOrFail($id);
+        $project = Project::with(['barangay', 'latestUpdate', 'budgetTransactions'])->findOrFail($id);
 
         if (Auth::user()?->cannot('update', $project)) {
             abort(403, 'This action is unauthorized.');
@@ -145,8 +240,9 @@ class ProjectController extends Controller
 
         $canEditCriticalFields = $latestPermissionRequest?->status === 'approved';
         $canRequestPermission = ! $latestPermissionRequest || in_array($latestPermissionRequest->status, ['rejected', 'used'], true);
+        $actualBudgetTotal = $project->actual_budget_total;
 
-        return view('department.projects.edit', compact('project', 'barangays', 'canEditCriticalFields', 'canRequestPermission'));
+        return view('department.projects.edit', compact('project', 'barangays', 'canEditCriticalFields', 'canRequestPermission', 'actualBudgetTotal'));
     }
 
     public function update(UpdateProjectRequest $request, $id)
@@ -160,7 +256,24 @@ class ProjectController extends Controller
         $original = $project->getOriginal();
 
         $data = $request->validated();
+        unset($data['actual_budget']);
         $data['updated_by'] = Auth::id();
+
+        $actualBudgetChanged = array_key_exists('actual_budget', $data)
+            && (float) ($data['actual_budget'] ?? 0) !== (float) ($original['actual_budget'] ?? 0);
+        $approvedBudgetChanged = array_key_exists('approved_budget', $data)
+            && (float) ($data['approved_budget'] ?? 0) !== (float) ($original['approved_budget'] ?? 0);
+        $finalActualBudget = array_key_exists('actual_budget', $data) ? $data['actual_budget'] : ($original['actual_budget'] ?? null);
+        $finalApprovedBudget = array_key_exists('approved_budget', $data) ? $data['approved_budget'] : ($original['approved_budget'] ?? null);
+
+        if (($actualBudgetChanged || $approvedBudgetChanged)
+            && $finalActualBudget !== null
+            && $finalApprovedBudget !== null
+            && (float) $finalActualBudget > (float) $finalApprovedBudget) {
+            return back()->withErrors([
+                'actual_budget' => 'Actual expenditure cannot exceed the approved budget of ₱' . number_format((float) $finalApprovedBudget, 2) . '.',
+            ])->withInput();
+        }
 
         if (! $project->hasStarted()) {
             foreach (['current_status', 'lifecycle_stage', 'actual_budget'] as $field) {
@@ -180,7 +293,7 @@ class ProjectController extends Controller
             }
         }
 
-        $lockedFields = ['start_date', 'target_end_date', 'approved_budget', 'actual_budget'];
+        $lockedFields = ['start_date', 'target_end_date', 'approved_budget'];
         $latestPermissionRequest = EditPermissionRequest::where('project_id', $project->project_id)
             ->where('requested_by', Auth::id())
             ->where('request_type', 'edit')
@@ -338,7 +451,7 @@ class ProjectController extends Controller
             abort(403, 'This action is unauthorized.');
         }
 
-        $fieldsRequested = $request->input('fields_requested', ['start_date', 'target_end_date', 'approved_budget', 'actual_budget']);
+        $fieldsRequested = $request->input('fields_requested', ['start_date', 'target_end_date', 'approved_budget']);
         $reason = $request->input('reason');
 
         $permissionRequest = EditPermissionRequest::create([

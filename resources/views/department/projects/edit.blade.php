@@ -557,34 +557,248 @@
     }
     .dept-map-badge svg { width: 16px; height: 16px; color: #8b5cf6; }
 
-    /* Status select */
-    .dept-status-wrap { position: relative; }
-    .dept-status-dot {
+    /* Project lifecycle controls */
+    .dept-lifecycle-steps {
+        display: grid;
+        gap: 0;
+        margin: 8px 0 0;
+        padding: 0;
+        list-style: none;
+    }
+    .dept-lifecycle-step {
+        display: grid;
+        grid-template-columns: 28px minmax(0, 1fr);
+        gap: 12px;
+        min-height: 58px;
+    }
+    .dept-lifecycle-marker-wrap {
+        position: relative;
+        display: flex;
+        justify-content: center;
+    }
+    .dept-lifecycle-step:not(:last-child) .dept-lifecycle-marker-wrap::after {
         position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 8px;
-        height: 8px;
+        top: 28px;
+        bottom: -1px;
+        width: 2px;
+        background: var(--de-line-strong);
+        content: "";
+    }
+    .dept-lifecycle-step.is-completed:not(:last-child) .dept-lifecycle-marker-wrap::after {
+        background: #10b981;
+    }
+    .dept-lifecycle-marker {
+        z-index: 1;
+        display: flex;
+        width: 28px;
+        height: 28px;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--de-line-strong);
         border-radius: 50%;
-        z-index: 2;
+        background: var(--de-surface);
+        color: var(--de-muted);
+        font-size: 0.7rem;
+        font-weight: 800;
     }
-    .dept-status-wrap select { padding-left: 32px; }
-    html.dark-mode .dept-status-wrap select,
-    html.dark-mode .dept-status-wrap optgroup,
-    html.dark-mode .dept-status-wrap option {
-        background: #141321 !important;
-        color: #f8f7f5 !important;
+    .dept-lifecycle-step.is-current .dept-lifecycle-marker,
+    .dept-lifecycle-step.is-selected .dept-lifecycle-marker {
+        border-color: #d97706;
+        background: #f59e0b;
+        color: #fff;
     }
-    .dept-status-wrap option.dept-status-group-option {
-        color: #b45309 !important;
+    .dept-lifecycle-step.is-completed .dept-lifecycle-marker {
+        border-color: #059669;
+        background: #10b981;
+        color: #fff;
+    }
+    .dept-lifecycle-content {
+        display: flex;
+        min-height: 40px;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 3px 0 18px;
+    }
+    .dept-lifecycle-name {
+        color: var(--de-ink-secondary);
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+    .dept-lifecycle-step.is-current .dept-lifecycle-name,
+    .dept-lifecycle-step.is-selected .dept-lifecycle-name {
+        color: var(--de-ink);
+        font-weight: 750;
+    }
+    .dept-lifecycle-state {
+        display: block;
+        margin-top: 2px;
+        color: var(--de-muted);
+        font-size: 0.7rem;
+    }
+    .dept-lifecycle-step.is-current .dept-lifecycle-state { color: #b45309; }
+    .dark .dept-lifecycle-step.is-current .dept-lifecycle-state { color: #fbbf24; }
+    .dept-lifecycle-callout {
+        position: relative;
+        margin: 12px 0 18px;
+        padding: 16px 100px 16px 18px;
+        border: 1px solid #bfdbfe;
+        border-radius: 12px;
+        background: #eff6ff;
+        color: #1e3a8a;
+    }
+    .dark .dept-lifecycle-callout {
+        border-color: rgba(96, 165, 250, 0.32);
+        background: rgba(37, 99, 235, 0.12);
+        color: #dbeafe;
+    }
+    .dept-lifecycle-revert {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 6px 10px;
+        border-color: #ef4444;
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    .dept-lifecycle-revert:hover {
+        border-color: #dc2626;
+        background: #fecaca;
+        color: #7f1d1d;
+    }
+    .dark .dept-lifecycle-revert {
+        border-color: rgba(239, 68, 68, 0.55);
+        background: rgba(220, 38, 38, 0.16);
+        color: #fca5a5;
+    }
+    .dark .dept-lifecycle-revert:hover {
+        border-color: #ef4444;
+        background: rgba(220, 38, 38, 0.24);
+        color: #fecaca;
+    }
+    .dept-lifecycle-callout-title {
+        display: block;
+        margin-bottom: 3px;
+        font-size: 0.875rem;
+        font-weight: 800;
+    }
+    .dept-lifecycle-callout p {
+        margin: 0;
+        font-size: 0.8125rem;
+        line-height: 1.5;
+    }
+    .dept-lifecycle-callout .dept-lifecycle-save-note {
+        margin-top: 4px;
+        color: #64748b;
+        font-size: 0.75rem;
+    }
+    .dark .dept-lifecycle-callout .dept-lifecycle-save-note { color: #bfdbfe; }
+    .dept-lifecycle-action,
+    .dept-status-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--de-line-strong);
+        border-radius: 8px;
+        background: var(--de-surface);
+        color: var(--de-ink);
+        font: inherit;
+        font-size: 0.75rem;
         font-weight: 700;
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s, color 0.15s;
     }
-    html.dark-mode .dept-status-wrap option.dept-status-group-option {
-        color: #fbbf24 !important;
+    .dept-lifecycle-action {
+        margin-top: 12px;
+        padding: 9px 14px;
+        border-color: #3b82f6;
+        background: #3b82f6;
+        color: #fff;
     }
-    html.dark-mode .dept-status-wrap optgroup {
-        color: #fbbf24 !important;
+    .dept-lifecycle-action:hover {
+        border-color: #2563eb;
+        background: #2563eb;
+        color: #fff;
+    }
+    .dark .dept-lifecycle-action:hover {
+        border-color: #60a5fa;
+        background: #60a5fa;
+        color: #172554;
+    }
+    .dept-status-extra {
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid var(--de-line);
+    }
+    .dept-status-extra-title {
+        margin-bottom: 8px;
+        color: var(--de-muted);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+    .dept-status-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .dept-status-action { padding: 8px 12px; }
+    .dept-status-action[hidden] { display: none; }
+    .dept-status-action.is-hold {
+        border-color: #f59e0b;
+        background: #fef3c7;
+        color: #92400e;
+    }
+    .dark .dept-status-action.is-hold {
+        border-color: rgba(245, 158, 11, 0.55);
+        background: rgba(245, 158, 11, 0.16);
+        color: #fcd34d;
+    }
+    .dept-status-action.is-cancel {
+        border-color: #ef4444;
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    .dark .dept-status-action.is-cancel {
+        border-color: rgba(239, 68, 68, 0.55);
+        background: rgba(220, 38, 38, 0.16);
+        color: #fca5a5;
+    }
+    .dept-status-action.is-hold:hover {
+        border-color: #d97706;
+        background: #fde68a;
+        color: #92400e;
+    }
+    .dept-status-action.is-cancel:hover {
+        border-color: #dc2626;
+        background: #fecaca;
+        color: #b91c1c;
+    }
+    .dark .dept-status-action.is-hold:hover {
+        border-color: #f59e0b;
+        background: rgba(245, 158, 11, 0.24);
+        color: #fde68a;
+    }
+    .dark .dept-status-action.is-cancel:hover {
+        border-color: #ef4444;
+        background: rgba(220, 38, 38, 0.24);
+        color: #fecaca;
+    }
+    .dept-lifecycle-action:focus-visible,
+    .dept-status-action:focus-visible {
+        outline: 3px solid rgba(59, 130, 246, 0.45);
+        outline-offset: 2px;
+    }
+    .dept-status-selection {
+        margin-top: 10px;
+        color: var(--de-muted);
+        font-size: 0.75rem;
+    }
+    @media (max-width: 480px) {
+        .dept-lifecycle-content { flex-direction: column; gap: 6px; }
+        .dept-lifecycle-callout { padding-right: 18px; padding-top: 48px; }
+        .dept-lifecycle-revert { top: 10px; right: 10px; }
     }
 
     /* Alerts */
@@ -629,6 +843,7 @@
         gap: 12px;
         padding-top: 8px;
     }
+    #keepCurrentProjectStatus[hidden] { display: none; }
     @media (min-width: 480px) {
         .dept-edit-actions { flex-direction: row; justify-content: flex-end; }
     }
@@ -958,7 +1173,7 @@
                 </div>
                 <div>
                     <h2>Critical Project Details</h2>
-                    <p>These fields require Department Head approval to edit.</p>
+                    <p>Start date, target completion, and approved budget require Department Head approval to edit.</p>
                 </div>
             </div>
             <div class="dept-edit-card-body">
@@ -1031,23 +1246,35 @@
                                 @endif
                             </p>
                         </div>
-                        <div class="dept-field">
-                            <label class="dept-field-label">Actual Budget Spent</label>
-                            <div class="dept-input-wrap has-icon">
-                                <input type="text" inputmode="decimal" autocomplete="off" id="actual_budget" name="actual_budget" value="{{ old('actual_budget', $project->actual_budget) }}" @if(!($canEditCriticalFields ?? false) || ! $projectHasStarted) disabled @endif>
-                                <svg class="dept-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.582 1.453-1.318V5.253a1.875 1.875 0 00-1.453-1.318A60.062 60.062 0 002.25 1.575v17.175zM6.75 9.75l4.5 4.5 7.5-7.5"/></svg>
-                            </div>
-                            <p class="dept-locked-hint">
-                                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
-                                @if(! $projectHasStarted)
-                                    Expenditure updates are available on {{ $project->start_date?->format('M d, Y') ?? 'the project start date' }}.
-                                @elseif($canEditCriticalFields ?? false)
-                                    Permission approved — you can now edit this field.
-                                @else
-                                    Locked — requires Department Head approval
-                                @endif
-                            </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dept-edit-card dept-animate">
+            <div class="dept-edit-card-header">
+                <div class="dept-edit-card-icon emerald">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <h2>Expenditure Tracking</h2>
+                    <p>Record cumulative project spending. Department Head approval is not required.</p>
+                </div>
+            </div>
+            <div class="dept-edit-card-body">
+                <div class="dept-edit-row">
+                    <div class="dept-field">
+                        <label class="dept-field-label" for="actual_budget">Actual Budget Spent (calculated)</label>
+                        <div class="dept-input-wrap has-icon">
+                            <input type="text" id="actual_budget" value="{{ number_format($actualBudgetTotal, 2, '.', ',') }}" readonly aria-readonly="true">
+                            <svg class="dept-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.582 1.453-1.318V5.253a1.875 1.875 0 00-1.453-1.318A60.062 60.062 0 002.25 1.575v17.175zM6.75 9.75l4.5 4.5 7.5-7.5"/></svg>
                         </div>
+                        <p class="dept-field-hint">Calculated from categorized Actual entries and previously recorded spending.</p>
+                        @if ($actualBudgetTotal > (float) ($project->approved_budget ?? 0))
+                            <p role="alert" class="mt-3 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-800">
+                                Actual expenditure exceeds approved budget by ₱{{ number_format($actualBudgetTotal - (float) $project->approved_budget, 2) }}.
+                            </p>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -1071,32 +1298,91 @@
                         @php
                             $status = old('current_status', $project->current_status);
                             $statusSteps = ['Proposed', 'For bidding', 'Bidding ongoing', 'Award of contract', 'Implementation', 'Completed'];
-                            $currentStep = array_search($project->current_status, $statusSteps, true);
-                            $nextStatus = $currentStep !== false ? ($statusSteps[$currentStep + 1] ?? null) : null;
                             $resumeStatus = $project->current_status === 'On Hold' ? $project->statusBeforeOnHold() : null;
-                            $statusOptions = $project->current_status === 'On Hold'
-                                ? array_filter([$resumeStatus, 'On Hold'])
-                                : array_filter([$project->current_status, $nextStatus]);
+                            $currentLifecycleStatus = $project->current_status === 'On Hold' ? $resumeStatus : $project->current_status;
+                            $currentStep = array_search($currentLifecycleStatus, $statusSteps, true);
+                            $nextStatus = $currentStep !== false ? ($statusSteps[$currentStep + 1] ?? null) : null;
+                            $isLifecycleStatus = in_array($status, $statusSteps, true);
+                            $canPauseProject = $projectHasStarted && ! in_array($project->current_status, ['On Hold', 'Completed', 'Cancelled'], true);
+                            $canCancelProject = $projectHasStarted && ! in_array($project->current_status, ['Completed', 'Cancelled'], true);
+                            $showLifecycleCallout = $nextStatus && $projectHasStarted && $project->current_status !== 'On Hold' && ! in_array($project->current_status, ['Completed', 'Cancelled'], true);
                         @endphp
-                        <div class="dept-status-wrap">
-                            <span class="dept-status-dot" style="background: #f59e0b;"></span>
-                            <select name="current_status" @disabled(! $projectHasStarted)>
-                                <option class="dept-status-group-option" disabled>Project Lifecycle</option>
-                                @foreach ($statusSteps as $lifecycleStatus)
-                                    <option value="{{ $lifecycleStatus }}" @selected($status == $lifecycleStatus) @disabled(! in_array($lifecycleStatus, $statusOptions, true))>{{ $lifecycleStatus }}</option>
-                                @endforeach
-                                <optgroup label="Other statuses">
-                                    <option value="On Hold" @selected($status == 'On Hold') @disabled($project->current_status === 'Completed')>On Hold</option>
-                                    <option value="Cancelled" @selected($status == 'Cancelled') @disabled($project->current_status === 'Completed' || $project->current_status === 'Cancelled')>Cancelled</option>
-                                </optgroup>
-                            </select>
-                            @if (! $projectHasStarted)
-                                <input type="hidden" name="current_status" value="{{ $project->current_status }}">
-                            @endif
-                        </div>
+                        <input type="hidden" name="current_status" id="projectStatusInput" value="{{ $status }}">
+                        <p class="dept-field-hint">Projects move through these stages in order. Only the next stage can be selected.</p>
+                        <ol class="dept-lifecycle-steps" aria-label="Project lifecycle stages">
+                            @foreach ($statusSteps as $index => $lifecycleStatus)
+                                @php
+                                    $isCurrentStep = $index === $currentStep;
+                                    $isSelectedStep = $lifecycleStatus === $status;
+                                    $isCompletedStep = $currentStep !== false && $index < $currentStep;
+                                @endphp
+                                <li class="dept-lifecycle-step{{ $isCurrentStep ? ' is-current' : '' }}{{ $isSelectedStep && ! $isCurrentStep ? ' is-selected' : '' }}{{ $isCompletedStep ? ' is-completed' : '' }}"
+                                    data-lifecycle-step="{{ $index }}"
+                                    data-status="{{ $lifecycleStatus }}">
+                                    <span class="dept-lifecycle-marker-wrap" aria-hidden="true">
+                                        <span class="dept-lifecycle-marker">{{ $isCompletedStep ? '✓' : $index + 1 }}</span>
+                                    </span>
+                                    <div class="dept-lifecycle-content">
+                                        <div>
+                                            <span class="dept-lifecycle-name">{{ $lifecycleStatus }}</span>
+                                            <span class="dept-lifecycle-state">
+                                                @if ($isSelectedStep && ! $isCurrentStep)
+                                                    Selected for saving
+                                                @elseif ($isCurrentStep)
+                                                    {{ $project->current_status === 'On Hold' ? 'Paused at this stage' : 'Current stage' }}
+                                                @elseif ($isCompletedStep)
+                                                    Stage complete
+                                                @else
+                                                    Upcoming stage
+                                                @endif
+                                            </span>
+                                        </div>
+                                        @if ($project->current_status === 'On Hold' && $resumeStatus === $lifecycleStatus && $projectHasStarted)
+                                            <button type="button" class="dept-lifecycle-action" data-select-status="{{ $lifecycleStatus }}" aria-label="Resume project at {{ $lifecycleStatus }}; save changes to apply">
+                                                Resume at this stage
+                                            </button>
+                                        @endif
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ol>
+                        @if ($showLifecycleCallout)
+                            <div class="dept-lifecycle-callout">
+                                <button type="button" class="dept-status-action dept-lifecycle-revert" id="keepCurrentProjectStatus" data-select-status="{{ $project->current_status }}" aria-label="Revert the selected status to {{ $project->current_status }}" @if ($status === $project->current_status) hidden @endif>
+                                    Revert
+                                </button>
+                                <strong class="dept-lifecycle-callout-title">Ready to move forward?</strong>
+                                <p>This project is currently in “{{ $currentLifecycleStatus }}.” You can advance it once this stage is finished.</p>
+                                <p class="dept-lifecycle-save-note" aria-live="polite">Select the next stage, then save your changes to apply it.</p>
+                                <button type="button" class="dept-lifecycle-action" data-select-status="{{ $nextStatus }}" aria-label="Select {{ $nextStatus }} as the next stage">
+                                    <span id="lifecycleActionLabel">Advance to “{{ $nextStatus }}”</span> <span aria-hidden="true">→</span>
+                                </button>
+                            </div>
+                        @endif
+                        @if (! $isLifecycleStatus)
+                            <p class="dept-field-hint">Current status: <strong>{{ $status }}</strong>. This status is outside the standard lifecycle stages.</p>
+                        @endif
                         @if (! $projectHasStarted)
                             <p class="dept-locked-hint">Lifecycle updates are available on {{ $project->start_date?->format('M d, Y') ?? 'the project start date' }}.</p>
                         @endif
+                        @if ($canPauseProject || $canCancelProject)
+                            <div class="dept-status-extra">
+                                <p class="dept-status-extra-title">Other status actions</p>
+                                <div class="dept-status-actions">
+                                    @if ($canPauseProject)
+                                        <button type="button" class="dept-status-action is-hold" data-select-status="On Hold">Place project on hold</button>
+                                    @endif
+                                    @if ($canCancelProject)
+                                        <button type="button" class="dept-status-action is-cancel" data-select-status="Cancelled">Cancel project</button>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                        <p class="dept-status-selection" id="projectStatusSelection" aria-live="polite">
+                            @if ($status !== $project->current_status)
+                                {{ $status }} will be applied when you save your changes.
+                            @endif
+                        </p>
                     </div>
                 </div>
 
@@ -1134,6 +1420,11 @@
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                         Cancel
                     </a>
+                    @unless ($showLifecycleCallout)
+                        <button type="button" class="dept-btn dept-btn-secondary" id="keepCurrentProjectStatus" data-select-status="{{ $project->current_status }}" aria-label="Revert the selected status to {{ $project->current_status }}" @if ($status === $project->current_status) hidden @endif>
+                            Revert
+                        </button>
+                    @endunless
                     <button type="submit" class="dept-btn dept-btn-primary">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
                         Save Changes
@@ -1141,6 +1432,7 @@
                 </div>
             </div>
         </div>
+
     </form>
 </div>
 
@@ -1177,10 +1469,69 @@ document.addEventListener('DOMContentLoaded', function() {
     const projectTypeOtherWrapper = document.getElementById('project_type_other_wrapper');
     const projectTypeOtherInput = document.getElementById('project_type_other');
     const projectForm = document.querySelector('form[action="{{ route('department.projects.update', $project->project_id) }}"]');
+    const projectStatusInput = document.getElementById('projectStatusInput');
+    const projectStatusSelection = document.getElementById('projectStatusSelection');
+    const lifecycleCallout = document.querySelector('.dept-lifecycle-callout');
+    const originalProjectStatus = @json($project->current_status);
+    const currentLifecycleStatus = @json($currentLifecycleStatus);
+    const nextLifecycleStatus = @json($nextStatus);
+    const projectWasOnHold = @json($project->current_status === 'On Hold');
+    const lifecycleStatusSteps = document.querySelectorAll('.dept-lifecycle-step');
+    const currentLifecycleIndex = Array.from(lifecycleStatusSteps).findIndex(function(item) {
+        return item.dataset.status === currentLifecycleStatus;
+    });
     const budgetInputs = [
         document.getElementById('approved_budget'),
-        document.getElementById('actual_budget'),
     ].filter(Boolean);
+
+    document.querySelectorAll('[data-select-status]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const selectedStatus = button.dataset.selectStatus;
+            projectStatusInput.value = selectedStatus;
+            projectStatusSelection.textContent = selectedStatus === originalProjectStatus
+                ? ''
+                : selectedStatus + ' will be applied when you save your changes.';
+            const calloutSaveNote = lifecycleCallout?.querySelector('.dept-lifecycle-save-note');
+            const lifecycleActionLabel = document.getElementById('lifecycleActionLabel');
+            if (calloutSaveNote) {
+                calloutSaveNote.textContent = selectedStatus === originalProjectStatus
+                    ? 'Select the next stage, then save your changes to apply it.'
+                    : selectedStatus === nextLifecycleStatus
+                        ? 'Next stage selected. Click Save Changes to update the project stage.'
+                        : 'Your selected status will be applied when you save your changes.';
+            }
+            if (lifecycleActionLabel && lifecycleCallout) {
+                lifecycleActionLabel.textContent = selectedStatus === nextLifecycleStatus
+                    ? 'Selected — click Save Changes'
+                    : 'Advance to “' + nextLifecycleStatus + '”';
+                lifecycleCallout.querySelector('.dept-lifecycle-action')?.setAttribute(
+                    'aria-label',
+                    selectedStatus === nextLifecycleStatus
+                        ? 'Next stage selected. Click Save Changes to update the project stage.'
+                        : 'Select ' + nextLifecycleStatus + ' as the next stage'
+                );
+            }
+            document.getElementById('keepCurrentProjectStatus').hidden = selectedStatus === originalProjectStatus;
+
+            lifecycleStatusSteps.forEach(function(step) {
+                const stageStatus = step.dataset.status;
+                const stageIndex = Number(step.dataset.lifecycleStep);
+                const isSelected = selectedStatus === stageStatus && selectedStatus !== originalProjectStatus;
+
+                step.classList.toggle('is-selected', isSelected);
+                const state = step.querySelector('.dept-lifecycle-state');
+                if (isSelected) {
+                    state.textContent = 'Selected for saving';
+                } else if (stageStatus === currentLifecycleStatus) {
+                    state.textContent = projectWasOnHold ? 'Paused at this stage' : 'Current stage';
+                } else if (currentLifecycleIndex !== -1 && stageIndex < currentLifecycleIndex) {
+                    state.textContent = 'Stage complete';
+                } else {
+                    state.textContent = 'Upcoming stage';
+                }
+            });
+        });
+    });
 
     function formatBudgetInput(input) {
         let rawValue = input.value.replace(/,/g, '').replace(/[^0-9.]/g, '');
