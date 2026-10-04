@@ -196,7 +196,6 @@
         {{-- Section: Submitted By / Approved By --}}
         <div class="bg-white rounded-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-6" style="border: 1px solid #B2BEB5;">
             <div class="space-y-3">
-                <h3 class="text-sm font-bold text-black">Submitted By</h3>
                 <div>
                     <label class="block text-sm font-medium text-black">{{ $removeFieldNumbers ? 'Submitted by' : '16. Submitted by' }}</label>
                     <input type="text" name="submitted_by" value="{{ old('submitted_by', $data['submitted_by'] ?? '') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">
@@ -212,7 +211,6 @@
             </div>
 
             <div class="space-y-3">
-                <h3 class="text-sm font-bold text-black">Approved By</h3>
                 <div>
                     <label class="block text-sm font-medium text-black">{{ $removeFieldNumbers ? 'Approved by' : '19. Approved by' }}</label>
                     <input type="text" name="approved_by" value="{{ old('approved_by', $data['approved_by'] ?? '') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" style="border-color: #B2BEB5; color: black;">

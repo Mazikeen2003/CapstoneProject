@@ -416,8 +416,7 @@ html.dark-mode .dept-map-stat-icon.purple { background: rgba(139,92,246,0.15); c
 }
 .dept-map-search {
     width: 100%;
-    margin-top: 14px;
-    padding: 10px 13px;
+    padding: 10px 13px 10px 38px;
     border: 1px solid var(--dm-line-strong);
     border-radius: 10px;
     background: var(--dm-surface);
@@ -431,6 +430,17 @@ html.dark-mode .dept-map-stat-icon.purple { background: rgba(139,92,246,0.15); c
     box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.16);
 }
 .dept-map-search::placeholder { color: var(--dm-muted); }
+.dept-map-search-wrap { position: relative; margin-top: 14px; }
+.dept-map-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    color: var(--dm-muted);
+    pointer-events: none;
+    transform: translateY(-50%);
+}
 .dept-map-sidebar-body {
     flex: 1;
     overflow-y: auto;
@@ -1175,7 +1185,10 @@ html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1;
                 <h2>{{ $projectsTitle ?? 'Department Projects' }}</h2>
                 <p>Cabuyao City Projects</p>
                 <label class="sr-only" for="departmentMapSearch">Search projects by name, code, status, barangay, or description</label>
-                <input id="departmentMapSearch" type="search" class="dept-map-search" placeholder="Search name, code, status, barangay, or description…" autocomplete="off">
+                <div class="dept-map-search-wrap">
+                    <svg class="dept-map-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+                    <input id="departmentMapSearch" type="search" class="dept-map-search" placeholder="Search name, code, status, barangay, or description…" autocomplete="off">
+                </div>
                 <div id="departmentSidebarAction"></div>
             </div>
             <div class="dept-map-sidebar-body" id="departmentProjectList">

@@ -802,7 +802,10 @@
                         <p class="text-sm text-gray-500 mt-1">Tap a barangay on the map or browse all projects.</p>
                     </div>
                     <label for="publicProjectSearch" class="sr-only">Search public projects</label>
-                    <input id="publicProjectSearch" type="search" autocomplete="off" placeholder="Search projects, status, type, or barangay…" class="public-map-project-search mt-4 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/30">
+                    <div class="public-map-project-search-wrap relative mt-4">
+                        <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+                        <input id="publicProjectSearch" type="search" autocomplete="off" placeholder="Search projects, status, type, or barangay…" class="public-map-project-search w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/30">
+                    </div>
                     <div id="departmentSidebarAction" class="mt-4"></div>
                 </div>
                 <div id="departmentProjectList" class="space-y-4 overflow-y-auto bg-slate-50 p-4 min-h-0 flex-1" aria-live="polite"><div class="p-6 text-center text-sm text-slate-500">Loading public projects…</div></div>
