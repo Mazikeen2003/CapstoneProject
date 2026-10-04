@@ -21,6 +21,10 @@
         --dc-radius-sm: 12px;
         --dc-radius-xs: 10px;
     }
+    html:not(.dark-mode) body:has(.dept-create-container),
+    html:not(.dark-mode) main:has(.dept-create-container) {
+        background: #f8f7f5 !important;
+    }
     .dark .dept-create-container {
         --dc-bg: #0f0e1a;
         --dc-surface: #1a1929;
@@ -186,7 +190,7 @@
         transition: color 0.2s;
     }
     .dept-input-wrap.has-icon input,
-n    .dept-input-wrap.has-icon select { padding-left: 42px; }
+    .dept-input-wrap.has-icon select { padding-left: 42px; }
 
     .dept-create-container input[type="text"],
     .dept-create-container input[type="number"],
@@ -357,6 +361,22 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
     .dept-map-footer {
         padding: 16px 20px;
         border-top: 1px solid var(--dc-line);
+    }
+    #project-location-notice {
+        margin: 0 0 12px;
+        padding: 9px 12px;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        background: #fef2f2;
+        color: #991b1b;
+        font-size: 0.75rem;
+        line-height: 1.45;
+    }
+    #project-location-notice[hidden] { display: none; }
+    .dark #project-location-notice {
+        border-color: rgba(248, 113, 113, 0.3);
+        background: rgba(127, 29, 29, 0.2);
+        color: #fecaca;
     }
     .dept-address-field {
         display: flex;
@@ -695,14 +715,14 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
                         <div class="dept-field">
                             <label class="dept-field-label">Start Date</label>
                             <div class="dept-input-wrap has-icon">
-                                <input type="date" name="start_date" value="{{ old('start_date') }}">
+                                <input type="date" name="start_date" max="9999-12-31" value="{{ old('start_date') }}">
                                 <svg class="dept-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
                             </div>
                         </div>
                         <div class="dept-field">
                             <label class="dept-field-label">Target Completion</label>
                             <div class="dept-input-wrap has-icon">
-                                <input type="date" name="target_end_date" value="{{ old('target_end_date') }}">
+                                <input type="date" name="target_end_date" max="9999-12-31" value="{{ old('target_end_date') }}">
                                 <svg class="dept-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
                             </div>
                         </div>
@@ -794,12 +814,13 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
                 </div>
                 <div class="dept-map-wrap">
                     <div id="project-location-map"></div>
-                    <div class="dept-map-hint">
+                    <div class="dept-map-hint" id="project-map-hint">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.817-3.345-1.734zm0 0V3.75m0 12.75h.008v.008H13.5v-.008z"/></svg>
                         Click anywhere on the map or drag the pin to update the location.
                     </div>
                 </div>
                 <div class="dept-map-footer">
+                    <p id="project-location-notice" role="status" aria-live="polite" hidden></p>
                     <div class="dept-address-field">
                         <label>Selected Address</label>
                         <input id="project-address" type="text" readonly placeholder="Choose a location on the map..." value="{{ old('location_description') }}">
@@ -938,6 +959,46 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
         const initialLongitude = @json(old('longitude', ''));
         const initialAddress = @json(old('location_description', ''));
 
+        function pointInRing(point, ring) {
+            let inside = false;
+            const [longitude, latitude] = point;
+
+            for (let index = 0, previous = ring.length - 1; index < ring.length; previous = index++) {
+                const [x1, y1] = ring[previous];
+                const [x2, y2] = ring[index];
+                const cross = (longitude - x1) * (y2 - y1) - (latitude - y1) * (x2 - x1);
+                const onSegment = Math.abs(cross) < 1e-10
+                    && longitude >= Math.min(x1, x2) - 1e-10
+                    && longitude <= Math.max(x1, x2) + 1e-10
+                    && latitude >= Math.min(y1, y2) - 1e-10
+                    && latitude <= Math.max(y1, y2) + 1e-10;
+                if (onSegment) return true;
+
+                if ((y1 > latitude) !== (y2 > latitude)
+                    && longitude < ((x2 - x1) * (latitude - y1)) / (y2 - y1) + x1) {
+                    inside = !inside;
+                }
+            }
+
+            return inside;
+        }
+
+        function pointInFeature(latlng, feature) {
+            const geometry = feature?.geometry;
+            if (!geometry) return false;
+            const point = [latlng.lng, latlng.lat];
+            const polygons = geometry.type === 'Polygon'
+                ? [geometry.coordinates]
+                : geometry.type === 'MultiPolygon'
+                    ? geometry.coordinates
+                    : [];
+
+            return polygons.some(function(rings) {
+                return pointInRing(point, rings[0])
+                    && !rings.slice(1).some(function(hole) { return pointInRing(point, hole); });
+            });
+        }
+
         fetch('{{ asset('data/cabuyao-map.geojson') }}')
             .then(function(response) {
                 if (!response.ok) { throw new Error('Unable to load Cabuyao GeoJSON'); }
@@ -946,7 +1007,33 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
             .then(function(geojson) {
                 const cabuyaoLayer = L.geoJSON(geojson);
                 const cabuyaoBounds = cabuyaoLayer.getBounds();
-                const defaultLocation = cabuyaoBounds.getCenter();
+                const mapCenter = cabuyaoBounds.getCenter();
+
+                function findInteriorPoint(feature) {
+                    const bounds = L.geoJSON(feature).getBounds();
+                    const center = bounds.getCenter();
+                    if (pointInFeature(center, feature)) return center;
+
+                    for (let divisions = 2; divisions <= 40; divisions += 2) {
+                        for (let row = 0; row < divisions; row++) {
+                            for (let column = 0; column < divisions; column++) {
+                                const candidate = L.latLng(
+                                    bounds.getSouth() + ((row + 0.5) / divisions) * (bounds.getNorth() - bounds.getSouth()),
+                                    bounds.getWest() + ((column + 0.5) / divisions) * (bounds.getEast() - bounds.getWest())
+                                );
+                                if (pointInFeature(candidate, feature)) return candidate;
+                            }
+                        }
+                    }
+
+                    throw new Error(`Unable to find an interior map location for ${feature.properties?.name || 'a Cabuyao barangay'}.`);
+                }
+
+                const featureLocations = geojson.features.map(function(feature) {
+                    return { feature: feature, center: findInteriorPoint(feature) };
+                });
+                const defaultLocation = featureLocations
+                    .sort((first, second) => first.center.distanceTo(mapCenter) - second.center.distanceTo(mapCenter))[0].center;
 
                 const locationMap = L.map('project-location-map', {
                     maxBounds: cabuyaoBounds,
@@ -963,24 +1050,46 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
                 locationMap.setMinZoom(locationMap.getZoom());
 
                 const marker = L.marker(defaultLocation, { draggable: true }).addTo(locationMap);
+                let lastValidLocation = defaultLocation;
+                const locationNotice = document.getElementById('project-location-notice');
+                const mapHint = document.getElementById('project-map-hint');
 
                 const barangayLookup = {};
                 const normalizeBarangayName = name => String(name || '').trim().toLowerCase();
-                geojson.features.forEach(function(feature) {
+                featureLocations.forEach(function(entry) {
+                    const feature = entry.feature;
                     if (!feature.properties || !feature.properties.name) return;
-                    const layer = L.geoJSON(feature);
                     barangayLookup[normalizeBarangayName(feature.properties.name)] = {
-                        bounds: layer.getBounds(),
-                        center: layer.getBounds().getCenter(),
+                        bounds: L.geoJSON(feature).getBounds(),
+                        center: entry.center,
+                        feature: feature,
+                        layer: null,
                     };
                 });
 
                 let selectedBarangayLayer = null;
+                function showLocationNotice(message = '') {
+                    locationNotice.textContent = message;
+                    locationNotice.hidden = !message;
+                }
+
+                function highlightSelectedBarangay(name) {
+                    if (selectedBarangayLayer) barangayPolygonLayer.resetStyle(selectedBarangayLayer);
+                    selectedBarangayLayer = null;
+                    const selected = barangayLookup[normalizeBarangayName(name)];
+                    if (selected?.layer) {
+                        selectedBarangayLayer = selected.layer;
+                        selected.layer.setStyle({ color: '#059669', weight: 3, fillOpacity: 0.25 });
+                    }
+                }
+
                 const barangayPolygonLayer = L.geoJSON(geojson, {
                     style: { color: '#162347', weight: 1, fillOpacity: 0.05 },
                     onEachFeature: function(feature, layer) {
                         const name = feature.properties?.name;
                         if (!name) return;
+                        const lookupEntry = barangayLookup[normalizeBarangayName(name)];
+                        if (lookupEntry) lookupEntry.layer = layer;
 
                         layer.bindTooltip(name, { sticky: true, className: 'barangay-tooltip' });
                         layer.on({
@@ -992,14 +1101,16 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
                             },
                             click: function(event) {
                                 L.DomEvent.stopPropagation(event);
+                                const selectedOption = barangaySelect.options[barangaySelect.selectedIndex];
+                                if (barangaySelect.value && normalizeBarangayName(selectedOption?.dataset.name) !== normalizeBarangayName(name)) {
+                                    showLocationNotice(`The selected barangay is ${selectedOption.dataset.name}. Choose another barangay from the list before placing the pin elsewhere.`);
+                                    return;
+                                }
                                 const option = Array.from(barangaySelect.options).find(function(candidate) {
                                     return normalizeBarangayName(candidate.dataset.name) === normalizeBarangayName(name);
                                 });
                                 if (!option) return;
 
-                                if (selectedBarangayLayer) barangayPolygonLayer.resetStyle(selectedBarangayLayer);
-                                selectedBarangayLayer = layer;
-                                layer.setStyle({ color: '#059669', weight: 3, fillOpacity: 0.25 });
                                 barangaySelect.value = option.value;
                                 barangaySelect.dispatchEvent(new Event('change', { bubbles: true }));
                             },
@@ -1020,13 +1131,40 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
                         .catch(() => setAddress('Address unavailable. Location pin has still been saved.'));
                 }
 
+                function returnToLastValidLocation(message) {
+                    marker.setLatLng(lastValidLocation);
+                    latitudeInput.value = lastValidLocation.lat.toFixed(6);
+                    longitudeInput.value = lastValidLocation.lng.toFixed(6);
+                    showLocationNotice(message);
+                }
+
                 function setProjectLocation(latlng, label = null) {
-                    if (!cabuyaoBounds.contains(latlng)) return;
+                    const selectedOption = barangaySelect.options[barangaySelect.selectedIndex];
+                    const selectedName = selectedOption?.dataset.name || '';
+                    const selectedEntry = barangaySelect.value
+                        ? barangayLookup[normalizeBarangayName(selectedName)]
+                        : null;
+                    const insideCabuyao = geojson.features.some(function(feature) {
+                        return pointInFeature(latlng, feature);
+                    });
+
+                    if (!insideCabuyao) {
+                        returnToLastValidLocation('That point is outside Cabuyao. The pin was returned to its last valid location.');
+                        return false;
+                    }
+                    if (selectedEntry && !pointInFeature(latlng, selectedEntry.feature)) {
+                        returnToLastValidLocation(`Place the pin within ${selectedName}. The pin was returned to its last valid location.`);
+                        return false;
+                    }
+
+                    lastValidLocation = latlng;
                     marker.setLatLng(latlng);
                     latitudeInput.value = latlng.lat.toFixed(6);
                     longitudeInput.value = latlng.lng.toFixed(6);
+                    showLocationNotice();
                     if (label) setAddress(label);
                     else updateProjectAddress(latlng);
+                    return true;
                 }
 
                 function applyBarangaySelection(barangayId) {
@@ -1034,14 +1172,16 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
                     const selectedName = selectedOption?.dataset.name || selectedOption?.text || '';
 
                     if (!barangayId) {
-                        setProjectLocation(defaultLocation);
-                        if (initialAddress) setAddress(initialAddress);
-                        else addressDisplay.value = 'Use map or choose a barangay';
+                        highlightSelectedBarangay('');
+                        mapHint.textContent = 'Click on the map or drag the pin to set a location anywhere within Cabuyao.';
+                        setProjectLocation(defaultLocation, 'Cabuyao City');
                         return;
                     }
 
                     const match = barangayLookup[normalizeBarangayName(selectedName)];
                     if (match) {
+                        highlightSelectedBarangay(selectedName);
+                        mapHint.textContent = `Click on the map or drag the pin to set a location within ${selectedName}.`;
                         locationMap.fitBounds(match.bounds, { padding: [24, 24] });
                         setProjectLocation(match.center, `${selectedName}, Cabuyao City`);
                     } else {
@@ -1053,10 +1193,13 @@ n    .dept-input-wrap.has-icon select { padding-left: 42px; }
                     applyBarangaySelection(this.value);
                 });
 
-                if (initialLatitude && initialLongitude) {
-                    setProjectLocation(L.latLng(parseFloat(initialLatitude), parseFloat(initialLongitude)), initialAddress || null);
-                } else if (initialBarangayId) {
+                if (initialBarangayId) {
                     applyBarangaySelection(initialBarangayId);
+                    if (initialLatitude && initialLongitude) {
+                        setProjectLocation(L.latLng(parseFloat(initialLatitude), parseFloat(initialLongitude)), initialAddress || null);
+                    }
+                } else if (initialLatitude && initialLongitude) {
+                    setProjectLocation(L.latLng(parseFloat(initialLatitude), parseFloat(initialLongitude)), initialAddress || null);
                 } else {
                     setProjectLocation(defaultLocation);
                     setAddress(initialAddress || 'Use map or choose a barangay');
