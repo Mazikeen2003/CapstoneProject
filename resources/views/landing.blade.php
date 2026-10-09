@@ -27,7 +27,14 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
         .hero-gradient {
-            background: linear-gradient(135deg, rgba(11, 28, 48, 0.95) 0%, rgba(19, 27, 46, 0.8) 100%);
+            background: rgba(0, 0, 0, 0.82);
+        }
+        html.dark-mode body.landing-page {
+            background-color: #111111 !important;
+        }
+        html.dark-mode body.landing-page .glass-nav {
+            background-color: rgba(17, 17, 17, 0.72) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
         }
         .map-guide-type-shape {
             display: inline-flex;
@@ -47,13 +54,53 @@
         .map-guide-type-shape.water { clip-path: polygon(50% 0,95% 55%,88% 78%,72% 95%,50% 100%,28% 95%,12% 78%,5% 55%); }
         .map-guide-type-shape.others { clip-path: polygon(50% 0,62% 35%,100% 38%,72% 61%,82% 100%,50% 77%,18% 100%,28% 61%,0 38%,38% 35%); }
         #features.landing-map-guide { background-color: #fff !important; }
-        html.dark-mode #features.landing-map-guide { background-color: #16233a !important; }
+        html.dark-mode body.landing-page main {
+            background-color: #1a1a1a !important;
+        }
+        html.dark-mode body.landing-page #features.landing-map-guide,
+        html.dark-mode body.landing-page > footer {
+            background-color: #1a1a1a !important;
+        }
+        html.dark-mode body.landing-page > footer {
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        .landing-vision-section {
+            background-color: #111111;
+        }
+        html.dark-mode body.landing-page .landing-vision-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        html.dark-mode body.landing-page .landing-stats .bg-white {
+            background-color: #1a1a1a !important;
+            border-color: #303030 !important;
+            box-shadow: 0 20px 25px -8px rgba(0, 0, 0, 0.55) !important;
+        }
+        html.dark-mode body.landing-page .landing-primary-cta {
+            background-color: #fff !important;
+            color: #0f172a !important;
+        }
+        html.dark-mode body.landing-page .landing-primary-cta:hover {
+            background-color: #f1f5f9 !important;
+        }
+        html.dark-mode body.landing-page .landing-login-button {
+            border: 1px solid #065f46 !important;
+            background-color: #222222 !important;
+            color: #e5e7eb !important;
+        }
+        html.dark-mode body.landing-page .landing-login-button:hover {
+            background-color: #1a1a1a !important;
+            border-color: #047857 !important;
+        }
+        html.dark-mode body.landing-page #features section[aria-labelledby] {
+            background-color: #222222 !important;
+            border-color: #303030 !important;
+        }
         @media (max-width: 640px) {
             .map-guide-type-list { grid-template-columns: 1fr !important; }
         }
     </style>
 </head>
-<body class="public-layout bg-white font-sans text-slate-900 antialiased">
+<body class="public-layout landing-page bg-white font-sans text-slate-900 antialiased">
 
     {{-- ============ TOP NAV ============ --}}
     <header class="fixed top-0 z-50 glass-nav w-full border-b border-slate-200/50">
@@ -74,7 +121,7 @@
 
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 @include('components.public-theme-toggle')
-                <a href="{{ route('login') }}" class="public-login-button bg-slate-900 text-white px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-md font-semibold text-xs sm:text-sm hover:opacity-90 transition-all duration-200 shrink-0">Login</a>
+                <a href="{{ route('login') }}" class="public-login-button landing-login-button bg-slate-900 text-white px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-md font-semibold text-xs sm:text-sm hover:opacity-90 transition-all duration-200 shrink-0">Login</a>
             </div>
         </nav>
     </header>
@@ -113,7 +160,7 @@
 
                     <div class="flex w-full flex-col gap-4 pt-4 sm:w-auto sm:flex-row lg:pt-6">
                         <a href="{{ route('public.map') }}"
-                            class="px-8 py-4 bg-white text-slate-900 font-bold rounded-md hover:bg-slate-100 transition-all flex items-center justify-center gap-2 shadow-xl">
+                            class="landing-primary-cta px-8 py-4 bg-white text-slate-900 font-bold rounded-md hover:bg-slate-100 transition-all flex items-center justify-center gap-2 shadow-xl">
                             <span class="material-symbols-outlined">map</span>
                             View Public Map
                         </a>
@@ -229,7 +276,7 @@
         </section>
 
         {{-- ============ MISSION / VISION CTA ============ --}}
-        <section class="relative overflow-hidden bg-slate-900 px-6 py-20">
+        <section class="landing-vision-section relative overflow-hidden px-6 py-20">
             <div class="relative mx-auto max-w-7xl">
                 <div class="mb-10 grid gap-6 border-b border-white/10 pb-7 md:grid-cols-[1fr_auto] md:items-end">
                     <div class="flex items-start gap-4">

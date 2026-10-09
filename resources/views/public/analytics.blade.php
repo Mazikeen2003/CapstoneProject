@@ -19,27 +19,41 @@
         }
         html.dark-mode,
         html.dark-mode body.public-layout {
-            background: #0f172a !important;
+            background: #1a1a1a !important;
         }
         html.dark-mode body.public-layout {
             color: #e2e8f0;
         }
+        html.dark-mode body.public-layout > main.an-container {
+            background: #1a1a1a !important;
+        }
         html.dark-mode .glass-nav {
-            background-color: rgba(15, 23, 42, 0.48) !important;
-            border-color: rgba(148, 163, 184, 0.18) !important;
+            background-color: rgba(17, 17, 17, 0.72) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
         }
         html.dark-mode .glass-nav .text-slate-900 { color: #f8fafc !important; }
         html.dark-mode .glass-nav .text-slate-500,
         html.dark-mode .glass-nav .text-slate-600 { color: #94a3b8 !important; }
         html.dark-mode .glass-nav .text-emerald-700 { color: #34d399 !important; }
         html.dark-mode .glass-nav .bg-white,
-        html.dark-mode .glass-nav .border-slate-200 { background-color: #0f172a !important; border-color: #334155 !important; }
+        html.dark-mode .glass-nav .border-slate-200 { background-color: #1a1a1a !important; border-color: #303030 !important; }
         html.dark-mode .public-layout > footer {
-            background: #111827 !important;
-            border-color: #334155 !important;
+            background: #111111 !important;
+            border-color: #303030 !important;
         }
         html.dark-mode .public-layout > footer .text-slate-900 { color: #f8fafc !important; }
         html.dark-mode .public-layout > footer .text-slate-500 { color: #94a3b8 !important; }
+        html.dark-mode .public-login-button {
+            border: 1px solid #065f46 !important;
+            background-color: #171717 !important;
+            color: #34d399 !important;
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.12);
+        }
+        html.dark-mode .public-login-button:hover {
+            border-color: #047857 !important;
+            background-color: #222222 !important;
+            color: #6ee7b7 !important;
+        }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
@@ -60,23 +74,25 @@
             box-sizing: border-box;
         }
         html.dark-mode .an-container {
-            --an-surface: #0f172a;
-            --an-raised: #1e293b;
+            --an-surface: #222222;
+            --an-raised: #2a2a2a;
             --an-ink: #f8fafc;
-            --an-ink-secondary: #cbd5e1;
-            --an-muted: #94a3b8;
-            --an-line: rgba(148, 163, 184, 0.2);
-            --an-line-strong: rgba(148, 163, 184, 0.35);
+            --an-ink-secondary: #e5e5e5;
+            --an-muted: #a3a3a3;
+            --an-line: rgba(255, 255, 255, 0.1);
+            --an-line-strong: rgba(255, 255, 255, 0.18);
+            --an-shadow-sm: 0 1px 3px rgba(0,0,0,0.22);
+            --an-shadow-md: 0 8px 16px -4px rgba(0,0,0,0.35), 0 4px 8px -4px rgba(0,0,0,0.2);
         }
 
         .dark .an-container {
-            --an-surface: #0f172a;
-            --an-raised: #1e293b;
+            --an-surface: #222222;
+            --an-raised: #2a2a2a;
             --an-ink: #f8fafc;
-            --an-ink-secondary: #cbd5e1;
-            --an-muted: #94a3b8;
-            --an-line: rgba(148, 163, 184, 0.2);
-            --an-line-strong: rgba(148, 163, 184, 0.35);
+            --an-ink-secondary: #e5e5e5;
+            --an-muted: #a3a3a3;
+            --an-line: rgba(255, 255, 255, 0.1);
+            --an-line-strong: rgba(255, 255, 255, 0.18);
         }
 
         .an-hero {
@@ -165,6 +181,7 @@
         html.dark-mode .an-icon-chip.blue { background: rgba(59,130,246,0.14); color: #60a5fa; }
         html.dark-mode .an-icon-chip.rose { background: rgba(244,63,94,0.14); color: #fb7185; }
         html.dark-mode .an-icon-chip.amber { background: rgba(251,191,36,0.14); color: #fbbf24; }
+        html.dark-mode .an-icon-chip.indigo[style] { background: rgba(255,255,255,0.08) !important; color: #d4d4d4 !important; }
 
         .an-label {
             font-family: 'Public Sans', sans-serif;
@@ -185,15 +202,19 @@
         .an-kpi-value.amber { color: #f59e0b; }
 
         html.dark-mode .an-kpi-value.indigo,
-        .dark .an-kpi-value.indigo { color: #312e81 !important; }
+        .dark .an-kpi-value.indigo { color: #c4b5fd !important; }
         html.dark-mode .an-kpi-value.emerald,
-        .dark .an-kpi-value.emerald { color: #10b981 !important; }
+        .dark .an-kpi-value.emerald { color: #34d399 !important; }
         html.dark-mode .an-kpi-value.blue,
-        .dark .an-kpi-value.blue { color: #2563eb !important; }
+        .dark .an-kpi-value.blue { color: #60a5fa !important; }
         html.dark-mode .an-kpi-value.rose,
-        .dark .an-kpi-value.rose { color: #ef4444 !important; }
+        .dark .an-kpi-value.rose { color: #fb7185 !important; }
         html.dark-mode .an-kpi-value.amber,
         .dark .an-kpi-value.amber { color: #fbbf24 !important; }
+        html.dark-mode .an-card .an-value[style*="#dc2626"] { color: #fb7185 !important; }
+        html.dark-mode .an-card .an-value[style*="#d97706"] { color: #fbbf24 !important; }
+        html.dark-mode .an-card .an-value[style*="#2563eb"] { color: #60a5fa !important; }
+        html.dark-mode .an-card .an-value[style*="#059669"] { color: #34d399 !important; }
         .an-value.sm { font-size: 1.5rem; }
 
         .an-lifecycle-item {
@@ -222,6 +243,7 @@
             content: ""; height: 3px; border-radius: 16px 16px 0 0;
             background: linear-gradient(90deg,#f59e0b,#d97706,#8b5cf6,#3b82f6,#10b981);
         }
+        html.dark-mode .an-topbar { background: linear-gradient(90deg, #303030, #10b981); }
 
         .an-select {
             min-width: 11rem; height: 2.5rem;
@@ -646,7 +668,7 @@
         const statusCounts = @json($statusCounts);
         const darkMode = document.documentElement.classList.contains('dark-mode');
         const chartTextColor = darkMode ? '#e2e8f0' : '#334155';
-        const chartGridColor = darkMode ? 'rgba(148, 163, 184, 0.22)' : 'rgba(148, 163, 184, 0.18)';
+        const chartGridColor = darkMode ? 'rgba(255, 255, 255, 0.12)' : 'rgba(148, 163, 184, 0.18)';
         Chart.defaults.color = chartTextColor;
         Chart.defaults.font.family = "'Public Sans', sans-serif";
         const statusColors = darkMode
@@ -658,7 +680,7 @@
 
         new Chart(document.getElementById('statusChart'), {
             type: 'polarArea',
-            data: { labels: statusLabels, datasets: [{ data: statusCounts, backgroundColor: statusColors, hoverOffset: 18, borderWidth: 2, borderColor: darkMode ? '#1e293b' : '#ffffff' }] },
+            data: { labels: statusLabels, datasets: [{ data: statusCounts, backgroundColor: statusColors, hoverOffset: 18, borderWidth: 2, borderColor: darkMode ? '#222222' : '#ffffff' }] },
             options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, scales: { r: { ticks: { precision: 0, color: chartTextColor }, grid: { color: chartGridColor } } }, plugins: { legend: { position: 'bottom', labels: { color: chartTextColor, padding: 18, usePointStyle: true, pointStyle: 'circle' } } } }
         });
 
@@ -672,7 +694,7 @@
             const barangayProjectCounts = @json($barangayProjectCounts);
             new Chart(document.getElementById('barangayChart'), {
                 type: 'doughnut',
-                data: { labels: @json($barangayLabels), datasets: [{ data: @json($barangayValues), backgroundColor: darkMode ? ['#60a5fa', '#fbbf24', '#34d399', '#93c5fd', '#c4b5fd', '#fb923c', '#f472b6', '#2dd4bf', '#94a3b8', '#fcd34d'] : ['#1e1b4b', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#f97316', '#ec4899', '#14b8a6', '#64748b', '#eab308'], hoverOffset: 20, borderWidth: 2, borderColor: darkMode ? '#1e293b' : '#ffffff' }] },
+                data: { labels: @json($barangayLabels), datasets: [{ data: @json($barangayValues), backgroundColor: darkMode ? ['#60a5fa', '#fbbf24', '#34d399', '#93c5fd', '#c4b5fd', '#fb923c', '#f472b6', '#2dd4bf', '#94a3b8', '#fcd34d'] : ['#1e1b4b', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#f97316', '#ec4899', '#14b8a6', '#64748b', '#eab308'], hoverOffset: 20, borderWidth: 2, borderColor: darkMode ? '#222222' : '#ffffff' }] },
                 options: { responsive: true, maintainAspectRatio: false, animation: smoothAnimation, hover: smoothHover, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { color: chartTextColor, padding: 16, usePointStyle: true, pointStyle: 'circle', generateLabels: chart => { const labels = Chart.overrides.doughnut.plugins.legend.labels.generateLabels(chart); return labels.map((item, index) => ({ ...item, text: `${chart.data.labels[index]} — ${peso(chart.data.datasets[0].data[index] || 0)}` })); } } }, tooltip: { callbacks: { label: context => `${context.label}: ${peso(context.raw)} · ${barangayProjectCounts[context.dataIndex] || 0} project(s)` } } } }
             });
         @endif
