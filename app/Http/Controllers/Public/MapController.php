@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\Scopes\RoleScopedScope;
 use App\Services\CacheService;
 use App\Services\PortalVisitService;
+use Illuminate\Http\Request;
 
 class MapController
 {
@@ -18,26 +19,24 @@ class MapController
     {
         PortalVisitService::logVisit('map');
 
-        // Show every project on the public map, regardless of status.
-        $projects = Project::withoutRoleScope()
-            ->withBasicRelations()
-            ->withLocation()
-            ->withActualTransactionSum()
-            ->get();
-
-        return view('public.map', compact('projects'));
+        return view('public.map');
     }
 
     /**
      * API endpoint for public GeoJSON (limited data).
      */
-        public function geojson()
+        public function geojson(Request $request)
     {
-        // Include every project status; eager-load barangay to avoid N+1.
+            $completed = $request->boolean('completed');
         $projects = Project::withoutRoleScope()
             ->with(['barangay', 'latestUpdate'])
             ->withActualTransactionSum()
-            ->get();
+                ->when(
+                    $completed,
+                    fn ($query) => $query->where('current_status', 'Completed'),
+                    fn ($query) => $query->where('current_status', '!=', 'Completed')
+                )
+                ->get();
 
         $features = $projects->map(function ($project) {
             $isCitywide = $project->barangay_id === null;
@@ -84,10 +83,10 @@ class MapController
      * API endpoint for barangay project counts.
      */
 
-    public function barangaysGeojson()
+    public function barangaysGeojson(Request $request)
     {
         $barangays = Barangay::query()
-            ->withPublicProjectCount()
+            ->withPublicProjectCount($request->boolean('completed'))
             ->get();
 
         $features = $barangays->map(function (Barangay $barangay) {
@@ -112,12 +111,18 @@ class MapController
      * API endpoint for projects within a specific barangay.
      */
     
-    public function projectsForBarangay(Barangay $barangay)
+    public function projectsForBarangay(Request $request, Barangay $barangay)
     {
+        $completed = $request->boolean('completed');
         $projects = $barangay->projects()
             ->withoutGlobalScope(RoleScopedScope::class)
             ->with('latestUpdate')
             ->withActualTransactionSum()
+            ->when(
+                $completed,
+                fn ($query) => $query->where('current_status', 'Completed'),
+                fn ($query) => $query->where('current_status', '!=', 'Completed')
+            )
             ->whereNotNull('latitude')
             ->whereNotNull('longitude')
             ->get();
