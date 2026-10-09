@@ -30,7 +30,7 @@
         }
 
         .public-map-header {
-            position: fixed;
+            position: sticky;
             top: 0;
             z-index: 1100;
         }
@@ -342,6 +342,75 @@
             color: #d97706;
             transform: translateY(-1px);
             box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        }
+
+        .public-map-status-filter {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 4px;
+            padding: 4px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #f1f5f9;
+        }
+        .public-map-status-filter button {
+            display: inline-flex;
+            min-width: 0;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 10px 8px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            background: transparent;
+            color: #64748b;
+            font: inherit;
+            font-size: 0.75rem;
+            font-weight: 800;
+            line-height: 1.25;
+            cursor: pointer;
+            transition: color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+        }
+        .public-map-status-filter button:hover:not(:disabled):not(.is-active) {
+            background: rgba(255, 255, 255, 0.72);
+            color: #0f172a;
+        }
+        .public-map-status-filter button:focus-visible {
+            outline: 3px solid rgba(16, 185, 129, 0.35);
+            outline-offset: 2px;
+        }
+        .public-map-status-filter button.is-active {
+            border-color: rgba(5, 150, 105, 0.18);
+            background: #fff;
+            color: #047857;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12), 0 1px 2px rgba(15, 23, 42, 0.06);
+        }
+        .public-map-status-filter button:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+        .public-map-status-filter svg {
+            width: 15px;
+            height: 15px;
+            flex: 0 0 15px;
+        }
+        html.dark-mode .public-map-status-filter,
+        .dark .public-map-status-filter {
+            border-color: rgba(148, 163, 184, 0.2);
+            background: rgba(15, 23, 42, 0.72);
+        }
+        html.dark-mode .public-map-status-filter button,
+        .dark .public-map-status-filter button { color: #94a3b8; }
+        html.dark-mode .public-map-status-filter button:hover:not(:disabled):not(.is-active),
+        .dark .public-map-status-filter button:hover:not(:disabled):not(.is-active) {
+            background: rgba(30, 41, 59, 0.8);
+            color: #e2e8f0;
+        }
+        html.dark-mode .public-map-status-filter button.is-active,
+        .dark .public-map-status-filter button.is-active {
+            border-color: rgba(52, 211, 153, 0.25);
+            background: #064e3b;
+            color: #a7f3d0;
         }
 
         .public-project-image-wrap {
@@ -806,6 +875,16 @@
                         <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
                         <input id="publicProjectSearch" type="search" autocomplete="off" placeholder="Search projects, status, type, or barangay…" class="public-map-project-search w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/30">
                     </div>
+                    <div class="public-map-status-filter mt-3" role="group" aria-label="Project status filter">
+                        <button type="button" id="publicCurrentProjectsButton" aria-pressed="true" disabled class="is-active">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75A2.25 2.25 0 016 4.5h3.879a2.25 2.25 0 011.591.659l1.371 1.371a2.25 2.25 0 001.591.659H18a2.25 2.25 0 012.25 2.25v8.25A2.25 2.25 0 0118 19.94H6a2.25 2.25 0 01-2.25-2.25V6.75z"/></svg>
+                            <span>Current Projects</span>
+                        </button>
+                        <button type="button" id="publicCompletedProjectsButton" aria-pressed="false" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Completed Projects</span>
+                        </button>
+                    </div>
                     <div id="departmentSidebarAction" class="mt-4"></div>
                 </div>
                 <div id="departmentProjectList" class="space-y-4 overflow-y-auto bg-slate-50 p-4 min-h-0 flex-1" aria-live="polite"><div class="p-6 text-center text-sm text-slate-500">Loading public projects…</div></div>
@@ -850,6 +929,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const projectList = document.getElementById('departmentProjectList');
             const projectSearch = document.getElementById('publicProjectSearch');
+            const currentProjectsButton = document.getElementById('publicCurrentProjectsButton');
+            const completedProjectsButton = document.getElementById('publicCompletedProjectsButton');
             const mapLegend = document.querySelector('.public-map-legend');
             const mapLegendToggle = mapLegend?.querySelector('.public-map-legend-toggle');
             const selectedClass = 'bg-slate-50 border border-slate-200';
@@ -874,6 +955,7 @@
             let publicProjectZoom = 1;
             let lightboxTrigger = null;
             let projectSearchTerm = '';
+            let showingCompletedProjects = false;
 
             projectSearch?.addEventListener('input', function() {
                 projectSearchTerm = this.value.trim().toLocaleLowerCase();
@@ -881,6 +963,12 @@
                     ? projectFeatures.filter(project => project.properties.barangay === selectedBarangayName)
                     : projectFeatures;
                 renderProjectList(visibleProjects);
+            });
+            currentProjectsButton?.addEventListener('click', function() {
+                if (showingCompletedProjects) loadProjectView(false);
+            });
+            completedProjectsButton?.addEventListener('click', function() {
+                if (!showingCompletedProjects) loadProjectView(true);
             });
 
             mapLegendToggle?.addEventListener('click', function(event) {
@@ -961,6 +1049,20 @@
                 lightboxImage.removeAttribute('src');
                 setPublicProjectZoom(1);
                 lightboxTrigger?.focus();
+            }
+
+            function fetchFeatureCollection(url) {
+                return fetch(url).then(function(response) {
+                    if (!response.ok) {
+                        throw new Error(`Unable to load map data (${response.status})`);
+                    }
+                    return response.json();
+                }).then(function(data) {
+                    if (!data || !Array.isArray(data.features)) {
+                        throw new Error('Invalid map data');
+                    }
+                    return data;
+                });
             }
 
             function bindPublicProjectImageLightboxTriggers() {
@@ -1221,7 +1323,9 @@
                 if (visibleProjects.length === 0) {
                     const message = projectSearchTerm
                         ? 'No projects match your search.'
-                        : (selectedBarangayName ? `No public projects recorded in ${escapeHtml(selectedBarangayName)} yet.` : 'No public projects recorded yet.');
+                        : (showingCompletedProjects
+                            ? (selectedBarangayName ? `No completed projects recorded in ${escapeHtml(selectedBarangayName)}.` : 'No completed projects recorded yet.')
+                            : (selectedBarangayName ? `No public projects recorded in ${escapeHtml(selectedBarangayName)} yet.` : 'No public projects recorded yet.'));
                     projectList.innerHTML = `<div class="p-6 text-sm text-gray-500">${message}</div>`;
                     return;
                 }
@@ -1246,6 +1350,89 @@
                         resetToAllBarangays();
                     });
                 });
+            }
+
+            function loadProjectView(completed) {
+                currentProjectsButton.disabled = true;
+                completedProjectsButton.disabled = true;
+                projectList.innerHTML = '<div class="p-6 text-center text-sm text-slate-500">Loading projects…</div>';
+
+                const query = `?completed=${completed ? '1' : '0'}`;
+                Promise.all([
+                    fetchFeatureCollection(`{{ route('api.public.projects.geojson') }}${query}`),
+                    fetchFeatureCollection(`{{ route('api.public.barangays.geojson') }}${query}`)
+                ])
+                    .then(function([projectData, barangayData]) {
+                        projectFeatures = [];
+                        projectData.features.forEach(function(project) {
+                            const coords = project.geometry && project.geometry.coordinates;
+                            if (!coords || coords.length < 2) return;
+
+                            projectFeatures.push(Object.assign({ originalIndex: projectFeatures.length }, project));
+                        });
+                        window.projectFeatures = projectFeatures;
+
+                        allMarkers.clearLayers();
+                        const projectCounts = new Map(barangayData.features.map(function(feature) {
+                            return [
+                                String(feature.properties.name || '').trim().toLocaleLowerCase(),
+                                Number(feature.properties.project_count) || 0
+                            ];
+                        }));
+
+                        barangayLayer.eachLayer(function(layer) {
+                            const name = layer.feature?.properties?.name;
+                            if (!name) return;
+
+                            const count = projectCounts.get(String(name).trim().toLocaleLowerCase()) || 0;
+                            if (count === 0) return;
+
+                            const projectLabel = completed ? 'completed project' : 'project';
+                            const marker = L.marker(layer.getBounds().getCenter(), {
+                                icon: L.divIcon({
+                                    className: 'public-barangay-count-marker',
+                                    html: `<span>${count}</span>`,
+                                    iconSize: [34, 34],
+                                    iconAnchor: [17, 17]
+                                }),
+                                title: `${name}: ${count} ${projectLabel}${count === 1 ? '' : 's'}`
+                            });
+                            marker.bindTooltip(`${escapeHtml(name)}: ${count} ${projectLabel}${count === 1 ? '' : 's'}`, {
+                                direction: 'top',
+                                offset: [0, -18]
+                            });
+                            marker.on('click', function(event) {
+                                L.DomEvent.stopPropagation(event);
+                                selectBarangayOnMap(layer, name);
+                            });
+                            allMarkers.addLayer(marker);
+                        });
+
+                        showingCompletedProjects = completed;
+                        currentProjectsButton.setAttribute('aria-pressed', String(!completed));
+                        completedProjectsButton.setAttribute('aria-pressed', String(completed));
+                        currentProjectsButton.classList.toggle('is-active', !completed);
+                        completedProjectsButton.classList.toggle('is-active', completed);
+
+                        if (selectedBarangayName) {
+                            focusBarangayByName(selectedBarangayName);
+                        } else {
+                            if (selectedProjectMarkers) {
+                                map.removeLayer(selectedProjectMarkers);
+                                selectedProjectMarkers = null;
+                            }
+                            allMarkers.addTo(map);
+                            renderProjectList(projectFeatures);
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error(error);
+                        projectList.innerHTML = '<div class="p-6 text-sm text-rose-700" role="alert">Unable to load projects. Please try again.</div>';
+                    })
+                    .finally(function() {
+                        currentProjectsButton.disabled = false;
+                        completedProjectsButton.disabled = false;
+                    });
             }
 
             function showAllProjects() {
@@ -1460,79 +1647,8 @@
                     projectFeatures = [];
                     window.projectFeatures = projectFeatures;
 
-                    function fetchFeatureCollection(url) {
-                        return fetch(url).then(function(response) {
-                            if (!response.ok) {
-                                throw new Error(`Unable to load map data (${response.status})`);
-                            }
-                            return response.json();
-                        }).then(function(data) {
-                            if (!data || !Array.isArray(data.features)) {
-                                throw new Error('Invalid map data');
-                            }
-                            return data;
-                        });
-                    }
-
-                    Promise.all([
-                        fetchFeatureCollection('{{ route('api.public.projects.geojson') }}'),
-                        fetchFeatureCollection('{{ route('api.public.barangays.geojson') }}')
-                    ])
-                        .then(function([projectData, barangayData]) {
-                            projectData.features.forEach(function(project) {
-                                const coords = project.geometry && project.geometry.coordinates;
-                                if (!coords || coords.length < 2) {
-                                    return;
-                                }
-
-                                projectFeatures.push(Object.assign({ originalIndex: projectFeatures.length }, project));
-                            });
-
-                            const projectCounts = new Map(barangayData.features.map(function(feature) {
-                                return [
-                                    String(feature.properties.name || '').trim().toLocaleLowerCase(),
-                                    Number(feature.properties.project_count) || 0
-                                ];
-                            }));
-
-                            barangayLayer.eachLayer(function(layer) {
-                                const name = layer.feature?.properties?.name;
-                                if (!name) return;
-
-                                const count = projectCounts.get(String(name).trim().toLocaleLowerCase()) || 0;
-                                if (count === 0) return;
-
-                                const marker = L.marker(layer.getBounds().getCenter(), {
-                                    icon: L.divIcon({
-                                        className: 'public-barangay-count-marker',
-                                        html: `<span>${count}</span>`,
-                                        iconSize: [34, 34],
-                                        iconAnchor: [17, 17]
-                                    }),
-                                    title: `${name}: ${count} public project${count === 1 ? '' : 's'}`
-                                });
-                                marker.bindTooltip(`${escapeHtml(name)}: ${count} public project${count === 1 ? '' : 's'}`, {
-                                    direction: 'top',
-                                    offset: [0, -18]
-                                });
-                                marker.on('click', function(event) {
-                                    L.DomEvent.stopPropagation(event);
-                                    selectBarangayOnMap(layer, name);
-                                });
-
-                                allMarkers.addLayer(marker);
-                            });
-
-                            function restoreListOnMapClick() { showAllProjects(); }
-
-                            map.on('click', restoreListOnMapClick);
-                            allMarkers.addTo(map);
-                            renderProjectList(projectFeatures);
-                        })
-                        .catch(function(error) {
-                            console.error(error);
-                            projectList.innerHTML = '<div class="p-6 text-sm text-gray-500">Unable to load projects.</div>';
-                        });
+                    map.on('click', function() { showAllProjects(); });
+                    loadProjectView(false);
 
                     map.fitBounds(boundedArea, { padding: [24, 24] });
                     map.setMaxBounds(boundedArea);
