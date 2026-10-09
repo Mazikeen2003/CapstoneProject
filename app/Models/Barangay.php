@@ -41,12 +41,17 @@ class Barangay extends Model
     }
 
     /**
-     * Scope to include a count of all projects for this barangay on the public map.
+     * Scope to include the selected status view's project count on the public map.
      */
-    public function scopeWithPublicProjectCount($query)
+    public function scopeWithPublicProjectCount($query, bool $completed = false)
     {
-        return $query->withCount(['projects as public_project_count' => function ($q) {
-            $q->withoutGlobalScope(RoleScopedScope::class);
+        return $query->withCount(['projects as public_project_count' => function ($q) use ($completed) {
+            $q->withoutGlobalScope(RoleScopedScope::class)
+                ->when(
+                    $completed,
+                    fn ($projects) => $projects->where('current_status', 'Completed'),
+                    fn ($projects) => $projects->where('current_status', '!=', 'Completed')
+                );
         }]);
     }
 }
