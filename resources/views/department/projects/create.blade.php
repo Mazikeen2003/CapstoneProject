@@ -396,6 +396,39 @@
         color: var(--dc-muted);
         font-size: 0.8125rem;
     }
+    .dept-coordinate-fields {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+    }
+    .dept-coordinate-field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        min-width: 0;
+    }
+    .dept-coordinate-field label {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: var(--dc-muted);
+    }
+    .dept-coordinate-field input[readonly] {
+        padding: 9px 10px;
+        border-radius: 8px;
+        background: var(--dc-raised);
+        color: var(--dc-ink-secondary);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.75rem;
+        font-variant-numeric: tabular-nums;
+        text-align: center;
+    }
+    .dept-coordinate-field input[readonly]:placeholder-shown {
+        color: var(--dc-muted);
+        font-family: inherit;
+        font-style: italic;
+    }
 
     /* Upload zone */
     .dept-upload-zone {
@@ -825,6 +858,16 @@
                         <label>Selected Address</label>
                         <input id="project-address" type="text" readonly placeholder="Choose a location on the map..." value="{{ old('location_description') }}">
                     </div>
+                    <div class="dept-coordinate-fields" aria-label="Selected location coordinates">
+                        <div class="dept-coordinate-field">
+                            <label for="project-latitude-display">Latitude</label>
+                            <input id="project-latitude-display" type="text" readonly placeholder="Not set" value="{{ old('latitude') }}">
+                        </div>
+                        <div class="dept-coordinate-field">
+                            <label for="project-longitude-display">Longitude</label>
+                            <input id="project-longitude-display" type="text" readonly placeholder="Not set" value="{{ old('longitude') }}">
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -951,6 +994,8 @@
 
         const latitudeInput = document.getElementById('project-latitude');
         const longitudeInput = document.getElementById('project-longitude');
+        const latitudeDisplay = document.getElementById('project-latitude-display');
+        const longitudeDisplay = document.getElementById('project-longitude-display');
         const addressDisplay = document.getElementById('project-address');
         const addressInput = document.getElementById('project-address-value');
         const barangaySelect = document.getElementById('barangay_id');
@@ -1135,6 +1180,8 @@
                     marker.setLatLng(lastValidLocation);
                     latitudeInput.value = lastValidLocation.lat.toFixed(6);
                     longitudeInput.value = lastValidLocation.lng.toFixed(6);
+                    latitudeDisplay.value = latitudeInput.value;
+                    longitudeDisplay.value = longitudeInput.value;
                     showLocationNotice(message);
                 }
 
@@ -1161,6 +1208,8 @@
                     marker.setLatLng(latlng);
                     latitudeInput.value = latlng.lat.toFixed(6);
                     longitudeInput.value = latlng.lng.toFixed(6);
+                    latitudeDisplay.value = latitudeInput.value;
+                    longitudeDisplay.value = longitudeInput.value;
                     showLocationNotice();
                     if (label) setAddress(label);
                     else updateProjectAddress(latlng);

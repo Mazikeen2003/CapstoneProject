@@ -174,7 +174,7 @@ class ProjectFormController extends Controller
             'formTenProjects' => $formTenProjects,
             'formElevenProjects' => $formElevenProjects,
             'form_title' => $this->formTitle($type),
-            'field_labels' => $this->fieldLabelsFor($type),
+            'field_labels' => $this->fieldLabelsFor($type, Auth::user()?->role_slug === 'department'),
             'form_number' => str_replace('form_', '', $type),
         ];
 
@@ -433,7 +433,7 @@ class ProjectFormController extends Controller
         };
     }
 
-    private function fieldLabelsFor(string $type): array
+    private function fieldLabelsFor(string $type, bool $removeFieldNumbers): array
     {
         $signatories = [
             'submitted_by' => 'Submitted By', 'submitted_designation' => 'Submitted Designation/Office', 'submitted_date' => 'Submitted Date',
@@ -453,7 +453,21 @@ class ProjectFormController extends Controller
 
         $labels = match ($type) {
             'form_1' => [
-                'implementing_agency' => '1. Implementing Agency', 'component_details' => '3. Component Details', 'fund_source' => '4. Fund Source', 'funding_agency' => '5. Funding Agency', 'mode_of_implementation' => '6. Mode of Implementation', 'total_project_cost' => '7. Total Program/Project Cost (PHP)', 'sector' => '8. Sector', 'remarks' => '12. Remarks', 'target_employment_male' => '13. Target Employment Generated - Male', 'target_employment_female' => '13. Target Employment Generated - Female', 'output_indicator_1' => 'Output Indicator 1', 'output_indicator_2' => 'Output Indicator 2', 'output_indicator_3' => 'Output Indicator 3', 'output_indicator_4' => 'Output Indicator 4', 'output_indicator_5' => 'Output Indicator 5',
+                'implementing_agency' => $removeFieldNumbers ? 'Implementing Agency' : '1. Implementing Agency',
+                'component_details' => $removeFieldNumbers ? 'Component Details' : '3. Component Details',
+                'fund_source' => $removeFieldNumbers ? 'Fund Source' : '4. Fund Source',
+                'funding_agency' => $removeFieldNumbers ? 'Funding Agency' : '5. Funding Agency',
+                'mode_of_implementation' => $removeFieldNumbers ? 'Mode of Implementation' : '6. Mode of Implementation',
+                'total_project_cost' => $removeFieldNumbers ? 'Total Program/Project Cost (PHP)' : '7. Total Program/Project Cost (PHP)',
+                'sector' => $removeFieldNumbers ? 'Sector' : '8. Sector',
+                'remarks' => $removeFieldNumbers ? 'Remarks' : '12. Remarks',
+                'target_employment_male' => $removeFieldNumbers ? 'Target Employment Generated - Male' : '13. Target Employment Generated - Male',
+                'target_employment_female' => $removeFieldNumbers ? 'Target Employment Generated - Female' : '13. Target Employment Generated - Female',
+                'output_indicator_1' => 'Output Indicator 1',
+                'output_indicator_2' => 'Output Indicator 2',
+                'output_indicator_3' => 'Output Indicator 3',
+                'output_indicator_4' => 'Output Indicator 4',
+                'output_indicator_5' => 'Output Indicator 5',
             ],
             'form_2' => [
                 'implementing_agency' => 'Implementing Agency', 'start_date' => 'Implementation Start Date', 'end_date' => 'Implementation End Date', 'fund_source' => 'Fund Source', 'funding_agency' => 'Funding Agency', 'total_project_cost' => 'Total Project Cost (PHP)', 'appropriations' => 'Appropriations', 'allotment' => 'Allotment', 'obligations' => 'Obligations', 'disbursements' => 'Disbursements', 'target_owpa_to_date' => 'Target OWPA to Date', 'actual_owpa_to_date' => 'Actual OWPA to Date', 'slippage' => 'Slippage', 'output_indicator_1' => 'Output Indicator 1', 'output_indicator_2' => 'Output Indicator 2', 'output_indicator_3' => 'Output Indicator 3', 'output_indicator_4' => 'Output Indicator 4', 'output_indicator_5' => 'Output Indicator 5', 'end_of_project_target' => 'End of Project Target', 'target_to_date' => 'Target to Date', 'actual_to_date' => 'Actual to Date', 'employment_generated_male' => 'Employment Generated - Male', 'employment_generated_female' => 'Employment Generated - Female', 'remarks' => 'Remarks',

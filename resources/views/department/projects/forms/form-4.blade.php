@@ -2,7 +2,10 @@
 
 @section('content')
 @php $data = old() ?: ($form->form_data ?? []); $location = ($project->location_description ?? ($project->barangay->barangay_name ?? 'Citywide')) . ', Cabuyao City, Laguna'; @endphp
-<div class="space-y-6">
+<div class="{{ ($formRoutePrefix ?? 'department') === 'department' ? 'department-form-ux ' : '' }}space-y-6">
+    @if (($formRoutePrefix ?? 'department') === 'department')
+        @include('department.projects.forms.ux-styles')
+    @endif
     <div><h1 class="text-2xl font-bold text-black">Form 4 — Project Results</h1><p class="text-sm text-gray-500 mt-1">{{ $project->project_name }} ({{ $project->project_code }})</p><p class="text-xs text-gray-400 mt-1">@if ($form) Form created on {{ $form->created_at->format('M d, Y h:i A') }} &middot; Last updated {{ $form->updated_at->format('M d, Y h:i A') }} @else Not yet filled out @endif</p></div>
     @if ($errors->any())<div class="bg-red-50 border border-red-300 text-red-700 rounded-md p-3 text-sm"><ul class="list-disc list-inside">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
     <form method="POST" action="{{ route(($formRoutePrefix ?? 'department') . '.projects.forms.update', [$project->project_id, 'form_4']) }}" class="space-y-6">@csrf @method('PUT')

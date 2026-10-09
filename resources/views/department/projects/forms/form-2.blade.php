@@ -2,7 +2,10 @@
 
 @section('content')
 @php $data = old() ?: ($form->form_data ?? []); @endphp
-<div class="space-y-6">
+<div class="{{ ($formRoutePrefix ?? 'department') === 'department' ? 'department-form-ux ' : '' }}space-y-6">
+    @if (($formRoutePrefix ?? 'department') === 'department')
+        @include('department.projects.forms.ux-styles')
+    @endif
     <div>
         <h1 class="text-2xl font-bold text-black">Form 2 — Physical and Financial Accomplishment Report</h1>
         <p class="text-sm text-gray-500 mt-1">{{ $project->project_name }} ({{ $project->project_code }})</p>
