@@ -521,8 +521,8 @@
 
         html.dark-mode .public-map-viewall,
         .dark .public-map-viewall {
-            border-color: rgba(255,255,255,0.08);
-            background: #0f172a;
+            border-color: #303030;
+            background: #222222;
             color: #cbd5e1;
         }
 
@@ -800,9 +800,146 @@
                 line-height: 1.4rem;
             }
         }
+
+        html.dark-mode body.public-map-page {
+            background-color: #1a1a1a !important;
+            color: #f8fafc;
+        }
+        html.dark-mode body.public-map-page > main {
+            background-color: #1a1a1a !important;
+        }
+        html.dark-mode body.public-map-page .glass-nav {
+            background-color: rgba(17, 17, 17, 0.72) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        html.dark-mode body.public-map-page .public-map-header > div {
+            background-color: #111111 !important;
+            border-color: #303030 !important;
+        }
+        html.dark-mode body.public-map-page .public-map-header .text-slate-900 {
+            color: #f8fafc !important;
+        }
+        html.dark-mode body.public-map-page .public-map-header .text-slate-500,
+        html.dark-mode body.public-map-page .public-map-header .text-emerald-700 {
+            color: #a7f3d0 !important;
+        }
+        html.dark-mode body.public-map-page .public-map-header .public-login-button {
+            background-color: #222222 !important;
+            color: #f8fafc !important;
+        }
+        html.dark-mode body.public-map-page main > div {
+            border-color: #303030 !important;
+        }
+        html.dark-mode body.public-map-page #projectSidebar {
+            border-color: #303030 !important;
+            background-color: #1a1a1a !important;
+        }
+        html.dark-mode body.public-map-page #projectSidebar > div:first-child {
+            border-color: #303030 !important;
+            background-color: #1a1a1a !important;
+        }
+        html.dark-mode body.public-map-page #departmentProjectList {
+            background-color: #111111 !important;
+        }
+        html.dark-mode body.public-map-page #projectSidebar .text-black,
+        html.dark-mode body.public-map-page #projectSidebar .text-slate-900,
+        html.dark-mode body.public-map-page #projectSidebar .text-slate-800 {
+            color: #f8fafc !important;
+        }
+        html.dark-mode body.public-map-page #projectSidebar .text-slate-700,
+        html.dark-mode body.public-map-page #projectSidebar .text-slate-600 {
+            color: #cbd5e1 !important;
+        }
+        html.dark-mode body.public-map-page #projectSidebar .text-slate-500,
+        html.dark-mode body.public-map-page #projectSidebar .text-gray-500 {
+            color: #94a3b8 !important;
+        }
+        html.dark-mode body.public-map-page .public-map-project-search {
+            border-color: #404040 !important;
+            background-color: #222222 !important;
+            color: #f8fafc !important;
+            color-scheme: dark;
+        }
+        html.dark-mode body.public-map-page .public-map-project-search::placeholder {
+            color: #94a3b8 !important;
+        }
+        html.dark-mode body.public-map-page #backToAllBarangays {
+            border-color: #303030 !important;
+            background-color: #222222 !important;
+            color: #cbd5e1 !important;
+        }
+        html.dark-mode body.public-map-page #backToAllBarangays:hover {
+            background-color: #303030 !important;
+        }
+        html.dark-mode body.public-map-page .public-map-status-filter {
+            border-color: #303030;
+            background-color: #111111;
+        }
+        html.dark-mode body.public-map-page .public-map-status-filter button {
+            color: #94a3b8;
+        }
+        html.dark-mode body.public-map-page .public-map-status-filter button.is-active {
+            border-color: rgba(52, 211, 153, 0.25);
+            background-color: #064e3b;
+            color: #a7f3d0;
+        }
+        html.dark-mode body.public-map-page .public-map-project-card {
+            border-color: #303030 !important;
+            background-color: #222222 !important;
+            color: #e5e7eb !important;
+        }
+        html.dark-mode body.public-map-page .public-project-details-card,
+        html.dark-mode body.public-map-page .public-project-detail,
+        html.dark-mode body.public-map-page .public-project-description-card,
+        html.dark-mode body.public-map-page .dept-stepper-lifecycle {
+            border-color: #303030 !important;
+            background-color: #1a1a1a !important;
+            color: #e5e7eb;
+        }
+        html.dark-mode body.public-map-page .public-project-detail-label,
+        html.dark-mode body.public-map-page .public-project-description-card p,
+        html.dark-mode body.public-map-page .dept-stepper-subtitle {
+            color: #cbd5e1;
+        }
+        html.dark-mode body.public-map-page .public-project-detail-value,
+        html.dark-mode body.public-map-page .dept-stepper-title {
+            color: #f8fafc;
+        }
+        html.dark-mode body.public-map-page .public-map-legend {
+            border-color: #303030;
+            background: rgba(26, 26, 26, 0.96);
+            color: #e5e7eb;
+        }
+        html.dark-mode body.public-map-page .public-map-legend-count {
+            color: #94a3b8;
+        }
+        html.dark-mode body.public-map-page .public-map-legend-item .public-project-type-shape {
+            --project-marker-color: #111111;
+        }
+        html.dark-mode body.public-map-page .leaflet-popup-content-wrapper,
+        html.dark-mode body.public-map-page .leaflet-popup-tip {
+            background: #222222;
+            color: #e5e7eb;
+        }
+        html.dark-mode body.public-map-page .public-map-popup h4 {
+            color: #f8fafc;
+        }
+        html.dark-mode body.public-map-page .public-map-popup p {
+            color: #cbd5e1;
+        }
+        html.dark-mode body.public-map-page > footer {
+            border-color: #303030 !important;
+            background-color: #1a1a1a !important;
+        }
+        html.dark-mode body.public-map-page > footer .text-slate-900 {
+            color: #f8fafc !important;
+        }
+        html.dark-mode body.public-map-page > footer .text-slate-500 {
+            color: #94a3b8 !important;
+        }
     </style>
 </head>
-<body class="public-layout bg-white font-sans text-slate-900 antialiased">
+<body class="public-layout public-map-page bg-white font-sans text-slate-900 antialiased">
     <a href="#projectSidebar" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[1200] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-slate-900">Skip to project list</a>
 
     {{-- ============ TOP NAV (same as landing page) ============ --}}
@@ -1218,7 +1355,7 @@
                                 <div class="public-project-description-card">
                                     <p>${description}</p>
                                 </div>
-                                <button type="button" data-barangay="${props.barangay || ''}" class="public-map-viewall show-all-projects-btn"><span class="material-symbols-outlined text-[17px]">grid_view</span>View all projects</button>
+                                ${selectedProjectIndex !== null ? `<button type="button" class="public-map-viewall show-all-projects-btn"><span class="material-symbols-outlined text-[17px]">grid_view</span>View all projects</button>` : ''}
                             </div>
                         </div>
                     `;
@@ -1317,7 +1454,7 @@
                         return searchableText.includes(projectSearchTerm);
                     })
                     : projects;
-                const isSingle = visibleProjects.length === 1;
+                const isSingle = visibleProjects.length === 1 && selectedProjectIndex !== null;
                 updateSidebarAction();
 
                 if (visibleProjects.length === 0) {
@@ -1347,7 +1484,11 @@
                 document.querySelectorAll('.show-all-projects-btn').forEach(function(button) {
                     button.addEventListener('click', function(event) {
                         event.stopPropagation();
-                        resetToAllBarangays();
+                        if (selectedBarangayName) {
+                            showAllProjects(selectedBarangayName);
+                        } else {
+                            resetToAllBarangays();
+                        }
                     });
                 });
             }
