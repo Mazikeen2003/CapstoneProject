@@ -475,6 +475,10 @@
                     <span class="flex items-center gap-1.5"><span class="material-symbols-outlined">bar_chart</span>Visual overview of project progress and funding</span>
                     <span class="flex items-center gap-1.5"><span class="material-symbols-outlined">payments</span>Real-time budget tracking</span>
                 </div>
+                <a href="{{ route('public.expenditures') }}" class="mt-5 inline-flex items-center gap-2 rounded-lg border border-white/25 bg-white/10 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-white/20">
+                    <span class="material-symbols-outlined text-lg">receipt_long</span>
+                    View detailed expenditures
+                </a>
             </div>
         </div>
 
@@ -642,6 +646,7 @@
             </div>
             <div class="flex flex-wrap justify-center gap-8 text-xs uppercase tracking-widest">
                 <a href="{{ route('public.map') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Public Map</a>
+                <a href="{{ route('public.expenditures') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Project Expenditures</a>
                 <a href="{{ route('login') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Login</a>
             </div>
         </div>
