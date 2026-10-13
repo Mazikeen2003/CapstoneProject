@@ -1599,6 +1599,10 @@
             }
 
             function selectProject(project, index) {
+                const projectBarangay = project && project.properties && project.properties.barangay;
+                if (projectBarangay && projectBarangay !== selectedBarangayName) {
+                    focusBarangayByName(projectBarangay);
+                }
                 highlightProject(index);
                 renderProjectList([project]);
                 if (map && project && project.geometry && project.geometry.coordinates) {
