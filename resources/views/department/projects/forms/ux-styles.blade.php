@@ -36,6 +36,9 @@
         font-size: 0.925rem;
         transition: border-color 150ms ease, box-shadow 150ms ease;
     }
+    .department-form-ux .currency-input-with-prefix {
+        padding-left: 2.75rem !important;
+    }
     .department-form-ux textarea {
         min-height: 6.5rem;
         resize: vertical;

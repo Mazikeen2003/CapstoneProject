@@ -84,6 +84,14 @@ Route::get('/dashboard', function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/api/projects/geojson', [\App\Http\Controllers\Api\ProjectController::class, 'geojson'])->name('api.projects.geojson');
+Route::middleware('auth')->prefix('api/projects/map')->name('api.projects.map.')->group(function () {
+    Route::get('/counts', [\App\Http\Controllers\Api\ProjectController::class, 'mapCounts'])->name('counts');
+    Route::get('/projects', [\App\Http\Controllers\Api\ProjectController::class, 'mapProjects'])->name('projects');
+    Route::get('/markers', [\App\Http\Controllers\Api\ProjectController::class, 'mapMarkers'])->name('markers');
+    Route::get('/projects/{projectId}', [\App\Http\Controllers\Api\ProjectController::class, 'mapProjectDetails'])
+        ->whereNumber('projectId')
+        ->name('project-details');
+});
 Route::middleware('auth')->get('/api/notifications', [\App\Http\Controllers\Api\NotificationController::class, 'index'])->name('api.notifications');
 Route::middleware('auth')->get('/notifications', [NotificationPageController::class, 'index'])->name('notifications.index');
 Route::get('/ProjectTracker/public/map', [PublicMapController::class, 'index'])->name('public.map.alt');
@@ -92,6 +100,7 @@ Route::get('/ProjectTracker/public/analytics', [PublicAnalyticsController::class
 Route::prefix('public')->name('public.')->group(function () {
     Route::get('/map',       [PublicMapController::class,       'index'])->name('map');
     Route::get('/analytics', [PublicAnalyticsController::class, 'index'])->name('analytics');
+    Route::get('/expenditures', [\App\Http\Controllers\Public\ExpenditureController::class, 'index'])->name('expenditures');
     Route::get('/transparency', [\App\Http\Controllers\Public\TransparencyController::class, 'index'])->name('transparency');
 });
 

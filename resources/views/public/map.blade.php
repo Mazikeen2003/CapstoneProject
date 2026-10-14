@@ -1044,6 +1044,7 @@
 
             <div class="flex flex-wrap justify-center gap-8 text-xs uppercase tracking-widest">
                 <a href="{{ route('public.map') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Public Map</a>
+                <a href="{{ route('public.expenditures') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Project Expenditures</a>
                 <a href="{{ route('login') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Login</a>
             </div>
         </div>
@@ -1598,6 +1599,10 @@
             }
 
             function selectProject(project, index) {
+                const projectBarangay = project && project.properties && project.properties.barangay;
+                if (projectBarangay && projectBarangay !== selectedBarangayName) {
+                    focusBarangayByName(projectBarangay);
+                }
                 highlightProject(index);
                 renderProjectList([project]);
                 if (map && project && project.geometry && project.geometry.coordinates) {

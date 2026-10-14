@@ -301,6 +301,7 @@ html.dark-mode .dept-map-stat-icon.purple { background: rgba(139,92,246,0.15); c
 
 /* ===== MAP CARD ===== */
 .dept-map-card {
+    container-type: inline-size;
     background: var(--dm-surface);
     border-radius: var(--dm-radius-sm);
     border: 1px solid var(--dm-line);
@@ -322,18 +323,6 @@ html.dark-mode .dept-map-stat-icon.purple { background: rgba(139,92,246,0.15); c
     width: 100%;
     height: 100%;
     background: #1f2937;
-}
-
-/* Map legend overlay */
-.dept-map-legend {
-    position: absolute;
-    bottom: 16px;
-    right: 16px;
-    z-index: 500;
-    max-width: 260px;
-}
-.dept-map-legend .map-status-legend {
-    position: static;
 }
 
 /* Map overlay controls */
@@ -431,6 +420,41 @@ html.dark-mode .dept-map-stat-icon.purple { background: rgba(139,92,246,0.15); c
 }
 .dept-map-search::placeholder { color: var(--dm-muted); }
 .dept-map-search-wrap { position: relative; margin-top: 14px; }
+.dept-map-project-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.dept-map-project-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid var(--dm-line-strong);
+    border-radius: 10px;
+    padding: 9px 10px;
+    background: var(--dm-surface);
+    color: var(--dm-ink-secondary);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.dept-map-project-tab span {
+    min-width: 22px;
+    border-radius: 999px;
+    padding: 2px 6px;
+    background: var(--dm-raised);
+    color: var(--dm-muted);
+    font-size: 0.6875rem;
+}
+.dept-map-project-tab.active {
+    border-color: #d97706;
+    background: rgba(245, 158, 11, 0.1);
+    color: #b45309;
+}
+.dept-map-project-tab.active span { background: rgba(245, 158, 11, 0.18); color: #b45309; }
+.dept-map-project-tab:focus-visible { outline: 2px solid #f59e0b; outline-offset: 2px; }
+.dark .dept-map-project-tab.active,
+html.dark-mode .dept-map-project-tab.active { color: #fcd34d; }
+.dark .dept-map-project-tab.active span,
+html.dark-mode .dept-map-project-tab.active span { color: #fcd34d; }
 .dept-map-search-icon {
     position: absolute;
     left: 12px;
@@ -447,6 +471,90 @@ html.dark-mode .dept-map-stat-icon.purple { background: rgba(139,92,246,0.15); c
     padding: 20px;
     background: var(--dm-raised);
 }
+.dept-map-count-marker.leaflet-div-icon,
+.dept-map-type-marker.leaflet-div-icon { border: 0; background: transparent; }
+.dept-map-count-marker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.dept-map-count-marker > span {
+    display: flex;
+    min-width: 36px;
+    height: 36px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
+    border: 1px solid rgba(255,255,255,.72);
+    border-radius: 9999px;
+    background: linear-gradient(145deg, rgba(16,185,129,.58), rgba(5,150,105,.34));
+    box-shadow: 0 3px 10px rgba(15,23,42,.22), inset 0 1px 0 rgba(255,255,255,.48), inset 0 -1px 0 rgba(6,78,59,.12);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: .01em;
+    text-shadow: 0 1px 2px rgba(6,78,59,.65);
+    -webkit-backdrop-filter: blur(12px) saturate(155%);
+    backdrop-filter: blur(12px) saturate(155%);
+    transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+}
+.dept-map-count-marker:hover > span,
+.dept-map-count-marker:focus-visible > span {
+    transform: translateY(-1px) scale(1.06);
+    background: linear-gradient(145deg, rgba(16,185,129,.7), rgba(5,150,105,.46));
+    box-shadow: 0 5px 14px rgba(15,23,42,.26), inset 0 1px 0 rgba(255,255,255,.58), inset 0 -1px 0 rgba(6,78,59,.12);
+}
+.dept-map-type-shape {
+    display: inline-flex;
+    flex: 0 0 14px;
+    width: 14px;
+    height: 14px;
+    align-items: center;
+    justify-content: center;
+    background: var(--project-marker-color, #64748b);
+    box-shadow: 0 1px 3px rgba(15,23,42,.22);
+}
+.dept-map-type-shape.bridges { clip-path: polygon(5% 20%,95% 20%,95% 38%,82% 38%,82% 57%,72% 57%,72% 45%,60% 45%,50% 55%,40% 45%,28% 45%,28% 57%,18% 57%,18% 38%,5% 38%); }
+.dept-map-type-shape.buildings { border-radius: 3px; }
+.dept-map-type-shape.flood-control { clip-path: polygon(50% 0,100% 50%,50% 100%,0 50%); }
+.dept-map-type-shape.roads { width: 18px; flex-basis: 18px; height: 11px; border-radius: 5px; }
+.dept-map-type-shape.septage { clip-path: polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%); }
+.dept-map-type-shape.water { clip-path: polygon(50% 0,95% 55%,88% 78%,72% 95%,50% 100%,28% 95%,12% 78%,5% 55%); }
+.dept-map-type-shape.others { clip-path: polygon(50% 0,62% 35%,100% 38%,72% 61%,82% 100%,50% 77%,18% 100%,28% 61%,0 38%,38% 35%); }
+.dept-map-type-shape svg { display: block; width: 70%; height: 70%; }
+.dept-map-type-marker .dept-map-type-shape {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+    border: 1px solid rgba(255,255,255,.78);
+    filter: drop-shadow(0 2px 3px rgba(15,23,42,.34));
+}
+.dept-map-type-marker .dept-map-type-shape.roads { width: 38px; height: 28px; flex-basis: 38px; border-radius: 8px; clip-path: none; }
+.dept-map-type-marker .dept-map-type-shape.buildings { border-radius: 8px; }
+.dept-map-type-marker .dept-map-type-shape svg { width: 62%; height: 62%; }
+.dept-map-type-marker .dept-map-type-shape.roads svg { width: 72%; height: 72%; }
+.dept-map-type-marker .dept-map-type-shape.water svg,
+.dept-map-type-marker .dept-map-type-shape.others svg { width: 58%; height: 58%; }
+.dept-map-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 2px 4px;
+    color: var(--dm-muted);
+    font-size: 0.75rem;
+}
+.dept-map-pagination button {
+    border: 1px solid var(--dm-line-strong);
+    border-radius: 8px;
+    padding: 7px 10px;
+    background: var(--dm-surface);
+    color: var(--dm-ink-secondary);
+    font: inherit;
+    cursor: pointer;
+}
+.dept-map-pagination button:disabled { opacity: 0.45; cursor: not-allowed; }
 
 /* Back button */
 .dept-map-back-btn {
@@ -1162,11 +1270,6 @@ html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1;
         <div class="dept-map-card dept-animate">
             <div class="dept-map-wrap" id="map"></div>
 
-            <!-- Legend moved outside Leaflet container -->
-            <div class="dept-map-legend">
-                @include('components.map-status-legend')
-            </div>
-
             <div class="dept-map-overlay">
                 <button type="button" class="dept-map-overlay-btn active" id="btnLightTiles" title="Light map" aria-pressed="true">
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
@@ -1188,6 +1291,14 @@ html.dark-mode .leaflet-container a.leaflet-popup-close-button { color: #cbd5e1;
                 <div class="dept-map-search-wrap">
                     <svg class="dept-map-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
                     <input id="departmentMapSearch" type="search" class="dept-map-search" placeholder="Search name, code, status, barangay, or description…" autocomplete="off">
+                </div>
+                <div class="dept-map-project-tabs" role="tablist" aria-label="Project status">
+                    <button type="button" id="departmentActiveTab" class="dept-map-project-tab active" role="tab" aria-selected="true">
+                        Active <span id="departmentActiveCount">0</span>
+                    </button>
+                    <button type="button" id="departmentCompletedTab" class="dept-map-project-tab" role="tab" aria-selected="false">
+                        Completed <span id="departmentCompletedCount">0</span>
+                    </button>
                 </div>
                 <div id="departmentSidebarAction"></div>
             </div>
@@ -1225,19 +1336,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const projectList = document.getElementById('departmentProjectList');
     const sidebarAction = document.getElementById('departmentSidebarAction');
     const projectSearch = document.getElementById('departmentMapSearch');
+    const activeTab = document.getElementById('departmentActiveTab');
+    const completedTab = document.getElementById('departmentCompletedTab');
+    const activeCount = document.getElementById('departmentActiveCount');
+    const completedCount = document.getElementById('departmentCompletedCount');
     let selectedProjectIndex = null;
     let projectSearchTerm = '';
+    let projectView = 'active';
     let map = null;
     let boundedArea = null;
-    let projectFeatures = [];
     let barangayLayer = null;
     let selectedBarangayLayer = null;
     let selectedBarangayName = null;
-    const barangayMarkerGroups = {};
+    let selectedProjectMarkers = null;
     let allMarkers = L.featureGroup();
     let currentTileLayer = null;
     let lightTiles = null;
     let darkTiles = null;
+    let pageMeta = { current_page: 1, last_page: 1, total: 0, active_count: 0, completed_count: 0 };
+    let selectedProjectDetails = null;
+    let listRequestSequence = 0;
+    let detailRequestSequence = 0;
+    let markerRequestSequence = 0;
+    let statsRequestSequence = 0;
+    let searchTimer = null;
+    const detailCache = new Map();
 
     /* ============================================================
        PROGRESS & STATUS HELPERS
@@ -1262,10 +1385,42 @@ document.addEventListener('DOMContentLoaded', function() {
         const map = {
             'Proposed': '#2563eb', 'For bidding': '#f59e0b',
             'Bidding ongoing': '#06b6d4', 'Award of contract': '#8b5cf6',
-            'Implementation': '#0f766e', 'Completed': '#16a34a',
+            'Implementation': '#0f766e', 'On Going': '#0f766e', 'Completed': '#16a34a',
             'On Hold': '#dc2626', 'Cancelled': '#64748b'
         };
         return map[status] || '#64748b';
+    }
+
+    function getProjectTypeShape(type) {
+        const normalizedType = String(type || '').trim().toLocaleLowerCase();
+        const shapes = {
+            'bridges': 'bridges',
+            'buildings and facilities': 'buildings',
+            'flood control and drainage': 'flood-control',
+            'roads': 'roads',
+            'septage and sewerage plants': 'septage',
+            'water provision and storage': 'water',
+            'others': 'others'
+        };
+        return shapes[normalizedType] || 'others';
+    }
+
+    function getProjectTypeIcon(type) {
+        const icons = {
+            bridges: '<path d="M3 18h18M5 18V9m14 9V9M4 9h16M7 9c0 4 2.2 6 5 6s5-2 5-6M8 5v2m8-2v2"/>',
+            buildings: '<path d="M5 20V5h14v15M3 20h18M9 9h2m2 0h2M9 13h2m2 0h2M10 20v-3h4v3"/>',
+            'flood-control': '<path d="M3 7c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2M3 12c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2M3 17c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2"/>',
+            roads: '<path d="M9 3 6 21m9-18 3 18M12 5v3m0 4v3m0 4v2"/>',
+            septage: '<path d="M6 7h12v13H6zM9 7V4h6v3M9 11h6m-6 4h6m-3 5v-3m0-13v3"/>',
+            water: '<path d="M12 3s6 6.5 6 11a6 6 0 1 1-12 0c0-4.5 6-11 6-11Z"/><path d="M9 15a3 3 0 0 0 3 3"/>',
+            others: '<path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/>'
+        };
+        return icons[getProjectTypeShape(type)];
+    }
+
+    function renderProjectTypeIcon(type, color) {
+        const shape = getProjectTypeShape(type);
+        return '<span class="dept-map-type-shape ' + shape + '" style="--project-marker-color:' + e(color || '#111827') + '" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + getProjectTypeIcon(type) + '</svg></span>';
     }
 
     function getStatusBadgeClass(status) {
@@ -1290,21 +1445,30 @@ document.addEventListener('DOMContentLoaded', function() {
     /* ============================================================
        STATS
        ============================================================ */
-    function updateStatsBar(projects) {
-        const total = projects.length;
-        const totalBudget = projects.reduce(function(sum, p) { return sum + Number(p.properties.budget || 0); }, 0);
-        const reportedProgresses = projects
-            .map(calculateReportedProgress)
-            .filter(function(progress) { return progress !== null; });
-        const avgProgress = reportedProgresses.length > 0
-            ? reportedProgresses.reduce(function(sum, progress) { return sum + progress; }, 0) / reportedProgresses.length
-            : 0;
-        const barangays = new Set(projects.map(function(p) { return p.properties.barangay; }).filter(Boolean));
+    function updateStatsBar(stats) {
+        document.getElementById('statTotalProjects').textContent = Number(stats.total_projects || 0).toLocaleString();
+        document.getElementById('statAvgProgress').textContent = Number(stats.avg_progress || 0).toFixed(1) + '%';
+        document.getElementById('statTotalBudget').textContent = formatCurrency(stats.total_budget);
+        document.getElementById('statBarangays').textContent = Number(stats.barangays || 0).toLocaleString();
+    }
 
-        document.getElementById('statTotalProjects').textContent = total;
-        document.getElementById('statAvgProgress').textContent = avgProgress.toFixed(1) + '%';
-        document.getElementById('statTotalBudget').textContent = formatCurrency(totalBudget);
-        document.getElementById('statBarangays').textContent = barangays.size;
+    async function loadMapStats(barangayName) {
+        const request = ++statsRequestSequence;
+        const params = new URLSearchParams();
+        if (barangayName) params.set('barangay', barangayName);
+
+        try {
+            const query = params.toString();
+            const response = await fetch('{{ url('/api/projects/map/counts') }}' + (query ? '?' + query : ''), {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!response.ok) throw new Error('Map statistics request failed: ' + response.status);
+            const result = await response.json();
+            if (request === statsRequestSequence) updateStatsBar(result.stats);
+        } catch (error) {
+            if (request !== statsRequestSequence) return;
+            console.error(error);
+        }
     }
 
     /* ============================================================
@@ -1427,96 +1591,248 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function clearSelection() {
-        document.querySelectorAll('.dept-map-project-card').forEach(function(card) {
-            card.classList.remove('selected');
-            card.setAttribute('aria-pressed', 'false');
-        });
-    }
-
-    function highlightProject(index) {
-        selectedProjectIndex = index;
-        clearSelection();
-        const card = document.querySelector('.dept-map-project-card[data-index="' + index + '"]');
-        if (card) {
-            card.classList.add('selected');
-            card.setAttribute('aria-pressed', 'true');
-            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-    }
-
     function attachCardListeners() {
-        document.querySelectorAll('.dept-map-project-card').forEach(function(card) {
+        document.querySelectorAll('.dept-map-project-card[data-index]').forEach(function(card) {
             card.addEventListener('click', function() {
-                const idx = parseInt(this.getAttribute('data-index'), 10);
-                selectProject(projectFeatures[idx], idx);
+                selectProject({ properties: { id: Number(this.dataset.index) } });
             });
-            card.addEventListener('keydown', function(ev) {
-                if (ev.key === 'Enter' || ev.key === ' ') {
-                    ev.preventDefault();
-                    const idx = parseInt(this.getAttribute('data-index'), 10);
-                    selectProject(projectFeatures[idx], idx);
+            card.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    selectProject({ properties: { id: Number(this.dataset.index) } });
                 }
             });
         });
-        document.querySelectorAll('.show-all-projects-btn').forEach(function(btn) {
-            btn.addEventListener('click', function(ev) {
-                ev.stopPropagation();
+        document.querySelectorAll('.show-all-projects-btn').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.stopPropagation();
                 showAllProjects();
             });
         });
     }
 
-    function matchesSearch(project) {
-        if (!projectSearchTerm) return true;
-        const props = project.properties || {};
-        const searchableText = [props.name, props.code, props.id, props.status, props.barangay, props.description]
-            .filter(Boolean)
-            .join(' ')
-            .toLocaleLowerCase();
-        const searchTerms = projectSearchTerm.split(/\s+/).filter(Boolean);
-
-        return searchTerms.every(function(term) { return searchableText.includes(term); });
+    function renderProjectSummary(project) {
+        const selected = selectedProjectIndex === Number(project.id);
+        return '<div class="dept-map-project-card ' + (selected ? 'selected' : '') + '" data-index="' + Number(project.id) + '" tabindex="0" role="button" aria-pressed="' + (selected ? 'true' : 'false') + '">' +
+            '<div class="dept-map-project-body">' +
+                '<div class="dept-map-project-name">' + e(project.name) + '</div>' +
+                '<div class="dept-map-project-meta"><span class="dept-map-status-badge ' + getStatusBadgeClass(project.status) + '"><span class="dot"></span>' + e(project.status || 'Unknown') + '</span><span class="dept-map-status-badge" style="background:var(--dm-raised);color:var(--dm-muted);border:1px solid var(--dm-line);">' + e(project.code || ('#' + project.id)) + '</span></div>' +
+                '<div class="dept-map-project-desc">' + e(project.barangay || 'Citywide') + (project.type ? ' · ' + e(project.type) : '') + '</div>' +
+            '</div>' +
+        '</div>';
     }
 
     function renderProjectList(projects) {
-        if (!(selectedProjectIndex !== null && projects.length === 1)) {
-            projects = projects.filter(matchesSearch);
-        }
-        const isSingle = projects.length === 1;
         updateSidebarAction();
+        activeCount.textContent = Number(pageMeta.active_count || 0).toLocaleString();
+        completedCount.textContent = Number(pageMeta.completed_count || 0).toLocaleString();
 
-        if (projects.length === 0) {
-            projectList.innerHTML = '<div class="dept-map-empty"><div class="dept-map-empty-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div><h4>No projects found</h4><p>No public projects recorded in ' + e(selectedBarangayName || 'this barangay') + ' yet.</p></div>';
-            updateStatsBar(projects);
-            return;
+        if (selectedProjectDetails) {
+            projectList.innerHTML = renderProjectCard(selectedProjectDetails, Number(selectedProjectDetails.properties.id), true);
+            attachCardListeners();
+        } else if (projects.length === 0) {
+            const message = projectSearchTerm
+                ? 'No projects match your search.'
+                : 'No ' + (projectView === 'completed' ? 'completed' : 'active') + ' projects recorded' + (selectedBarangayName ? ' in ' + e(selectedBarangayName) : '') + '.';
+            projectList.innerHTML = '<div class="dept-map-empty"><h4>No projects found</h4><p>' + message + '</p></div>';
+        } else {
+            projectList.innerHTML = projects.map(renderProjectSummary).join('');
+            attachCardListeners();
         }
 
-        projectList.innerHTML = projects.map(function(project) {
-            return renderProjectCard(project, project.originalIndex, isSingle);
-        }).join('');
+        if (!selectedProjectDetails && pageMeta.last_page > 1) {
+            projectList.insertAdjacentHTML('beforeend', '<div class="dept-map-pagination"><button type="button" id="mapPreviousPage" ' + (pageMeta.current_page <= 1 ? 'disabled' : '') + '>Previous</button><span>Page ' + pageMeta.current_page + ' of ' + pageMeta.last_page + ' · ' + pageMeta.total + ' projects</span><button type="button" id="mapNextPage" ' + (pageMeta.current_page >= pageMeta.last_page ? 'disabled' : '') + '>Next</button></div>');
+            document.getElementById('mapPreviousPage').addEventListener('click', function() { loadProjectPage(pageMeta.current_page - 1); });
+            document.getElementById('mapNextPage').addEventListener('click', function() { loadProjectPage(pageMeta.current_page + 1); });
+        }
+    }
 
-        attachCardListeners();
-        updateStatsBar(projects);
+    async function loadProjectPage(page) {
+        const request = ++listRequestSequence;
+        detailRequestSequence++;
+        selectedProjectDetails = null;
+        const params = new URLSearchParams({
+            status: projectView,
+            page: String(page || 1),
+            search: projectSearchTerm,
+        });
+        if (selectedBarangayName) params.set('barangay', selectedBarangayName);
+        projectList.innerHTML = '<div class="dept-map-loading"><div class="spinner"></div><p>Loading projects…</p></div>';
+
+        try {
+            const response = await fetch('{{ url('/api/projects/map/projects') }}?' + params.toString(), {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!response.ok) throw new Error('Project list request failed: ' + response.status);
+            const result = await response.json();
+            if (request !== listRequestSequence) return;
+            pageMeta = result.meta;
+            renderProjectList(result.data);
+        } catch (error) {
+            if (request !== listRequestSequence) return;
+            console.error(error);
+            projectList.innerHTML = '<div class="dept-map-empty"><h4>Unable to load projects</h4><p>' + e(error.message) + '</p></div>';
+        }
+    }
+
+    function focusSelectedProjectOnMap(project) {
+        const properties = project.properties || {};
+        const name = properties.barangay || 'Citywide';
+        if (selectedBarangayLayer) barangayLayer.resetStyle(selectedBarangayLayer);
+        selectedBarangayLayer = null;
+        selectedBarangayName = name;
+
+        if (name !== 'Citywide' && barangayLayer) {
+            barangayLayer.eachLayer(function(layer) {
+                if (layer.feature && layer.feature.properties && layer.feature.properties.name === name) {
+                    selectedBarangayLayer = layer;
+                }
+            });
+            if (selectedBarangayLayer) {
+                selectedBarangayLayer.setStyle({ fillOpacity: 0.75, weight: 3, color: '#162347' });
+                map.fitBounds(selectedBarangayLayer.getBounds(), { padding: [40, 40] });
+            }
+        }
+
+        if (allMarkers && map.hasLayer(allMarkers)) map.removeLayer(allMarkers);
+        if (selectedProjectMarkers && map.hasLayer(selectedProjectMarkers)) map.removeLayer(selectedProjectMarkers);
+        selectedProjectMarkers = L.featureGroup();
+        updateSidebarAction();
+        loadMapStats(name);
+
+        if (projectView === 'active') {
+            loadBarangayMarkers(name);
+        } else if (project.geometry && project.geometry.coordinates) {
+            const coordinates = project.geometry.coordinates;
+            const marker = L.marker([coordinates[1], coordinates[0]], {
+                icon: L.divIcon({
+                    className: 'dept-map-type-marker',
+                    html: renderProjectTypeIcon(properties.type || 'Others', getStatusColor(properties.status)),
+                    iconSize: [42, 42],
+                    iconAnchor: [21, 21]
+                }),
+                title: (properties.name || 'Project') + ' — ' + (properties.type || 'Others')
+            });
+            marker.bindTooltip(e(properties.name) + ' · ' + e(properties.type || 'Others') + ' · ' + e(properties.status || 'Unknown'));
+            marker.on('click', function(event) {
+                L.DomEvent.stopPropagation(event);
+                selectProject(project);
+            });
+            selectedProjectMarkers.addLayer(marker).addTo(map);
+        }
+
+        if (project.geometry && project.geometry.coordinates) {
+            const coordinates = project.geometry.coordinates;
+            map.flyTo([coordinates[1], coordinates[0]], 15, { duration: 0.7, easeLinearity: 0.35 });
+        }
+    }
+
+    async function selectProject(project) {
+        const projectId = Number(project && project.properties && project.properties.id);
+        if (!Number.isInteger(projectId) || projectId <= 0) return;
+        listRequestSequence++;
+        const request = ++detailRequestSequence;
+        selectedProjectIndex = projectId;
+        selectedProjectDetails = null;
+        projectList.innerHTML = '<div class="dept-map-loading"><div class="spinner"></div><p>Loading project details…</p></div>';
+
+        try {
+            let details = detailCache.get(projectId);
+            if (!details) {
+                const response = await fetch('{{ url('/api/projects/map/projects') }}/' + projectId, {
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (!response.ok) throw new Error('Project detail request failed: ' + response.status);
+                details = await response.json();
+                if (detailCache.size >= 20) detailCache.delete(detailCache.keys().next().value);
+                detailCache.set(projectId, details);
+            }
+            if (request !== detailRequestSequence) return;
+            selectedProjectDetails = details;
+            renderProjectList([]);
+            if (map) focusSelectedProjectOnMap(details);
+        } catch (error) {
+            if (request !== detailRequestSequence) return;
+            console.error(error);
+            projectList.innerHTML = '<div class="dept-map-empty"><h4>Unable to load project details</h4><p>' + e(error.message) + '</p></div>';
+        }
+    }
+
+    function setProjectView(view) {
+        if (view === projectView) return;
+        projectView = view;
+        markerRequestSequence++;
+        if (selectedBarangayLayer) {
+            barangayLayer.resetStyle(selectedBarangayLayer);
+            selectedBarangayLayer = null;
+        }
+        selectedBarangayName = null;
+        selectedProjectIndex = null;
+        selectedProjectDetails = null;
+        activeTab.classList.toggle('active', view === 'active');
+        activeTab.setAttribute('aria-selected', String(view === 'active'));
+        completedTab.classList.toggle('active', view === 'completed');
+        completedTab.setAttribute('aria-selected', String(view === 'completed'));
+        if (selectedProjectMarkers && map.hasLayer(selectedProjectMarkers)) {
+            map.removeLayer(selectedProjectMarkers);
+        }
+        if (view === 'completed') {
+            if (allMarkers && map.hasLayer(allMarkers)) map.removeLayer(allMarkers);
+        } else {
+            if (allMarkers && !map.hasLayer(allMarkers)) allMarkers.addTo(map);
+            if (boundedArea) map.fitBounds(boundedArea, { padding: [24, 24] });
+        }
+        loadMapStats();
+        loadProjectPage(1);
+    }
+
+    async function loadBarangayMarkers(name) {
+        if (!map || projectView !== 'active') return;
+        const request = ++markerRequestSequence;
+        if (selectedProjectMarkers) map.removeLayer(selectedProjectMarkers);
+        selectedProjectMarkers = L.featureGroup();
+        try {
+            const params = new URLSearchParams({ barangay: name });
+            const response = await fetch('{{ url('/api/projects/map/markers') }}?' + params.toString(), {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!response.ok) throw new Error('Barangay marker request failed: ' + response.status);
+            const data = await response.json();
+            if (request !== markerRequestSequence || selectedBarangayName !== name || projectView !== 'active') return;
+            data.features.forEach(function(project) {
+                const coordinates = project.geometry.coordinates;
+                const projectType = project.properties.type || 'Others';
+                const markerColor = getStatusColor(project.properties.status);
+                const marker = L.marker([coordinates[1], coordinates[0]], {
+                    icon: L.divIcon({
+                        className: 'dept-map-type-marker',
+                        html: renderProjectTypeIcon(projectType, markerColor),
+                        iconSize: [42, 42],
+                        iconAnchor: [21, 21]
+                    }),
+                    title: project.properties.name + ' — ' + projectType
+                });
+                marker.bindTooltip(e(project.properties.name) + ' · ' + e(projectType) + ' · ' + e(project.properties.status || 'Unknown'));
+                marker.on('click', function(event) {
+                    L.DomEvent.stopPropagation(event);
+                    selectProject(project);
+                });
+                selectedProjectMarkers.addLayer(marker);
+            });
+            selectedProjectMarkers.addTo(map);
+        } catch (error) {
+            if (request !== markerRequestSequence) return;
+            console.error(error);
+            projectList.innerHTML = '<div class="dept-map-empty"><h4>Unable to load map markers</h4><p>' + e(error.message) + '</p></div>';
+        }
     }
 
     function showAllProjects() {
         selectedProjectIndex = null;
-        const activeList = selectedBarangayName
-            ? projectFeatures.filter(function(p) { return p.properties.barangay === selectedBarangayName; })
-            : projectFeatures;
-        renderProjectList(activeList);
+        selectedProjectDetails = null;
+        loadProjectPage(1);
         if (map && boundedArea && !selectedBarangayName) {
             map.fitBounds(boundedArea, { padding: [24, 24], animate: true, duration: 0.7, easeLinearity: 0.3 });
-        }
-    }
-
-    function selectProject(project, index) {
-        highlightProject(index);
-        renderProjectList([project]);
-        if (map && project && project.geometry && project.geometry.coordinates) {
-            const c = project.geometry.coordinates;
-            map.flyTo([c[1], c[0]], 15, { duration: 0.7, easeLinearity: 0.35 });
         }
     }
 
@@ -1527,11 +1843,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         selectedBarangayName = null;
         if (map) {
-            Object.values(barangayMarkerGroups).forEach(function(g) { map.removeLayer(g); });
-            map.addLayer(allMarkers);
+            if (selectedProjectMarkers) map.removeLayer(selectedProjectMarkers);
+            if (allMarkers && !map.hasLayer(allMarkers)) allMarkers.addTo(map);
         }
         selectedProjectIndex = null;
-        renderProjectList(projectFeatures);
+        selectedProjectDetails = null;
+        loadMapStats();
+        loadProjectPage(1);
         if (map && boundedArea) map.fitBounds(boundedArea, { padding: [24, 24] });
     }
 
@@ -1541,13 +1859,13 @@ document.addEventListener('DOMContentLoaded', function() {
         layer.setStyle({ fillOpacity: 0.75, weight: 3, color: '#162347' });
         selectedBarangayName = name;
         selectedProjectIndex = null;
-        map.fitBounds(layer.getBounds(), { padding: [40, 40] });
-
+        selectedProjectDetails = null;
+        if (layer) map.fitBounds(layer.getBounds(), { padding: [40, 40] });
         if (allMarkers) map.removeLayer(allMarkers);
-        Object.values(barangayMarkerGroups).forEach(function(g) { map.removeLayer(g); });
-        if (barangayMarkerGroups[name]) map.addLayer(barangayMarkerGroups[name]);
-
-        renderProjectList(projectFeatures.filter(function(p) { return p.properties.barangay === name; }));
+        if (selectedProjectMarkers) map.removeLayer(selectedProjectMarkers);
+        loadMapStats(name);
+        loadProjectPage(1);
+        if (projectView === 'active') loadBarangayMarkers(name);
     }
 
     /* ============================================================
@@ -1591,13 +1909,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('btnLightTiles').addEventListener('click', function() { setTileLayer(false); });
     document.getElementById('btnDarkTiles').addEventListener('click', function() { setTileLayer(true); });
+    activeTab.addEventListener('click', function() { setProjectView('active'); });
+    completedTab.addEventListener('click', function() { setProjectView('completed'); });
     projectSearch.addEventListener('input', function() {
         projectSearchTerm = this.value.trim().toLocaleLowerCase();
         selectedProjectIndex = null;
-        const visibleProjects = selectedBarangayName
-            ? projectFeatures.filter(function(project) { return project.properties.barangay === selectedBarangayName; })
-            : projectFeatures;
-        renderProjectList(visibleProjects);
+        window.clearTimeout(searchTimer);
+        searchTimer = window.setTimeout(function() { loadProjectPage(1); }, 300);
     });
 
     /* ============================================================
@@ -1609,16 +1927,15 @@ document.addEventListener('DOMContentLoaded', function() {
        DATA FETCHING (Parallel)
        ============================================================ */
     const geojsonUrl = '{{ asset('data/cabuyao-map.geojson') }}';
-    const projectsUrl = '{{ url('/api/projects/geojson') }}';
-
     Promise.all([
-        fetch(geojsonUrl).then(function(r) { if (!r.ok) throw new Error('Map fetch failed: ' + r.status); return r.json(); }),
-        fetch(projectsUrl).then(function(r) { if (!r.ok) throw new Error('Project fetch failed: ' + r.status); return r.json(); })
+        fetch(geojsonUrl).then(function(response) { if (!response.ok) throw new Error('Map fetch failed: ' + response.status); return response.json(); }),
+        fetch('{{ url('/api/projects/map/counts') }}', { headers: { 'Accept': 'application/json' } })
+            .then(function(response) { if (!response.ok) throw new Error('Map counts request failed: ' + response.status); return response.json(); })
     ])
     .then(function(results) {
-        const geojson = results[0];
-        const projectData = results[1];
-        initMap(geojson, projectData);
+        initMap(results[0], results[1]);
+        updateStatsBar(results[1].stats);
+        loadProjectPage(1);
     })
     .catch(function(error) {
         console.error(error);
@@ -1628,13 +1945,13 @@ document.addEventListener('DOMContentLoaded', function() {
     /* ============================================================
        MAP INITIALIZATION
        ============================================================ */
-    function initMap(geojson, projectData) {
+    function initMap(geojson, mapData) {
         const cabuyaoBounds = L.geoJSON(geojson).getBounds();
         boundedArea = cabuyaoBounds.pad(0.02);
         map = L.map('map', { maxBounds: boundedArea, maxBoundsViscosity: 1.0 });
 
         lightTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'OpenStreetMap contributors', maxZoom: 19
+            attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
         });
         currentTileLayer = lightTiles;
         lightTiles.addTo(map);
@@ -1652,78 +1969,77 @@ document.addEventListener('DOMContentLoaded', function() {
                 const name = feature.properties.name;
                 layer.bindTooltip(e(name), { sticky: true, className: 'barangay-tooltip' });
                 layer.on({
-                    mouseover: function(e) {
-                        if (layer !== selectedBarangayLayer) e.target.setStyle({ fillOpacity: 0.6, weight: 2.5 });
+                    mouseover: function(event) {
+                        if (layer !== selectedBarangayLayer) event.target.setStyle({ fillOpacity: 0.6, weight: 2.5 });
                     },
-                    mouseout: function(e) {
-                        if (layer !== selectedBarangayLayer) barangayLayer.resetStyle(e.target);
+                    mouseout: function(event) {
+                        if (layer !== selectedBarangayLayer) barangayLayer.resetStyle(event.target);
                     },
                     click: function() { selectBarangayOnMap(layer, name); }
                 });
-            },
+            }
         }).addTo(map);
 
         allMarkers = L.featureGroup();
-        projectFeatures = [];
+        const countByName = new Map(mapData.counts.map(function(item) {
+            return [String(item.name || '').trim().toLocaleLowerCase(), Number(item.project_count) || 0];
+        }));
 
-        if (projectData && projectData.features) {
-            projectData.features.forEach(function(project, index) {
-                const coords = project.geometry && project.geometry.coordinates;
-                if (!coords || coords.length < 2) return;
-
-                const marker = L.circleMarker([coords[1], coords[0]], {
-                    radius: 14,
-                    fillColor: getStatusColor(project.properties.status),
-                    color: '#ffffff',
-                    weight: 3,
-                    opacity: 1,
-                    fillOpacity: 0.9
-                });
-
-                const popupHtml = '<div style="font-family:\'Inter\',sans-serif;min-width:180px;">' +
-                    '<h4 class="project-popup-title">' + e(project.properties.name) + '</h4>' +
-                    '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">' +
-                        '<span style="width:8px;height:8px;border-radius:50%;background:' + e(getStatusColor(project.properties.status)) + ';display:inline-block;"></span>' +
-                        '<span class="project-popup-status">' + e(project.properties.status || 'Unknown') + '</span>' +
-                    '</div>' +
-                    '<div class="project-popup-details">' +
-                        '<div style="margin-bottom:2px;"><strong>Budget:</strong> ' + formatCurrency(project.properties.budget) + '</div>' +
-                        '<div><strong>Barangay:</strong> ' + e(project.properties.barangay || 'Citywide') + '</div>' +
-                    '</div>' +
-                '</div>';
-
-                marker.bindPopup(popupHtml, { borderRadius: 12, className: 'custom-project-popup' });
-                marker.on('click', function(ev) {
-                    L.DomEvent.stopPropagation(ev);
-                    map.flyTo([coords[1], coords[0]], 16, { duration: 0.7, easeLinearity: 0.35 });
-                    selectProject(project, index);
-                });
-
-                allMarkers.addLayer(marker);
-                projectFeatures.push(Object.assign({ originalIndex: index }, project));
-
-                const barangayName = project.properties.barangay;
-                if (barangayName) {
-                    if (!barangayMarkerGroups[barangayName]) barangayMarkerGroups[barangayName] = L.layerGroup();
-                    barangayMarkerGroups[barangayName].addLayer(marker);
-                }
+        barangayLayer.eachLayer(function(layer) {
+            const name = layer.feature && layer.feature.properties && layer.feature.properties.name;
+            const count = countByName.get(String(name || '').trim().toLocaleLowerCase()) || 0;
+            if (!name || count === 0) return;
+            const marker = L.marker(layer.getBounds().getCenter(), {
+                icon: L.divIcon({
+                    className: 'dept-map-count-marker',
+                    html: '<span>' + count + '</span>',
+                    iconSize: [34, 34],
+                    iconAnchor: [17, 17]
+                }),
+                title: name + ': ' + count + ' active projects'
             });
-        }
-
-        map.on('click', function() {
-            if (selectedProjectIndex !== null) {
-                showAllProjects();
-            }
+            marker.bindTooltip(e(name) + ': ' + count + ' active project' + (count === 1 ? '' : 's'));
+            marker.on('click', function(event) {
+                L.DomEvent.stopPropagation(event);
+                selectBarangayOnMap(layer, name);
+            });
+            allMarkers.addLayer(marker);
         });
 
-        allMarkers.addTo(map);
-        renderProjectList(projectFeatures);
+        const citywideCount = countByName.get('citywide') || 0;
+        if (citywideCount > 0) {
+            const citywideMarker = L.marker(boundedArea.getCenter(), {
+                icon: L.divIcon({
+                    className: 'dept-map-count-marker',
+                    html: '<span>' + citywideCount + '</span>',
+                    iconSize: [34, 34],
+                    iconAnchor: [17, 17]
+                }),
+                title: 'Citywide: ' + citywideCount + ' active projects'
+            });
+            citywideMarker.bindTooltip('Citywide: ' + citywideCount + ' active project' + (citywideCount === 1 ? '' : 's'));
+            citywideMarker.on('click', function(event) {
+                L.DomEvent.stopPropagation(event);
+                if (selectedBarangayLayer) barangayLayer.resetStyle(selectedBarangayLayer);
+                selectedBarangayName = 'Citywide';
+                selectedBarangayLayer = null;
+                if (allMarkers && map.hasLayer(allMarkers)) map.removeLayer(allMarkers);
+                if (selectedProjectMarkers) map.removeLayer(selectedProjectMarkers);
+                loadMapStats('Citywide');
+                loadProjectPage(1);
+                loadBarangayMarkers('Citywide');
+            });
+            allMarkers.addLayer(citywideMarker);
+        }
 
+        allMarkers.addTo(map);
+        map.on('click', function() {
+            if (selectedProjectDetails) showAllProjects();
+        });
         map.fitBounds(boundedArea, { padding: [24, 24] });
         map.setMaxBounds(boundedArea);
         map.setMinZoom(map.getZoom());
         setTimeout(function() { map.invalidateSize(); }, 100);
-
         window.addEventListener('resize', function() {
             if (map) setTimeout(function() { map.invalidateSize(); }, 100);
         });
