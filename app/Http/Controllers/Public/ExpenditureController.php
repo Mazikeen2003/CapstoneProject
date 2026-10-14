@@ -7,6 +7,7 @@ use App\Models\BudgetTransaction;
 use App\Models\Scopes\RoleScopedScope;
 use App\Services\PortalVisitService;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -37,7 +38,7 @@ class ExpenditureController extends Controller
 
             $query = (clone $baseQuery)
                 ->with([
-                    'project' => static fn (Builder $projects) => $projects
+                    'project' => static fn (BelongsTo $projects) => $projects
                         ->withoutGlobalScope(RoleScopedScope::class)
                         ->with('barangay'),
                 ]);
