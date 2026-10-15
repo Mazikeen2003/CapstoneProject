@@ -5,8 +5,7 @@
     $startDate = \Carbon\Carbon::parse($project->start_date);
     $endDate = \Carbon\Carbon::parse($project->target_end_date);
     $today = \Carbon\Carbon::today();
-    $totalDays = $startDate->diffInDays($endDate);
-    $daysElapsed = $startDate->diffInDays($today);
+    $timelineProgress = $project->timelineProgressPercentage();
     $reportedProgress = $project->latestUpdate?->progress_percentage;
     $reportedProgress = $reportedProgress !== null ? min(100, max(0, (float) $reportedProgress)) : null;
 @endphp
@@ -807,6 +806,15 @@ html.dark-mode .cs-empty-icon { background: rgba(251,191,36,0.15); }
                 </div>
                 <div class="cs-card-body">
                     <div class="cs-progress-mini mb-6 rounded-lg" style="background: var(--cs-raised); border: 1px solid var(--cs-line);">
+                        <div class="cs-progress-block">
+                            <div class="cs-progress-header">
+                                <span class="cs-progress-label">Timeline Progress</span>
+                                <span class="cs-progress-value">{{ number_format($timelineProgress, 1) }}%</span>
+                            </div>
+                            <div class="cs-progress-track">
+                                <div class="cs-progress-fill" style="width: {{ $timelineProgress }}%"></div>
+                            </div>
+                        </div>
                         <div class="cs-progress-block">
                             <div class="cs-progress-header">
                                 <span class="cs-progress-label">Reported Progress</span>
