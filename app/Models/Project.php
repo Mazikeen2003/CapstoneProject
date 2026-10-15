@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\ProjectUpdate;
 use App\Models\Scopes\RoleScopedScope;
+use Carbon\CarbonInterface;
 
 class Project extends Model
 {
@@ -171,6 +172,36 @@ class Project extends Model
     public function hasStarted(): bool
     {
         return $this->start_date !== null && $this->start_date->copy()->startOfDay()->lte(today());
+    }
+
+    public function timelineProgressPercentage(?CarbonInterface $asOf = null): float
+    {
+        $startDate = $this->start_date?->copy()->startOfDay();
+        $endDate = $this->target_end_date?->copy()->startOfDay();
+
+        if ($startDate === null || $endDate === null) {
+            return 0.0;
+        }
+
+        $asOf = ($asOf ?? today())->copy()->startOfDay();
+
+        if ($asOf->lt($startDate)) {
+            return 0.0;
+        }
+
+        if ($asOf->gte($endDate)) {
+            return 100.0;
+        }
+
+        $totalDays = $startDate->diffInDays($endDate);
+
+        if ($totalDays <= 0) {
+            return 0.0;
+        }
+
+        $daysElapsed = $startDate->diffInDays($asOf);
+
+        return min(100.0, max(0.0, ($daysElapsed / $totalDays) * 100));
     }
 
     public function statusBeforeOnHold(): ?string
