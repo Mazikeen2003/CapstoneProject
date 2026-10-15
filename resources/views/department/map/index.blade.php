@@ -1371,7 +1371,30 @@ document.addEventListener('DOMContentLoaded', function() {
             return reportedProgress;
         }
 
-        return 0;
+        return calculateTimelineProgress(project);
+    }
+
+    function calculateTimelineProgress(project) {
+        if (!project.properties.start_date || !project.properties.target_end_date) {
+            return 0;
+        }
+
+        const startDate = new Date(`${project.properties.start_date}T00:00:00`);
+        const endDate = new Date(`${project.properties.target_end_date}T00:00:00`);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime()) || today < startDate) {
+            return 0;
+        }
+        if (today >= endDate) {
+            return 100;
+        }
+
+        const totalDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
+        const daysElapsed = (today - startDate) / (1000 * 60 * 60 * 24);
+
+        return totalDays > 0 ? Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100)) : 0;
     }
 
     function calculateReportedProgress(project) {
@@ -1543,7 +1566,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         '<div class="dept-map-progress-track"><div class="dept-map-progress-fill" style="width:' + expenditureProgress + '%;background:linear-gradient(90deg,#10b981,#059669);"></div></div>' +
                     '</div>' +
                     '<div class="dept-map-progress-wrap">' +
-                        '<div class="dept-map-progress-header"><span class="dept-map-progress-label">' + (reportedProgress !== null ? 'Reported progress' : 'Progress') + '</span><span class="dept-map-progress-value">' + progress.toFixed(1) + '%</span></div>' +
+                        '<div class="dept-map-progress-header"><span class="dept-map-progress-label">' + (reportedProgress !== null ? 'Reported progress' : 'Timeline progress') + '</span><span class="dept-map-progress-value">' + progress.toFixed(1) + '%</span></div>' +
                         '<div class="dept-map-progress-track"><div class="dept-map-progress-fill" style="width:' + progress + '%;background:linear-gradient(90deg,#3b82f6,#2563eb);"></div></div>' +
                         '<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:0.6875rem;font-weight:600;color:var(--dm-muted);"><span>Start: ' + e(startDate) + '</span><span>Target: ' + e(targetDate) + '</span></div>' +
                     '</div>' +
