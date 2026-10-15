@@ -1010,9 +1010,7 @@
         $startDate = \Carbon\Carbon::parse($project->start_date);
         $endDate = \Carbon\Carbon::parse($project->target_end_date);
         $today = \Carbon\Carbon::today();
-        $totalDays = $startDate->diffInDays($endDate);
-        $daysElapsed = $startDate->diffInDays($today);
-        $timelineProgress = ($totalDays > 0) ? min(100, max(0, ($daysElapsed / $totalDays) * 100)) : 0;
+        $timelineProgress = $project->timelineProgressPercentage();
         $reportedProgress = $project->latestUpdate?->progress_percentage;
         $progress = $reportedProgress !== null ? $reportedProgress : $timelineProgress;
         $progressLabel = $reportedProgress !== null ? 'Reported Progress' : 'Timeline Progress';
