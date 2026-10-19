@@ -1,6 +1,7 @@
 @php
     $documentStage = $project->lifecycle_stage ?: \App\Models\Project::syncLifecycleStageFromCurrentStatus($project->current_status);
     $documentTypes = match ($documentStage) {
+        1 => ['Detailed Project Information'],
         3 => ['Bid Submission', 'Technical Proposal', 'Eligibility Requirement'],
         4 => ['Signed Contract', 'Notice of Award', 'Purchase Order'],
         default => [],
@@ -59,8 +60,8 @@
         .dark .stage-documents-card .stage-document-view:hover { background: #1e293b; }
     </style>
     <div class="mb-5">
-        <h2 class="text-lg font-bold text-slate-900">Bidding and Contract Documents</h2>
-        <p class="mt-1 text-sm text-slate-600">Upload and securely share supporting documents for bidding and contract award.</p>
+        <h2 class="text-lg font-bold text-slate-900">Project Documents</h2>
+        <p class="mt-1 text-sm text-slate-600">Upload and share the documents required for the current project stage.</p>
     </div>
 
     @if (session('stage_document_success'))
@@ -68,6 +69,11 @@
     @endif
 
     @if (($allowUpload ?? false) && $documentTypes)
+        @if ($documentStage === 1)
+            <p class="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                Required to proceed to For bidding: upload the Detailed Project Information document. This document will be viewable by the public.
+            </p>
+        @endif
         <form method="POST" action="{{ route('department.projects.stage-documents.store', $project->project_id) }}" enctype="multipart/form-data" class="mb-6 grid gap-4 border-b border-slate-200 pb-6 sm:grid-cols-2">
             @csrf
             <div>
@@ -87,13 +93,15 @@
                 @error('document')<p class="mt-1 text-sm text-red-700">{{ $message }}</p>@enderror
             </div>
             <div class="sm:col-span-2">
-                <button type="submit" class="inline-flex items-center rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2">Upload document</button>
+                <button type="submit" class="inline-flex items-center rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2">
+                    {{ $documentStage === 1 ? 'Upload required document' : 'Upload document' }}
+                </button>
             </div>
         </form>
     @endif
 
     @if ($stageDocuments->isEmpty())
-        <p class="stage-document-empty rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">No bidding or contract documents have been uploaded.</p>
+        <p class="stage-document-empty rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">No project documents have been uploaded.</p>
     @else
         <ul class="divide-y divide-slate-200">
             @foreach ($stageDocuments as $document)
@@ -101,9 +109,12 @@
                     <div class="min-w-0">
                         <p class="truncate font-semibold text-slate-900">{{ $document->original_filename }}</p>
                         <p class="mt-1 text-xs text-slate-500">{{ $document->document_type }} · Stage {{ $document->stage }} · {{ $document->created_at?->format('M d, Y') }}</p>
+                        @if ($document->stage === 1 && $document->document_type === 'Detailed Project Information')
+                            <p class="mt-1 text-xs font-semibold text-emerald-700">Publicly viewable</p>
+                        @endif
                     </div>
                     <div class="flex shrink-0 items-center gap-2">
-                        <a href="{{ route('department.projects.stage-documents.view', [$project->project_id, $document->id]) }}" target="_blank" rel="noopener" class="stage-document-view rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View</a>
+                        <a href="{{ $document->stage === 1 && $document->document_type === 'Detailed Project Information' ? route('public.projects.stage-documents.view', [$project->project_id, $document->id]) : route('department.projects.stage-documents.view', [$project->project_id, $document->id]) }}" target="_blank" rel="noopener" class="stage-document-view rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View</a>
                         <a href="{{ route('department.projects.stage-documents.download', [$project->project_id, $document->id]) }}" class="rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">Download</a>
                     </div>
                 </li>
