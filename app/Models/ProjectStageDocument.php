@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProjectStageDocument extends Model
 {
+    protected $casts = [
+        'stage' => 'integer',
+    ];
+
     protected $fillable = [
         'project_id',
         'uploaded_by',
