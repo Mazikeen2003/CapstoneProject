@@ -29,7 +29,13 @@ class MapController
     {
             $completed = $request->boolean('completed');
         $projects = Project::withoutRoleScope()
-            ->with(['barangay', 'latestUpdate'])
+            ->with([
+                'barangay',
+                'latestUpdate',
+                'stageDocuments' => fn ($query) => $query
+                    ->where('stage', 1)
+                    ->where('document_type', 'Detailed Project Information'),
+            ])
             ->withActualTransactionSum()
                 ->when(
                     $completed,
@@ -69,6 +75,14 @@ class MapController
                     'progress_percentage' => $project->latestUpdate?->progress_percentage,
                     'budget'             => $project->approved_budget ?? 0,
                     'actual_budget'      => $project->actual_budget_total,
+                    'expenditure_url'    => route('public.expenditures.project', $project->project_id),
+                    'public_documents'   => $project->stageDocuments->map(fn ($document) => [
+                        'filename' => $document->original_filename,
+                        'url' => route('public.projects.stage-documents.view', [
+                            $project->project_id,
+                            $document->getKey(),
+                        ]),
+                    ])->values(),
                 ],
             ];
         })->filter()->values();
@@ -116,7 +130,12 @@ class MapController
         $completed = $request->boolean('completed');
         $projects = $barangay->projects()
             ->withoutGlobalScope(RoleScopedScope::class)
-            ->with('latestUpdate')
+            ->with([
+                'latestUpdate',
+                'stageDocuments' => fn ($query) => $query
+                    ->where('stage', 1)
+                    ->where('document_type', 'Detailed Project Information'),
+            ])
             ->withActualTransactionSum()
             ->when(
                 $completed,
@@ -148,6 +167,14 @@ class MapController
                     'progress_percentage' => $project->latestUpdate?->progress_percentage,
                     'budget'             => $project->approved_budget ?? 0,
                     'actual_budget'      => $project->actual_budget_total,
+                    'expenditure_url'    => route('public.expenditures.project', $project->project_id),
+                    'public_documents'   => $project->stageDocuments->map(fn ($document) => [
+                        'filename' => $document->original_filename,
+                        'url' => route('public.projects.stage-documents.view', [
+                            $project->project_id,
+                            $document->getKey(),
+                        ]),
+                    ])->values(),
                 ],
             ];
         });
