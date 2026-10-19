@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Browse recorded Cabuyao City project expenditures by project, barangay, date, and category.">
+    <meta name="description" content="Browse public project expenditure summaries and open a project for monthly, category-level details.">
     <title>Project Expenditures | City Transparency Portal</title>
     @include('layouts.favicon')
     @include('components.theme-init')
@@ -478,7 +478,7 @@
             <div class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-xs uppercase tracking-widest" style="font-family:'Public Sans',sans-serif;">
                 <a href="{{ url('/') }}" class="py-2 font-semibold text-slate-500 transition-colors hover:text-emerald-700">Home</a>
                 <a href="{{ route('public.map') }}" class="py-2 font-semibold text-slate-500 transition-colors hover:text-emerald-700">Public Map</a>
-                <a href="{{ route('public.analytics') }}" aria-current="page" class="border-b-2 border-emerald-600 py-2 font-bold text-emerald-700 transition-all">Analytics</a>
+                <a href="{{ route('public.expenditures') }}" aria-current="page" class="border-b-2 border-emerald-600 py-2 font-bold text-emerald-700 transition-all">Expenditures</a>
             </div>
 
             <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
@@ -502,7 +502,7 @@
                         Project Expenditures
                     </h1>
                     <p class="mt-4 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
-                        Review recorded actual expenditure by project, barangay, date, and spending category. All figures reflect itemized transactions currently published under the transparency program.
+                        Browse expenditure totals by project. Open a project to see its monthly and category-level details, subject to applicable disclosure laws.
                     </p>
                 </div>
                 <a href="{{ route('public.analytics') }}" class="inline-flex shrink-0 items-center gap-2 self-start rounded-xl border border-white/20 bg-white/5 px-5 py-3 text-sm font-bold text-white backdrop-blur-md transition hover:bg-white/10 hover:border-white/30">
@@ -512,211 +512,126 @@
             </div>
         </section>
 
-        {{-- Stats --}}
-        <section class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-label="Expenditure summary">
-            <article class="stat-card rounded-2xl p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Total actual expenditure</p>
-                        <p class="mt-3 text-4xl font-extrabold tracking-tight text-[var(--text-primary)]" style="font-family:'Manrope',sans-serif;">
-                            ₱{{ number_format($totalExpenditure, 2) }}
-                        </p>
-                    </div>
-                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent)]">
-                        <span class="material-symbols-outlined text-2xl">payments</span>
-                    </div>
-                </div>
-            </article>
-
-            <article class="stat-card rounded-2xl p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Recorded transactions</p>
-                        <p class="mt-3 text-4xl font-extrabold tracking-tight text-[var(--text-primary)]" style="font-family:'Manrope',sans-serif;">
-                            {{ number_format($transactionCount) }}
-                        </p>
-                    </div>
-                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent)]">
-                        <span class="material-symbols-outlined text-2xl">receipt_long</span>
-                    </div>
-                </div>
-            </article>
-
-            <article class="stat-card rounded-2xl p-6 sm:col-span-2 lg:col-span-1">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Average per transaction</p>
-                        <p class="mt-3 text-4xl font-extrabold tracking-tight text-[var(--text-primary)]" style="font-family:'Manrope',sans-serif;">
-                            @if($transactionCount > 0)
-                                ₱{{ number_format($totalExpenditure / $transactionCount, 2) }}
-                            @else
-                                —
-                            @endif
-                        </p>
-                    </div>
-                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent)]">
-                        <span class="material-symbols-outlined text-2xl">calculate</span>
-                    </div>
-                </div>
-            </article>
-        </section>
-
-        {{-- Ledger --}}
+        {{-- Project directory --}}
         <section class="data-table-container">
             <div class="border-b border-[var(--border-color)] p-6 sm:p-8">
                 <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                     <div>
-                        <h2 class="text-2xl font-extrabold tracking-tight text-[var(--text-primary)]" style="font-family:'Manrope',sans-serif;">Expenditure ledger</h2>
-                        <p class="mt-1 text-sm text-[var(--text-tertiary)]">Itemized entries only. Free-text descriptions and internal staff details are not published.</p>
+                        <h2 class="text-2xl font-extrabold tracking-tight text-[var(--text-primary)]" style="font-family:'Manrope',sans-serif;">Projects with recorded expenditure</h2>
+                        <p class="mt-1 text-sm text-[var(--text-tertiary)]">Select a project to view its detailed monthly expenditure breakdown.</p>
                     </div>
-                    @if($trackingAvailable && $transactions->hasPages())
+                    @if($projects->hasPages())
                         <div class="pagination-wrapper shrink-0">
-                            {{ $transactions->links() }}
+                            {{ $projects->links() }}
                         </div>
                     @endif
                 </div>
             </div>
 
-            @if ($trackingAvailable)
-                {{-- Filters --}}
-                <div class="filter-bar border-b border-[var(--border-color)] p-5 sm:p-6">
-                    <form method="GET" action="{{ route('public.expenditures') }}" class="flex flex-col gap-4 lg:flex-row lg:items-end">
-                        <div class="grid min-w-0 flex-1 gap-4 sm:grid-cols-2">
-                            <div class="relative">
-                                <label for="expenditure-search" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)]">Search</label>
-                                <div class="relative">
-                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">search</span>
-                                    <input id="expenditure-search" name="q" type="search" value="{{ $search }}" maxlength="100" placeholder="Project name or barangay..." class="input-field w-full rounded-xl py-2.5 pl-10 pr-4 text-sm">
-                                </div>
-                            </div>
-                            <div class="relative">
-                                <label for="expenditure-category" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)]">Category</label>
-                                <div class="relative">
-                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">filter_list</span>
-                                    <select id="expenditure-category" name="category" class="input-field w-full appearance-none rounded-xl py-2.5 pl-10 pr-10 text-sm">
-                                        <option value="">All categories</option>
-                                        @foreach (\App\Models\BudgetTransaction::CATEGORIES as $option)
-                                            <option value="{{ $option }}" @selected($category === $option)>{{ $option }}</option>
-                                        @endforeach
-                                        <option value="unclassified" @selected($category === 'unclassified')>Unclassified</option>
-                                    </select>
-                                    <span class="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">expand_more</span>
-                                </div>
-                            </div>
+            {{-- Filters --}}
+            <div class="filter-bar border-b border-[var(--border-color)] p-5 sm:p-6">
+                <form method="GET" action="{{ route('public.expenditures') }}" class="flex flex-col gap-4 sm:flex-row sm:items-end">
+                    <div class="relative min-w-0 flex-1">
+                        <label for="expenditure-search" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)]">Search projects</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">search</span>
+                            <input id="expenditure-search" name="q" type="search" value="{{ $search }}" maxlength="100" placeholder="Project name, code, or barangay..." class="input-field w-full rounded-xl py-2.5 pl-10 pr-4 text-sm">
                         </div>
-                        <div class="flex gap-3 shrink-0">
-                            <button type="submit" class="btn-primary inline-flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm transition-all">
-                                <span class="material-symbols-outlined text-lg">tune</span>
-                                Filter
-                            </button>
-                            @if(request()->has('q') || request()->has('category'))
-                                <a href="{{ route('public.expenditures') }}" class="inline-flex items-center gap-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] px-4 py-2.5 text-sm font-semibold text-[var(--text-secondary)] transition hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]">
-                                    <span class="material-symbols-outlined text-lg">restart_alt</span>
-                                    Reset
-                                </a>
-                            @endif
-                        </div>
-                    </form>
-                </div>
-
-                {{-- Table --}}
-                <div class="overflow-x-auto">
-                    <table class="data-table min-w-[800px]">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="text-left">Project</th>
-                                <th scope="col" class="text-left">Barangay</th>
-                                <th scope="col" class="text-left">Date</th>
-                                <th scope="col" class="text-left">Category</th>
-                                <th scope="col" class="text-right">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($transactions as $transaction)
-                                <tr>
-                                    <td data-label="Project">
-                                        <div class="flex flex-col gap-1">
-                                            <span class="font-bold text-[var(--text-primary)]">
-                                                {{ $transaction->project?->project_name ?? 'Project unavailable' }}
-                                            </span>
-                                            @if ($transaction->project?->project_code)
-                                                <span class="inline-flex items-center gap-1 text-xs text-[var(--text-muted)]">
-                                                    <span class="material-symbols-outlined text-[14px]">tag</span>
-                                                    {{ $transaction->project->project_code }}
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td data-label="Barangay">
-                                        <div class="flex items-center gap-2">
-                                            <span class="material-symbols-outlined text-[var(--text-muted)]">location_on</span>
-                                            <span>{{ $transaction->project?->barangay?->barangay_name ?? 'Citywide' }}</span>
-                                        </div>
-                                    </td>
-                                    <td data-label="Date">
-                                        <div class="flex items-center gap-2">
-                                            <span class="material-symbols-outlined text-[var(--text-muted)]">event</span>
-                                            <span>{{ $transaction->transaction_date?->format('M j, Y') ?? 'Not recorded' }}</span>
-                                        </div>
-                                    </td>
-                                    <td data-label="Category">
-                                        @if (in_array($transaction->category, \App\Models\BudgetTransaction::CATEGORIES, true))
-                                            <span class="category-badge">{{ $transaction->category }}</span>
-                                        @else
-                                            <span class="category-badge unclassified">Unclassified</span>
-                                        @endif
-                                    </td>
-                                    <td data-label="Amount" class="amount-cell text-right">
-                                        ₱{{ number_format((float) $transaction->amount, 2) }}
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5">
-                                        <div class="empty-state flex flex-col items-center justify-center py-16 text-center">
-                                            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--bg-hover)] text-[var(--text-muted)]">
-                                                <span class="material-symbols-outlined text-3xl">search_off</span>
-                                            </div>
-                                            <p class="mt-4 text-base font-semibold text-[var(--text-primary)]">No transactions found</p>
-                                            <p class="mt-1 max-w-xs text-sm text-[var(--text-tertiary)]">No recorded actual expenditure transactions match the current filters. Try adjusting your search or category.</p>
-                                            <a href="{{ route('public.expenditures') }}" class="mt-5 inline-flex items-center gap-2 rounded-lg border border-[var(--border-color)] px-4 py-2 text-sm font-semibold text-[var(--text-secondary)] transition hover:bg-[var(--bg-hover)]">
-                                                <span class="material-symbols-outlined">restart_alt</span>
-                                                Clear filters
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-                @if ($transactions->hasPages())
-                    <div class="pagination-wrapper border-t border-[var(--border-color)] p-5 sm:p-6">
-                        {{ $transactions->links() }}
                     </div>
-                @endif
-            @else
+                    <div class="flex shrink-0 gap-3">
+                        <button type="submit" class="btn-primary inline-flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm transition-all">
+                            <span class="material-symbols-outlined text-lg">search</span>
+                            Search
+                        </button>
+                        @if(request()->filled('q'))
+                            <a href="{{ route('public.expenditures') }}" class="inline-flex items-center gap-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] px-4 py-2.5 text-sm font-semibold text-[var(--text-secondary)] transition hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]">
+                                Clear
+                            </a>
+                        @endif
+                    </div>
+                </form>
+            </div>
+
+            {{-- Project list --}}
+            <div class="overflow-x-auto">
+                <table class="data-table min-w-[720px]">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-left">Project</th>
+                            <th scope="col" class="text-left">Barangay</th>
+                            <th scope="col" class="text-left">Status</th>
+                            <th scope="col" class="text-right">Total expenditure</th>
+                            <th scope="col" class="text-right">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($projects as $project)
+                            <tr>
+                                <td data-label="Project">
+                                    <div class="flex flex-col gap-1">
+                                        <span class="font-bold text-[var(--text-primary)]">{{ $project->project_name }}</span>
+                                        @if ($project->project_code)
+                                            <span class="inline-flex items-center gap-1 text-xs text-[var(--text-muted)]">
+                                                <span class="material-symbols-outlined text-[14px]">tag</span>
+                                                {{ $project->project_code }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </td>
+                                <td data-label="Barangay">{{ $project->barangay?->barangay_name ?? 'Citywide' }}</td>
+                                <td data-label="Status">{{ $project->current_status ?? 'Not specified' }}</td>
+                                <td data-label="Total expenditure" class="amount-cell text-right">₱{{ number_format($project->actual_budget_total, 2) }}</td>
+                                <td data-label="Details" class="text-right">
+                                    <a href="{{ route('public.expenditures.project', $project->project_id) }}" class="btn-primary inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm">
+                                        View project details
+                                        <span class="material-symbols-outlined text-base">arrow_forward</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state flex flex-col items-center justify-center py-16 text-center">
+                                        <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--bg-hover)] text-[var(--text-muted)]">
+                                            <span class="material-symbols-outlined text-3xl">search_off</span>
+                                        </div>
+                                        <p class="mt-4 text-base font-semibold text-[var(--text-primary)]">No projects found</p>
+                                        <p class="mt-1 max-w-xs text-sm text-[var(--text-tertiary)]">No projects with recorded expenditure match your search.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            @if ($projects->hasPages())
+                <div class="pagination-wrapper border-t border-[var(--border-color)] p-5 sm:p-6">
+                    {{ $projects->links() }}
+                </div>
+            @endif
+
+            @unless ($trackingAvailable)
                 <div class="p-6 sm:p-8">
                     <div class="notice-banner flex flex-col items-start gap-4 rounded-2xl p-6 sm:flex-row sm:items-center sm:gap-5">
                         <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
                             <span class="material-symbols-outlined text-2xl">info</span>
                         </div>
                         <div>
-                            <h3 class="text-sm font-bold text-amber-900">Expenditure tracking unavailable</h3>
+                            <h3 class="text-sm font-bold text-amber-900">Monthly expenditure details unavailable</h3>
                             <p class="mt-1 text-sm leading-6 text-amber-800/80">
-                                Itemized expenditure records are unavailable because category tracking has not been enabled for this database. Contact the system administrator to enable transaction-level budget tracking.
+                                Project totals remain available, but itemized monthly records are not enabled for this database.
                             </p>
                         </div>
                     </div>
                 </div>
-            @endif
+            @endunless
 
             <div class="ledger-meta bg-[var(--bg-body)] px-6 py-5 sm:px-8">
                 <div class="flex items-start gap-3">
                     <span class="material-symbols-outlined shrink-0 text-base text-[var(--text-muted)]">info</span>
                     <p class="text-xs leading-5">
-                        This ledger contains itemized actual transactions currently recorded in the system. Older project-level expenditure totals without transaction details are not included. Confirm disclosure eligibility under applicable law before publishing records.
+                        Public disclosure of project expenditure is subject to applicable laws and disclosure requirements. Internal descriptions and staff details are not published.
                     </p>
                 </div>
             </div>

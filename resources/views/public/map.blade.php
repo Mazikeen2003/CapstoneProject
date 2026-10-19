@@ -937,6 +937,135 @@
         html.dark-mode body.public-map-page > footer .text-slate-500 {
             color: #94a3b8 !important;
         }
+        .public-project-expenditure-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 16px;
+            padding: 13px 16px;
+            border: 1px solid #047857;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #059669, #047857);
+            color: #fff;
+            font-size: 0.875rem;
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 8px 18px -10px rgba(4, 120, 87, 0.7);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+        .public-project-expenditure-link:hover {
+            transform: translateY(-1px);
+            background: linear-gradient(135deg, #047857, #065f46);
+            box-shadow: 0 12px 22px -12px rgba(4, 120, 87, 0.8);
+        }
+        .public-project-expenditure-link:focus-visible,
+        .public-project-documents-card a:focus-visible {
+            outline: 3px solid rgba(16, 185, 129, 0.45);
+            outline-offset: 3px;
+        }
+        .public-project-expenditure-link > .material-symbols-outlined {
+            font-size: 20px;
+        }
+        .public-project-action-arrow {
+            margin-left: auto;
+            transition: transform 0.18s ease;
+        }
+        .public-project-expenditure-link:hover .public-project-action-arrow {
+            transform: translateX(3px);
+        }
+        .public-project-documents-card {
+            margin-top: 12px;
+            padding: 16px;
+            border: 1px solid #dbe4f0;
+            border-radius: 14px;
+            background: #f8fafc;
+        }
+        .public-project-documents-heading {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 12px;
+            color: #0f172a;
+        }
+        .public-project-documents-heading > .material-symbols-outlined {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            background: #dbeafe;
+            color: #2563eb;
+            font-size: 19px;
+        }
+        .public-project-documents-heading h4 {
+            margin: 0;
+            font-size: 0.875rem;
+            font-weight: 800;
+        }
+        .public-project-documents-card ul {
+            display: grid;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .public-project-documents-card a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            padding: 11px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #fff;
+            color: #1d4ed8;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            text-decoration: none;
+            overflow-wrap: anywhere;
+            transition: border-color 0.18s ease, background 0.18s ease;
+        }
+        .public-project-documents-card a:hover {
+            border-color: #93c5fd;
+            background: #eff6ff;
+        }
+        .public-project-documents-card a > .material-symbols-outlined {
+            flex: 0 0 auto;
+            font-size: 19px;
+        }
+        .public-project-documents-card a > span:nth-child(2) {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+        .public-project-documents-card .public-project-document-open {
+            margin-left: auto;
+            color: #64748b;
+        }
+        html.dark-mode body.public-map-page .public-project-documents-card {
+            border-color: #303030;
+            background: #1a1a1a;
+        }
+        html.dark-mode body.public-map-page .public-project-documents-heading {
+            color: #f8fafc;
+        }
+        html.dark-mode body.public-map-page .public-project-documents-heading > .material-symbols-outlined {
+            background: rgba(59, 130, 246, 0.18);
+            color: #93c5fd;
+        }
+        html.dark-mode body.public-map-page .public-project-documents-card a {
+            border-color: #303030;
+            background: #222;
+            color: #93c5fd;
+        }
+        html.dark-mode body.public-map-page .public-project-documents-card a:hover {
+            border-color: #475569;
+            background: #273449;
+        }
+        html.dark-mode body.public-map-page .public-project-documents-card .public-project-document-open {
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body class="public-layout public-map-page bg-white font-sans text-slate-900 antialiased">
@@ -1306,6 +1435,15 @@
                 const lifecycleHtml = renderLifecycleStepper(props.status);
                 const statusClass = getStatusClass(props.status);
                 const description = escapeHtml(props.description || 'No description available.');
+                const publicDocuments = Array.isArray(props.public_documents) ? props.public_documents : [];
+                const publicDocumentsHtml = publicDocuments.length
+                    ? `<section class="public-project-documents-card" aria-label="Detailed Project Information"><div class="public-project-documents-heading"><span class="material-symbols-outlined" aria-hidden="true">description</span><h4>Detailed Project Information</h4></div><ul>${publicDocuments.map(function(document) {
+                        return `<li><a href="${escapeHtml(document.url)}" target="_blank" rel="noopener"><span class="material-symbols-outlined" aria-hidden="true">insert_drive_file</span><span>${escapeHtml(document.filename)}</span><span class="material-symbols-outlined public-project-document-open" aria-hidden="true">open_in_new</span></a></li>`;
+                    }).join('')}</ul></section>`
+                    : '';
+                const expenditureLink = props.expenditure_url
+                    ? `<a href="${escapeHtml(props.expenditure_url)}" class="public-project-expenditure-link"><span class="material-symbols-outlined" aria-hidden="true">account_balance_wallet</span><span>View detailed expenditure</span><span class="material-symbols-outlined public-project-action-arrow" aria-hidden="true">arrow_forward</span></a>`
+                    : '';
 
                 const imageUrl = safeImageUrl(props.image);
                 const imageHtml = imageUrl
@@ -1356,6 +1494,8 @@
                                 <div class="public-project-description-card">
                                     <p>${description}</p>
                                 </div>
+                                ${expenditureLink}
+                                ${publicDocumentsHtml}
                                 ${selectedProjectIndex !== null ? `<button type="button" class="public-map-viewall show-all-projects-btn"><span class="material-symbols-outlined text-[17px]">grid_view</span>View all projects</button>` : ''}
                             </div>
                         </div>

@@ -627,9 +627,17 @@
     }
     .dept-lifecycle-step.is-current .dept-lifecycle-name,
     .dept-lifecycle-step.is-selected .dept-lifecycle-name {
-        color: var(--de-ink);
+        color: #b45309;
         font-weight: 750;
     }
+    .dept-lifecycle-step.is-completed .dept-lifecycle-name,
+    .dept-lifecycle-step.is-completed .dept-lifecycle-state { color: #059669; }
+    .dark .dept-lifecycle-step.is-current .dept-lifecycle-name,
+    .dark .dept-lifecycle-step.is-selected .dept-lifecycle-name,
+    .dark .dept-lifecycle-step.is-current .dept-lifecycle-state,
+    .dark .dept-lifecycle-step.is-selected .dept-lifecycle-state { color: #fbbf24; }
+    .dark .dept-lifecycle-step.is-completed .dept-lifecycle-name,
+    .dark .dept-lifecycle-step.is-completed .dept-lifecycle-state { color: #34d399; }
     .dept-lifecycle-state {
         display: block;
         margin-top: 2px;
@@ -1301,6 +1309,9 @@
                             $currentStep = array_search($currentLifecycleStatus, $statusSteps, true);
                             $nextStatus = $currentStep !== false ? ($statusSteps[$currentStep + 1] ?? null) : null;
                             $isLifecycleStatus = in_array($status, $statusSteps, true);
+                            $displayStep = $status !== $project->current_status && $isLifecycleStatus
+                                ? array_search($status, $statusSteps, true)
+                                : $currentStep;
                             $canPauseProject = $projectHasStarted && ! in_array($project->current_status, ['On Hold', 'Completed', 'Cancelled'], true);
                             $canCancelProject = $projectHasStarted && ! in_array($project->current_status, ['Completed', 'Cancelled'], true);
                             $showLifecycleCallout = $nextStatus && $projectHasStarted && $project->current_status !== 'On Hold' && ! in_array($project->current_status, ['Completed', 'Cancelled'], true);
@@ -1310,9 +1321,9 @@
                         <ol class="dept-lifecycle-steps" aria-label="Project lifecycle stages">
                             @foreach ($statusSteps as $index => $lifecycleStatus)
                                 @php
-                                    $isCurrentStep = $index === $currentStep;
+                                    $isCurrentStep = $index === $displayStep && $status === $project->current_status;
                                     $isSelectedStep = $lifecycleStatus === $status;
-                                    $isCompletedStep = $currentStep !== false && $index < $currentStep;
+                                    $isCompletedStep = $displayStep !== false && $index < $displayStep;
                                 @endphp
                                 <li class="dept-lifecycle-step{{ $isCurrentStep ? ' is-current' : '' }}{{ $isSelectedStep && ! $isCurrentStep ? ' is-selected' : '' }}{{ $isCompletedStep ? ' is-completed' : '' }}"
                                     data-lifecycle-step="{{ $index }}"
@@ -1353,7 +1364,7 @@
                                 <p>This project is currently in “{{ $currentLifecycleStatus }}.” You can advance it once this stage is finished.</p>
                                 <p class="dept-lifecycle-save-note" aria-live="polite">Select the next stage, then save your changes to apply it.</p>
                                 <button type="button" class="dept-lifecycle-action" data-select-status="{{ $nextStatus }}" aria-label="Select {{ $nextStatus }} as the next stage">
-                                    <span id="lifecycleActionLabel">Advance to “{{ $nextStatus }}”</span> <span aria-hidden="true">→</span>
+                                    Proceed to next process <span aria-hidden="true">→</span>
                                 </button>
                             </div>
                         @endif
@@ -1490,7 +1501,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 ? ''
                 : selectedStatus + ' will be applied when you save your changes.';
             const calloutSaveNote = lifecycleCallout?.querySelector('.dept-lifecycle-save-note');
-            const lifecycleActionLabel = document.getElementById('lifecycleActionLabel');
             if (calloutSaveNote) {
                 calloutSaveNote.textContent = selectedStatus === originalProjectStatus
                     ? 'Select the next stage, then save your changes to apply it.'
@@ -1498,10 +1508,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ? 'Next stage selected. Click Save Changes to update the project stage.'
                         : 'Your selected status will be applied when you save your changes.';
             }
-            if (lifecycleActionLabel && lifecycleCallout) {
-                lifecycleActionLabel.textContent = selectedStatus === nextLifecycleStatus
-                    ? 'Selected — click Save Changes'
-                    : 'Advance to “' + nextLifecycleStatus + '”';
+            if (lifecycleCallout) {
                 lifecycleCallout.querySelector('.dept-lifecycle-action')?.setAttribute(
                     'aria-label',
                     selectedStatus === nextLifecycleStatus
@@ -1511,18 +1518,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             document.getElementById('keepCurrentProjectStatus').hidden = selectedStatus === originalProjectStatus;
 
+            const selectedLifecycleIndex = selectedStatus === originalProjectStatus
+                ? currentLifecycleIndex
+                : Array.from(lifecycleStatusSteps).findIndex(function(step) {
+                    return step.dataset.status === selectedStatus;
+                });
+            const displayLifecycleIndex = selectedLifecycleIndex === -1 ? currentLifecycleIndex : selectedLifecycleIndex;
+
             lifecycleStatusSteps.forEach(function(step) {
                 const stageStatus = step.dataset.status;
                 const stageIndex = Number(step.dataset.lifecycleStep);
                 const isSelected = selectedStatus === stageStatus && selectedStatus !== originalProjectStatus;
+                const isCurrent = stageIndex === displayLifecycleIndex && !isSelected;
+                const isCompleted = displayLifecycleIndex !== -1 && stageIndex < displayLifecycleIndex;
 
                 step.classList.toggle('is-selected', isSelected);
+                step.classList.toggle('is-current', isCurrent);
+                step.classList.toggle('is-completed', isCompleted);
                 const state = step.querySelector('.dept-lifecycle-state');
                 if (isSelected) {
                     state.textContent = 'Selected for saving';
-                } else if (stageStatus === currentLifecycleStatus) {
+                } else if (isCurrent) {
                     state.textContent = projectWasOnHold ? 'Paused at this stage' : 'Current stage';
-                } else if (currentLifecycleIndex !== -1 && stageIndex < currentLifecycleIndex) {
+                } else if (isCompleted) {
                     state.textContent = 'Stage complete';
                 } else {
                     state.textContent = 'Upcoming stage';

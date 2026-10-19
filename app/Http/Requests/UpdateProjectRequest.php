@@ -48,6 +48,16 @@ class UpdateProjectRequest extends FormRequest
 
                 if (! in_array($value, $allowedStatuses, true)) {
                     $fail('The project status can only remain the same or advance one phase at a time.');
+                    return;
+                }
+
+                if ($project?->current_status === 'Proposed'
+                    && $value === 'For bidding'
+                    && ! $project->stageDocuments()
+                        ->where('stage', 1)
+                        ->where('document_type', 'Detailed Project Information')
+                        ->exists()) {
+                    $fail('Upload the required Detailed Project Information document before proceeding to For bidding.');
                 }
             }],
             'lifecycle_stage'      => ['nullable', 'integer', 'between:1,6'],

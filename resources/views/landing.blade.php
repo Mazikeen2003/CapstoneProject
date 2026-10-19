@@ -27,14 +27,38 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
         .hero-gradient {
-            background: rgba(0, 0, 0, 0.82);
+            background:
+                linear-gradient(90deg, rgba(9, 20, 43, 0.9) 0%, rgba(9, 20, 43, 0.72) 42%, rgba(9, 20, 43, 0.24) 100%),
+                linear-gradient(0deg, rgba(8, 13, 23, 0.56) 0%, transparent 58%);
+        }
+        .landing-hero-title {
+            text-shadow: 0 3px 24px rgba(0, 0, 0, 0.32);
+        }
+        .landing-hero-title span {
+            color: #cbd5e1;
+        }
+        .landing-hero-description {
+            text-shadow: 0 2px 14px rgba(0, 0, 0, 0.42);
+        }
+        .landing-stats {
+            isolation: isolate;
+        }
+        .landing-stats::before {
+            position: absolute;
+            z-index: -1;
+            inset: 40px 0 0;
+            background-color: #fdfcf7;
+            content: "";
         }
         html.dark-mode body.landing-page {
             background-color: #111111 !important;
         }
         html.dark-mode body.landing-page .glass-nav {
-            background-color: rgba(17, 17, 17, 0.72) !important;
+            background-color: rgba(17, 17, 17, 0.82) !important;
             border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        html.dark-mode body.landing-page .landing-stats::before {
+            background-color: #1a1a1a;
         }
         .map-guide-type-shape {
             display: inline-flex;
@@ -53,22 +77,103 @@
         .map-guide-type-shape.septage { clip-path: polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%); }
         .map-guide-type-shape.water { clip-path: polygon(50% 0,95% 55%,88% 78%,72% 95%,50% 100%,28% 95%,12% 78%,5% 55%); }
         .map-guide-type-shape.others { clip-path: polygon(50% 0,62% 35%,100% 38%,72% 61%,82% 100%,50% 77%,18% 100%,28% 61%,0 38%,38% 35%); }
-        #features.landing-map-guide { background-color: #fff !important; }
+        #features.landing-map-guide { background-color: #fdfcf7 !important; }
+        .landing-map-guide .map-guide-panel {
+            border-color: #e7e5dc;
+            background-color: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 16px 40px -30px rgba(15, 23, 42, 0.4);
+        }
         html.dark-mode body.landing-page main {
             background-color: #1a1a1a !important;
         }
-        html.dark-mode body.landing-page #features.landing-map-guide,
-        html.dark-mode body.landing-page > footer {
+        html.dark-mode body.landing-page #features.landing-map-guide {
             background-color: #1a1a1a !important;
         }
-        html.dark-mode body.landing-page > footer {
-            border-color: rgba(255, 255, 255, 0.1) !important;
+        body.landing-page > footer.landing-footer {
+            background-color: #111111 !important;
+            border-color: rgba(255, 255, 255, 0.12) !important;
+            color: #e2e8f0;
+        }
+        body.landing-page > footer.landing-footer .landing-footer-muted {
+            color: #94a3b8;
+        }
+        body.landing-page > footer.landing-footer a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        body.landing-page > footer.landing-footer a:hover {
+            color: #6ee7b7;
+        }
+        body.landing-page > footer.landing-footer .landing-footer-bottom {
+            border-color: rgba(255, 255, 255, 0.12);
         }
         .landing-vision-section {
-            background-color: #111111;
+            background-color: #f5f4ee;
+            color: #111827;
+        }
+        .landing-direction-card {
+            border: 1px solid #e7e5dc;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .landing-direction-icon {
+            background: #e6f4ed;
+            color: #047857;
         }
         html.dark-mode body.landing-page .landing-vision-section {
+            background-color: #111111;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        html.dark-mode body.landing-page .landing-direction-card {
+            border-color: #303a35;
+            background: #1c2420;
+        }
+        html.dark-mode body.landing-page .landing-vision-card {
+            border-color: rgba(52, 211, 153, 0.3);
+            background: rgba(52, 211, 153, 0.1);
+        }
+        html.dark-mode body.landing-page .landing-mission-entry {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        html.dark-mode body.landing-page .landing-direction-icon {
+            background: rgba(52, 211, 153, 0.14);
+            color: #6ee7b7;
+        }
+        html.dark-mode body.landing-page .landing-vision-icon {
+            background: #34d399;
+            color: #0f172a;
+        }
+        html.dark-mode body.landing-page .landing-vision-section .text-emerald-700 {
+            color: #34d399 !important;
+        }
+        html.dark-mode body.landing-page .landing-vision-section .text-emerald-800 {
+            color: #34d399 !important;
+        }
+        html.dark-mode body.landing-page .landing-vision-description {
+            color: #94a3b8 !important;
+        }
+        html.dark-mode body.landing-page .landing-vision-divider {
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        html.dark-mode body.landing-page .landing-vision-section .text-slate-950,
+        html.dark-mode body.landing-page .landing-vision-section .text-slate-900 {
+            color: #f8fafc !important;
+        }
+        html.dark-mode body.landing-page .landing-vision-section .text-slate-700,
+        html.dark-mode body.landing-page .landing-vision-section .text-slate-600 {
+            color: #cbd5e1 !important;
+        }
+        html.dark-mode body.landing-page .landing-vision-section .text-slate-500 {
+            color: #94a3b8 !important;
+        }
+        html.dark-mode body.landing-page .landing-vision-section .border-slate-300,
+        html.dark-mode body.landing-page .landing-vision-section .border-slate-200 {
+            border-color: #37443d !important;
+        }
+        html.dark-mode body.landing-page .landing-vision-section .bg-emerald-50 {
+            background-color: rgba(52, 211, 153, 0.14) !important;
+            color: #6ee7b7 !important;
         }
         html.dark-mode body.landing-page .landing-stats .bg-white {
             background-color: #1a1a1a !important;
@@ -98,12 +203,18 @@
         @media (max-width: 640px) {
             .map-guide-type-list { grid-template-columns: 1fr !important; }
         }
+        @media (min-width: 640px) {
+            .landing-stats::before { top: 56px; }
+        }
+        @media (min-width: 1024px) {
+            .landing-stats::before { top: 80px; }
+        }
     </style>
 </head>
 <body class="public-layout landing-page bg-white font-sans text-slate-900 antialiased">
 
     {{-- ============ TOP NAV ============ --}}
-    <header class="fixed top-0 z-50 glass-nav w-full border-b border-slate-200/50">
+    <header class="sticky top-0 z-50 glass-nav w-full border-b border-slate-200/50">
         <nav class="relative flex items-center justify-between w-full mx-auto px-4 py-3 sm:px-6 sm:py-4 lg:px-12">
             <div class="flex items-center gap-2 sm:gap-4 min-w-0">
                 <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-9 w-9 sm:h-10 sm:w-10 shrink-0 rounded-lg object-contain" width="40" height="40" decoding="async" />
@@ -131,34 +242,39 @@
         <section id="home" class="relative flex min-h-[560px] items-center overflow-hidden sm:min-h-[620px] lg:min-h-[680px]">
             <div class="absolute inset-0 z-0">
                 <div class="absolute inset-0 hero-gradient z-10"></div>
-                <div class="w-full h-full bg-cover bg-center bg-slate-800"
-                     style="background-image: url('{{ asset('images/hero-cabuyao.jpg') }}');"></div>
+                <img src="{{ asset('images/hero-cabuyao.jpg') }}"
+                     alt=""
+                     aria-hidden="true"
+                     class="absolute inset-0 h-full w-full object-cover"
+                     style="object-position: center 30%;">
             </div>
 
-            <div class="relative z-20 mx-auto w-full max-w-7xl px-6 py-12 text-white sm:py-16 lg:py-20">
-                <div class="mx-auto flex max-w-4xl flex-col items-center space-y-6 text-center sm:space-y-7 lg:space-y-8">
-                    <div class="mb-4 flex items-center gap-3 sm:gap-4">
-                        <div class="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 backdrop-blur-md sm:h-16 sm:w-16">
-                            <span class="material-symbols-outlined text-3xl sm:text-4xl">verified_user</span>
+            <div class="relative z-20 mx-auto w-full max-w-7xl px-6 py-14 text-white sm:py-20 lg:py-24">
+                <div class="mx-auto flex w-full max-w-4xl flex-col items-center space-y-6 text-center sm:space-y-7 lg:space-y-8">
+                    <div class="mb-1 flex items-center gap-3 sm:gap-4">
+                        <div class="flex h-16 w-16 items-center justify-center sm:h-[4.5rem] sm:w-[4.5rem]">
+                            <img src="{{ asset('images/cabuyao-logo.png') }}" alt="Cabuyao City logo" class="h-full w-full rounded-full object-contain" width="64" height="64" decoding="async">
                         </div>
-                        <div class="flex h-[5.5rem] w-[5.5rem] items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 backdrop-blur-lg sm:h-[6.5rem] sm:w-[6.5rem]">
+                        <div class="flex h-24 w-24 items-center justify-center sm:h-28 sm:w-28">
                             <img src="{{ asset('images/CPDC LOGO.png') }}" alt="Project Tracker System Logo" class="h-20 w-20 rounded-xl object-contain sm:h-24 sm:w-24" width="96" height="96" decoding="async" />
                         </div>
-                        <div class="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 backdrop-blur-md sm:h-16 sm:w-16">
-                            <span class="material-symbols-outlined text-3xl sm:text-4xl">visibility</span>
+                        <div class="flex h-16 w-16 items-center justify-center sm:h-[4.5rem] sm:w-[4.5rem]">
+                            <img src="{{ asset('images/pnc-logo.png') }}" alt="Pamantasan ng Cabuyao logo" class="h-full w-full rounded-full object-contain" width="64" height="64" decoding="async">
                         </div>
                     </div>
 
-                    <h1 class="text-4xl font-extrabold leading-tight tracking-tighter sm:text-5xl lg:text-7xl" style="font-family:'Manrope',sans-serif;">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.24em] text-emerald-200 sm:text-xs" style="font-family:'Public Sans',sans-serif;">Projects · Budgets · Community</p>
+
+                    <h1 class="landing-hero-title max-w-4xl text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-7xl" style="font-family:'Manrope',sans-serif;">
                         Cabuyao City <br>
                         <span>Project Tracker System</span>
                     </h1>
 
-                    <p class="max-w-2xl text-lg leading-relaxed text-slate-200 sm:text-xl">
+                    <p class="landing-hero-description max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg">
                         Empowering citizens with real-time access to official city reports, public budgets, and community project tracking.
                     </p>
 
-                    <div class="flex w-full flex-col gap-4 pt-4 sm:w-auto sm:flex-row lg:pt-6">
+                    <div class="flex w-full flex-col gap-3 pt-2 sm:w-auto sm:flex-row sm:gap-4 lg:pt-3">
                         <a href="{{ route('public.map') }}"
                             class="landing-primary-cta px-8 py-4 bg-white text-slate-900 font-bold rounded-md hover:bg-slate-100 transition-all flex items-center justify-center gap-2 shadow-xl">
                             <span class="material-symbols-outlined">map</span>
@@ -201,15 +317,20 @@
 
         {{-- ============ PUBLIC MAP GUIDE ============ --}}
         <section id="features" class="landing-map-guide bg-white px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
-            <div class="mx-auto max-w-7xl">
-                <div class="mx-auto mb-10 max-w-2xl text-center">
-                    <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-emerald-700" style="font-family:'Public Sans',sans-serif;">Public Map Guide</span>
-                    <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl" style="font-family:'Manrope',sans-serif;">Read the map at a glance</h2>
-                    <p class="mt-3 text-sm leading-6 text-slate-600 sm:text-base">Pin color shows project status. Pin shape shows project type. Use the steps below to explore projects around Cabuyao.</p>
+            <div class="mx-auto max-w-6xl">
+                <div class="mb-9 flex flex-col gap-5 sm:mb-11 sm:flex-row sm:items-end sm:justify-between">
+                    <div class="max-w-2xl">
+                        <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-emerald-700" style="font-family:'Public Sans',sans-serif;">Public Map Guide</span>
+                        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl" style="font-family:'Manrope',sans-serif;">Read the map at a glance</h2>
+                        <p class="mt-3 text-sm leading-6 text-slate-600 sm:text-base">Pin color shows project status. Pin shape shows project type. Use the steps below to explore projects around Cabuyao.</p>
+                    </div>
+                    <a href="{{ route('public.map') }}" class="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-lg bg-emerald-700 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 sm:self-auto">
+                        Open the Public Map <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
+                    </a>
                 </div>
 
-                <div class="grid gap-5 lg:grid-cols-3">
-                    <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="map-status-legend-title">
+                <div class="grid gap-5 lg:grid-cols-2">
+                    <section class="map-guide-panel rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="map-status-legend-title">
                         <div class="mb-4 flex items-center gap-3">
                             <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
                                 <span class="material-symbols-outlined">palette</span>
@@ -231,7 +352,7 @@
                         </div>
                     </section>
 
-                    <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="map-type-legend-title">
+                    <section class="map-guide-panel rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="map-type-legend-title">
                         <div class="mb-4 flex items-center gap-3">
                             <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-700">
                                 <span class="material-symbols-outlined">category</span>
@@ -252,7 +373,7 @@
                         </div>
                     </section>
 
-                    <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="map-howto-title">
+                    <section class="map-guide-panel rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:col-span-2" aria-labelledby="map-howto-title">
                         <div class="mb-4 flex items-center gap-3">
                             <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
                                 <span class="material-symbols-outlined">touch_app</span>
@@ -262,88 +383,82 @@
                                 <p class="text-xs text-slate-500">A few simple steps</p>
                             </div>
                         </div>
-                        <ol class="space-y-4 text-xs leading-5 text-slate-600">
+                        <ol class="grid gap-4 text-xs leading-5 text-slate-600 md:grid-cols-3">
                             <li class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">1</span><span>Choose a barangay on the map. Its numbered badge shows how many projects it has.</span></li>
                             <li class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">2</span><span>View its project pins and select a pin or project in the list to see details.</span></li>
                             <li class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">3</span><span>Use the map legend and Light/Dark controls to understand markers and adjust the map.</span></li>
                         </ol>
-                        <a href="{{ route('public.map') }}" class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
-                            Open the Public Map <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
-                        </a>
                     </section>
                 </div>
             </div>
         </section>
 
         {{-- ============ MISSION / VISION CTA ============ --}}
-        <section class="landing-vision-section relative overflow-hidden px-6 py-20">
-            <div class="relative mx-auto max-w-7xl">
-                <div class="mb-10 grid gap-6 border-b border-white/10 pb-7 md:grid-cols-[1fr_auto] md:items-end">
-                    <div class="flex items-start gap-4">
-                        <span class="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-400 text-slate-950">
+        <section class="landing-vision-section relative overflow-hidden px-6 py-20 sm:py-24">
+            <div class="relative mx-auto max-w-6xl">
+                <div class="landing-vision-divider mb-10 flex flex-col justify-between gap-6 border-b border-slate-300/70 pb-7 sm:flex-row sm:items-end">
+                    <div class="max-w-2xl">
+                        <span class="block text-[10px] font-bold uppercase tracking-[0.24em] text-emerald-700">Our Direction</span>
+                        <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl" style="font-family:'Manrope',sans-serif;">Vision &amp; Mission</h2>
+                        <p class="landing-vision-description mt-3 max-w-xl text-sm leading-6 text-slate-600">The principles that guide sustainable development and responsive planning in Cabuyao City.</p>
+                    </div>
+                    <div class="flex items-center gap-3 sm:border-l sm:border-slate-300 sm:pl-5">
+                        <span class="landing-direction-icon flex h-10 w-10 items-center justify-center rounded-full">
                             <span class="material-symbols-outlined">explore</span>
                         </span>
-                        <div>
-                            <span class="block text-xs font-bold uppercase tracking-[0.2em] text-emerald-400">Our Direction</span>
-                            <h2 class="mt-1 text-2xl font-extrabold tracking-tight text-white" style="font-family:'Manrope',sans-serif;">Vision &amp; Mission</h2>
-                            <p class="mt-2 max-w-lg text-sm leading-6 text-slate-400">The principles that guide sustainable development and responsive planning in Cabuyao City.</p>
-                        </div>
-                    </div>
-                    <div class="border-l border-emerald-400/40 pl-4 text-left md:text-right">
-                        <span class="block text-[10px] font-bold uppercase tracking-[0.25em] text-emerald-400">Planning framework</span>
-                        <span class="mt-1 block text-xs uppercase tracking-widest text-slate-500">Cabuyao City</span>
+                        <span>
+                            <span class="block text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-700">Planning framework</span>
+                            <span class="mt-1 block text-xs uppercase tracking-widest text-slate-500">Cabuyao City</span>
+                        </span>
                     </div>
                 </div>
 
-                <div class="grid gap-10 lg:grid-cols-[0.75fr_1.25fr]">
-                    <article class="group relative flex min-h-[300px] flex-col justify-between overflow-hidden rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-950/30">
-                        <div class="relative z-10">
-                            <div class="mb-8 flex items-center justify-between">
-                                <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-400 transition-transform group-hover:scale-110">
-                                    <span class="material-symbols-outlined text-2xl text-slate-950">visibility</span>
-                                </div>
-                                <span class="text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">Vision</span>
-                            </div>
-                            <p class="text-lg font-semibold leading-8 text-white">
-                                The implementation of sustainable development planning towards an entrepreneurial, progressive and environment-friendly City of Cabuyao.
-                            </p>
+                <div class="grid items-start gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
+                    <article class="landing-direction-card landing-vision-card rounded-2xl p-6 shadow-sm sm:p-8">
+                        <div class="mb-8 flex items-center gap-3">
+                            <span class="landing-direction-icon landing-vision-icon flex h-11 w-11 items-center justify-center rounded-xl">
+                                <span class="material-symbols-outlined text-2xl">visibility</span>
+                            </span>
+                            <span class="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">Vision</span>
                         </div>
-                        <div class="relative z-10 mt-8 flex items-center gap-2 text-xs uppercase tracking-widest text-emerald-300">
-                            <span class="h-px w-8 bg-emerald-300"></span>
+                        <p class="text-xl font-semibold leading-8 text-slate-900 sm:text-2xl sm:leading-9">
+                            The implementation of sustainable development planning towards an entrepreneurial, progressive and environment-friendly City of Cabuyao.
+                        </p>
+                        <div class="mt-8 flex items-center gap-3 border-t border-slate-200 pt-5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                            <span class="h-px w-8 bg-emerald-600"></span>
                             <span>Our future</span>
                         </div>
-                        <span class="material-symbols-outlined absolute -bottom-5 -right-4 text-8xl text-emerald-300/10">visibility</span>
                     </article>
 
                     <div>
-                        <div class="mb-6 flex items-center justify-between">
+                        <div class="mb-5 flex items-end justify-between gap-4">
                             <div class="flex items-center gap-3">
-                                <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-emerald-400">
+                                <span class="landing-direction-icon flex h-10 w-10 items-center justify-center rounded-xl">
                                     <span class="material-symbols-outlined">flag</span>
                                 </span>
                                 <div>
-                                    <h3 class="text-xl font-bold text-white" style="font-family:'Manrope',sans-serif;">Mission</h3>
-                                    <p class="mt-1 text-xs uppercase tracking-widest text-slate-400">Four commitments</p>
+                                    <h3 class="text-xl font-bold text-slate-950" style="font-family:'Manrope',sans-serif;">Mission</h3>
+                                    <p class="mt-1 text-xs uppercase tracking-widest text-slate-500">Four commitments</p>
                                 </div>
                             </div>
-                            <span class="text-xs font-bold text-emerald-400">01 — 04</span>
+                            <span class="text-xs font-bold tracking-wider text-emerald-700">01 — 04</span>
                         </div>
-                        <ol class="grid gap-3 sm:grid-cols-2">
-                            <li class="group flex gap-4 rounded-lg border border-white/10 bg-white/5 p-5 text-sm leading-6 text-slate-300 transition-colors hover:border-emerald-400/40 hover:bg-emerald-400/10">
-                                <span class="font-bold text-emerald-400">01</span>
-                                <span>To formulate sound plans and programs participated by all sectors;</span>
+                        <ol class="grid gap-3">
+                            <li class="landing-direction-card landing-mission-entry group flex gap-4 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md sm:p-5">
+                                <span class="flex h-8 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-extrabold text-emerald-800">01</span>
+                                <span class="pt-1 text-sm leading-6 text-slate-700">To formulate sound plans and programs participated by all sectors;</span>
                             </li>
-                            <li class="group flex gap-4 rounded-lg border border-white/10 bg-white/5 p-5 text-sm leading-6 text-slate-300 transition-colors hover:border-emerald-400/40 hover:bg-emerald-400/10">
-                                <span class="font-bold text-emerald-400">02</span>
-                                <span>To implement Comprehensive Land Use Plan (CLUP) taking into consideration the protection of environment and efficient services to humanity with the continued support of hardworking staff;</span>
+                            <li class="landing-direction-card landing-mission-entry group flex gap-4 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md sm:p-5">
+                                <span class="flex h-8 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-extrabold text-emerald-800">02</span>
+                                <span class="pt-1 text-sm leading-6 text-slate-700">To implement Comprehensive Land Use Plan (CLUP) taking into consideration the protection of environment and efficient services to humanity with the continued support of hardworking staff;</span>
                             </li>
-                            <li class="group flex gap-4 rounded-lg border border-white/10 bg-white/5 p-5 text-sm leading-6 text-slate-300 transition-colors hover:border-emerald-400/40 hover:bg-emerald-400/10">
-                                <span class="font-bold text-emerald-400">03</span>
-                                <span>To ensure sustainability in development planning and implementation;</span>
+                            <li class="landing-direction-card landing-mission-entry group flex gap-4 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md sm:p-5">
+                                <span class="flex h-8 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-extrabold text-emerald-800">03</span>
+                                <span class="pt-1 text-sm leading-6 text-slate-700">To ensure sustainability in development planning and implementation;</span>
                             </li>
-                            <li class="group flex gap-4 rounded-lg border border-white/10 bg-white/5 p-5 text-sm leading-6 text-slate-300 transition-colors hover:border-emerald-400/40 hover:bg-emerald-400/10">
-                                <span class="font-bold text-emerald-400">04</span>
-                                <span>To provide the public with data and information, best planning regulatory and monitoring services for the development of the City.</span>
+                            <li class="landing-direction-card landing-mission-entry group flex gap-4 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md sm:p-5">
+                                <span class="flex h-8 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-extrabold text-emerald-800">04</span>
+                                <span class="pt-1 text-sm leading-6 text-slate-700">To provide the public with data and information, best planning regulatory and monitoring services for the development of the City.</span>
                             </li>
                         </ol>
                     </div>
@@ -353,22 +468,44 @@
     </main>
 
     {{-- ============ FOOTER ============ --}}
-    <footer class="bg-slate-100 border-t border-slate-200">
-        <div class="flex flex-col md:flex-row justify-between items-center px-8 py-12 w-full max-w-7xl mx-auto">
-            <div class="mb-8 md:mb-0">
-                <div class="flex items-center gap-2 mb-4">
-                    <div class="w-8 h-8 bg-slate-900 rounded flex items-center justify-center">
-                        <span class="material-symbols-outlined text-white text-xs">account_balance</span>
-                    </div>
-                    <span class="font-bold text-slate-900" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
-                </div>
-                <p class="text-xs uppercase tracking-widest text-slate-500">© {{ date('Y') }} Cabuyao City Government. All rights reserved.</p>
+    <footer class="landing-footer border-t">
+        <div class="mx-auto grid w-full max-w-6xl gap-10 px-6 py-12 sm:px-8 md:grid-cols-[1.4fr_0.8fr_0.8fr_1fr] md:gap-12 md:py-16">
+            <div>
+                <a href="{{ url('/') }}" class="mb-5 inline-flex items-center gap-3">
+                    <img src="{{ asset('images/cabuyao-logo.png') }}" alt="" class="h-9 w-9 rounded-full bg-white object-contain p-0.5" width="36" height="36" decoding="async">
+                    <span class="font-bold text-white" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
+                </a>
+                <p class="landing-footer-muted max-w-sm text-sm leading-6">A civic technology capstone project led by students of Pamantasan ng Cabuyao, making public projects and expenditures easier for the community to follow.</p>
+                <p class="landing-footer-muted mt-4 max-w-sm text-sm leading-6">Built in partnership with the City Planning Department of Cabuyao.</p>
             </div>
 
-            <div class="flex flex-wrap justify-center gap-8 text-xs uppercase tracking-widest">
-                <a href="{{ route('public.map') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Public Map</a>
-                <a href="{{ route('public.expenditures') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Project Expenditures</a>
-                <a href="{{ route('login') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Login</a>
+            <nav aria-label="Public resources">
+                <h2 class="mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300">Public resources</h2>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="{{ route('public.map') }}">Public Map</a></li>
+                    <li><a href="{{ route('public.expenditures') }}">Project Expenditures</a></li>
+                    <li><a href="{{ route('public.analytics') }}">Analytics</a></li>
+                </ul>
+            </nav>
+
+            <nav aria-label="Account">
+                <h2 class="mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300">Account</h2>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="{{ route('login') }}">Login</a></li>
+                </ul>
+            </nav>
+
+            <address class="not-italic">
+                <h2 class="mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300">Contacts</h2>
+                <ul class="space-y-3 text-sm leading-6">
+                    <li><a href="https://bettercabuyao.org/" target="_blank" rel="noopener noreferrer">bettercabuyao.org</a></li>
+                    <li class="landing-footer-muted">F.B. Bailon St., Rosario Village, Brgy. Sala, Cabuyao City, 4025 Laguna</li>
+                </ul>
+            </address>
+        </div>
+        <div class="landing-footer-bottom border-t">
+            <div class="landing-footer-muted mx-auto flex w-full max-w-6xl flex-col gap-2 px-6 py-5 text-xs sm:px-8 md:flex-row md:items-center md:justify-between">
+                <span>© {{ date('Y') }} Cabuyao City Government. All rights reserved.</span>
             </div>
         </div>
     </footer>

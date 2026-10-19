@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\HeaderUtils;
 class ProjectStageDocumentController extends Controller
 {
     private const DOCUMENT_TYPES = [
+        1 => ['Detailed Project Information'],
         3 => ['Bid Submission', 'Technical Proposal', 'Eligibility Requirement'],
         4 => ['Signed Contract', 'Notice of Award', 'Purchase Order'],
     ];
@@ -25,7 +26,7 @@ class ProjectStageDocumentController extends Controller
         $this->authorize('update', $project);
 
         $stage = $this->stageFor($project);
-        abort_unless(isset(self::DOCUMENT_TYPES[$stage]), 403, 'Documents can only be uploaded during bidding or contract award.');
+        abort_unless(isset(self::DOCUMENT_TYPES[$stage]), 403, 'Documents can only be uploaded during the Proposed, bidding, or contract award stages.');
 
         $validated = $request->validate([
             'document_type' => ['required', Rule::in(self::DOCUMENT_TYPES[$stage])],
@@ -59,6 +60,31 @@ class ProjectStageDocumentController extends Controller
     public function download(Project $project, ProjectStageDocument $document)
     {
         return $this->respondWithDocument($project, $document, true);
+    }
+
+    public function publicView(int $projectId, int $documentId)
+    {
+        $project = Project::withoutRoleScope()->findOrFail($projectId);
+        $document = $project->stageDocuments()->findOrFail($documentId);
+
+        abort_unless(
+            $document->stage === 1 && $document->document_type === 'Detailed Project Information',
+            404
+        );
+        abort_unless(Storage::disk('local')->exists($document->file_path), 404);
+
+        $path = Storage::disk('local')->path($document->file_path);
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_INLINE,
+            $document->original_filename,
+            'project-document-' . $document->getKey()
+        );
+
+        return response()->file($path, [
+            'Content-Type' => $document->mime_type,
+            'Content-Disposition' => $disposition,
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
     }
 
     private function respondWithDocument(Project $project, ProjectStageDocument $document, bool $download)
