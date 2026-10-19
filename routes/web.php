@@ -101,7 +101,14 @@ Route::prefix('public')->name('public.')->group(function () {
     Route::get('/map',       [PublicMapController::class,       'index'])->name('map');
     Route::get('/analytics', [PublicAnalyticsController::class, 'index'])->name('analytics');
     Route::get('/expenditures', [\App\Http\Controllers\Public\ExpenditureController::class, 'index'])->name('expenditures');
+    Route::get('/expenditures/{projectId}', [\App\Http\Controllers\Public\ExpenditureController::class, 'show'])
+        ->whereNumber('projectId')
+        ->name('expenditures.project');
     Route::get('/transparency', [\App\Http\Controllers\Public\TransparencyController::class, 'index'])->name('transparency');
+    Route::get('/projects/{projectId}/stage-documents/{documentId}', [DepartmentProjectStageDocumentController::class, 'publicView'])
+        ->whereNumber('projectId')
+        ->whereNumber('documentId')
+        ->name('projects.stage-documents.view');
 });
 
 Route::prefix('api/public')->name('api.public.')->group(function () {

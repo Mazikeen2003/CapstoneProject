@@ -19,6 +19,13 @@ use App\Services\AuditLogService;
 
 class AuthenticatedSessionController extends Controller
 {
+    private const SHORT_WINDOW_SECONDS = 900;
+    private const DAILY_WINDOW_SECONDS = 86400;
+    private const SHORT_ATTEMPT_LIMIT = 5;
+    private const DAILY_ATTEMPT_LIMIT = 10;
+    private const SHORT_LOCKOUT_SECONDS = 900;
+    private const DAILY_LOCKOUT_SECONDS = 3600;
+
     /**
      * Display the login view.
      */
@@ -27,8 +34,8 @@ class AuthenticatedSessionController extends Controller
         $email = (string) $request->old('email', '');
         $lockoutSeconds = 0;
 
-        if ($email !== '' && RateLimiter::tooManyAttempts($this->loginThrottleKeyForEmail($email, $request), 5)) {
-            $lockoutSeconds = RateLimiter::availableIn($this->loginThrottleKeyForEmail($email, $request));
+        if ($email !== '') {
+            $lockoutSeconds = $this->loginLockoutSeconds($email, $request);
         }
 
         return view('auth.login', compact('lockoutSeconds'));
@@ -87,7 +94,9 @@ class AuthenticatedSessionController extends Controller
         }
 
         // Successful login: clear the rate limit
-        RateLimiter::clear($this->loginThrottleKey($request));
+        foreach ($this->loginRateLimitKeys($credentials['email'], $request) as $key) {
+            RateLimiter::clear($key);
+        }
 
         // OTP remains valid for its full window rather than being single-use,
         // functioning similarly to a temporary passphrase — this reduces repeated
@@ -120,35 +129,43 @@ class AuthenticatedSessionController extends Controller
      */
     protected function ensureLoginRateLimited(Request $request): void
     {
-        if (! RateLimiter::tooManyAttempts($this->loginThrottleKey($request), 5)) {
+        $seconds = $this->loginLockoutSeconds((string) $request->input('email', ''), $request);
+
+        if ($seconds === 0) {
             return;
         }
 
-        $seconds = RateLimiter::availableIn($this->loginThrottleKey($request));
-
-        throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
+        $this->throwLoginThrottled($seconds);
     }
 
-    /** Record a failure and lock the form as soon as the fifth attempt is reached. */
+    /** Record account and account/IP failures, then apply progressive cooldowns. */
     protected function recordFailedLoginAttempt(Request $request): void
     {
-        $key = $this->loginThrottleKey($request);
-        RateLimiter::hit($key);
+        $email = (string) $request->input('email', '');
+        $accountKey = $this->accountThrottleKey($email);
+        $dailyKey = $this->dailyThrottleKey($email);
+        $pairKey = $this->loginThrottleKey($request);
 
-        if (RateLimiter::tooManyAttempts($key, 5)) {
-            $seconds = RateLimiter::availableIn($key);
+        RateLimiter::hit($accountKey, self::SHORT_WINDOW_SECONDS);
+        RateLimiter::hit($dailyKey, self::DAILY_WINDOW_SECONDS);
+        RateLimiter::hit($pairKey, self::SHORT_WINDOW_SECONDS);
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.throttle', [
-                    'seconds' => $seconds,
-                    'minutes' => ceil($seconds / 60),
-                ]),
-            ]);
+        if (RateLimiter::tooManyAttempts($accountKey, self::SHORT_ATTEMPT_LIMIT)) {
+            $this->startLockout($this->accountLockKey($email), self::SHORT_LOCKOUT_SECONDS);
+        }
+
+        if (RateLimiter::tooManyAttempts($dailyKey, self::DAILY_ATTEMPT_LIMIT)) {
+            $this->startLockout($this->dailyLockKey($email), self::DAILY_LOCKOUT_SECONDS);
+        }
+
+        if (RateLimiter::tooManyAttempts($pairKey, self::SHORT_ATTEMPT_LIMIT)) {
+            $this->startLockout($this->pairLockKey($email, $request), self::SHORT_LOCKOUT_SECONDS);
+        }
+
+        $seconds = $this->loginLockoutSeconds($email, $request);
+
+        if ($seconds > 0) {
+            $this->throwLoginThrottled($seconds);
         }
     }
 
@@ -159,7 +176,74 @@ class AuthenticatedSessionController extends Controller
 
     protected function loginThrottleKeyForEmail(string $email, Request $request): string
     {
-        return Str::lower($email) . '|' . $request->ip();
+        return 'login:pair:' . hash('sha256', Str::lower(trim($email)) . '|' . ($request->ip() ?? ''));
+    }
+
+    protected function accountThrottleKey(string $email): string
+    {
+        return 'login:account:' . hash('sha256', Str::lower(trim($email)));
+    }
+
+    protected function dailyThrottleKey(string $email): string
+    {
+        return 'login:daily:' . hash('sha256', Str::lower(trim($email)));
+    }
+
+    protected function accountLockKey(string $email): string
+    {
+        return 'login:lock:account:' . hash('sha256', Str::lower(trim($email)));
+    }
+
+    protected function dailyLockKey(string $email): string
+    {
+        return 'login:lock:daily:' . hash('sha256', Str::lower(trim($email)));
+    }
+
+    protected function pairLockKey(string $email, Request $request): string
+    {
+        return 'login:lock:pair:' . hash('sha256', Str::lower(trim($email)) . '|' . ($request->ip() ?? ''));
+    }
+
+    /** @return array<string> */
+    protected function loginRateLimitKeys(string $email, Request $request): array
+    {
+        return [
+            $this->accountThrottleKey($email),
+            $this->dailyThrottleKey($email),
+            $this->loginThrottleKeyForEmail($email, $request),
+            $this->accountLockKey($email),
+            $this->dailyLockKey($email),
+            $this->pairLockKey($email, $request),
+        ];
+    }
+
+    protected function loginLockoutSeconds(string $email, Request $request): int
+    {
+        return max(array_map(
+            fn (string $key): int => RateLimiter::availableIn($key),
+            [
+                $this->accountLockKey($email),
+                $this->dailyLockKey($email),
+                $this->pairLockKey($email, $request),
+            ],
+        ));
+    }
+
+    protected function startLockout(string $key, int $seconds): void
+    {
+        if (! RateLimiter::tooManyAttempts($key, 1)) {
+            RateLimiter::hit($key, $seconds);
+        }
+    }
+
+    protected function throwLoginThrottled(int $seconds): void
+    {
+        throw ValidationException::withMessages([
+            'email' => trans('auth.throttle', [
+                'seconds' => $seconds,
+                'minutes' => ceil($seconds / 60),
+            ]),
+        ]);
     }
     /**
      * Destroy an authenticated session.

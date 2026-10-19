@@ -37,6 +37,10 @@ return [
 
     'mailers' => [
 
+        'brevo' => [
+            'transport' => 'brevo',
+        ],
+
         'smtp' => [
             'transport' => 'smtp',
             'scheme' => in_array(env('MAIL_SCHEME'), ['smtp', 'smtps'], true)

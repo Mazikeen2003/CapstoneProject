@@ -118,7 +118,7 @@
 <section class="project-budget-breakdown mt-6 rounded-lg bg-white p-5">
     <div class="mb-4">
         <h2 class="budget-breakdown-title text-lg font-bold" style="color: #0f1e3d;">Category Budget Breakdown</h2>
-        <p class="budget-section-description mt-1 text-sm text-gray-600">Enter one planned and actual amount per category each month. Planned amounts are dated on the first day of the month, or the implementation start date in the first month; actual expenditure is dated on the last day.</p>
+        <p class="budget-section-description mt-1 text-sm text-gray-600">Record planned amounts and actual expenditure separately for each category and month.</p>
     </div>
 
     @if ($budgetOverage > 0)
@@ -137,11 +137,6 @@
                 ? $submittedPeriod
                 : today()->format('Y-m');
             $budgetType = old('type', 'planned');
-            $budgetPeriodStart = \Carbon\Carbon::createFromFormat('!Y-m', $budgetPeriod);
-            $implementationStart = $project->start_date;
-            $budgetEntryDate = $budgetType === 'planned' && $implementationStart && $implementationStart->isSameMonth($budgetPeriodStart)
-                ? $implementationStart->toDateString()
-                : ($budgetType === 'planned' ? $budgetPeriodStart->copy()->startOfMonth()->toDateString() : $budgetPeriodStart->copy()->endOfMonth()->toDateString());
         @endphp
         <form method="POST" action="{{ route('department.projects.budget-transactions.store', $project->project_id) }}" class="budget-form mb-6 grid gap-3 border-b border-gray-200 pb-6 sm:grid-cols-2">
             @csrf
@@ -163,7 +158,7 @@
                 @error('type')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
             </div>
             <div class="min-w-0">
-                <label for="budget-period" class="mb-1 block text-xs font-semibold text-gray-700">Month</label>
+                <label for="budget-period" class="mb-1 block text-xs font-semibold text-gray-700">Month (separate monthly entry)</label>
                 <input id="budget-period" type="month" name="period" value="{{ $budgetPeriod }}" max="{{ today()->format('Y-m') }}" required class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
                 @error('period')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
             </div>
@@ -172,18 +167,13 @@
                 <input id="budget-amount" type="text" name="amount" inputmode="decimal" autocomplete="off" value="{{ old('amount') }}" required class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
                 @error('amount')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
             </div>
-            <div class="min-w-0">
-                <label for="budget-date" class="mb-1 block text-xs font-semibold text-gray-700">Fixed entry date</label>
-                <input id="budget-date" type="date" value="{{ $budgetEntryDate }}" readonly aria-describedby="budget-date-help" class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
-                <p id="budget-date-help" class="mt-1 text-xs text-gray-500">Assigned automatically and cannot be changed.</p>
-            </div>
             <div class="min-w-0 sm:col-span-2">
                 <label for="budget-description" class="mb-1 block text-xs font-semibold text-gray-700">Description</label>
                 <input id="budget-description" type="text" name="description" value="{{ old('description') }}" maxlength="2000" class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
                 @error('description')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
             </div>
             <div class="sm:col-span-2">
-                <button type="submit" class="budget-submit-button rounded-lg px-4 py-2 text-sm font-semibold">Add budget entry</button>
+                <button type="submit" class="budget-submit-button rounded-lg px-4 py-2 text-sm font-semibold">Save monthly entry</button>
             </div>
         </form>
     @elseif ($allowEntry ?? false)
@@ -233,11 +223,11 @@
                 @else
                     <div class="overflow-x-auto">
                         <table class="budget-transactions-table w-full min-w-[560px] text-left text-sm">
-                            <thead class="budget-table-headings text-xs text-gray-600"><tr><th class="px-3 py-2">Date</th><th class="px-3 py-2">Type</th><th class="px-3 py-2 text-right">Amount</th><th class="px-3 py-2">Description</th></tr></thead>
+                            <thead class="budget-table-headings text-xs text-gray-600"><tr><th class="px-3 py-2">Month</th><th class="px-3 py-2">Type</th><th class="px-3 py-2 text-right">Amount</th><th class="px-3 py-2">Description</th></tr></thead>
                             <tbody>
                                 @foreach ($categoryEntries as $entry)
                                     <tr class="border-t" style="border-color: #e5e7eb;">
-                                        <td class="px-3 py-2">{{ ($entry->transaction_date ?? $entry->created_at)?->format('M d, Y') ?? '—' }}</td>
+                                        <td class="px-3 py-2">{{ ($entry->transaction_date ?? $entry->created_at)?->format('F Y') ?? '—' }}</td>
                                         <td class="px-3 py-2">{{ ucfirst($entry->type) }}</td>
                                         <td class="px-3 py-2 text-right">₱{{ number_format((float) $entry->amount, 2) }}</td>
                                         <td class="px-3 py-2">{{ $entry->description ?: '—' }}</td>
@@ -257,30 +247,6 @@
         const amountInput = document.getElementById('budget-amount');
         const amountForm = amountInput?.form;
         if (!amountInput || !amountForm) return;
-        const typeInput = document.getElementById('budget-type');
-        const periodInput = document.getElementById('budget-period');
-        const fixedDateInput = document.getElementById('budget-date');
-        const implementationStartDate = @json($project->start_date?->format('Y-m-d'));
-
-        function updateFixedDate() {
-            if (!typeInput || !periodInput || !fixedDateInput || !periodInput.value) return;
-            const [year, month] = periodInput.value.split('-').map(Number);
-            const firstDay = new Date(year, month - 1, 1);
-            const lastDay = new Date(year, month, 0);
-            const startDate = implementationStartDate ? new Date(`${implementationStartDate}T00:00:00`) : null;
-            const isImplementationStartMonth = startDate
-                && startDate.getFullYear() === year
-                && startDate.getMonth() === month - 1;
-            const fixedDate = typeInput.value === 'planned'
-                ? (isImplementationStartMonth ? startDate : firstDay)
-                : lastDay;
-
-            fixedDateInput.value = [
-                fixedDate.getFullYear(),
-                String(fixedDate.getMonth() + 1).padStart(2, '0'),
-                String(fixedDate.getDate()).padStart(2, '0')
-            ].join('-');
-        }
 
         function formatAmountInput() {
             const value = amountInput.value;
@@ -313,12 +279,9 @@
         }
 
         amountInput.addEventListener('input', formatAmountInput);
-        typeInput?.addEventListener('change', updateFixedDate);
-        periodInput?.addEventListener('change', updateFixedDate);
         amountForm.addEventListener('submit', function() {
             amountInput.value = amountInput.value.replace(/,/g, '');
         });
         formatAmountInput();
-        updateFixedDate();
     })();
 </script>
