@@ -17,7 +17,7 @@
     <style>
         .glass-nav {
             backdrop-filter: blur(16px);
-            background-color: rgba(248, 249, 255, 0.8);
+            background-color: rgba(253, 252, 247, 0.82);
         }
         html.dark-mode .glass-nav {
             background-color: rgba(15, 23, 42, 0.48) !important;
@@ -83,11 +83,303 @@
             background-color: rgba(255, 255, 255, 0.92);
             box-shadow: 0 16px 40px -30px rgba(15, 23, 42, 0.4);
         }
+        .map-guide-header {
+            padding-bottom: 34px;
+            border-bottom: 1px solid #e7e5dc;
+        }
+        .map-guide-eyebrow {
+            color: #047857;
+            font-size: 0.625rem;
+            font-weight: 800;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+        }
+        .map-guide-title {
+            max-width: 38rem;
+            margin-top: 10px;
+            color: #111827;
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(2.125rem, 4vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.06em;
+            line-height: 1.1;
+        }
+        .map-guide-intro {
+            max-width: 39rem;
+            margin-top: 16px;
+            color: #475569;
+            font-family: "Inter", sans-serif;
+            font-size: 0.875rem;
+            line-height: 1.85;
+        }
+        .landing-mission-item:nth-child(2) { --mission-accent: #17a9c6; }
+        .landing-mission-item:nth-child(3) { --mission-accent: #db2777; }
+        .landing-mission-item:nth-child(4) { --mission-accent: #0f766e; }
+        .map-guide-panel {
+            overflow: hidden;
+            border-radius: 15px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .map-guide-panel:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 18px 36px -28px rgba(15, 23, 42, 0.42);
+        }
+        .map-guide-panel-heading {
+            display: flex;
+            min-height: 78px;
+            align-items: center;
+            gap: 14px;
+            padding: 17px 20px 14px;
+            border-bottom: 1px solid #e7e5dc;
+            background: #fff;
+            color: #111827;
+        }
+        .map-guide-panel-heading > span:first-child {
+            display: flex;
+            width: 38px;
+            height: 38px;
+            flex: 0 0 38px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: var(--guide-icon-bg, #e6f4ed);
+            color: var(--guide-icon-color, #047857);
+        }
+        .map-guide-panel-heading h3 {
+            margin: 0;
+            color: inherit;
+            font-family: "Manrope", sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+        .map-guide-panel-heading p {
+            margin: 3px 0 0;
+            color: #64748b;
+            font-family: "Inter", sans-serif;
+            font-size: 0.6875rem;
+        }
+        .map-guide-panel-count {
+            margin-left: auto;
+            border-radius: 999px;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 5px 10px;
+            font-size: 0.625rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+        .map-guide-status-panel { --guide-icon-bg: #e6f4ed; --guide-icon-color: #047857; }
+        .map-guide-type-panel { --guide-icon-bg: #eff6ff; --guide-icon-color: #2563eb; }
+        .map-guide-howto-panel { --guide-icon-bg: #fff7ed; --guide-icon-color: #c2410c; }
+        .map-guide-status-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            padding: 18px 20px 20px;
+        }
+        .map-guide-status-entry {
+            display: flex;
+            min-width: 0;
+            align-items: center;
+            gap: 11px;
+            border: 1px solid #e7e5dc;
+            border-radius: 9px;
+            background: #fff;
+            padding: 10px 12px;
+            color: #334155;
+            font-family: "Inter", sans-serif;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            line-height: 1.35;
+            transition: border-color 0.16s ease, background 0.16s ease;
+        }
+        .map-guide-status-entry:hover,
+        .map-guide-type-list > div:hover,
+        .map-guide-howto-step:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+        .map-guide-status-entry > span:first-child {
+            width: 11px;
+            height: 11px;
+            flex: 0 0 11px;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+        }
+        .map-guide-type-list {
+            gap: 8px;
+            padding: 18px 20px 20px;
+        }
+        .map-guide-type-list > div {
+            display: flex;
+            min-width: 0;
+            align-items: center;
+            gap: 10px;
+            min-height: 48px;
+            border: 1px solid #e7e5dc;
+            border-radius: 9px;
+            background: #fff;
+            padding: 8px 11px;
+            color: #334155;
+            font-family: "Inter", sans-serif;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            line-height: 1.35;
+            transition: border-color 0.16s ease, background 0.16s ease;
+        }
+        .map-guide-type-list .map-guide-type-shape {
+            --project-marker-color: #111827;
+            width: 30px;
+            height: 30px;
+            flex-basis: 30px;
+            flex-shrink: 0;
+        }
+        .map-guide-type-list .map-guide-type-shape.roads {
+            width: 38px;
+            flex-basis: 38px;
+            height: 24px;
+            border-radius: 8px;
+        }
+        .map-guide-howto-list {
+            display: grid;
+            gap: 10px;
+            padding: 18px 20px 20px;
+        }
+        .map-guide-howto-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            border: 1px solid #e7e5dc;
+            border-radius: 11px;
+            background: #fff;
+            padding: 14px 15px;
+            color: #475569;
+            font-family: "Inter", sans-serif;
+            font-size: 0.75rem;
+            line-height: 1.6;
+            transition: border-color 0.16s ease, background 0.16s ease;
+        }
+        .map-guide-howto-step > span:first-child {
+            display: flex;
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #fef3c7;
+            color: #92400e;
+            font-family: "Manrope", sans-serif;
+            font-size: 0.875rem;
+            font-weight: 800;
+        }
+        .map-guide-howto-step strong {
+            display: block;
+            margin: 1px 0 3px;
+            color: #0f172a;
+            font-family: "Manrope", sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 800;
+        }
         html.dark-mode body.landing-page main {
             background-color: #1a1a1a !important;
         }
         html.dark-mode body.landing-page #features.landing-map-guide {
             background-color: #1a1a1a !important;
+        }
+        html.dark-mode body.landing-page .map-guide-header {
+            border-color: #303030;
+        }
+        html.dark-mode body.landing-page .map-guide-eyebrow {
+            color: #6ee7b7;
+        }
+        html.dark-mode body.landing-page .map-guide-title {
+            color: #f8fafc;
+        }
+        html.dark-mode body.landing-page .map-guide-intro {
+            color: #cbd5e1;
+        }
+        html.dark-mode body.landing-page .map-guide-status-entry,
+        html.dark-mode body.landing-page .map-guide-type-list > div,
+        html.dark-mode body.landing-page .map-guide-howto-step {
+            border-color: #303030;
+            background: #1a1a1a;
+            color: #cbd5e1;
+        }
+        html.dark-mode body.landing-page .map-guide-status-entry:hover,
+        html.dark-mode body.landing-page .map-guide-type-list > div:hover,
+        html.dark-mode body.landing-page .map-guide-howto-step:hover {
+            border-color: #475569;
+            background: #222;
+        }
+        html.dark-mode body.landing-page .map-guide-howto-step > span:first-child {
+            background: rgba(245, 158, 11, 0.18);
+            color: #fcd34d;
+        }
+        html.dark-mode body.landing-page .map-guide-howto-step strong {
+            color: #f8fafc;
+        }
+        html.dark-mode body.landing-page .map-guide-panel {
+            border-color: #303a35;
+            background-color: #1c2420;
+        }
+        html.dark-mode body.landing-page .map-guide-panel:hover {
+            border-color: #47574e;
+        }
+        html.dark-mode body.landing-page .map-guide-panel-heading {
+            border-color: #303a35;
+            background-color: #1c2420;
+            color: #f8fafc;
+        }
+        html.dark-mode body.landing-page .map-guide-panel-heading p {
+            color: #94a3b8 !important;
+        }
+        html.dark-mode body.landing-page .map-guide-panel-count {
+            background: #27352e;
+            color: #cbd5e1;
+        }
+        html.dark-mode body.landing-page .map-guide-status-panel {
+            --guide-icon-bg: rgba(52, 211, 153, 0.14);
+            --guide-icon-color: #6ee7b7;
+        }
+        html.dark-mode body.landing-page .map-guide-type-panel {
+            --guide-icon-bg: rgba(96, 165, 250, 0.14);
+            --guide-icon-color: #93c5fd;
+        }
+        html.dark-mode body.landing-page .map-guide-howto-panel {
+            --guide-icon-bg: rgba(251, 146, 60, 0.14);
+            --guide-icon-color: #fdba74;
+        }
+        .map-guide-open-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 999px;
+            background: #111827;
+            padding: 12px 19px;
+            color: #fff;
+            font-family: "Manrope", sans-serif;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-decoration: none;
+            transition: transform 0.18s ease, background 0.18s ease;
+        }
+        .map-guide-open-button:hover {
+            transform: translateY(-1px);
+            background: #047857;
+        }
+        .map-guide-open-button:focus-visible {
+            outline: 3px solid rgba(16, 185, 129, 0.45);
+            outline-offset: 3px;
+        }
+        html.dark-mode body.landing-page .map-guide-open-button {
+            background: #f8fafc;
+            color: #111827;
+        }
+        html.dark-mode body.landing-page .map-guide-open-button:hover {
+            background: #a7f3d0;
         }
         body.landing-page > footer.landing-footer {
             background-color: #111111 !important;
@@ -111,6 +403,7 @@
         .landing-vision-section {
             background-color: #f5f4ee;
             color: #111827;
+            font-family: "Inter", sans-serif;
         }
         .landing-direction-card {
             border: 1px solid #e7e5dc;
@@ -120,41 +413,171 @@
             background: #e6f4ed;
             color: #047857;
         }
+        .landing-direction-eyebrow {
+            color: #64748b;
+            font-size: 0.625rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+        }
+        .landing-direction-title {
+            max-width: 34rem;
+            margin-top: 16px;
+            color: #111827;
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.055em;
+            line-height: 1.13;
+        }
+        .landing-vision-callout {
+            margin-top: 28px;
+            border-left: 4px solid #f59e0b;
+            border-radius: 0 14px 14px 0;
+            background: #fffbeb;
+            padding: 20px 22px;
+            color: #92400e;
+        }
+        .landing-vision-callout-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #92400e;
+            font-size: 0.875rem;
+            font-weight: 800;
+        }
+        .landing-vision-callout-label .material-symbols-outlined {
+            color: #d97706;
+            font-size: 20px;
+        }
+        .landing-vision-callout p {
+            margin: 0;
+            font-size: 0.9375rem;
+            line-height: 1.8;
+        }
+        .landing-mission-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .landing-mission-heading h3 {
+            margin: 0;
+            color: #111827;
+            font-family: "Manrope", sans-serif;
+            font-size: 1.375rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+        .landing-mission-heading p {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+        .landing-mission-list {
+            position: relative;
+            display: grid;
+            gap: 6px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .landing-mission-item {
+            --mission-accent: #e9233d;
+            position: relative;
+            display: grid;
+            grid-template-columns: 42px minmax(0, 1fr);
+            align-items: start;
+            gap: 12px;
+            border: 1px solid #e7e5dc;
+            border-radius: 13px;
+            background: rgba(255, 255, 255, 0.88);
+            padding: 15px 17px;
+            color: #334155;
+            transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+        }
+        .landing-mission-item:hover {
+            transform: translateY(-1px);
+            border-color: #cbd5e1;
+            background: #fff;
+            box-shadow: 0 8px 20px -16px rgba(15, 23, 42, 0.4);
+        }
+        .landing-mission-node {
+            z-index: 1;
+            display: flex;
+            width: 38px;
+            height: 26px;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            border-radius: 999px;
+            background: var(--mission-accent);
+            color: #fff;
+            font-family: "Manrope", sans-serif;
+            font-size: 0.625rem;
+            font-weight: 800;
+        }
+        .landing-mission-item p {
+            margin: 2px 0 0;
+            color: #475569;
+            font-family: "Inter", sans-serif;
+            font-size: 0.8125rem;
+            line-height: 1.75;
+        }
         html.dark-mode body.landing-page .landing-vision-section {
             background-color: #111111;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
-        html.dark-mode body.landing-page .landing-direction-card {
-            border-color: #303a35;
-            background: #1c2420;
+        html.dark-mode body.landing-page .landing-vision-section .landing-direction-card,
+        html.dark-mode body.landing-page .landing-vision-section .landing-mission-item {
+            border-color: #303a35 !important;
+            background-color: #1c2420 !important;
+            color: #e2e8f0;
         }
-        html.dark-mode body.landing-page .landing-vision-card {
-            border-color: rgba(52, 211, 153, 0.3);
-            background: rgba(52, 211, 153, 0.1);
+        html.dark-mode body.landing-page .landing-vision-section .landing-mission-item:hover {
+            border-color: rgba(52, 211, 153, 0.42) !important;
+            background-color: #202d27 !important;
         }
-        html.dark-mode body.landing-page .landing-mission-entry {
-            border-color: rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
+        html.dark-mode body.landing-page .landing-vision-section .landing-direction-icon {
+            background-color: rgba(52, 211, 153, 0.14) !important;
+            color: #6ee7b7 !important;
         }
-        html.dark-mode body.landing-page .landing-direction-icon {
-            background: rgba(52, 211, 153, 0.14);
-            color: #6ee7b7;
-        }
-        html.dark-mode body.landing-page .landing-vision-icon {
-            background: #34d399;
-            color: #0f172a;
+        html.dark-mode body.landing-page .landing-vision-section .landing-mission-node {
+            background-color: var(--mission-accent);
+            color: #fff;
         }
         html.dark-mode body.landing-page .landing-vision-section .text-emerald-700 {
-            color: #34d399 !important;
+            color: #6ee7b7 !important;
         }
-        html.dark-mode body.landing-page .landing-vision-section .text-emerald-800 {
-            color: #34d399 !important;
+        html.dark-mode body.landing-page .landing-vision-section .landing-vision-divider {
+            border-color: #303a35 !important;
         }
-        html.dark-mode body.landing-page .landing-vision-description {
-            color: #94a3b8 !important;
+        html.dark-mode body.landing-page .landing-direction-title,
+        html.dark-mode body.landing-page .landing-mission-heading h3 {
+            color: #f8fafc;
         }
-        html.dark-mode body.landing-page .landing-vision-divider {
-            border-color: rgba(255, 255, 255, 0.1) !important;
+        html.dark-mode body.landing-page .landing-direction-eyebrow,
+        html.dark-mode body.landing-page .landing-mission-heading p {
+            color: #94a3b8;
+        }
+        html.dark-mode body.landing-page .landing-vision-callout {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+            color: #fde68a;
+        }
+        html.dark-mode body.landing-page .landing-vision-callout-label {
+            color: #fcd34d;
+        }
+        html.dark-mode body.landing-page .landing-mission-item { color: #cbd5e1; }
+        html.dark-mode body.landing-page .landing-mission-item:hover {
+            border-color: rgba(245, 158, 11, 0.35);
+            background: rgba(245, 158, 11, 0.08);
+        }
+        html.dark-mode body.landing-page .landing-mission-node {
+            border-color: #475569;
+            background: #1e293b;
+            color: #e2e8f0;
         }
         html.dark-mode body.landing-page .landing-vision-section .text-slate-950,
         html.dark-mode body.landing-page .landing-vision-section .text-slate-900 {
@@ -166,6 +589,9 @@
         }
         html.dark-mode body.landing-page .landing-vision-section .text-slate-500 {
             color: #94a3b8 !important;
+        }
+        html.dark-mode body.landing-page .landing-mission-item p {
+            color: #cbd5e1;
         }
         html.dark-mode body.landing-page .landing-vision-section .border-slate-300,
         html.dark-mode body.landing-page .landing-vision-section .border-slate-200 {
@@ -318,51 +744,53 @@
         {{-- ============ PUBLIC MAP GUIDE ============ --}}
         <section id="features" class="landing-map-guide bg-white px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
             <div class="mx-auto max-w-6xl">
-                <div class="mb-9 flex flex-col gap-5 sm:mb-11 sm:flex-row sm:items-end sm:justify-between">
+                <div class="map-guide-header mb-9 flex flex-col gap-5 sm:mb-11 sm:flex-row sm:items-end sm:justify-between">
                     <div class="max-w-2xl">
-                        <span class="mb-3 block text-xs font-bold uppercase tracking-[0.2em] text-emerald-700" style="font-family:'Public Sans',sans-serif;">Public Map Guide</span>
-                        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl" style="font-family:'Manrope',sans-serif;">Read the map at a glance</h2>
-                        <p class="mt-3 text-sm leading-6 text-slate-600 sm:text-base">Pin color shows project status. Pin shape shows project type. Use the steps below to explore projects around Cabuyao.</p>
+                        <span class="map-guide-eyebrow mb-3 block" style="font-family:'Public Sans',sans-serif;">Public Map Guide</span>
+                        <h2 class="map-guide-title">Read the map at a glance</h2>
+                        <p class="map-guide-intro">Pin color shows project status. Pin shape shows project type. Use the steps below to explore projects around Cabuyao.</p>
                     </div>
-                    <a href="{{ route('public.map') }}" class="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-lg bg-emerald-700 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 sm:self-auto">
+                    <a href="{{ route('public.map') }}" class="map-guide-open-button shrink-0 self-start sm:self-auto">
                         Open the Public Map <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
                     </a>
                 </div>
 
-                <div class="grid gap-5 lg:grid-cols-2">
-                    <section class="map-guide-panel rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="map-status-legend-title">
-                        <div class="mb-4 flex items-center gap-3">
-                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                <div class="grid items-stretch gap-5 lg:grid-cols-2">
+                    <section class="map-guide-panel map-guide-status-panel rounded-2xl border border-slate-200 bg-white shadow-sm" aria-labelledby="map-status-legend-title">
+                        <div class="map-guide-panel-heading">
+                            <span>
                                 <span class="material-symbols-outlined">palette</span>
                             </span>
                             <div>
                                 <h3 id="map-status-legend-title" class="font-bold text-slate-900">Project status</h3>
                                 <p class="text-xs text-slate-500">Read the pin color</p>
                             </div>
+                            <span class="map-guide-panel-count">8 statuses</span>
                         </div>
-                        <div class="grid grid-cols-2 gap-x-3 gap-y-3 text-xs font-semibold text-slate-700">
-                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#2563eb]"></span>Proposed</div>
-                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#f59e0b]"></span>For bidding</div>
-                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#06b6d4]"></span>Bidding ongoing</div>
-                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#8b5cf6]"></span>Award of contract</div>
-                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#0f766e]"></span>Implementation</div>
-                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#16a34a]"></span>Completed</div>
-                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#dc2626]"></span>On Hold</div>
-                            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[#64748b]"></span>Cancelled</div>
+                        <div class="map-guide-status-grid">
+                            <div class="map-guide-status-entry"><span class="bg-[#2563eb]"></span>Proposed</div>
+                            <div class="map-guide-status-entry"><span class="bg-[#f59e0b]"></span>For bidding</div>
+                            <div class="map-guide-status-entry"><span class="bg-[#06b6d4]"></span>Bidding ongoing</div>
+                            <div class="map-guide-status-entry"><span class="bg-[#8b5cf6]"></span>Award of contract</div>
+                            <div class="map-guide-status-entry"><span class="bg-[#0f766e]"></span>Implementation</div>
+                            <div class="map-guide-status-entry"><span class="bg-[#16a34a]"></span>Completed</div>
+                            <div class="map-guide-status-entry"><span class="bg-[#dc2626]"></span>On Hold</div>
+                            <div class="map-guide-status-entry"><span class="bg-[#64748b]"></span>Cancelled</div>
                         </div>
                     </section>
 
-                    <section class="map-guide-panel rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="map-type-legend-title">
-                        <div class="mb-4 flex items-center gap-3">
-                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-700">
+                    <section class="map-guide-panel map-guide-type-panel rounded-2xl border border-slate-200 bg-white shadow-sm" aria-labelledby="map-type-legend-title">
+                        <div class="map-guide-panel-heading">
+                            <span>
                                 <span class="material-symbols-outlined">category</span>
                             </span>
                             <div>
                                 <h3 id="map-type-legend-title" class="font-bold text-slate-900">Project type</h3>
                                 <p class="text-xs text-slate-500">Read the pin shape</p>
                             </div>
+                            <span class="map-guide-panel-count">7 types</span>
                         </div>
-                        <div class="map-guide-type-list grid grid-cols-2 gap-x-3 gap-y-3 text-xs font-semibold text-slate-700">
+                        <div class="map-guide-type-list grid grid-cols-2">
                             <div class="flex items-center gap-2"><span class="map-guide-type-shape bridges" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18M5 18V9m14 9V9M4 9h16M7 9c0 4 2.2 6 5 6s5-2 5-6M8 5v2m8-2v2"/></svg></span>Bridges</div>
                             <div class="flex items-center gap-2"><span class="map-guide-type-shape buildings" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V5h14v15M3 20h18M9 9h2m2 0h2M9 13h2m2 0h2M10 20v-3h4v3"/></svg></span>Buildings and Facilities</div>
                             <div class="flex items-center gap-2"><span class="map-guide-type-shape flood-control" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2M3 12c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2M3 17c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 3-2"/></svg></span>Flood Control and Drainage</div>
@@ -373,20 +801,21 @@
                         </div>
                     </section>
 
-                    <section class="map-guide-panel rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:col-span-2" aria-labelledby="map-howto-title">
-                        <div class="mb-4 flex items-center gap-3">
-                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                    <section class="map-guide-panel map-guide-howto-panel rounded-2xl border border-slate-200 bg-white shadow-sm lg:col-span-2" aria-labelledby="map-howto-title">
+                        <div class="map-guide-panel-heading">
+                            <span>
                                 <span class="material-symbols-outlined">touch_app</span>
                             </span>
                             <div>
                                 <h3 id="map-howto-title" class="font-bold text-slate-900">How to explore</h3>
                                 <p class="text-xs text-slate-500">A few simple steps</p>
                             </div>
+                            <span class="map-guide-panel-count">3 steps</span>
                         </div>
-                        <ol class="grid gap-4 text-xs leading-5 text-slate-600 md:grid-cols-3">
-                            <li class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">1</span><span>Choose a barangay on the map. Its numbered badge shows how many projects it has.</span></li>
-                            <li class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">2</span><span>View its project pins and select a pin or project in the list to see details.</span></li>
-                            <li class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">3</span><span>Use the map legend and Light/Dark controls to understand markers and adjust the map.</span></li>
+                        <ol class="map-guide-howto-list md:grid-cols-3">
+                            <li class="map-guide-howto-step"><span>01</span><span><strong>Choose a barangay</strong>Its numbered badge shows how many public projects it has.</span></li>
+                            <li class="map-guide-howto-step"><span>02</span><span><strong>Open a project</strong>Select a map pin or a project in the list to see its details.</span></li>
+                            <li class="map-guide-howto-step"><span>03</span><span><strong>Read the map</strong>Use the legend and Light/Dark controls to understand markers and adjust the view.</span></li>
                         </ol>
                     </section>
                 </div>
@@ -394,15 +823,15 @@
         </section>
 
         {{-- ============ MISSION / VISION CTA ============ --}}
-        <section class="landing-vision-section relative overflow-hidden px-6 py-20 sm:py-24">
+        <section class="landing-vision-section relative overflow-hidden px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
             <div class="relative mx-auto max-w-6xl">
-                <div class="landing-vision-divider mb-10 flex flex-col justify-between gap-6 border-b border-slate-300/70 pb-7 sm:flex-row sm:items-end">
+                <div class="landing-vision-divider mb-10 flex flex-col justify-between gap-6 border-b border-slate-300/70 pb-8 lg:mb-12 lg:flex-row lg:items-end">
                     <div class="max-w-2xl">
-                        <span class="block text-[10px] font-bold uppercase tracking-[0.24em] text-emerald-700">Our Direction</span>
-                        <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl" style="font-family:'Manrope',sans-serif;">Vision &amp; Mission</h2>
-                        <p class="landing-vision-description mt-3 max-w-xl text-sm leading-6 text-slate-600">The principles that guide sustainable development and responsive planning in Cabuyao City.</p>
+                        <span class="landing-direction-eyebrow flex items-center gap-2"><span class="material-symbols-outlined text-sm" aria-hidden="true">groups</span>City Planning &amp; Development</span>
+                        <h2 class="landing-direction-title">A clear vision for Cabuyao — and a mission to deliver it.</h2>
+                        <p class="landing-vision-description mt-4 max-w-xl text-sm leading-7 text-slate-600">The principles that guide sustainable development and responsive planning in Cabuyao City.</p>
                     </div>
-                    <div class="flex items-center gap-3 sm:border-l sm:border-slate-300 sm:pl-5">
+                    <div class="flex items-center gap-3 lg:border-l lg:border-slate-300 lg:pl-5">
                         <span class="landing-direction-icon flex h-10 w-10 items-center justify-center rounded-full">
                             <span class="material-symbols-outlined">explore</span>
                         </span>
@@ -415,50 +844,49 @@
 
                 <div class="grid items-start gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
                     <article class="landing-direction-card landing-vision-card rounded-2xl p-6 shadow-sm sm:p-8">
-                        <div class="mb-8 flex items-center gap-3">
-                            <span class="landing-direction-icon landing-vision-icon flex h-11 w-11 items-center justify-center rounded-xl">
+                        <div class="mb-6 flex items-center gap-3">
+                            <span class="landing-direction-icon landing-vision-icon flex h-10 w-10 items-center justify-center rounded-full">
                                 <span class="material-symbols-outlined text-2xl">visibility</span>
                             </span>
-                            <span class="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">Vision</span>
+                            <span>
+                                <span class="landing-direction-eyebrow block">Our vision</span>
+                                <span class="mt-1 block text-xs text-slate-500">The future we are working toward</span>
+                            </span>
                         </div>
-                        <p class="text-xl font-semibold leading-8 text-slate-900 sm:text-2xl sm:leading-9">
+                        <p class="text-lg font-semibold leading-8 text-slate-900 sm:text-xl sm:leading-9" style="font-family:'Manrope',sans-serif;">
                             The implementation of sustainable development planning towards an entrepreneurial, progressive and environment-friendly City of Cabuyao.
                         </p>
-                        <div class="mt-8 flex items-center gap-3 border-t border-slate-200 pt-5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                        <div class="mt-7 flex items-center gap-3 border-t border-slate-200 pt-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                             <span class="h-px w-8 bg-emerald-600"></span>
-                            <span>Our future</span>
+                            <span>Planning framework · Cabuyao City</span>
                         </div>
                     </article>
 
                     <div>
                         <div class="mb-5 flex items-end justify-between gap-4">
-                            <div class="flex items-center gap-3">
-                                <span class="landing-direction-icon flex h-10 w-10 items-center justify-center rounded-xl">
-                                    <span class="material-symbols-outlined">flag</span>
-                                </span>
-                                <div>
-                                    <h3 class="text-xl font-bold text-slate-950" style="font-family:'Manrope',sans-serif;">Mission</h3>
-                                    <p class="mt-1 text-xs uppercase tracking-widest text-slate-500">Four commitments</p>
-                                </div>
+                            <div>
+                                <span class="landing-direction-eyebrow">Planning in action</span>
+                                <h3 class="mt-1 text-xl font-bold text-slate-950" style="font-family:'Manrope',sans-serif;">Our mission</h3>
+                                <p class="mt-1 text-xs text-slate-500">Four commitments guiding the city’s development</p>
                             </div>
-                            <span class="text-xs font-bold tracking-wider text-emerald-700">01 — 04</span>
+                            <span class="shrink-0 text-[10px] font-bold tracking-[0.16em] text-emerald-700">01 — 04</span>
                         </div>
-                        <ol class="grid gap-3">
-                            <li class="landing-direction-card landing-mission-entry group flex gap-4 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md sm:p-5">
-                                <span class="flex h-8 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-extrabold text-emerald-800">01</span>
-                                <span class="pt-1 text-sm leading-6 text-slate-700">To formulate sound plans and programs participated by all sectors;</span>
+                        <ol class="landing-mission-list grid gap-3">
+                            <li class="landing-mission-item">
+                                <span class="landing-mission-node">01</span>
+                                <p>To formulate sound plans and programs participated by all sectors;</p>
                             </li>
-                            <li class="landing-direction-card landing-mission-entry group flex gap-4 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md sm:p-5">
-                                <span class="flex h-8 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-extrabold text-emerald-800">02</span>
-                                <span class="pt-1 text-sm leading-6 text-slate-700">To implement Comprehensive Land Use Plan (CLUP) taking into consideration the protection of environment and efficient services to humanity with the continued support of hardworking staff;</span>
+                            <li class="landing-mission-item">
+                                <span class="landing-mission-node">02</span>
+                                <p>To implement Comprehensive Land Use Plan (CLUP) taking into consideration the protection of environment and efficient services to humanity with the continued support of hardworking staff;</p>
                             </li>
-                            <li class="landing-direction-card landing-mission-entry group flex gap-4 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md sm:p-5">
-                                <span class="flex h-8 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-extrabold text-emerald-800">03</span>
-                                <span class="pt-1 text-sm leading-6 text-slate-700">To ensure sustainability in development planning and implementation;</span>
+                            <li class="landing-mission-item">
+                                <span class="landing-mission-node">03</span>
+                                <p>To ensure sustainability in development planning and implementation;</p>
                             </li>
-                            <li class="landing-direction-card landing-mission-entry group flex gap-4 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md sm:p-5">
-                                <span class="flex h-8 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-extrabold text-emerald-800">04</span>
-                                <span class="pt-1 text-sm leading-6 text-slate-700">To provide the public with data and information, best planning regulatory and monitoring services for the development of the City.</span>
+                            <li class="landing-mission-item">
+                                <span class="landing-mission-node">04</span>
+                                <p>To provide the public with data and information, best planning regulatory and monitoring services for the development of the City.</p>
                             </li>
                         </ol>
                     </div>
