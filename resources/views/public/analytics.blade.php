@@ -15,7 +15,42 @@
     <style>
         .glass-nav {
             backdrop-filter: blur(16px);
-            background-color: rgba(248, 249, 255, 0.8);
+            background-color: rgba(253, 252, 247, 0.82);
+        }
+        body.public-analytics-page {
+            background-color: #fdfcf7;
+        }
+        body.public-analytics-page > main.an-container {
+            background-color: #fdfcf7;
+            padding-top: 7.5rem;
+        }
+        @media (min-width: 768px) {
+            body.public-analytics-page > main.an-container {
+                padding-top: 6.5rem;
+            }
+        }
+        body.public-analytics-page > footer.landing-footer {
+            background-color: #111111;
+            border-color: rgba(255, 255, 255, 0.12);
+            color: #e2e8f0;
+        }
+        body.public-analytics-page > footer.landing-footer .landing-footer-muted {
+            color: #94a3b8;
+        }
+        body.public-analytics-page > footer.landing-footer a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        body.public-analytics-page > footer.landing-footer a:hover {
+            color: #6ee7b7;
+        }
+        body.public-analytics-page > footer.landing-footer nav h2,
+        body.public-analytics-page > footer.landing-footer address h2 {
+            color: #6ee7b7;
+        }
+        body.public-analytics-page > footer.landing-footer .landing-footer-bottom {
+            border-color: rgba(255, 255, 255, 0.12);
         }
         html.dark-mode,
         html.dark-mode body.public-layout {
@@ -406,9 +441,14 @@
             .an-animate { animation: none; opacity: 1; }
             .an-fill::after { animation: none; }
         }
+        @media (max-width: 767px) {
+            body.public-analytics-page > main.an-container {
+                padding: 128px 16px 40px !important;
+            }
+        }
     </style>
 </head>
-<body class="public-layout bg-white font-sans text-slate-900 antialiased">
+<body class="public-layout public-analytics-page bg-white font-sans text-slate-900 antialiased">
 
     {{-- ============ TOP NAV ============ --}}
     <header class="fixed top-0 z-50 glass-nav w-full border-b border-slate-200/50">
@@ -633,21 +673,44 @@
     </main>
 
     {{-- ============ FOOTER ============ --}}
-    <footer class="bg-slate-100 border-t border-slate-200 mt-12">
-        <div class="flex flex-col md:flex-row justify-between items-center px-8 py-12 w-full max-w-7xl mx-auto">
-            <div class="mb-8 md:mb-0">
-                <div class="flex items-center gap-2 mb-4">
-                    <div class="w-8 h-8 bg-slate-900 rounded flex items-center justify-center">
-                        <span class="material-symbols-outlined text-white text-xs">account_balance</span>
-                    </div>
-                    <span class="font-bold text-slate-900" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
-                </div>
-                <p class="text-xs uppercase tracking-widest text-slate-500">© {{ date('Y') }} Cabuyao City Government. All rights reserved.</p>
+    <footer class="landing-footer border-t mt-12">
+        <div class="mx-auto grid w-full max-w-6xl gap-10 px-6 py-12 sm:px-8 md:grid-cols-[1.4fr_0.8fr_0.8fr_1fr] md:gap-12 md:py-16">
+            <div>
+                <a href="{{ url('/') }}" class="mb-5 inline-flex items-center gap-3">
+                    <img src="{{ asset('images/cabuyao-logo.png') }}" alt="" class="h-9 w-9 rounded-full bg-white object-contain p-0.5" width="36" height="36" decoding="async">
+                    <span class="font-bold text-white" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
+                </a>
+                <p class="landing-footer-muted max-w-sm text-sm leading-6">A civic technology capstone project led by students of Pamantasan ng Cabuyao, making public projects and expenditures easier for the community to follow.</p>
+                <p class="landing-footer-muted mt-4 max-w-sm text-sm leading-6">Built in partnership with the City Planning Department of Cabuyao.</p>
             </div>
-            <div class="flex flex-wrap justify-center gap-8 text-xs uppercase tracking-widest">
-                <a href="{{ route('public.map') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Public Map</a>
-                <a href="{{ route('public.expenditures') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Project Expenditures</a>
-                <a href="{{ route('login') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Login</a>
+
+            <nav aria-label="Public resources">
+                <h2 class="mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300">Public resources</h2>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="{{ route('public.map') }}">Public Map</a></li>
+                    <li><a href="{{ route('public.expenditures') }}">Project Expenditures</a></li>
+                    <li><a href="{{ route('public.analytics') }}">Analytics</a></li>
+                </ul>
+            </nav>
+
+            <nav aria-label="Account">
+                <h2 class="mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300">Account</h2>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="{{ route('login') }}">Login</a></li>
+                </ul>
+            </nav>
+
+            <address class="not-italic">
+                <h2 class="mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300">Contacts</h2>
+                <ul class="space-y-3 text-sm leading-6">
+                    <li><a href="https://bettercabuyao.org/" target="_blank" rel="noopener noreferrer">bettercabuyao.org</a></li>
+                    <li class="landing-footer-muted">F.B. Bailon St., Rosario Village, Brgy. Sala, Cabuyao City, 4025 Laguna</li>
+                </ul>
+            </address>
+        </div>
+        <div class="landing-footer-bottom border-t">
+            <div class="landing-footer-muted mx-auto flex w-full max-w-6xl flex-col gap-2 px-6 py-5 text-xs sm:px-8 md:flex-row md:items-center md:justify-between">
+                <span>© {{ date('Y') }} Cabuyao City Government. All rights reserved.</span>
             </div>
         </div>
     </footer>
