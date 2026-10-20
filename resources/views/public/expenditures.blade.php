@@ -17,10 +17,10 @@
 
     <style>
         :root {
-            --bg-body: #f8fafc;
+            --bg-body: #fdfcf7;
             --bg-surface: #ffffff;
             --bg-surface-elevated: #ffffff;
-            --bg-header: rgba(248, 250, 252, 0.85);
+            --bg-header: rgba(253, 252, 247, 0.82);
             --bg-input: #ffffff;
             --bg-hover: #f1f5f9;
             --bg-badge: #f1f5f9;
@@ -86,8 +86,31 @@
         .page-header {
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            background-color: rgba(248, 249, 255, 0.8);
+            background-color: rgba(253, 252, 247, 0.82);
             border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+        body.public-expenditures-page > footer.landing-footer {
+            background-color: #111111;
+            border-color: rgba(255, 255, 255, 0.12);
+            color: #e2e8f0;
+        }
+        body.public-expenditures-page > footer.landing-footer .landing-footer-muted {
+            color: #94a3b8;
+        }
+        body.public-expenditures-page > footer.landing-footer a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        body.public-expenditures-page > footer.landing-footer a:hover {
+            color: #6ee7b7;
+        }
+        body.public-expenditures-page > footer.landing-footer nav h2,
+        body.public-expenditures-page > footer.landing-footer address h2 {
+            color: #6ee7b7;
+        }
+        body.public-expenditures-page > footer.landing-footer .landing-footer-bottom {
+            border-color: rgba(255, 255, 255, 0.12);
         }
 
         html.dark-mode .page-header {
@@ -209,10 +232,194 @@
 
         .data-table-container {
             border: 1px solid var(--border-color);
-            border-radius: var(--radius);
+            border-radius: 1.125rem;
             overflow: hidden;
             background-color: var(--bg-surface);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 12px 32px -24px rgba(15, 23, 42, 0.32);
+        }
+
+        .expenditure-page-intro {
+            padding-top: 0.5rem;
+        }
+
+        .expenditure-page-eyebrow {
+            margin: 0 0 0.65rem;
+            color: var(--text-tertiary);
+            font-family: 'Public Sans', sans-serif;
+            font-size: 0.625rem;
+            font-weight: 700;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+        }
+
+        .expenditure-page-title {
+            margin: 0;
+            color: var(--text-primary);
+            font-family: 'Manrope', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.055em;
+            line-height: 1.12;
+        }
+
+        .expenditure-page-description {
+            max-width: 42rem;
+            margin: 0.9rem 0 0;
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            line-height: 1.75;
+        }
+
+        .expenditure-page-nav {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .expenditure-page-nav a {
+            display: inline-flex;
+            align-items: center;
+            min-height: 2.75rem;
+            border-bottom: 2px solid transparent;
+            color: var(--text-tertiary);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .expenditure-page-nav a:hover,
+        .expenditure-page-nav a[aria-current="page"] {
+            border-bottom-color: var(--accent);
+            color: var(--text-primary);
+        }
+
+        .directory-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.125rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-surface);
+        }
+
+        .directory-search {
+            position: relative;
+            width: min(100%, 22rem);
+        }
+
+        .directory-search .input-field {
+            min-height: 2.625rem;
+            border-radius: 0.625rem;
+            padding-top: 0.625rem;
+            padding-bottom: 0.625rem;
+        }
+
+        .directory-toolbar .btn-primary {
+            min-height: 2.625rem;
+            border-radius: 0.625rem;
+            background: #111827;
+            box-shadow: none;
+        }
+
+        .directory-toolbar .btn-primary:hover {
+            background: #047857;
+            box-shadow: none;
+            filter: none;
+            transform: translateY(-1px);
+        }
+
+        .directory-analytics-link {
+            display: inline-flex;
+            min-height: 2.625rem;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: auto;
+            padding: 0 0.9rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.625rem;
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .directory-analytics-link:hover {
+            border-color: var(--accent);
+            color: var(--accent-text);
+        }
+
+        .directory-summary {
+            display: flex;
+            min-height: 3.5rem;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.75rem 1.125rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-body);
+        }
+
+        .directory-summary-title {
+            color: var(--text-primary);
+            font-size: 0.8125rem;
+            font-weight: 800;
+        }
+
+        .directory-summary-count {
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
+            text-align: right;
+        }
+
+        .expenditure-status {
+            display: inline-flex;
+            align-items: center;
+            max-width: 100%;
+            padding: 0.3rem 0.6rem;
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            background: var(--bg-badge);
+            color: var(--text-secondary);
+            font-size: 0.6875rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .expenditure-row-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            border: 1px solid var(--border-strong);
+            border-radius: 0.625rem;
+            padding: 0.5rem 0.7rem;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .expenditure-row-action:hover {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            color: var(--accent-text);
+        }
+
+        html.dark-mode .directory-toolbar .btn-primary {
+            background: #064e3b;
+            color: #d1fae5;
+        }
+
+        html.dark-mode .directory-toolbar .btn-primary:hover {
+            background: #065f46;
+        }
+
+        html.dark-mode .expenditure-row-action:hover {
+            color: var(--accent-text);
         }
 
         .data-table {
@@ -287,38 +494,12 @@
             letter-spacing: -0.01em;
         }
 
-        .hero-section {
-            background: linear-gradient(135deg, #020617 0%, #0f172a 40%, #064e3b 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 20% 50%, rgba(52, 211, 153, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .hero-section::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.3), transparent);
-        }
-
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
 
         .filter-bar {
-            background: linear-gradient(145deg, var(--bg-surface), var(--bg-body));
+            background: var(--bg-surface);
             border: 1px solid var(--border-color);
         }
 
@@ -412,9 +593,37 @@
         @media (max-width: 640px) {
             .data-table-container {
                 border-radius: var(--radius-sm);
-                border: none;
-                box-shadow: none;
-                background: transparent;
+                border: 1px solid var(--border-color);
+                box-shadow: var(--shadow-sm);
+                background: var(--bg-surface);
+            }
+            .directory-toolbar {
+                align-items: stretch;
+                flex-direction: column;
+                padding: 1rem;
+            }
+            .directory-toolbar form,
+            .directory-search {
+                width: 100%;
+            }
+            .directory-toolbar form > .flex.shrink-0 {
+                width: 100%;
+            }
+            .directory-toolbar form > .flex.shrink-0 > * {
+                flex: 1;
+                justify-content: center;
+            }
+            .directory-analytics-link {
+                justify-content: center;
+                margin-left: 0;
+            }
+            .directory-summary {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            .directory-summary-count {
+                text-align: left;
             }
             .data-table {
                 min-width: unset;
@@ -462,7 +671,7 @@
         }
     </style>
 </head>
-<body class="public-layout min-h-screen antialiased">
+<body class="public-layout public-expenditures-page min-h-screen antialiased">
 
     {{-- Header --}}
     <header class="page-header fixed top-0 z-50 w-full border-b border-slate-200/50">
@@ -488,79 +697,68 @@
         </nav>
     </header>
 
-    <main class="mx-auto max-w-7xl space-y-8 px-4 pb-8 pt-24 sm:px-6 lg:px-8">
-
-        {{-- Hero --}}
-        <section class="hero-section relative overflow-hidden rounded-3xl p-8 text-white shadow-2xl sm:p-12 lg:p-14">
-            <div class="relative z-10 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-                <div class="max-w-2xl">
-                    <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-100 backdrop-blur-sm">
-                        <span class="material-symbols-outlined text-base">account_balance_wallet</span>
-                        Public financial records
-                    </div>
-                    <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl" style="font-family:'Manrope',sans-serif;">
-                        Project Expenditures
-                    </h1>
-                    <p class="mt-4 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
-                        Browse expenditure totals by project. Open a project to see its monthly and category-level details, subject to applicable disclosure laws.
-                    </p>
-                </div>
-                <a href="{{ route('public.analytics') }}" class="inline-flex shrink-0 items-center gap-2 self-start rounded-xl border border-white/20 bg-white/5 px-5 py-3 text-sm font-bold text-white backdrop-blur-md transition hover:bg-white/10 hover:border-white/30">
-                    <span class="material-symbols-outlined">bar_chart</span>
-                    View analytics
-                </a>
-            </div>
+    <main class="mx-auto max-w-7xl space-y-6 px-4 pb-10 pt-24 sm:px-6 sm:pt-28 lg:px-8">
+        <section class="expenditure-page-intro">
+            <p class="expenditure-page-eyebrow">City Transparency Portal · Public records</p>
+            <h1 class="expenditure-page-title">Project expenditures</h1>
+            <p class="expenditure-page-description">
+                Browse recorded expenditure by project. Open a project for its monthly and category-level breakdown.
+            </p>
+            <nav class="expenditure-page-nav" aria-label="Expenditure sections">
+                <a href="#project-directory" aria-current="page">Browse</a>
+                <a href="#expenditure-disclosure">Disclosure notes</a>
+            </nav>
         </section>
 
         {{-- Project directory --}}
-        <section class="data-table-container">
-            <div class="border-b border-[var(--border-color)] p-6 sm:p-8">
-                <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                    <div>
-                        <h2 class="text-2xl font-extrabold tracking-tight text-[var(--text-primary)]" style="font-family:'Manrope',sans-serif;">Projects with recorded expenditure</h2>
-                        <p class="mt-1 text-sm text-[var(--text-tertiary)]">Select a project to view its detailed monthly expenditure breakdown.</p>
-                    </div>
-                    @if($projects->hasPages())
-                        <div class="pagination-wrapper shrink-0">
-                            {{ $projects->links() }}
-                        </div>
-                    @endif
-                </div>
-            </div>
-
-            {{-- Filters --}}
-            <div class="filter-bar border-b border-[var(--border-color)] p-5 sm:p-6">
-                <form method="GET" action="{{ route('public.expenditures') }}" class="flex flex-col gap-4 sm:flex-row sm:items-end">
-                    <div class="relative min-w-0 flex-1">
-                        <label for="expenditure-search" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)]">Search projects</label>
+        <section class="data-table-container" id="project-directory" aria-labelledby="project-directory-title">
+            <div class="directory-toolbar">
+                <form method="GET" action="{{ route('public.expenditures') }}" class="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center">
+                    <div class="directory-search min-w-0 flex-1">
+                        <label for="expenditure-search" class="sr-only">Search projects</label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">search</span>
-                            <input id="expenditure-search" name="q" type="search" value="{{ $search }}" maxlength="100" placeholder="Project name, code, or barangay..." class="input-field w-full rounded-xl py-2.5 pl-10 pr-4 text-sm">
+                            <input id="expenditure-search" name="q" type="search" value="{{ $search }}" maxlength="100" placeholder="Search projects, codes, or barangays..." class="input-field w-full rounded-lg py-2.5 pl-10 pr-4 text-sm">
                         </div>
                     </div>
                     <div class="flex shrink-0 gap-3">
-                        <button type="submit" class="btn-primary inline-flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm transition-all">
+                        <button type="submit" class="btn-primary inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm transition-all">
                             <span class="material-symbols-outlined text-lg">search</span>
                             Search
                         </button>
                         @if(request()->filled('q'))
-                            <a href="{{ route('public.expenditures') }}" class="inline-flex items-center gap-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] px-4 py-2.5 text-sm font-semibold text-[var(--text-secondary)] transition hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]">
+                            <a href="{{ route('public.expenditures') }}" class="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-surface)] px-4 py-2.5 text-sm font-semibold text-[var(--text-secondary)] transition hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]">
                                 Clear
                             </a>
                         @endif
                     </div>
                 </form>
+                <a href="{{ route('public.analytics') }}" class="directory-analytics-link">
+                    <span class="material-symbols-outlined text-lg" aria-hidden="true">bar_chart</span>
+                    View analytics
+                </a>
+            </div>
+
+            <div class="directory-summary">
+                <h2 class="directory-summary-title" id="project-directory-title">Projects with recorded expenditure</h2>
+                <p class="directory-summary-count">
+                    Showing {{ $projects->firstItem() ?? 0 }}–{{ $projects->lastItem() ?? 0 }} of {{ $projects->total() }} {{ \Illuminate\Support\Str::plural('project', $projects->total()) }}
+                    @if($search !== '')
+                        matching “{{ $search }}”
+                    @endif
+                </p>
             </div>
 
             {{-- Project list --}}
             <div class="overflow-x-auto">
                 <table class="data-table min-w-[720px]">
+                    <caption class="sr-only">Project expenditure records, including location, current status, and recorded expenditure.</caption>
                     <thead>
                         <tr>
                             <th scope="col" class="text-left">Project</th>
-                            <th scope="col" class="text-left">Barangay</th>
-                            <th scope="col" class="text-left">Status</th>
-                            <th scope="col" class="text-right">Total expenditure</th>
+                            <th scope="col" class="text-left">Location</th>
+                            <th scope="col" class="text-left">Current status</th>
+                            <th scope="col" class="text-right">Recorded expenditure</th>
                             <th scope="col" class="text-right">Details</th>
                         </tr>
                     </thead>
@@ -578,13 +776,13 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td data-label="Barangay">{{ $project->barangay?->barangay_name ?? 'Citywide' }}</td>
-                                <td data-label="Status">{{ $project->current_status ?? 'Not specified' }}</td>
-                                <td data-label="Total expenditure" class="amount-cell text-right">₱{{ number_format($project->actual_budget_total, 2) }}</td>
+                                <td data-label="Location">{{ $project->barangay?->barangay_name ?? 'Citywide' }}</td>
+                                <td data-label="Current status"><span class="expenditure-status">{{ $project->current_status ?? 'Not specified' }}</span></td>
+                                <td data-label="Recorded expenditure" class="amount-cell text-right">₱{{ number_format($project->actual_budget_total, 2) }}</td>
                                 <td data-label="Details" class="text-right">
-                                    <a href="{{ route('public.expenditures.project', $project->project_id) }}" class="btn-primary inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm">
-                                        View project details
-                                        <span class="material-symbols-outlined text-base">arrow_forward</span>
+                                    <a href="{{ route('public.expenditures.project', $project->project_id) }}" class="expenditure-row-action">
+                                        Details
+                                        <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
                                     </a>
                                 </td>
                             </tr>
@@ -627,7 +825,7 @@
                 </div>
             @endunless
 
-            <div class="ledger-meta bg-[var(--bg-body)] px-6 py-5 sm:px-8">
+            <div class="ledger-meta bg-[var(--bg-body)] px-6 py-5 sm:px-8" id="expenditure-disclosure">
                 <div class="flex items-start gap-3">
                     <span class="material-symbols-outlined shrink-0 text-base text-[var(--text-muted)]">info</span>
                     <p class="text-xs leading-5">
@@ -639,22 +837,44 @@
     </main>
 
     {{-- ============ FOOTER ============ --}}
-    <footer class="bg-slate-100 border-t border-slate-200">
-        <div class="flex w-full max-w-7xl flex-col items-center justify-between px-8 py-12 mx-auto md:flex-row">
-            <div class="mb-8 md:mb-0">
-                <div class="flex items-center gap-2 mb-4">
-                    <div class="flex items-center justify-center w-8 h-8 bg-slate-900 rounded">
-                        <span class="material-symbols-outlined text-xs text-white">account_balance</span>
-                    </div>
-                    <span class="font-bold text-slate-900" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
-                </div>
-                <p class="text-xs uppercase tracking-widest text-slate-500">© {{ date('Y') }} Cabuyao City Government. All rights reserved.</p>
+    <footer class="landing-footer border-t">
+        <div class="mx-auto grid w-full max-w-6xl gap-10 px-6 py-12 sm:px-8 md:grid-cols-[1.4fr_0.8fr_0.8fr_1fr] md:gap-12 md:py-16">
+            <div>
+                <a href="{{ url('/') }}" class="mb-5 inline-flex items-center gap-3">
+                    <img src="{{ asset('images/cabuyao-logo.png') }}" alt="" class="h-9 w-9 rounded-full bg-white object-contain p-0.5" width="36" height="36" decoding="async">
+                    <span class="font-bold text-white" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
+                </a>
+                <p class="landing-footer-muted max-w-sm text-sm leading-6">A civic technology capstone project led by students of Pamantasan ng Cabuyao, making public projects and expenditures easier for the community to follow.</p>
+                <p class="landing-footer-muted mt-4 max-w-sm text-sm leading-6">Built in partnership with the City Planning Department of Cabuyao.</p>
             </div>
 
-            <div class="flex flex-wrap justify-center gap-8 text-xs uppercase tracking-widest">
-                <a href="{{ route('public.map') }}" class="text-slate-500 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4 hover:text-emerald-600">Public Map</a>
-                <a href="{{ route('public.expenditures') }}" class="text-slate-500 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4 hover:text-emerald-600">Project Expenditures</a>
-                <a href="{{ route('login') }}" class="text-slate-500 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4 hover:text-emerald-600">Login</a>
+            <nav aria-label="Public resources">
+                <h2 class="mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300">Public resources</h2>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="{{ route('public.map') }}">Public Map</a></li>
+                    <li><a href="{{ route('public.expenditures') }}">Project Expenditures</a></li>
+                    <li><a href="{{ route('public.analytics') }}">Analytics</a></li>
+                </ul>
+            </nav>
+
+            <nav aria-label="Account">
+                <h2 class="mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300">Account</h2>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="{{ route('login') }}">Login</a></li>
+                </ul>
+            </nav>
+
+            <address class="not-italic">
+                <h2 class="mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300">Contacts</h2>
+                <ul class="space-y-3 text-sm leading-6">
+                    <li><a href="https://bettercabuyao.org/" target="_blank" rel="noopener noreferrer">bettercabuyao.org</a></li>
+                    <li class="landing-footer-muted">F.B. Bailon St., Rosario Village, Brgy. Sala, Cabuyao City, 4025 Laguna</li>
+                </ul>
+            </address>
+        </div>
+        <div class="landing-footer-bottom border-t">
+            <div class="landing-footer-muted mx-auto flex w-full max-w-6xl flex-col gap-2 px-6 py-5 text-xs sm:px-8 md:flex-row md:items-center md:justify-between">
+                <span>© {{ date('Y') }} Cabuyao City Government. All rights reserved.</span>
             </div>
         </div>
     </footer>
