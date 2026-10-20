@@ -21,7 +21,7 @@
     <style>
         .glass-nav {
             backdrop-filter: blur(16px);
-            background-color: rgba(248, 249, 255, 0.8);
+            background-color: rgba(253, 252, 247, 0.82);
         }
         html.dark-mode .glass-nav {
             /* More opaque than the landing page so map controls remain clear. */
@@ -33,6 +33,146 @@
             position: sticky;
             top: 0;
             z-index: 1100;
+        }
+        body.public-map-page {
+            background-color: #fdfcf7;
+        }
+        body.public-map-page > main {
+            background-color: #fdfcf7;
+        }
+        body.public-map-page > footer.landing-footer {
+            background-color: #111111;
+            border-color: rgba(255, 255, 255, 0.12);
+            color: #e2e8f0;
+        }
+        body.public-map-page > footer.landing-footer .landing-footer-muted {
+            color: #94a3b8;
+        }
+        body.public-map-page > footer.landing-footer a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        body.public-map-page > footer.landing-footer a:hover {
+            color: #6ee7b7;
+        }
+        body.public-map-page > footer.landing-footer nav h2,
+        body.public-map-page > footer.landing-footer address h2 {
+            color: #6ee7b7;
+        }
+        body.public-map-page > footer.landing-footer .landing-footer-bottom {
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        body.public-map-page #projectSidebar,
+        body.public-map-page #projectSidebar > div:first-child,
+        body.public-map-page #departmentProjectList {
+            background-color: #fdfcf7;
+        }
+        body.public-map-page #projectSidebar .public-map-project-card,
+        body.public-map-page #projectSidebar .public-project-details-card {
+            background-color: #ffffff;
+        }
+        body.public-map-page #projectSidebar {
+            font-family: "Inter", sans-serif;
+        }
+        body.public-map-page #projectSidebar > div:first-child {
+            padding: 24px 22px 20px;
+            border-color: #e7e5dc;
+        }
+        body.public-map-page .public-map-sidebar-intro {
+            max-width: 30rem;
+        }
+        body.public-map-page .public-map-sidebar-kicker {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+        body.public-map-page .public-map-sidebar-number {
+            color: #0876a8;
+            font-family: "Manrope", sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.07em;
+            line-height: 1;
+        }
+        body.public-map-page .public-map-sidebar-eyebrow {
+            margin: 0;
+            color: #64748b;
+            font-family: "Public Sans", sans-serif;
+            font-size: 0.625rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+        }
+        body.public-map-page .public-map-sidebar-rule {
+            width: 58px;
+            height: 1px;
+            margin-top: 14px;
+            background: #0876a8;
+        }
+        body.public-map-page #projectSidebar h2,
+        body.public-map-page #projectSidebar h3,
+        body.public-map-page #projectSidebar h4 {
+            font-family: "Manrope", sans-serif;
+            letter-spacing: -0.04em;
+        }
+        body.public-map-page #projectSidebar h2 {
+            margin-top: 20px;
+            font-size: clamp(1.75rem, 3vw, 2.25rem);
+            font-weight: 800;
+            letter-spacing: -0.06em;
+            line-height: 1.08;
+        }
+        body.public-map-page #projectSidebar > div:first-child > div:first-child > p:not(.public-map-sidebar-eyebrow) {
+            margin-top: 14px;
+            color: #64748b;
+            font-size: 0.9375rem;
+            line-height: 1.8;
+        }
+        body.public-map-page .public-map-sidebar-intro + label + .public-map-project-search-wrap {
+            margin-top: 22px;
+        }
+        body.public-map-page #projectSidebar .public-map-project-search {
+            min-height: 44px;
+            border-color: #e7e5dc;
+            border-radius: 10px;
+            font-family: "Inter", sans-serif;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+        body.public-map-page #projectSidebar h3 {
+            font-weight: 700;
+        }
+        body.public-map-page #projectSidebar h4 {
+            font-weight: 800;
+        }
+        body.public-map-page #projectSidebar .public-map-status-filter button {
+            font-family: "Manrope", sans-serif;
+            font-weight: 700;
+        }
+        body.public-map-page #projectSidebar .public-collapsed-project-card {
+            border: 1px solid #e7e5dc !important;
+            border-radius: 14px !important;
+            background: #ffffff !important;
+            color: #1e293b;
+            box-shadow: 0 4px 14px -12px rgba(15, 23, 42, 0.3) !important;
+            transform: none;
+        }
+        body.public-map-page #projectSidebar .public-collapsed-project-card:hover {
+            border-color: #cbd5e1 !important;
+            box-shadow: 0 10px 24px -18px rgba(15, 23, 42, 0.38) !important;
+            transform: translateY(-1px);
+        }
+        body.public-map-page #projectSidebar .public-collapsed-project-card h3 {
+            font-size: 1rem;
+            line-height: 1.45;
+        }
+        body.public-map-page #projectSidebar .public-collapsed-project-card .public-project-details-card {
+            border-color: #e7e5dc !important;
+            border-radius: 12px;
+        }
+        body.public-map-page #projectSidebar .public-collapsed-project-card .public-project-description-card {
+            border-color: #e7e5dc;
+            border-radius: 12px;
         }
 
         #map {
@@ -539,7 +679,7 @@
         .public-collapsed-project-card {
             position: relative;
             border-color: rgba(15, 23, 42, 0.2) !important;
-            background: #edf3ff !important;
+            background: #ffffff !important;
             color: #1e1b4b;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -567,7 +707,7 @@
         }
 
         .public-collapsed-project-card .public-project-details-card {
-            background: #edf3ff !important;
+            background: #ffffff !important;
             border-color: rgba(15, 23, 42, 0.2) !important;
         }
 
@@ -838,6 +978,15 @@
             border-color: #303030 !important;
             background-color: #1a1a1a !important;
         }
+        html.dark-mode body.public-map-page .public-map-sidebar-eyebrow {
+            color: #94a3b8;
+        }
+        html.dark-mode body.public-map-page .public-map-sidebar-number {
+            color: #38bdf8;
+        }
+        html.dark-mode body.public-map-page .public-map-sidebar-rule {
+            background: #38bdf8;
+        }
         html.dark-mode body.public-map-page #departmentProjectList {
             background-color: #111111 !important;
         }
@@ -887,6 +1036,29 @@
             border-color: #303030 !important;
             background-color: #222222 !important;
             color: #e5e7eb !important;
+        }
+        html.dark-mode body.public-map-page #projectSidebar .public-collapsed-project-card {
+            border-color: #303030 !important;
+            background: #222222 !important;
+            color: #e5e7eb !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
+        }
+        html.dark-mode body.public-map-page #projectSidebar .public-collapsed-project-card:hover {
+            border-color: #475569 !important;
+            background: #272727 !important;
+        }
+        html.dark-mode body.public-map-page #projectSidebar .public-collapsed-project-card h3,
+        html.dark-mode body.public-map-page #projectSidebar .public-collapsed-project-card .public-collapsed-barangay,
+        html.dark-mode body.public-map-page #projectSidebar .public-collapsed-project-card .public-project-detail-value {
+            color: #f8fafc !important;
+        }
+        html.dark-mode body.public-map-page #projectSidebar .public-collapsed-project-card .public-project-details-card,
+        html.dark-mode body.public-map-page #projectSidebar .public-collapsed-project-card .public-project-description-card {
+            border-color: #303030 !important;
+            background: #1a1a1a !important;
+        }
+        html.dark-mode body.public-map-page #projectSidebar .public-collapsed-project-card .public-project-description-card p {
+            color: #cbd5e1 !important;
         }
         html.dark-mode body.public-map-page .public-project-details-card,
         html.dark-mode body.public-map-page .public-project-detail,
@@ -1132,7 +1304,12 @@
 
             <div id="projectSidebar" class="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden order-3 md:order-2 flex flex-col" style="max-height: 86vh;">
                 <div class="p-6 border-b border-gray-200 bg-white">
-                    <div>
+                    <div class="public-map-sidebar-intro">
+                        <div class="public-map-sidebar-kicker">
+                            <span class="public-map-sidebar-number" aria-hidden="true">01</span>
+                            <p class="public-map-sidebar-eyebrow">Public project directory</p>
+                        </div>
+                        <div class="public-map-sidebar-rule" aria-hidden="true"></div>
                         <h2 class="text-lg font-bold text-black">Projects Overview</h2>
                         <p class="text-sm text-gray-500 mt-1">Tap a barangay on the map or browse all projects.</p>
                     </div>
@@ -1158,23 +1335,45 @@
         </div>
     </main>
 
-    {{-- ============ FOOTER (same as landing page) ============ --}}
-    <footer class="bg-slate-100 border-t border-slate-200">
-        <div class="flex flex-col md:flex-row justify-between items-center px-8 py-12 w-full max-w-7xl mx-auto">
-            <div class="mb-8 md:mb-0">
-                <div class="flex items-center gap-2 mb-4">
-                    <div class="w-8 h-8 bg-slate-900 rounded flex items-center justify-center">
-                        <span class="material-symbols-outlined text-white text-xs">account_balance</span>
-                    </div>
-                    <span class="font-bold text-slate-900" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
-                </div>
-                <p class="text-xs uppercase tracking-widest text-slate-500">© {{ date('Y') }} Cabuyao City Government. All rights reserved.</p>
+    {{-- ============ FOOTER ============ --}}
+    <footer class="landing-footer border-t">
+        <div class="mx-auto grid w-full max-w-6xl gap-10 px-6 py-12 sm:px-8 md:grid-cols-[1.4fr_0.8fr_0.8fr_1fr] md:gap-12 md:py-16">
+            <div>
+                <a href="{{ url('/') }}" class="mb-5 inline-flex items-center gap-3">
+                    <img src="{{ asset('images/cabuyao-logo.png') }}" alt="" class="h-9 w-9 rounded-full bg-white object-contain p-0.5" width="36" height="36" decoding="async">
+                    <span class="font-bold text-white" style="font-family:'Manrope',sans-serif;">City Transparency Portal</span>
+                </a>
+                <p class="landing-footer-muted max-w-sm text-sm leading-6">A civic technology capstone project led by students of Pamantasan ng Cabuyao, making public projects and expenditures easier for the community to follow.</p>
+                <p class="landing-footer-muted mt-4 max-w-sm text-sm leading-6">Built in partnership with the City Planning Department of Cabuyao.</p>
             </div>
 
-            <div class="flex flex-wrap justify-center gap-8 text-xs uppercase tracking-widest">
-                <a href="{{ route('public.map') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Public Map</a>
-                <a href="{{ route('public.expenditures') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Project Expenditures</a>
-                <a href="{{ route('login') }}" class="text-slate-500 hover:text-emerald-600 transition-all duration-300 underline decoration-emerald-500/30 underline-offset-4">Login</a>
+            <nav aria-label="Public resources">
+                <h2 class="mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300">Public resources</h2>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="{{ route('public.map') }}">Public Map</a></li>
+                    <li><a href="{{ route('public.expenditures') }}">Project Expenditures</a></li>
+                    <li><a href="{{ route('public.analytics') }}">Analytics</a></li>
+                </ul>
+            </nav>
+
+            <nav aria-label="Account">
+                <h2 class="mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300">Account</h2>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="{{ route('login') }}">Login</a></li>
+                </ul>
+            </nav>
+
+            <address class="not-italic">
+                <h2 class="mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300">Contacts</h2>
+                <ul class="space-y-3 text-sm leading-6">
+                    <li><a href="https://bettercabuyao.org/" target="_blank" rel="noopener noreferrer">bettercabuyao.org</a></li>
+                    <li class="landing-footer-muted">F.B. Bailon St., Rosario Village, Brgy. Sala, Cabuyao City, 4025 Laguna</li>
+                </ul>
+            </address>
+        </div>
+        <div class="landing-footer-bottom border-t">
+            <div class="landing-footer-muted mx-auto flex w-full max-w-6xl flex-col gap-2 px-6 py-5 text-xs sm:px-8 md:flex-row md:items-center md:justify-between">
+                <span>© {{ date('Y') }} Cabuyao City Government. All rights reserved.</span>
             </div>
         </div>
     </footer>
