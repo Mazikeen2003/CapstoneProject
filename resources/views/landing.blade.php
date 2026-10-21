@@ -32,12 +32,31 @@
                 linear-gradient(0deg, rgba(8, 13, 23, 0.56) 0%, transparent 58%);
         }
         .landing-hero-title {
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(2.5rem, 7vw, 5.25rem);
+            font-weight: 800;
+            letter-spacing: -0.065em;
+            line-height: 1.02;
             text-shadow: 0 3px 24px rgba(0, 0, 0, 0.32);
         }
         .landing-hero-title span {
-            color: #cbd5e1;
+            color: #9ca3af;
+        }
+        .landing-hero-eyebrow {
+            color: #b9c8e0;
+            font-family: "Public Sans", sans-serif;
+            font-size: 0.625rem;
+            font-weight: 700;
+            letter-spacing: 0.24em;
+            line-height: 1.5;
+            text-transform: uppercase;
         }
         .landing-hero-description {
+            color: #cbd5e1;
+            font-family: "Inter", sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.8;
             text-shadow: 0 2px 14px rgba(0, 0, 0, 0.42);
         }
         .landing-stats {
@@ -689,14 +708,14 @@
                         </div>
                     </div>
 
-                    <p class="text-[10px] font-bold uppercase tracking-[0.24em] text-emerald-200 sm:text-xs" style="font-family:'Public Sans',sans-serif;">Projects · Budgets · Community</p>
+                    <p class="landing-hero-eyebrow">Projects · Budgets · Community</p>
 
-                    <h1 class="landing-hero-title max-w-4xl text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-7xl" style="font-family:'Manrope',sans-serif;">
+                    <h1 class="landing-hero-title max-w-4xl text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-7xl">
                         Cabuyao City <br>
                         <span>Project Tracker System</span>
                     </h1>
 
-                    <p class="landing-hero-description max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg">
+                    <p class="landing-hero-description max-w-xl text-base leading-relaxed sm:text-lg">
                         Empowering citizens with real-time access to official city reports, public budgets, and community project tracking.
                     </p>
 
