@@ -33,8 +33,7 @@ class MapController
                 'barangay',
                 'latestUpdate',
                 'stageDocuments' => fn ($query) => $query
-                    ->where('stage', 1)
-                    ->where('document_type', 'Detailed Project Information'),
+                    ->where('is_public', true),
             ])
             ->withActualTransactionSum()
                 ->when(
@@ -133,8 +132,7 @@ class MapController
             ->with([
                 'latestUpdate',
                 'stageDocuments' => fn ($query) => $query
-                    ->where('stage', 1)
-                    ->where('document_type', 'Detailed Project Information'),
+                    ->where('is_public', true),
             ])
             ->withActualTransactionSum()
             ->when(
