@@ -15,7 +15,8 @@ class BudgetTransaction extends Model
     {
         return Schema::hasColumn('budget_transactions', 'category')
             && Schema::hasColumn('budget_transactions', 'type')
-            && Schema::hasColumn('budget_transactions', 'transaction_date');
+            && Schema::hasColumn('budget_transactions', 'transaction_date')
+            && Schema::hasColumn('budget_transactions', 'audit_confirmed_at');
     }
 
     public $timestamps = false;
@@ -30,6 +31,7 @@ class BudgetTransaction extends Model
         'category',
         'type',
         'transaction_date',
+        'audit_confirmed_at',
         'description',
         'user_id',
         'created_at',
@@ -39,6 +41,7 @@ class BudgetTransaction extends Model
         'amount'     => 'decimal:2',
         'created_at' => 'datetime',
         'transaction_date' => 'date',
+        'audit_confirmed_at' => 'datetime',
     ];
 
     public function project()
