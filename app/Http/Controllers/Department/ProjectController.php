@@ -154,23 +154,31 @@ class ProjectController extends Controller
             'amount' => ['required', 'numeric', 'gt:0', 'max:999999999999.99'],
             'description' => ['nullable', 'string', 'max:2000'],
             'period' => ['required', 'date_format:Y-m'],
+            'audit_confirmed' => [$request->input('type') === 'actual' ? 'accepted' : 'nullable'],
         ]);
 
         $period = Carbon::createFromFormat('!Y-m', $validated['period']);
-        if ($period->greaterThan(today()->startOfMonth())) {
+        if ($validated['type'] === 'planned' && ! $period->greaterThan(today()->startOfMonth())) {
             throw ValidationException::withMessages([
-                'period' => 'Budget entries can only be recorded for the current or a previous month.',
+                'period' => 'Planned budgets must be set for a future month.',
             ]);
         }
+        if ($validated['type'] === 'actual') {
+            if (! in_array(today()->day, [14, 15], true)) {
+                throw ValidationException::withMessages([
+                    'type' => 'Audited expenditure can only be entered on the 14th or 15th of each month.',
+                ]);
+            }
+            if (! $period->isSameMonth(today()->subMonthNoOverflow())) {
+                throw ValidationException::withMessages([
+                    'period' => 'Expenditure must be entered for the previous month only.',
+                ]);
+            }
+        }
 
-        $implementationStart = $project->start_date;
         $transactionDate = $validated['type'] === 'planned'
-            && $implementationStart
-            && $implementationStart->isSameMonth($period)
-                ? $implementationStart->toDateString()
-                : ($validated['type'] === 'planned'
-                    ? $period->copy()->startOfMonth()->toDateString()
-                    : $period->copy()->endOfMonth()->toDateString());
+            ? $period->copy()->startOfMonth()->toDateString()
+            : $period->copy()->endOfMonth()->toDateString();
 
         DB::transaction(function () use ($validated, $project, $period, $transactionDate): void {
             $lockedProject = Project::where('project_id', $project->project_id)->lockForUpdate()->firstOrFail();
@@ -251,6 +259,7 @@ class ProjectController extends Controller
                 'description' => $validated['description'] ?? null,
                 'action' => $validated['type'] === 'planned' ? 'category_budget' : 'expenditure',
                 'transaction_type' => $validated['type'],
+                'audit_confirmed_at' => $validated['type'] === 'actual' ? now() : null,
                 'user_id' => Auth::id(),
                 'created_at' => now(),
             ];

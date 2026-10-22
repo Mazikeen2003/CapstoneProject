@@ -1,20 +1,26 @@
 @php
     $budgetCategories = \App\Models\BudgetTransaction::CATEGORIES;
     $budgetTransactions = $project->budgetTransactions;
-    $plannedTransactions = $budgetTransactions->where('type', 'planned')->whereIn('category', $budgetCategories);
-    $actualTransactions = $budgetTransactions->where('type', 'actual')->whereIn('category', $budgetCategories);
+    $plannedPeriod = today()->addMonthNoOverflow()->format('Y-m');
+    $actualPeriod = today()->subMonthNoOverflow()->format('Y-m');
+    $plannedTransactions = $budgetTransactions->where('type', 'planned')
+        ->whereIn('category', $budgetCategories)
+        ->filter(fn ($transaction) => $transaction->transaction_date?->format('Y-m') === $plannedPeriod);
+    $actualTransactions = $budgetTransactions->where('type', 'actual')
+        ->whereIn('category', $budgetCategories)
+        ->filter(fn ($transaction) => $transaction->transaction_date?->format('Y-m') === $actualPeriod);
     $categoryTotals = collect($budgetCategories)->mapWithKeys(function ($category) use ($plannedTransactions, $actualTransactions) {
         $planned = (float) $plannedTransactions->where('category', $category)->sum('amount');
         $actual = (float) $actualTransactions->where('category', $category)->sum('amount');
 
-        return [$category => ['planned' => $planned, 'actual' => $actual, 'variance' => $planned - $actual]];
+        return [$category => ['planned' => $planned, 'actual' => $actual]];
     });
     $categoryPlannedTotal = (float) $categoryTotals->sum(fn ($totals) => $totals['planned'] ?? 0);
     $categoryActualTotal = (float) $categoryTotals->sum(fn ($totals) => $totals['actual'] ?? 0);
     $plannedTotal = $categoryPlannedTotal;
     $actualTotal = $categoryActualTotal;
-    $unclassifiedActual = max(0, (float) $project->actual_budget_total - $categoryActualTotal);
-    $budgetOverage = $actualTotal - $plannedTotal;
+    $allCategorizedActual = (float) $budgetTransactions->where('type', 'actual')->whereIn('category', $budgetCategories)->sum('amount');
+    $unclassifiedActual = max(0, (float) $project->actual_budget_total - $allCategorizedActual);
 @endphp
 
 <style>
@@ -118,14 +124,8 @@
 <section class="project-budget-breakdown mt-6 rounded-lg bg-white p-5">
     <div class="mb-4">
         <h2 class="budget-breakdown-title text-lg font-bold" style="color: #0f1e3d;">Category Budget Breakdown</h2>
-        <p class="budget-section-description mt-1 text-sm text-gray-600">Record planned amounts and actual expenditure separately for each category and month.</p>
+        <p class="budget-section-description mt-1 text-sm text-gray-600">Plan future months in advance, then enter audited expenditure for the previous month during the 14th–15th entry window.</p>
     </div>
-
-    @if ($budgetOverage > 0)
-        <div role="alert" class="mb-4 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800">
-            Actual expenditure exceeds the planned or approved budget by ₱{{ number_format($budgetOverage, 2) }}.
-        </div>
-    @endif
 
     @if (($allowEntry ?? false) && ($budgetTrackingAvailable ?? true))
         @if (session('budget_success'))
@@ -133,49 +133,101 @@
         @endif
         @php
             $submittedPeriod = old('period');
-            $budgetPeriod = is_string($submittedPeriod) && preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $submittedPeriod)
+            $oldPeriod = is_string($submittedPeriod) && preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $submittedPeriod)
                 ? $submittedPeriod
-                : today()->format('Y-m');
-            $budgetType = old('type', 'planned');
+                : null;
+            $nextMonth = today()->addMonthNoOverflow()->startOfMonth();
+            $previousMonth = today()->subMonthNoOverflow()->startOfMonth();
+            $plannedPeriod = old('type') === 'planned' && $oldPeriod && $oldPeriod > today()->format('Y-m')
+                ? $oldPeriod
+                : $nextMonth->format('Y-m');
+            $canEnterActual = in_array(today()->day, [14, 15], true);
         @endphp
-        <form method="POST" action="{{ route('department.projects.budget-transactions.store', $project->project_id) }}" class="budget-form mb-6 grid gap-3 border-b border-gray-200 pb-6 sm:grid-cols-2">
-            @csrf
-            <div class="min-w-0">
-                <label for="budget-category" class="mb-1 block text-xs font-semibold text-gray-700">Category</label>
-                <select id="budget-category" name="category" required class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
-                    @foreach ($budgetCategories as $category)
-                        <option value="{{ $category }}" @selected(old('category') === $category)>{{ $category }}</option>
-                    @endforeach
-                </select>
-                @error('category')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
-            </div>
-            <div class="min-w-0">
-                <label for="budget-type" class="mb-1 block text-xs font-semibold text-gray-700">Entry type</label>
-                <select id="budget-type" name="type" required class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
-                    <option value="planned" @selected($budgetType === 'planned')>Monthly planned amount</option>
-                    <option value="actual" @selected(old('type') === 'actual')>Actual expenditure</option>
-                </select>
-                @error('type')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
-            </div>
-            <div class="min-w-0">
-                <label for="budget-period" class="mb-1 block text-xs font-semibold text-gray-700">Month (separate monthly entry)</label>
-                <input id="budget-period" type="month" name="period" value="{{ $budgetPeriod }}" max="{{ today()->format('Y-m') }}" required class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
-                @error('period')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
-            </div>
-            <div class="min-w-0">
-                <label for="budget-amount" class="mb-1 block text-xs font-semibold text-gray-700">Amount (PHP)</label>
-                <input id="budget-amount" type="text" name="amount" inputmode="decimal" autocomplete="off" value="{{ old('amount') }}" required class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
-                @error('amount')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
-            </div>
-            <div class="min-w-0 sm:col-span-2">
-                <label for="budget-description" class="mb-1 block text-xs font-semibold text-gray-700">Description</label>
-                <input id="budget-description" type="text" name="description" value="{{ old('description') }}" maxlength="2000" class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
-                @error('description')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
-            </div>
-            <div class="sm:col-span-2">
-                <button type="submit" class="budget-submit-button rounded-lg px-4 py-2 text-sm font-semibold">Save monthly entry</button>
-            </div>
-        </form>
+        <div class="mb-6 grid gap-5 border-b border-gray-200 pb-6 lg:grid-cols-2">
+            <section class="rounded-xl border border-gray-200 p-4">
+                <h3 class="budget-section-title text-base font-bold" style="color: #0f1e3d;">Planned Budget</h3>
+                <p class="budget-section-description mb-4 mt-1 text-sm text-gray-600">Set an estimate in advance for an upcoming month.</p>
+                <form method="POST" action="{{ route('department.projects.budget-transactions.store', $project->project_id) }}" class="budget-form grid gap-3">
+                    @csrf
+                    <input type="hidden" name="type" value="planned">
+                    <div class="min-w-0">
+                        <label for="planned-budget-category" class="mb-1 block text-xs font-semibold text-gray-700">Category</label>
+                        <select id="planned-budget-category" name="category" required class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
+                            @foreach ($budgetCategories as $category)
+                                <option value="{{ $category }}" @selected(old('category') === $category)>{{ $category }}</option>
+                            @endforeach
+                        </select>
+                        @error('category')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror
+                    </div>
+                    <div class="min-w-0">
+                        <label for="planned-budget-period" class="mb-1 block text-xs font-semibold text-gray-700">Planned month</label>
+                        <input id="planned-budget-period" type="month" name="period" value="{{ $plannedPeriod }}" min="{{ $nextMonth->format('Y-m') }}" required class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
+                        @error('period')@if(old('type') === 'planned')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@endif @enderror
+                    </div>
+                    <div class="min-w-0">
+                        <label for="planned-budget-amount" class="mb-1 block text-xs font-semibold text-gray-700">Planned amount (PHP)</label>
+                        <input id="planned-budget-amount" type="text" name="amount" inputmode="decimal" autocomplete="off" value="{{ old('type') === 'planned' ? old('amount') : '' }}" required class="budget-amount-input w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
+                        @error('amount')@if(old('type') === 'planned')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@endif @enderror
+                    </div>
+                    <div class="min-w-0">
+                        <label for="planned-budget-description" class="mb-1 block text-xs font-semibold text-gray-700">Description (optional)</label>
+                        <input id="planned-budget-description" type="text" name="description" value="{{ old('type') === 'planned' ? old('description') : '' }}" maxlength="2000" class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
+                        @error('description')@if(old('type') === 'planned')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@endif @enderror
+                    </div>
+                    <button type="submit" class="budget-submit-button justify-self-start rounded-lg px-4 py-2 text-sm font-semibold">Save Planned Budget</button>
+                </form>
+            </section>
+
+            <section class="rounded-xl border border-gray-200 p-4">
+                <h3 class="budget-section-title text-base font-bold" style="color: #0f1e3d;">Audited Expenditure</h3>
+                <p class="budget-section-description mb-4 mt-1 text-sm text-gray-600">
+                    Enter the finalized, audited category total for {{ $previousMonth->format('F Y') }} on the 14th or 15th only. Costs should be tallied before entry.
+                </p>
+                @if ($canEnterActual)
+                    <form method="POST" action="{{ route('department.projects.budget-transactions.store', $project->project_id) }}" class="budget-form grid gap-3">
+                        @csrf
+                        <input type="hidden" name="type" value="actual">
+                        <input type="hidden" name="period" value="{{ $previousMonth->format('Y-m') }}">
+                        <div class="min-w-0">
+                            <label for="actual-budget-category" class="mb-1 block text-xs font-semibold text-gray-700">Category</label>
+                            <select id="actual-budget-category" name="category" required class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
+                                @foreach ($budgetCategories as $category)
+                                    <option value="{{ $category }}" @selected(old('type') === 'actual' && old('category') === $category)>{{ $category }}</option>
+                                @endforeach
+                            </select>
+                            @error('category')@if(old('type') === 'actual')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@endif @enderror
+                        </div>
+                        <div class="min-w-0">
+                            <label for="actual-budget-period-display" class="mb-1 block text-xs font-semibold text-gray-700">Expenditure month</label>
+                            <input id="actual-budget-period-display" type="text" value="{{ $previousMonth->format('F Y') }}" readonly class="w-full rounded-md border bg-gray-50 px-3 py-2 text-sm" style="border-color: #B2BEB5;">
+                            @error('period')@if(old('type') === 'actual')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@endif @enderror
+                        </div>
+                        <div class="min-w-0">
+                            <label for="actual-budget-amount" class="mb-1 block text-xs font-semibold text-gray-700">Audited expenditure (PHP)</label>
+                            <input id="actual-budget-amount" type="text" name="amount" inputmode="decimal" autocomplete="off" value="{{ old('type') === 'actual' ? old('amount') : '' }}" required class="budget-amount-input w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
+                            <p class="mt-1 text-xs text-gray-500">Enter one combined total for this category and month.</p>
+                            @error('amount')@if(old('type') === 'actual')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@endif @enderror
+                        </div>
+                        <div class="min-w-0">
+                            <label for="actual-budget-description" class="mb-1 block text-xs font-semibold text-gray-700">Description (optional)</label>
+                            <input id="actual-budget-description" type="text" name="description" value="{{ old('type') === 'actual' ? old('description') : '' }}" maxlength="2000" class="w-full rounded-md border px-3 py-2 text-sm" style="border-color: #B2BEB5;">
+                            @error('description')@if(old('type') === 'actual')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@endif @enderror
+                        </div>
+                        <label class="flex items-start gap-2 text-xs text-gray-700">
+                            <input type="checkbox" name="audit_confirmed" value="1" required @checked(old('type') === 'actual' && old('audit_confirmed'))>
+                            <span>I confirm these costs were audited and tallied for the selected month before entry.</span>
+                        </label>
+                        @error('audit_confirmed')<p class="text-xs text-red-700">{{ $message }}</p>@enderror
+                        @error('type')<p class="text-xs text-red-700">{{ $message }}</p>@enderror
+                        <button type="submit" class="budget-submit-button justify-self-start rounded-lg px-4 py-2 text-sm font-semibold">Save Audited Expenditure</button>
+                    </form>
+                @else
+                    <p class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-amber-900">
+                        Expenditure entry is available on the 14th and 15th of each month only. The entry will be for {{ $previousMonth->format('F Y') }}.
+                    </p>
+                @endif
+            </section>
+        </div>
     @elseif ($allowEntry ?? false)
         <p class="mb-6 border-b border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">Category budget entry is unavailable until the database migration is applied.</p>
     @endif
@@ -185,31 +237,28 @@
             <thead>
                 <tr class="budget-table-headings border-b" style="border-color: #B2BEB5; color: #0f1e3d;">
                     <th class="px-3 py-2">Category</th>
-                    <th class="px-3 py-2 text-right">Planned Amounts</th>
-                    <th class="px-3 py-2 text-right">Actual Expenditure</th>
-                    <th class="px-3 py-2 text-right">Variance</th>
+                    <th class="px-3 py-2 text-right">Planned · {{ today()->addMonthNoOverflow()->format('F Y') }}</th>
+                    <th class="px-3 py-2 text-right">Audited Expenditure · {{ today()->subMonthNoOverflow()->format('F Y') }}</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($categoryTotals as $category => $totals)
-                    <tr class="budget-table-row border-b {{ $totals['variance'] < 0 ? 'bg-red-50 text-red-800' : '' }}" style="border-color: #e5e7eb;">
+                    <tr class="budget-table-row border-b" style="border-color: #e5e7eb;">
                         <th scope="row" class="px-3 py-2 font-medium">{{ $category }}</th>
                         <td class="px-3 py-2 text-right">₱{{ number_format($totals['planned'], 2) }}</td>
                         <td class="px-3 py-2 text-right">₱{{ number_format($totals['actual'], 2) }}</td>
-                        <td class="px-3 py-2 text-right">₱{{ number_format($totals['variance'], 2) }}@if($totals['variance'] < 0) <span class="font-semibold">Over budget</span>@endif</td>
                     </tr>
                 @endforeach
                 <tr class="budget-table-total font-bold" style="color: #0f1e3d;">
                     <th scope="row" class="px-3 py-2">Grand Total</th>
                     <td class="px-3 py-2 text-right">₱{{ number_format($plannedTotal, 2) }}</td>
                     <td class="px-3 py-2 text-right">₱{{ number_format($actualTotal, 2) }}</td>
-                    <td class="px-3 py-2 text-right">₱{{ number_format($plannedTotal - $actualTotal, 2) }}</td>
                 </tr>
             </tbody>
         </table>
     </div>
     @if ($unclassifiedActual > 0)
-        <p class="mt-2 text-xs text-gray-600">Previously recorded expenditure not assigned to a category: ₱{{ number_format($unclassifiedActual, 2) }}</p>
+        <p class="mt-2 text-xs text-gray-600">Previously recorded all-time expenditure not assigned to a category: ₱{{ number_format($unclassifiedActual, 2) }}</p>
     @endif
 
     <div class="mt-6 space-y-4">
@@ -223,13 +272,14 @@
                 @else
                     <div class="overflow-x-auto">
                         <table class="budget-transactions-table w-full min-w-[560px] text-left text-sm">
-                            <thead class="budget-table-headings text-xs text-gray-600"><tr><th class="px-3 py-2">Month</th><th class="px-3 py-2">Type</th><th class="px-3 py-2 text-right">Amount</th><th class="px-3 py-2">Description</th></tr></thead>
+                            <thead class="budget-table-headings text-xs text-gray-600"><tr><th class="px-3 py-2">Month</th><th class="px-3 py-2">Type</th><th class="px-3 py-2 text-right">Amount</th><th class="px-3 py-2">Audit confirmation</th><th class="px-3 py-2">Description</th></tr></thead>
                             <tbody>
                                 @foreach ($categoryEntries as $entry)
                                     <tr class="border-t" style="border-color: #e5e7eb;">
                                         <td class="px-3 py-2">{{ ($entry->transaction_date ?? $entry->created_at)?->format('F Y') ?? '—' }}</td>
                                         <td class="px-3 py-2">{{ ucfirst($entry->type) }}</td>
                                         <td class="px-3 py-2 text-right">₱{{ number_format((float) $entry->amount, 2) }}</td>
+                                        <td class="px-3 py-2">{{ $entry->type === 'actual' ? ($entry->audit_confirmed_at?->format('M d, Y H:i') ?? 'Legacy entry') : '—' }}</td>
                                         <td class="px-3 py-2">{{ $entry->description ?: '—' }}</td>
                                     </tr>
                                 @endforeach
@@ -244,11 +294,10 @@
 
 <script>
     (() => {
-        const amountInput = document.getElementById('budget-amount');
-        const amountForm = amountInput?.form;
-        if (!amountInput || !amountForm) return;
+        const amountInputs = document.querySelectorAll('.budget-amount-input');
+        if (!amountInputs.length) return;
 
-        function formatAmountInput() {
+        function formatAmountInput(amountInput) {
             const value = amountInput.value;
             const cursor = amountInput.selectionStart ?? value.length;
             const prefix = value.slice(0, cursor).replace(/,/g, '');
@@ -278,10 +327,12 @@
             amountInput.setSelectionRange(nextCursor, nextCursor);
         }
 
-        amountInput.addEventListener('input', formatAmountInput);
-        amountForm.addEventListener('submit', function() {
-            amountInput.value = amountInput.value.replace(/,/g, '');
+        amountInputs.forEach((amountInput) => {
+            amountInput.addEventListener('input', () => formatAmountInput(amountInput));
+            amountInput.form?.addEventListener('submit', function() {
+                amountInput.value = amountInput.value.replace(/,/g, '');
+            });
+            formatAmountInput(amountInput);
         });
-        formatAmountInput();
     })();
 </script>
