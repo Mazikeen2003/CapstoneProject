@@ -2,7 +2,8 @@
     $documentStage = $project->lifecycle_stage ?: \App\Models\Project::syncLifecycleStageFromCurrentStatus($project->current_status);
     $documentTypes = match ($documentStage) {
         1 => ['Detailed Project Information'],
-        3 => ['Bid Submission', 'Technical Proposal', 'Eligibility Requirement'],
+        2 => ['Technical Proposal', 'Eligibility Requirement'],
+        3 => ['Bid Submission'],
         4 => ['Signed Contract', 'Notice of Award', 'Purchase Order'],
         default => [],
     };
@@ -12,11 +13,34 @@
 <section class="stage-documents-card mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
     <style>
         .stage-documents-card { color: #0f172a; }
+        .stage-document-filename {
+            position: relative;
+            width: 100%;
+            max-width: 34rem;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .stage-document-filename::after {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 2rem;
+            height: 100%;
+            background: linear-gradient(90deg, rgb(255 255 255 / 0), #fff);
+            content: "";
+            pointer-events: none;
+        }
         html.dark-mode .stage-documents-card,
         .dark .stage-documents-card {
             border-color: #334155;
             background: #141c2b;
             color: #f8fafc;
+        }
+        html.dark-mode .stage-document-filename::after,
+        .dark .stage-document-filename::after {
+            background: linear-gradient(90deg, rgb(20 28 43 / 0), #141c2b);
         }
         html.dark-mode .stage-documents-card h2,
         .dark .stage-documents-card h2,
@@ -71,7 +95,19 @@
     @if (($allowUpload ?? false) && $documentTypes)
         @if ($documentStage === 1)
             <p class="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                Required to proceed to For bidding: upload the Detailed Project Information document. This document will be viewable by the public.
+                Required to proceed to For bidding: upload the Detailed Project Information document. Choose whether it is internal or publicly viewable.
+            </p>
+        @elseif ($documentStage === 2)
+            <p class="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                During For bidding, upload a Technical Proposal or Eligibility Requirement document as applicable.
+            </p>
+        @elseif ($documentStage === 3)
+            <p class="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                Upload the Bid Submission document before advancing to Award of contract. Choose whether it is internal or publicly viewable.
+            </p>
+        @elseif ($documentStage === 4)
+            <p class="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                Upload at least one contract document before advancing to Implementation. Choose whether it is internal or publicly viewable.
             </p>
         @endif
         <form method="POST" action="{{ route('department.projects.stage-documents.store', $project->project_id) }}" enctype="multipart/form-data" class="mb-6 grid gap-4 border-b border-slate-200 pb-6 sm:grid-cols-2">
@@ -92,6 +128,15 @@
                 <p class="mt-1 text-xs text-slate-500">PDF, Office documents, or images. Maximum size: 20 MB.</p>
                 @error('document')<p class="mt-1 text-sm text-red-700">{{ $message }}</p>@enderror
             </div>
+            <div>
+                <label for="stage-document-visibility" class="mb-1 block text-sm font-semibold text-slate-700">Who can see this file?</label>
+                <select id="stage-document-visibility" name="is_public" required class="w-full rounded-lg border-slate-300 text-sm focus:border-amber-500 focus:ring-amber-500">
+                    <option value="0" @selected(old('is_public', '0') === '0')>Internal only</option>
+                    <option value="1" @selected(old('is_public') === '1')>Display in public project information</option>
+                </select>
+                <p class="mt-1 text-xs text-slate-500">Public files are available to anyone visiting the Public Map.</p>
+                @error('is_public')<p class="mt-1 text-sm text-red-700">{{ $message }}</p>@enderror
+            </div>
             <div class="sm:col-span-2">
                 <button type="submit" class="inline-flex items-center rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2">
                     {{ $documentStage === 1 ? 'Upload required document' : 'Upload document' }}
@@ -106,15 +151,15 @@
         <ul class="divide-y divide-slate-200">
             @foreach ($stageDocuments as $document)
                 <li class="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div class="min-w-0">
-                        <p class="truncate font-semibold text-slate-900">{{ $document->original_filename }}</p>
+                    <div class="min-w-0 flex-1">
+                        <p class="stage-document-filename font-semibold text-slate-900" title="{{ $document->original_filename }}">{{ $document->original_filename }}</p>
                         <p class="mt-1 text-xs text-slate-500">{{ $document->document_type }} · Stage {{ $document->stage }} · {{ $document->created_at?->format('M d, Y') }}</p>
-                        @if ($document->stage === 1 && $document->document_type === 'Detailed Project Information')
-                            <p class="mt-1 text-xs font-semibold text-emerald-700">Publicly viewable</p>
-                        @endif
+                        <p class="mt-1 text-xs font-semibold {{ $document->is_public ? 'text-emerald-700' : 'text-slate-500' }}">
+                            {{ $document->is_public ? 'Publicly viewable' : 'Internal only' }}
+                        </p>
                     </div>
                     <div class="flex shrink-0 items-center gap-2">
-                        <a href="{{ $document->stage === 1 && $document->document_type === 'Detailed Project Information' ? route('public.projects.stage-documents.view', [$project->project_id, $document->id]) : route('department.projects.stage-documents.view', [$project->project_id, $document->id]) }}" target="_blank" rel="noopener" class="stage-document-view rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View</a>
+                        <a href="{{ $document->is_public ? route('public.projects.stage-documents.view', [$project->project_id, $document->id]) : route('department.projects.stage-documents.view', [$project->project_id, $document->id]) }}" target="_blank" rel="noopener" class="stage-document-view rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View</a>
                         <a href="{{ route('department.projects.stage-documents.download', [$project->project_id, $document->id]) }}" class="rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">Download</a>
                     </div>
                 </li>

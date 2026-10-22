@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\ProjectStageDocument;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -51,16 +52,22 @@ class UpdateProjectRequest extends FormRequest
                     return;
                 }
 
-                if ($project?->current_status === 'Proposed'
-                    && $value === 'For bidding'
+                $requiredStage = match ([$project?->current_status, $value]) {
+                    ['Proposed', 'For bidding'] => 1,
+                    ['Bidding ongoing', 'Award of contract'] => 3,
+                    ['Award of contract', 'Implementation'] => 4,
+                    default => null,
+                };
+
+                if ($requiredStage !== null
                     && ! $project->stageDocuments()
-                        ->where('stage', 1)
-                        ->where('document_type', 'Detailed Project Information')
+                        ->where('stage', $requiredStage)
+                        ->whereIn('document_type', ProjectStageDocument::DOCUMENT_TYPES[$requiredStage])
                         ->exists()) {
-                    $fail('Upload the required Detailed Project Information document before proceeding to For bidding.');
+                    $requiredDocumentNames = implode(', ', ProjectStageDocument::DOCUMENT_TYPES[$requiredStage]);
+                    $fail("Upload at least one required stage document ({$requiredDocumentNames}) before advancing.");
                 }
             }],
-            'lifecycle_stage'      => ['nullable', 'integer', 'between:1,6'],
             'public_description'   => ['nullable', 'string', 'max:1000'],
             'remarks'              => ['nullable', 'string', 'max:2000'],
             'project_image'        => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
