@@ -1315,6 +1315,20 @@
                             $canPauseProject = $projectHasStarted && ! in_array($project->current_status, ['On Hold', 'Completed', 'Cancelled'], true);
                             $canCancelProject = $projectHasStarted && ! in_array($project->current_status, ['Completed', 'Cancelled'], true);
                             $showLifecycleCallout = $nextStatus && $projectHasStarted && $project->current_status !== 'On Hold' && ! in_array($project->current_status, ['Completed', 'Cancelled'], true);
+                            $requiredDocumentStage = match ($currentLifecycleStatus) {
+                                'Proposed' => 1,
+                                'Bidding ongoing' => 3,
+                                'Award of contract' => 4,
+                                default => null,
+                            };
+                            $requiredDocumentTypes = $requiredDocumentStage
+                                ? \App\Models\ProjectStageDocument::DOCUMENT_TYPES[$requiredDocumentStage]
+                                : [];
+                            $hasRequiredStageDocument = $requiredDocumentStage
+                                && $project->stageDocuments()
+                                    ->where('stage', $requiredDocumentStage)
+                                    ->whereIn('document_type', $requiredDocumentTypes)
+                                    ->exists();
                         @endphp
                         <input type="hidden" name="current_status" id="projectStatusInput" value="{{ $status }}">
                         <p class="dept-field-hint">Projects move through these stages in order. Only the next stage can be selected.</p>
@@ -1362,6 +1376,12 @@
                                 </button>
                                 <strong class="dept-lifecycle-callout-title">Ready to move forward?</strong>
                                 <p>This project is currently in “{{ $currentLifecycleStatus }}.” You can advance it once this stage is finished.</p>
+                                @if ($requiredDocumentStage)
+                                    <p class="dept-lifecycle-save-note">
+                                        {{ $hasRequiredStageDocument ? 'Required stage document uploaded.' : 'Upload at least one required document before advancing.' }}
+                                        <a class="font-semibold underline" href="{{ route('department.projects.show', $project->project_id) }}">Manage project documents</a>
+                                    </p>
+                                @endif
                                 <p class="dept-lifecycle-save-note" aria-live="polite">Select the next stage, then save your changes to apply it.</p>
                                 <button type="button" class="dept-lifecycle-action" data-select-status="{{ $nextStatus }}" aria-label="Select {{ $nextStatus }} as the next stage">
                                     Proceed to next process <span aria-hidden="true">→</span>
