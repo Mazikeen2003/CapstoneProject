@@ -817,6 +817,40 @@
                 </div>
             </div>
 
+            <!-- Required Proposed-stage document -->
+            <div class="dept-create-card dept-animate">
+                <div class="dept-create-card-header">
+                    <div class="dept-create-card-icon emerald">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 3h6m2.25 6H6.75A2.25 2.25 0 014.5 18.75V5.25A2.25 2.25 0 016.75 3h7.5l5.25 5.25v10.5A2.25 2.25 0 0117.25 21zM14.25 3v5.25h5.25"/></svg>
+                    </div>
+                    <div>
+                        <h2>Required Project Document</h2>
+                        <p>Upload the Detailed Project Information before creating this Proposed project.</p>
+                    </div>
+                </div>
+                <div class="dept-create-card-body">
+                    <div class="dept-create-row">
+                        <div class="dept-field">
+                            <label class="dept-field-label" for="stageDocumentInput">Detailed Project Information <span aria-hidden="true">*</span></label>
+                            <input id="stageDocumentInput" type="file" name="stage_document" required accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png">
+                            <p class="dept-field-hint">PDF, Office documents, or images. Maximum size: 20 MB. Required to create the project.</p>
+                            @error('stage_document')<p role="alert" class="mt-1 text-sm text-red-700">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                    <div class="dept-create-row">
+                        <div class="dept-field">
+                            <label class="dept-field-label" for="stageDocumentVisibility">Document visibility</label>
+                            <select id="stageDocumentVisibility" name="stage_document_is_public" required>
+                                <option value="0" @selected(old('stage_document_is_public', '0') === '0')>Internal only</option>
+                                <option value="1" @selected(old('stage_document_is_public') === '1')>Display in public project information</option>
+                            </select>
+                            <p class="dept-field-hint">Choose whether the Detailed Project Information is visible on the Public Map.</p>
+                            @error('stage_document_is_public')<p role="alert" class="mt-1 text-sm text-red-700">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Actions -->
             <div class="dept-create-actions dept-animate">
                 <a href="{{ route('department.projects.index') }}" class="dept-btn dept-btn-secondary">Cancel</a>

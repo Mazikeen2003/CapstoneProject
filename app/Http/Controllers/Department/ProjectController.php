@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use RuntimeException;
+use Throwable;
 
 class ProjectController extends Controller
 {
@@ -82,13 +84,45 @@ class ProjectController extends Controller
         $this->authorize('create', Project::class);
 
         $data = $request->validated();
+        $stageDocument = $data['stage_document'];
+        $stageDocumentIsPublic = (bool) $data['stage_document_is_public'];
+        unset($data['stage_document'], $data['stage_document_is_public']);
         $data['created_by'] = Auth::id();
 
         if ($request->hasFile('project_image')) {
             $data['project_image'] = $this->storeProjectImage($request->file('project_image'));
         }
 
-        $project = Project::create($data);
+        $stageDocumentPath = null;
+        try {
+            $project = DB::transaction(function () use ($data, $stageDocument, $stageDocumentIsPublic, &$stageDocumentPath): Project {
+                $project = Project::create($data);
+                $stageDocumentPath = $stageDocument->store('project-stage-documents/' . $project->project_id, 'local');
+
+                if (! is_string($stageDocumentPath) || $stageDocumentPath === '') {
+                    throw new RuntimeException('The required Detailed Project Information document could not be stored.');
+                }
+
+                $originalFilename = preg_replace('/[\r\n\x00-\x1F\x7F]/u', '', $stageDocument->getClientOriginalName()) ?: 'project-document';
+                $project->stageDocuments()->create([
+                    'uploaded_by' => Auth::id(),
+                    'stage' => 1,
+                    'document_type' => 'Detailed Project Information',
+                    'original_filename' => Str::limit($originalFilename, 240, ''),
+                    'file_path' => $stageDocumentPath,
+                    'mime_type' => $stageDocument->getMimeType() ?: 'application/octet-stream',
+                    'is_public' => $stageDocumentIsPublic,
+                ]);
+
+                return $project;
+            });
+        } catch (Throwable $exception) {
+            if ($stageDocumentPath) {
+                Storage::disk('local')->delete($stageDocumentPath);
+            }
+
+            throw $exception;
+        }
 
         CacheService::invalidateGeoJsonCache();
         AuditLogService::logCreate($project);
