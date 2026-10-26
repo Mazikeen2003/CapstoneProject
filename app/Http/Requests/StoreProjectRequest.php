@@ -32,6 +32,8 @@ class StoreProjectRequest extends FormRequest
             'public_description'   => ['nullable', 'string', 'max:1000'],
             'remarks'              => ['nullable', 'string', 'max:2000'],
             'project_image'        => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
+            'stage_document'       => ['required', 'file', 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png', 'max:20480'],
+            'stage_document_is_public' => ['required', 'boolean'],
         ];
     }
 
@@ -52,6 +54,7 @@ class StoreProjectRequest extends FormRequest
             'longitude.between'        => 'Longitude must be between -180 and 180.',
             'approved_budget.numeric'  => 'Budget must be a valid number.',
             'approved_budget.min'      => 'Budget cannot be negative.',
+            'stage_document.required' => 'Upload the Detailed Project Information document before creating the project.',
         ];
     }
 
